@@ -5,3 +5,6 @@
        "https://raw.githubusercontent.com/dimitri/el-get/master/el-get-install.el")
     (goto-char (point-max))
     (eval-print-last-sexp)))
+
+;; setup
+(el-get-bundle emacs-jp/init-loader)
