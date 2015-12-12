@@ -9,7 +9,7 @@ mkdir_if_not_exist () {
     fi
 }
 
-# Emacs
+# emacs
 mkdir_if_not_exist ~/.emacs.d
 ln -sf $PWD/emacs/el-get-recipes ~/.emacs.d/
 ln -sf $PWD/emacs/init ~/.emacs.d/
@@ -19,5 +19,8 @@ ln -sf $PWD/emacs/init-loader ~/.emacs.d/
 ln -sf $PWD/emacs/snippets ~/.emacs.d/
 ln -sf $PWD/emacs/themes ~/.emacs.d/
 
-# Keyboard
+# keyboard
 ln -sf $PWD/keyboard/Xmodmap_hhk ~/.Xmodmap
+
+# tmux
+ln -sf $PWD/shell/tmux.conf ~/.tmux.conf
