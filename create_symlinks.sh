@@ -16,6 +16,7 @@ ln_if_target_exist () {
         ln -sf $target $link
     else
         echo "$target doesn't exist!"
+        return 1
     fi
 }
 
@@ -50,4 +51,11 @@ mkdir_if_not_exist ~/.ssh
 ln_if_target_exist $PWD/ssh/config ~/.ssh/
 
 # vim
-ln_if_target_exist $PWD/vim ~/.vim
+mkdir_if_not_exist ~/.vim
+ln_if_target_exist $PWD/vim/_vimrc ~/.vim
+ln_if_target_exist $PWD/vim/_gvimrc ~/.vim
+ln_if_target_exist $PWD/vim/vimfiles ~/.vim
+
+
+echo ""
+echo "Successfully executed."
