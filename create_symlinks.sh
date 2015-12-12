@@ -45,6 +45,7 @@ ln_if_target_exist ~/src/tmux/examples/bash_completion_tmux.sh ~/.bash_completio
 # git
 ln_if_target_exist $PWD/git/gitconfig ~/.gitconfig
 ln_if_target_exist ~/src/git/contrib/completion/git-completion.bash ~/.git-completion.bash
+ln_if_target_exist ~/src/git/contrib/completion/git-prompt.sh ~/.git-prompt.sh
 
 # ssh
 mkdir_if_not_exist ~/.ssh

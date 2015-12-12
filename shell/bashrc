@@ -129,10 +129,11 @@ export PATH=$HOME/usr/bin:$PATH
 # for GNU global
 export GTAGSLIBPATH=$HOME/usr/src
 
-# git-completion
-if [ -f ~/.git-completion.bash ]; then
+# git-completion & git-prompt
+if [ -f ~/.git-completion.bash -a -f ~/.git-prompt.sh ]; then
     if [[ $EUID -ne 0 ]]; then
         source ~/.git-completion.bash
+        source ~/.git-prompt.sh
         PS1=`echo $PS1 | sed -e 's/ #\\\#\\\n\\\\\\$/\$(__git_ps1 \" (\%s)\") #\\\#\\n\\\$ /' `
     fi
 fi
