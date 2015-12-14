@@ -127,7 +127,7 @@ export LD_LIBRARY_PATH=$HOME/usr/lib:$LD_LIBRARY_PATH
 export PATH=$HOME/usr/bin:$PATH
 
 # for GNU global
-export GTAGSLIBPATH=$HOME/usr/src
+export GTAGSLIBPATH=$HOME/usr/milib
 
 # git-completion & git-prompt
 if [ -f ~/.git-completion.bash -a -f ~/.git-prompt.sh ]; then
