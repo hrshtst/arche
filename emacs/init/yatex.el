@@ -101,7 +101,7 @@
         (goto-char (point-min))
         (while (re-search-forward "。" nil t) ;読点の置換
           (replace-match "．" nil nil))
-        (if rega
+        (if reg
             (narrow-to-region (region-beginning) (region-end)))
         (goto-char (point-min))
         (while (re-search-forward "、" nil t) ;句点の置換
