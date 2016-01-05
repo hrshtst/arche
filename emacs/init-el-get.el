@@ -40,6 +40,9 @@
 ;; yatex
 (el-get-bundle yatex)
 
+;; latex-math-preview
+(el-get-bundle latex-math-preview :type git :url "https://gitlab.com/latex-math-preview/latex-math-preview.git")
+
 ;; magit
 (el-get-bundle magit)
 
