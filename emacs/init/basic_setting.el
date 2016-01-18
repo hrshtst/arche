@@ -79,9 +79,6 @@
 ;; delete section mode
 (delete-selection-mode 1)
 
-;; global auto revert mode
-(global-auto-revert-mode 1)
-
 ;; remove text properties when yanking
 (setq yank-excluded-properties t)
 

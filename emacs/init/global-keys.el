@@ -39,6 +39,15 @@
 ;; magit
 (define-key global-map (kbd "C-x g") 'magit-status)
 
+;; git-gutter
+(global-set-key (kbd "C-x v u") 'git-gutter)
+(global-set-key (kbd "C-x v p") 'git-gutter:stage-hunk)
+(global-set-key (kbd "C-x v =") 'git-gutter:popup-hunk)
+(global-set-key (kbd "C-x v r") 'git-gutter:revert-hunk)
+(smartrep-define-key
+    global-map  "C-x" '(("p" . 'git-gutter:previous-diff)
+                        ("n" . 'git-gutter:next-diff)))
+
 ;; flycheck
 (define-key global-map (kbd "M-l") 'my/flycheck-list-errors)
 (smartrep-define-key
