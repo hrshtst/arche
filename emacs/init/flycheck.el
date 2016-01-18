@@ -9,8 +9,7 @@
 
 (custom-set-variables
  '(flycheck-display-errors-delay 0.5)
- '(flycheck-idle-change-delay 1.0)
- '(flycheck-display-errors-function nil))
+ '(flycheck-idle-change-delay 1.0))
 
 (setq flycheck-c/c++-include-path
       (list "." ".." "../include" (expand-file-name "~/usr/include") "./gtest/include"))
@@ -25,3 +24,6 @@
 
 ;; simply highlight the whole line
 (setq flycheck-highlighting-mode 'lines)
+
+(with-eval-after-load 'flycheck
+  (flycheck-pos-tip-mode))

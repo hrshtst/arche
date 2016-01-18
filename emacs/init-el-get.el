@@ -55,6 +55,7 @@
 
 ;; flycheck
 (el-get-bundle flycheck)
+(el-get-bundle flycheck-pos-tip)
 
 ;; persp-mode
 (el-get-bundle elpa:persp-mode)
