@@ -22,6 +22,9 @@
 (setq tex-pdfview-command "evince")
 (setq dviprint-command-format "xdg-open `echo %s | sed -e \"s/\\.[^.]*$/\\.pdf/\"`")
 
+(custom-set-variables
+ '(safe-local-variable-values (quote ((TeX-master . t)))))
+
 (require 'dbus)
 
 (defun un-urlify (fname-or-url)
