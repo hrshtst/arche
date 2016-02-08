@@ -62,3 +62,6 @@
 
 ;; python
 (el-get-bundle jedi)
+
+;; aggressive-indent-mode
+(el-get-bundle aggressive-indent-mode)

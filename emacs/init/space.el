@@ -14,3 +14,9 @@
   (let ((whitespace-indent-tabs-mode indent-tabs-mode)
 	(whitespace-tab-width tab-width))
     ad-do-it))
+
+;; enable aggressive-indent-mode
+;; https://github.com/Malabarba/aggressive-indent-mode
+(add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
+(add-hook 'c-mode-hook #'aggressive-indent-mode)
+(add-hook 'c++-mode-hook #'aggressive-indent-mode)
