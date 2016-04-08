@@ -1,5 +1,6 @@
 ;; linum
 (defvar linum-format nil)
-(setq linum-format "%4d")
+(custom-set-variables
+ '(linum-format "%4d"))
 
 (global-linum-mode t)
