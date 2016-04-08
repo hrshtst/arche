@@ -20,6 +20,7 @@
 ;; buffer
 (el-get-bundle recentf-ext)
 (el-get-bundle emacs-jp/elscreen)
+(el-get-bundle wamei/elscreen-separate-buffer-list)
 (el-get-bundle popwin)
 
 ;; helm

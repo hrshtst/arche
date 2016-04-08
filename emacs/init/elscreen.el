@@ -12,3 +12,6 @@
 )
 
 (elscreen-toggle-display-tab)
+
+;; elscreen-separate-buffer-list-mode
+(elscreen-separate-buffer-list-mode 1)
