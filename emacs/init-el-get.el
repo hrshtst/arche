@@ -21,7 +21,6 @@
 (el-get-bundle recentf-ext)
 (el-get-bundle emacs-jp/elscreen)
 (el-get-bundle popwin)
-(el-get-bundle ibukanov/pc-bufsw (pc-bufsw-default-keybindings))
 
 ;; helm
 (el-get-bundle helm)
