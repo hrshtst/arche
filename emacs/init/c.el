@@ -1,11 +1,10 @@
 ;;;; C and C++ and assembly language setting
 
 (defun my/c-mode-hook ()
-  (c-set-style "k&r")
+  (c-set-style "bsd")
   (setq c-basic-offset 2)
   (setq indent-tabs-mode nil)
   (setq comment-style 'indent)
-  (c-toggle-electric-state -1)
   (c-toggle-auto-newline t)
   (c-toggle-hungry-state t))
 
