@@ -45,7 +45,6 @@
 
 ;; magit
 (el-get-bundle magit)
-(el-get-bundle git-gutter)
 
 ;; popwin
 (el-get-bundle popwin)

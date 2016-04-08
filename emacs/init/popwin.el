@@ -15,9 +15,6 @@
 ;; flycheck
 (push '(flycheck-error-list-mode :stick t) popwin:special-display-config)
 
-;; git
-(push '("*git-gutter:diff*" :stick t :noselect t :height 20) popwin:special-display-config)
-
 ;; yatex
 (require 'popwin-yatex)
 (push '("*YaTeX-typesetting*") popwin:special-display-config)
