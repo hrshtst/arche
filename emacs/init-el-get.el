@@ -56,8 +56,5 @@
 (el-get-bundle flycheck)
 ;; (el-get-bundle flycheck-pos-tip)
 
-;; persp-mode
-(el-get-bundle Bad-ptr/persp-mode.el)
-
 ;; python
 (el-get-bundle jedi)
