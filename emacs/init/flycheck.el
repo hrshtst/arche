@@ -25,5 +25,5 @@
 ;; simply highlight the whole line
 (setq flycheck-highlighting-mode 'lines)
 
-(with-eval-after-load 'flycheck
-  (flycheck-pos-tip-mode))
+;; (with-eval-after-load 'flycheck
+;;   (flycheck-pos-tip-mode))
