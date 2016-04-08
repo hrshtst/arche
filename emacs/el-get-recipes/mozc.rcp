@@ -1,0 +1,5 @@
+(:name mozc
+       :website "https://github.com/google/mozc"
+       :description "Mozc is a Japanese Input Method Editor (IME) designed for multi-platform such as Android OS, Apple OS X, Chromium OS, GNU/Linux and Microsoft Windows. This OpenSource project originates from Google Japanese Input."
+       :type http
+       :url "https://raw.githubusercontent.com/google/mozc/master/src/unix/emacs/mozc.el")
