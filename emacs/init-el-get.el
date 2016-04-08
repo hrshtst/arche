@@ -17,10 +17,9 @@
   (el-get-bundle d5884/mozc-popup
     :depends popup))
 
-;; recentf-ext
+;; buffer
 (el-get-bundle recentf-ext)
-
-;; pc-bufsw
+(el-get-bundle popwin)
 (el-get-bundle ibukanov/pc-bufsw (pc-bufsw-default-keybindings))
 
 ;; helm
@@ -37,17 +36,14 @@
 ;; yasnippet
 (el-get-bundle yasnippet)
 
-;; yatex
+;; tex
 (el-get-bundle yatex)
-
-;; latex-math-preview
-(el-get-bundle latex-math-preview :type git :url "https://gitlab.com/latex-math-preview/latex-math-preview.git")
+(el-get-bundle latex-math-preview
+  :type git
+  :url "https://gitlab.com/latex-math-preview/latex-math-preview.git")
 
 ;; magit
 (el-get-bundle magit)
-
-;; popwin
-(el-get-bundle popwin)
 
 ;; smartrep
 (el-get-bundle myuhe/smartrep.el)
