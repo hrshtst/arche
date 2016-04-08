@@ -48,9 +48,6 @@
 (setq-default truncate-lines nil)
 (setq-default truncate-partial-width-windows nil)
 
-;; disable menu bar
-(menu-bar-mode -1)
-
 ;; not beep
 (setq-default ring-bell-function 'ignore)
 
