@@ -6,7 +6,8 @@
  '(helm-candidate-number-limit 500)
  '(helm-ag-insert-at-point 'symbol)
  '(helm-find-files-doc-header "")
- '(helm-command-prefix-key nil))
+ '(helm-command-prefix-key nil)
+ '(helm-samewindow nil))
 
 (with-eval-after-load 'helm
   (helm-mode 1)
@@ -23,4 +24,3 @@
   ;; Complimentation with TAB
   (define-key helm-find-files-map (kbd "TAB") 'helm-execute-persistent-action)
   (define-key helm-read-file-map (kbd "TAB") 'helm-execute-persistent-action))
-

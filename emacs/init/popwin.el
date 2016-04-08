@@ -1,7 +1,6 @@
 ;; popwin
 (require 'popwin)
 (popwin-mode 1)
-(global-set-key (kbd "C-z") popwin:keymap)
 
 ;; basic
 (push '("*Help*" :stick t :noselect t) popwin:special-display-config)
@@ -19,5 +18,9 @@
 (require 'popwin-yatex)
 (push '("*YaTeX-typesetting*") popwin:special-display-config)
 (push '("*latex-math-preview-expression*") popwin:special-display-config)
+
+;; helm
+(push '("^\\*helm" :regexp t :position :bottom) popwin:special-display-config)
+(setq popwin:adjust-other-windows t)
 
 (setq popwin:popup-window-height 0.5)
