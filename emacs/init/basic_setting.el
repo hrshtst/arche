@@ -70,8 +70,10 @@
 
 ;; show paren mode
 (show-paren-mode t)
-(setq show-paren-style 'mixed)
-(setq show-paren-delay 0) ; default: 0.15
+(custom-set-variables
+ '(show-paren-style 'mixed)
+ '(show-paren-delay 0) ; default: 0.15
+)
 
 ;; delete section mode
 (delete-selection-mode 1)
