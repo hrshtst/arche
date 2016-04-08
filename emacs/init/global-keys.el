@@ -10,6 +10,8 @@
 (global-set-key "\M-?" 'help-for-help)        ; Help
 ;; invoke rectangle-mark-mode by C-<Return>
 (global-set-key [C-return] 'rectangle-mark-mode)
+;; other-window to C-t
+(global-set-key (kbd "C-t") 'other-window)
 
 ;; goto-line
 (global-set-key "\M-g \M-g" (lambda (x) (interactive "nLine: ") (goto-line x)))
