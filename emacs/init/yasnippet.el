@@ -1,2 +1,3 @@
 ;; yasnippet
-(yas-global-mode 1)
+(with-eval-after-load 'yasnippet
+  (yas-global-mode 1))
