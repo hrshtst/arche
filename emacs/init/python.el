@@ -17,3 +17,8 @@
 ;; jedi
 (custom-set-variables
  '(jedi:complete-on-dot t))
+
+;; yasnippet
+(defun ac-python-mode-setup ()
+  (setq ac-sources (append '(ac-source-yasnippet) ac-sources)))
+(add-hook 'python-mode-hook 'ac-python-mode-setup)
