@@ -29,5 +29,14 @@
 
 ;; elscreen-persist
 (require 'elscreen-persist)
+
+(defun elscreen-persist-sotre-message ()
+  (message "elscreen configurations are stored!"))
+(advice-add 'elscreen-persist-store-message :after #'elscreen-persist-store)
+
+(defun elscreen-persist-resotre-message ()
+  (message "elscreen configurations are restored!"))
+(advice-add 'elscreen-persist-restore-message :after #'elscreen-persist-restore)
+
 (global-set-key (kbd "C-z C-s") 'elscreen-persist-store)
 (global-set-key (kbd "C-z C-r") 'elscreen-persist-restore)
