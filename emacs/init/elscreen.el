@@ -12,6 +12,7 @@
 
 (elscreen-start)
 (global-set-key (kbd "C-z C-z") 'elscreen-toggle)
+(global-set-key (kbd "C-z SPC") 'elscreen-toggle)
 (global-set-key (kbd "C-z .") 'elscreen-screen-nickname)
 (global-set-key (kbd "C-z C") 'elscreen-create-and-nickname)
 (global-set-key (kbd "C-z C-l") 'helm-elscreen)
