@@ -81,6 +81,15 @@
 ;; remove text properties when yanking
 (setq yank-excluded-properties t)
 
+;; show buffer or file name on title bar
+(setq frame-title-format
+      '((:eval (if (buffer-file-name)
+                   (abbreviate-file-name (buffer-file-name))
+                 "%b"))
+        (:eval (if (buffer-modified-p)
+                   " •"))
+        " - Emacs"))
+
 ;; smart repetition
 (require 'smartrep)
 
