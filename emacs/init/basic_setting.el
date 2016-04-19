@@ -88,7 +88,7 @@
                  "%b"))
         (:eval (if (buffer-modified-p)
                    " •"))
-        " - Emacs"))
+        " - Emacs@" system-name))
 
 ;; smart repetition
 (require 'smartrep)
