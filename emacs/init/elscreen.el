@@ -11,12 +11,6 @@
   (elscreen-notify-screen-modification 'force))
 
 (elscreen-start)
-(global-set-key (kbd "C-z C-z") 'elscreen-toggle)
-(global-set-key (kbd "C-z SPC") 'elscreen-toggle)
-(global-set-key (kbd "C-z .") 'elscreen-screen-nickname)
-(global-set-key (kbd "C-z C") 'elscreen-create-and-nickname)
-(global-set-key (kbd "C-z C-l") 'helm-elscreen)
-(global-set-key (kbd "C-z s") 'elscreen-swap)
 
 (custom-set-variables
  '(elscreen-tab-display-kill-screen nil)
@@ -48,9 +42,6 @@ Store the screens, window configurations and frame parameters.
 (defadvice elscreen-persist-restore (after elscreen-persist-resotre-message-advice)
   (elscreen-persist-resotre-message))
 (ad-activate 'elscreen-persist-restore 'elscreen-persist-restore-message-advice)
-
-(global-set-key (kbd "C-z C-s") 'elscreen-persist-store)
-(global-set-key (kbd "C-z C-r") 'elscreen-persist-restore)
 
 (defun elscreen-swap-previous()
   "Interchange screens selected currently and previous."
@@ -93,6 +84,3 @@ Store the screens, window configurations and frame parameters.
       (elscreen-set-screen-property next-screen current-screen-property)
       (elscreen-goto-internal (elscreen-get-current-screen)))))
      (elscreen-next))
-
-(global-set-key (kbd "C-z h") 'elscreen-swap-previous)
-(global-set-key (kbd "C-z l") 'elscreen-swap-next)

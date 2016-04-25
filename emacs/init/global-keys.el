@@ -50,3 +50,18 @@
 ;; swap screen
 (global-set-key [f2] 'swap-screen)
 (global-set-key [S-f2] 'swap-screen-with-cursor)
+
+;; elscreen
+(global-set-key (kbd "C-z C-z") 'elscreen-toggle)
+(global-set-key (kbd "C-z SPC") 'elscreen-toggle)
+(global-set-key (kbd "C-z .") 'elscreen-screen-nickname)
+(global-set-key (kbd "C-z C") 'elscreen-create-and-nickname)
+(global-set-key (kbd "C-z C-l") 'helm-elscreen)
+(global-set-key (kbd "C-z s") 'elscreen-swap)
+
+(global-set-key (kbd "C-z C-s") 'elscreen-persist-store)
+(global-set-key (kbd "C-z C-r") 'elscreen-persist-restore)
+
+(smartrep-define-key
+    global-map "C-z" '(("h" . (elscreen-swap-previous))
+                       ("l" . (elscreen-swap-next))))
