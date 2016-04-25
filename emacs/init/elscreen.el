@@ -29,7 +29,9 @@
 (elscreen-separate-buffer-list-mode 1)
 
 ;; elscreen-persist
-(require 'elscreen-persist)
+(autoload 'elscreen-persist-store "elscreen-persist/elscreen-persist" "\
+Store the screens, window configurations and frame parameters.
+\(fn)" t nil)
 
 (defun elscreen-persist-sotre-message ()
   (message "elscreen configurations are stored!"))
