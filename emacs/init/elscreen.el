@@ -35,11 +35,19 @@ Store the screens, window configurations and frame parameters.
 
 (defun elscreen-persist-sotre-message ()
   (message "elscreen configurations are stored!"))
-(advice-add 'elscreen-persist-store-message :after #'elscreen-persist-store)
+;; (advice-add 'elscreen-persist-store-message :after #'elscreen-persist-store)
 
 (defun elscreen-persist-resotre-message ()
   (message "elscreen configurations are restored!"))
-(advice-add 'elscreen-persist-restore-message :after #'elscreen-persist-restore)
+;; (advice-add 'elscreen-persist-restore-message :after #'elscreen-persist-restore)
+
+(defadvice elscreen-persist-store (after elscreen-persist-sotre-message-advice)
+  (elscreen-persist-sotre-message))
+(ad-activate 'elscreen-persist-store 'elscreen-persist-store-message-advice)
+
+(defadvice elscreen-persist-restore (after elscreen-persist-resotre-message-advice)
+  (elscreen-persist-resotre-message))
+(ad-activate 'elscreen-persist-restore 'elscreen-persist-restore-message-advice)
 
 (global-set-key (kbd "C-z C-s") 'elscreen-persist-store)
 (global-set-key (kbd "C-z C-r") 'elscreen-persist-restore)
