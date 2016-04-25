@@ -51,3 +51,48 @@ Store the screens, window configurations and frame parameters.
 
 (global-set-key (kbd "C-z C-s") 'elscreen-persist-store)
 (global-set-key (kbd "C-z C-r") 'elscreen-persist-restore)
+
+(defun elscreen-swap-previous()
+  "Interchange screens selected currently and previous."
+  (interactive)
+  (cond
+   ((elscreen-one-screen-p)
+    (elscreen-message "There is only one screen, cannot swap"))
+   (t
+    (let* ((screen-list (sort (elscreen-get-screen-list) '>))
+           (previous-screen
+            (or (nth 1 (memq (elscreen-get-current-screen) screen-list))
+               (car screen-list)))
+           (current-screen (elscreen-get-current-screen))
+           (current-screen-property
+            (elscreen-get-screen-property current-screen))
+           (previous-screen-property
+            (elscreen-get-screen-property previous-screen)))
+      (elscreen-set-screen-property current-screen previous-screen-property)
+      (elscreen-set-screen-property previous-screen current-screen-property)
+      (elscreen-goto-internal (elscreen-get-current-screen)))))
+  (elscreen-previous))
+
+(defun elscreen-swap-next()
+  "Interchange screens selected currently and next."
+  (interactive)
+  (cond
+   ((elscreen-one-screen-p)
+    (elscreen-message "There is only one screen, cannot swap"))
+   (t
+    (let* ((screen-list (sort (elscreen-get-screen-list) '<))
+           (next-screen
+            (or (nth 1 (memq (elscreen-get-current-screen) screen-list))
+               (car screen-list)))
+           (current-screen (elscreen-get-current-screen))
+           (current-screen-property
+            (elscreen-get-screen-property current-screen))
+           (next-screen-property
+            (elscreen-get-screen-property next-screen)))
+      (elscreen-set-screen-property current-screen next-screen-property)
+      (elscreen-set-screen-property next-screen current-screen-property)
+      (elscreen-goto-internal (elscreen-get-current-screen)))))
+     (elscreen-next))
+
+(global-set-key (kbd "C-z h") 'elscreen-swap-previous)
+(global-set-key (kbd "C-z l") 'elscreen-swap-next)
