@@ -10,6 +10,7 @@
 
 ;; setup
 (el-get-bundle emacs-jp/init-loader)
+(el-get-bundle purcell/exec-path-from-shell)
 
 ;; input method
 (when (executable-find "mozc_emacs_helper")

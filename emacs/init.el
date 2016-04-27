@@ -30,14 +30,23 @@
 ;; Boston, MA 02110-1301, USA.
 
 ;;; Code:
+(unless load-file-name
+  (cd (getenv "HOME")))
+
+(require 'cl-lib)
 
 (when load-file-name
   (setq-default user-emacs-directory (file-name-directory load-file-name)))
 
 (load (concat user-emacs-directory "init-el-get.el"))
 
+;; load environment variables
+(custom-set-variables
+ '(exec-path-from-shell-check-startup-files nil))
+(exec-path-from-shell-copy-envs '("PATH" "PYTHONPATH" "VIRTUAL_ENV"))
+
 ;; custom-file
-(setq custom-file (expand-file-name "~/.emacs.d/emacs-custom.el"))
+(setq custom-file (concat user-emacs-directory "emacs-custom.el"))
 
 ;; init-loader
 (custom-set-variables
