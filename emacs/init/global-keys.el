@@ -40,11 +40,19 @@
 (define-key global-map (kbd "C-x C-r")   'helm-recentf)
 (define-key global-map (kbd "M-y")       'helm-show-kill-ring)
 (define-key global-map (kbd "C-c i")     'helm-imenu)
+(define-key global-map (kbd "C-c d")     'helm-descbinds)
+(define-key global-map (kbd "C-c s")     'helm-ag)
 (define-key global-map (kbd "C-x b")     'helm-buffers-list)
 (define-key global-map (kbd "C-x C-b")   'helm-for-files)
 (define-key global-map (kbd "C-x C-;")   'helm-for-files)
 (define-key global-map (kbd "C-c C-SPC") 'helm-all-mark-rings)
 (define-key global-map (kbd "M-z")       'helm-resume)
+
+;; helm-swoop
+(global-set-key (kbd "M-i") 'helm-swoop)
+(global-set-key (kbd "M-I") 'helm-swoop-back-to-last-point)
+(global-set-key (kbd "C-c M-i") 'helm-multi-swoop)
+(global-set-key (kbd "C-x M-i") 'helm-multi-swoop-all)
 
 ;; magit
 (define-key global-map (kbd "C-x g") 'magit-status)

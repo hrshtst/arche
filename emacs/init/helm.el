@@ -24,3 +24,21 @@
   ;; Complimentation with TAB
   (define-key helm-find-files-map (kbd "TAB") 'helm-execute-persistent-action)
   (define-key helm-read-file-map (kbd "TAB") 'helm-execute-persistent-action))
+
+(with-eval-after-load 'helm-swoop
+  (define-key isearch-mode-map (kbd "M-i") 'helm-swoop-from-isearch)
+  (define-key helm-swoop-map (kbd "M-i") 'helm-multi-swoop-all-from-helm-swoop)
+  (define-key helm-swoop-map (kbd "M-m") 'helm-multi-swoop-current-mode-from-helm-swoop)
+  (define-key helm-swoop-map (kbd "C-r") 'helm-previous-line)
+  (define-key helm-swoop-map (kbd "C-s") 'helm-next-line)
+  (define-key helm-multi-swoop-map (kbd "C-r") 'helm-previous-line)
+  (define-key helm-multi-swoop-map (kbd "C-s") 'helm-next-line))
+
+(custom-set-variables
+ '(helm-multi-swoop-edit-save t)
+ '(helm-swoop-split-with-multiple-windows nil)
+ '(helm-swoop-split-direction 'split-window-vertically)
+ '(helm-swoop-speed-or-color nil)
+ '(helm-swoop-move-to-line-cycle t)
+ '(helm-swoop-use-line-number-face t)
+ '(helm-swoop-use-fuzzy-match nil))
