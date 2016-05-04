@@ -43,7 +43,8 @@
 ;; load environment variables
 (custom-set-variables
  '(exec-path-from-shell-check-startup-files nil))
-(exec-path-from-shell-copy-envs '("PATH" "PYTHONPATH" "VIRTUAL_ENV"))
+(exec-path-from-shell-copy-envs
+ '("PATH" "PYTHONPATH" "VIRTUAL_ENV" "GTAGSLIBPATH"))
 
 ;; custom-file
 (setq custom-file (concat user-emacs-directory "emacs-custom.el"))
