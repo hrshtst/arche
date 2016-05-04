@@ -17,6 +17,8 @@
   (el-get-bundle mozc)
   (el-get-bundle d5884/mozc-popup
     :depends popup))
+(when (executable-find "cmigemo")
+  (el-get-bundle migemo))
 
 ;; buffer
 (el-get-bundle recentf-ext)
