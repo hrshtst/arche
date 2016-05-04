@@ -44,6 +44,7 @@
 (define-key global-map (kbd "C-x C-b")   'helm-for-files)
 (define-key global-map (kbd "C-x C-;")   'helm-for-files)
 (define-key global-map (kbd "C-c C-SPC") 'helm-all-mark-rings)
+(define-key global-map (kbd "M-z")       'helm-resume)
 
 ;; magit
 (define-key global-map (kbd "C-x g") 'magit-status)
