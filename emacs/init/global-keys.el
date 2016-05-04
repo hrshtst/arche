@@ -24,6 +24,15 @@
                        ("a" . (beginning-of-buffer-other-window 0))
                        ("e" . (end-of-buffer-other-window 0))))
 
+;; search
+(global-set-key (kbd "C-s") 'isearch-forward-regexp)
+(global-set-key (kbd "C-r") 'isearch-backward-regexp)
+(global-set-key (kbd "M-%") 'anzu-query-replace-regexp)
+(global-set-key (kbd "ESC M-%") 'anzu-query-replace-at-cursor)
+(global-set-key (kbd "C-x %") 'anzu-replace-at-cursor-thing)
+(define-key isearch-mode-map [remap isearch-query-replace]  #'anzu-isearch-query-replace)
+(define-key isearch-mode-map [remap isearch-query-replace-regexp] #'anzu-isearch-query-replace-regexp)
+
 ;; helm
 (define-key global-map (kbd "C-;")       'helm-mini)
 (define-key global-map (kbd "M-x")       'helm-M-x)

@@ -36,6 +36,9 @@
 (el-get-bundle helm-gtags)
 (el-get-bundle helm-ag)
 
+;; search
+(el-get-bundle anzu)
+
 ;; auto-complete
 (el-get-bundle auto-complete)
 
