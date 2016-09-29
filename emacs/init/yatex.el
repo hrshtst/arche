@@ -74,6 +74,7 @@
 (setq reftex-enable-partial-scans t)
 (setq reftex-save-parse-info t)
 (setq reftex-use-multiple-selection-buffers t)
+(setq reftex-refontify-context t)
 ;; Use \eqref for citation of formulas
 (setq reftex-label-alist '((nil ?e nil "~\\eqref{%s}" nil nil)))
 
