@@ -30,6 +30,9 @@
 ;; Boston, MA 02110-1301, USA.
 
 ;;; Code:
+
+(package-initialize)
+
 (unless load-file-name
   (cd (getenv "HOME")))
 
