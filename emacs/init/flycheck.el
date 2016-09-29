@@ -12,7 +12,7 @@
  '(flycheck-idle-change-delay 1.0))
 
 (setq flycheck-c/c++-include-path
-      (list "." ".." "../include" (expand-file-name "~/usr/include") "./gtest/include"))
+      (list "." ".." "./include" "../include" (expand-file-name "~/usr/include") "./gtest/include"))
 (defun my/set-flycheck-c/c++-include-path ()
   (setq flycheck-clang-include-path flycheck-c/c++-include-path)
   (setq flycheck-gcc-include-path flycheck-c/c++-include-path))
