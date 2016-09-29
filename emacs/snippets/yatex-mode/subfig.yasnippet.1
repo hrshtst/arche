@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# key: subfig
+# group: environments
+# name : \begin{subfigure} ... \end{subfigure}
+# --
+\begin{subfigure}[${1:tb}]{${2:.5\linewidth}}
+\centering
+\includegraphics[width=\linewidth]{fig/${3:dummy}.eps}
+\caption{${4:caption}}
+\label{fig:$3}
+\end{subfigure}
