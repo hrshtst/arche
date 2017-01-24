@@ -41,7 +41,7 @@ ln_if_target_exist $PWD/shell/bash_completion_make.sh ~/.bash_completion_make.sh
 # tmux
 mkdir_if_not_exist ~/.tmux/plugins
 ln_if_target_exist $PWD/shell/tmux.conf ~/.tmux.conf
-ln_if_target_exist ~/src/tmux/examples/bash_completion_tmux.sh ~/.bash_completion_tmux.sh
+#ln_if_target_exist ~/src/tmux/examples/bash_completion_tmux.sh ~/.bash_completion_tmux.sh
 
 # git
 ln_if_target_exist $PWD/git/gitconfig ~/.gitconfig
