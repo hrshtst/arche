@@ -3,6 +3,7 @@
 (defun my/c-mode-hook ()
   (c-set-style "bsd")
   (setq c-basic-offset 2)
+  (setq c-auto-align-backslashes nil)
   (setq indent-tabs-mode nil)
   (setq comment-style 'indent)
   (c-toggle-auto-newline t)
