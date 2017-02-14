@@ -47,6 +47,7 @@ ln_if_target_exist $PWD/shell/tmux.conf ~/.tmux.conf
 ln_if_target_exist $PWD/git/gitconfig ~/.gitconfig
 ln_if_target_exist ~/src/git/contrib/completion/git-completion.bash ~/.git-completion.bash
 ln_if_target_exist ~/src/git/contrib/completion/git-prompt.sh ~/.git-prompt.sh
+ln_if_target_exist $PWD/git/gitignore ~/.gitignore
 
 # ssh
 mkdir_if_not_exist ~/.ssh

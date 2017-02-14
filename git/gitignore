@@ -1,0 +1,6 @@
+#
+# Global .gitignore
+#
+
+# GNU global
+G*
