@@ -20,13 +20,19 @@
 (when (executable-find "cmigemo")
   (el-get-bundle migemo))
 
+;; theme
+(el-get-bundle powerline)
+
 ;; buffer
 (el-get-bundle recentf-ext)
-(el-get-bundle emacs-jp/elscreen)
-(el-get-bundle wamei/elscreen-separate-buffer-list)
-(el-get-bundle robario/elscreen-persist)
 (el-get-bundle ibukanov/pc-bufsw (pc-bufsw-default-keybindings))
 (el-get-bundle popwin)
+
+;; perspeen (multi workspaces)
+(el-get-bundle seudut/perspeen
+  :features perspeen
+  (setq perspeen-use-tab t)
+  (perspeen-mode))
 
 ;; helm
 (el-get-bundle helm)
