@@ -1,0 +1,6 @@
+(:name ccc
+       :website "https://gist.github.com/mori-dev/1145684#file-ccc-el"
+       :description "cursor color control"
+       :type http
+       :url "https://gist.githubusercontent.com/mori-dev/1145684/raw/0a463665298fb6851211eedca225f52f3d098b34/ccc.el"
+       :depends (apel))

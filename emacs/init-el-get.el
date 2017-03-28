@@ -14,6 +14,7 @@
 
 ;; input method
 (when (executable-find "mozc_emacs_helper")
+  (el-get-bundle ccc)
   (el-get-bundle mozc)
   (el-get-bundle d5884/mozc-popup
     :depends popup))

@@ -1,12 +1,14 @@
 ;; input method
-(defun my/input-method-active-hook ()
-  (set-cursor-color "blue"))
+(setq mozc-color "blue")
+(defun mozc-change-cursor-color ()
+  (if mozc-mode
+      (set-buffer-local-cursor-color mozc-color)
+    (set-buffer-local-cursor-color nil)))
 
-(defun my/input-method-inactivate-hook ()
-  (set-cursor-color "DeepPink"))
-
-(add-hook 'input-method-activate-hook 'my/input-method-active-hook)
-(add-hook 'input-method-inactivate-hook 'my/input-method-inactivate-hook)
+(add-hook 'input-method-activate-hook
+          (lambda () (mozc-change-cursor-color)))
+(add-hook 'input-method-inactivate-hook
+          (lambda () (mozc-change-cursor-color)))
 
 ;; This value should be set before loading `mozc.el'
 (custom-set-variables
