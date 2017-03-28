@@ -1,0 +1,5 @@
+(:name atom-dark-theme
+       :description "A port of Atom Dark them from Atom.io"
+       :type github
+       :prepare (add-to-list 'custom-theme-load-path default-directory)
+       :pkgname "whitlockjc/atom-dark-theme-emacs")
