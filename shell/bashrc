@@ -128,7 +128,7 @@ export PATH=$HOME/usr/bin:$PATH
 export PYTHONPATH=$HOME/usr/lib/python3.4/site-packages:$PYTHONPATH
 
 # for GNU global
-export GTAGSLIBPATH=$HOME/usr/milib
+export GTAGSLIBPATH=$HOME/usr/src
 
 # git-completion & git-prompt
 if [ -f ~/.git-completion.bash -a -f ~/.git-prompt.sh ]; then
@@ -172,4 +172,3 @@ load_if_exist /opt/ros/indigo/setup.bash
 load_if_exist /usr/share/drcsim/setup.sh
 load_if_exist ~/develop/catkin_ws/devel/setup.bash
 load_if_exist ~/catkin_ws/devel/setup.bash
-
