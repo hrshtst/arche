@@ -3,4 +3,8 @@
 #
 
 # GNU global
-G*
+GPATH
+GRTAGS
+GTAGS
+GSYMS
+
