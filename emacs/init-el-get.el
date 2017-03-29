@@ -45,6 +45,7 @@
 (el-get-bundle helm-descbinds)
 (el-get-bundle helm-gtags)
 (el-get-bundle helm-ag)
+(el-get-bundle jimo1001/helm-perspeen)
 
 ;; search
 (el-get-bundle anzu)
