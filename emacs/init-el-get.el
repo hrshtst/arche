@@ -23,6 +23,7 @@
 
 ;; theme
 (el-get-bundle atom-dark-theme)
+(el-get-bundle atom-one-dark-theme)
 (el-get-bundle powerline)
 
 ;; buffer

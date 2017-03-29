@@ -1,6 +1,7 @@
 ;; theme
 (add-to-list 'custom-theme-load-path
              (file-name-as-directory (concat user-emacs-directory "themes")))
+;; (load-theme 'atom-one-dark t)
 (load-theme 'atom-dark t)
 (global-hl-line-mode t)
 
