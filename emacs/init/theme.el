@@ -3,6 +3,10 @@
              (file-name-as-directory (concat user-emacs-directory "themes")))
 ;; (load-theme 'atom-one-dark t)
 (load-theme 'atom-dark t)
+(custom-theme-set-faces
+ 'atom-dark
+ '(region ((t (:background "#DA70D6"))))
+ '(fringe ((t (:foreground "red")))))
 (global-hl-line-mode t)
 
 ;; from rubikitch's post
