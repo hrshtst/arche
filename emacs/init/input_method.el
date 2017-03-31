@@ -1,5 +1,5 @@
 ;; input method
-(setq mozc-color "blue")
+(setq mozc-color "#FFA500")
 (defun mozc-change-cursor-color ()
   (if mozc-mode
       (set-buffer-local-cursor-color mozc-color)
