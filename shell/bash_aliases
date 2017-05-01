@@ -4,6 +4,7 @@ alias open="nautilus"
 alias sd="shutdown"
 alias pylab="ipython --pylab"
 alias today="date +'%Y%m%d'"
+alias pbcopy="tr -d '\n' | xsel --clipboard --input"
 
 # Some useful aliases.
 alias texclean='rm -f *.toc *.aux *.log *.cp *.fn *.tp *.vr *.pg *.ky'
