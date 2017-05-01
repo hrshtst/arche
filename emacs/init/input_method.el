@@ -20,5 +20,5 @@
   (global-set-key [?\S-\ ] 'toggle-input-method))
 
 ;; use popup style
-(require 'mozc-popup)
-(setq mozc-candidate-style 'popup)
+(when (require 'mozc-popup nil 'noerror)
+  (setq mozc-candidate-style 'popup))

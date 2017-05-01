@@ -44,11 +44,11 @@
       (goto-line (car linecol))
       (unless (= col -1)
         (move-to-column col)))))
-
-(dbus-register-signal
- :session nil "/org/gnome/evince/Window/0"
- "org.gnome.evince.Window" "SyncSource"
- 'evince-inverse-search)
+(when (not (eq window-system 'w32))
+  (dbus-register-signal
+   :session nil "/org/gnome/evince/Window/0"
+   "org.gnome.evince.Window" "SyncSource"
+   'evince-inverse-search))
 
 ;; disable some functions
 (add-hook 'yatex-mode-hook
