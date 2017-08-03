@@ -26,6 +26,9 @@
 ;; undo
 (el-get-bundle undo-tree)
 
+;; column highlight
+(el-get-bundle col-highlight)
+
 ;; buffer
 (el-get-bundle recentf-ext)
 (el-get-bundle ibukanov/pc-bufsw (pc-bufsw-default-keybindings))
