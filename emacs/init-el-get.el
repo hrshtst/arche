@@ -18,8 +18,6 @@
   (el-get-bundle mozc)
   (el-get-bundle d5884/mozc-popup
     :depends popup))
-(when (executable-find "cmigemo")
-  (el-get-bundle migemo))
 
 ;; theme
 (el-get-bundle powerline)
@@ -47,6 +45,8 @@
 (el-get-bundle jimo1001/helm-perspeen)
 
 ;; search
+(when (executable-find "cmigemo")
+  (el-get-bundle migemo))
 (el-get-bundle anzu)
 
 ;; auto-complete
