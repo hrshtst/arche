@@ -23,6 +23,9 @@
 (el-get-bundle powerline)
 (el-get-bundle cyberpunk-theme)
 
+;; undo
+(el-get-bundle undo-tree)
+
 ;; buffer
 (el-get-bundle recentf-ext)
 (el-get-bundle ibukanov/pc-bufsw (pc-bufsw-default-keybindings))

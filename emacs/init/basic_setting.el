@@ -1,5 +1,3 @@
-(require 'cl-lib)
-
 ;; encoding
 (set-language-environment 'Japanese)
 (set-default-coding-systems 'utf-8-unix)
@@ -63,6 +61,18 @@
 (require 'server)
 (unless (server-running-p)
   (server-start))
+
+;; undo setting
+(setq-default undo-no-redo t
+              undo-limit 600000
+              undo-strong-limit 900000)
+;; undo-tree
+(global-undo-tree-mode)
+(define-key undo-tree-map (kbd "C-/") 'undo-tree-undo)
+(define-key undo-tree-map (kbd "M-_") 'nil)
+
+;; set fill column
+(setq-default fill-column 68)
 
 (defvar mode-line-cleaner-alist
   '( ;; For minor-mode, first char is 'space'
