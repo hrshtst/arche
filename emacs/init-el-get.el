@@ -22,9 +22,8 @@
   (el-get-bundle migemo))
 
 ;; theme
-(el-get-bundle atom-dark-theme)
-(el-get-bundle atom-one-dark-theme)
 (el-get-bundle powerline)
+(el-get-bundle cyberpunk-theme)
 
 ;; buffer
 (el-get-bundle recentf-ext)

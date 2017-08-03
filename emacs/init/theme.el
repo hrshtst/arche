@@ -1,11 +1,9 @@
 ;; theme
 (add-to-list 'custom-theme-load-path
              (file-name-as-directory (concat user-emacs-directory "themes")))
-;; (load-theme 'atom-one-dark t)
-(load-theme 'atom-dark t)
+(load-theme 'cyberpunk t)
 (custom-theme-set-faces
- 'atom-dark
- '(region ((t (:background "#DA70D6"))))
+ 'cyberpunk
  '(fringe ((t (:foreground "red")))))
 (global-hl-line-mode t)
 
@@ -17,7 +15,7 @@
     (global-hl-line-highlight)))
 (setq global-hl-line-timer
       (run-with-idle-timer 0.1 t 'global-hl-line-timer-function))
-;; (cancel-timer global-hl-line-timer)
+(cancel-timer global-hl-line-timer)
 
 ;; make frames transparent
 (set-frame-parameter (selected-frame) 'alpha '(95 80))
