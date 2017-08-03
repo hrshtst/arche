@@ -1,6 +1,6 @@
 ;;; init.el --- Initialization file for Emacs
 ;;
-;; Copyright (c) 2016 Hiroshi Atsuta
+;; Copyright (c) 2016-2017 Hiroshi Atsuta
 ;;
 ;; Author: Hiroshi Atsuta <atsuta.hiroshi@gmail.com>
 ;; URL:
