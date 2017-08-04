@@ -1,4 +1,9 @@
 ;; global key settings
+(global-set-key (kbd "M-ESC ESC") 'read-only-mode)
+(global-set-key [delete] 'delete-char)
+(global-set-key (kbd "C-M-l") 'goto-line)
+(global-set-key (kbd "M-'") 'avy-goto-word-1)
+(global-set-key (kbd "C-x RET R") 'revert-buffer)
 
 ;; toggle fullscreen/maximized
 (global-set-key [f11] 'toggle-frame-fullscreen)
@@ -14,6 +19,18 @@
 ;; goto-line
 (global-set-key "\M-g \M-g" (lambda (x) (interactive "nLine: ") (goto-line x)))
 
+;; Ctrl-q map
+(defvar my/ctrl-q-map (make-sparse-keymap)
+  "My original keymap binded to C-q.")
+(defalias 'my/ctrl-q-prefix my/ctrl-q-map)
+(define-key global-map (kbd "C-q") 'my/ctrl-q-prefix)
+(define-key my/ctrl-q-map (kbd "C-q") 'quoted-insert)
+
+(define-key my/ctrl-q-map (kbd "C-c") 'column-highlight-mode)
+(define-key my/ctrl-q-map (kbd "C-a") 'text-scale-adjust)
+(define-key my/ctrl-q-map (kbd "C-f") 'flyspell-mode)
+(define-key my/ctrl-q-map (kbd "C-m") 'flycheck-mode)
+
 ;; control buffers
 (define-key global-map (kbd "C-q") nil)
 (smartrep-define-key
@@ -22,7 +39,13 @@
                        ("N" . 'scroll-other-window)
                        ("P" . (scroll-other-window '-))
                        ("a" . (beginning-of-buffer-other-window 0))
-                       ("e" . (end-of-buffer-other-window 0))))
+                       ("e" . (end-of-buffer-other-window 0))
+                       ("-" . 'goto-last-change)
+                       ("+" . 'goto-last-change-reverse)))
+
+(smartrep-define-key
+    undo-tree-map "C-x" '(("u" . 'undo-tree-undo)
+                          ("U" . 'undo-tree-redo)))
 
 ;; search
 (global-set-key (kbd "M-%") 'anzu-query-replace-regexp)
@@ -40,6 +63,7 @@
 (define-key global-map (kbd "C-c i")     'helm-imenu)
 (define-key global-map (kbd "C-c d")     'helm-descbinds)
 (define-key global-map (kbd "C-c s")     'helm-ag)
+(define-key global-map (kbd "C-c a")     'helm-apropos)
 (define-key global-map (kbd "C-x b")     'helm-buffers-list)
 (define-key global-map (kbd "C-x C-b")   'helm-for-files)
 (define-key global-map (kbd "C-x C-;")   'helm-for-files)
