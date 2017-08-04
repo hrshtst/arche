@@ -29,6 +29,10 @@
 ;; column highlight
 (el-get-bundle col-highlight)
 
+;; cursor jump
+(el-get-bundle goto-chg)
+(el-get-bundle abo-abo/avy)
+
 ;; buffer
 (el-get-bundle recentf-ext)
 (el-get-bundle ibukanov/pc-bufsw (pc-bufsw-default-keybindings))
