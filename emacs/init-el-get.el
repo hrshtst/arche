@@ -59,8 +59,8 @@
   (el-get-bundle migemo))
 (el-get-bundle anzu)
 
-;; auto-complete
-(el-get-bundle auto-complete)
+;; company
+(el-get-bundle company-mode/company-mode :name company-mode)
 
 ;; yasnippet
 (el-get-bundle yasnippet)
@@ -83,3 +83,6 @@
 
 ;; python
 (el-get-bundle jedi)
+
+;; cmake-mode
+(el-get-bundle cmake-mode)
