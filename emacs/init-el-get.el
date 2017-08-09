@@ -82,7 +82,9 @@
 ;; (el-get-bundle flycheck-pos-tip)
 
 ;; python
-(el-get-bundle jedi)
+(el-get-bundle syohex/emacs-company-jedi
+  :name company-jedi
+  :depends-on (jedi-core company-mode))
 
 ;; cmake-mode
 (el-get-bundle cmake-mode)
