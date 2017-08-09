@@ -81,10 +81,10 @@
 ;;--------------------------------------------------------------
 
 ;; use auto-complete and yasnippet on yatex
-(add-to-list 'ac-modes 'yatex-mode)
-(defun ac-yatex-mode-setup ()
-  (setq ac-sources (append '(ac-source-yasnippet) ac-sources)))
-(add-hook 'yatex-mode-hook 'ac-yatex-mode-setup)
+;; (add-to-list 'ac-modes 'yatex-mode)
+;; (defun ac-yatex-mode-setup ()
+;;   (setq ac-sources (append '(ac-source-yasnippet) ac-sources)))
+;; (add-hook 'yatex-mode-hook 'ac-yatex-mode-setup)
 
 ;;----------------------------------------------------------------
 
