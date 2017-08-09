@@ -9,6 +9,8 @@
   (c-toggle-auto-newline t)
   (c-toggle-hungry-state t))
 
+(add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
+
 (add-hook 'c-mode-hook 'my/c-mode-hook)
 (add-hook 'c++-mode-hook 'my/c-mode-hook)
 
