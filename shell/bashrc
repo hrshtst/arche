@@ -125,7 +125,7 @@ export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quo
 export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=$HOME/usr/lib:$LD_LIBRARY_PATH
 export PATH=$HOME/usr/bin:$PATH
-export PYTHONPATH=$HOME/usr/lib/python3.4/site-packages:$PYTHONPATH
+export PYTHONPATH=$HOME/usr/lib/python3.5/site-packages:$PYTHONPATH
 
 # for GNU global
 export GTAGSLIBPATH=$HOME/usr/src
