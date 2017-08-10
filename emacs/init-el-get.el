@@ -77,10 +77,6 @@
 ;; smartrep
 (el-get-bundle myuhe/smartrep.el)
 
-;; flycheck
-(el-get-bundle flycheck)
-;; (el-get-bundle flycheck-pos-tip)
-
 ;; C/C++
 (el-get-bundle cmake-mode)
 (el-get-bundle irony-mode)
@@ -90,4 +86,9 @@
 (el-get-bundle syohex/emacs-company-jedi
   :name company-jedi
   :depends-on (jedi-core company-mode))
+
+;; flycheck
+(el-get-bundle flycheck)
+(el-get-bundle flycheck-pos-tip)
+(el-get-bundle flycheck-irony)
 

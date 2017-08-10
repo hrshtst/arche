@@ -11,6 +11,7 @@
  '(flycheck-display-errors-delay 0.5)
  '(flycheck-idle-change-delay 1.0))
 
+(defvar flycheck-c/c++-include-path)
 (setq flycheck-c/c++-include-path
       (list "." ".." "./include" "../include" (expand-file-name "~/usr/include") "./gtest/include"))
 (defun my/set-flycheck-c/c++-include-path ()
@@ -25,5 +26,6 @@
 ;; simply highlight the whole line
 (setq flycheck-highlighting-mode 'lines)
 
-;; (with-eval-after-load 'flycheck
-;;   (flycheck-pos-tip-mode))
+(with-eval-after-load 'flycheck
+  (flycheck-pos-tip-mode)
+  (flycheck-irony-setup))
