@@ -23,8 +23,7 @@
                             (setq flycheck-clang-language-standard "c++11")
                             (setq flycheck-gcc-language-standard "c++11")))
 
-;; simply highlight the whole line
-(setq flycheck-highlighting-mode 'lines)
+(setq flycheck-highlighting-mode 'nil)
 
 (with-eval-after-load 'flycheck
   (flycheck-pos-tip-mode)
