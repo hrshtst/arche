@@ -92,3 +92,5 @@
 (el-get-bundle flycheck-pos-tip)
 (el-get-bundle flycheck-irony)
 
+;; rtags
+(el-get-bundle rtags)
