@@ -1,5 +1,5 @@
 ;; rtags
-(custom-set-variables '(rtags-use-helm t))
+(custom-set-variables '(rtags-display-result-backend 'helm))
 
 (defun buffer-local-set-key (key func)
       (interactive "KSet key on this buffer: \naCommand: ")
