@@ -1,0 +1,1 @@
+../init/cmake-ide.el
