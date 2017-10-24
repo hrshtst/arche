@@ -84,8 +84,9 @@
     (elisp-slime-nav-mode . " EN")
     (helm-gtags-mode . " HG")
     (flymake-mode . " Fm")
-    (flycheck-mode . "Fc")
+    (flycheck-mode . " Fc")
     (helm-mode . "")
+    (company-mode . " C")
     ;; Major modes
     (lisp-interaction-mode . "Li")
     (python-mode . "Py")
