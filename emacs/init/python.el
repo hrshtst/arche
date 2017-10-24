@@ -7,12 +7,15 @@
   (setq python-indent 4)
   (setq tab-width 4)
   ;; jedi
+  (setq jedi:setup-function nil)        ; Fix to load jedi:ac-setup
   (jedi:setup)
   (setq jedi:complete-on-dot t)
   (setq jedi:environment-root "env")
   (setq jedi:environment-virtualenv
         (append python-environment-virtualenv
-                '("--python" "python3"))))
+                '("--python" "python3")))
+  (setq jedi:tooltip-method nil)
+  (setq-local company-backends '(company-jedi company-dabbrev)))
 
 (eval-after-load "jedi"
   '(progn
