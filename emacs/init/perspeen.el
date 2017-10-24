@@ -6,5 +6,5 @@
 (define-key perspeen-mode-map (kbd "C-z C-l") 'helm-perspeen)
 
 (set-face-attribute 'perspeen-tab--header-line-active nil
-                    :background "#ff1493"
+                    :background "#e7c547"
                     :foreground "black")
