@@ -7,7 +7,8 @@
   (setq python-indent 4)
   (setq tab-width 4)
   ;; jedi
-  (setq jedi:setup-function nil)        ; Fix to load jedi:ac-setup
+  (setq jedi:setup-function nil)        ; Fix not to call jedi:ac-setup
+  (setq jedi:mode-function nil)         ; when calling jedi:setup
   (jedi:setup)
   (setq jedi:complete-on-dot t)
   (setq jedi:environment-root "env")
