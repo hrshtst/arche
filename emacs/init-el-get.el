@@ -21,7 +21,7 @@
 
 ;; theme
 (el-get-bundle powerline)
-(el-get-bundle cyberpunk-theme)
+(el-get-bundle color-theme-sanityinc-tomorrow)
 
 ;; undo
 (el-get-bundle undo-tree)

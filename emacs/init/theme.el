@@ -1,9 +1,11 @@
 ;; theme
 (add-to-list 'custom-theme-load-path
              (file-name-as-directory (concat user-emacs-directory "themes")))
-(load-theme 'cyberpunk t)
+
+(require 'color-theme-sanityinc-tomorrow)
+(load-theme 'sanityinc-tomorrow-bright t)
 (custom-theme-set-faces
- 'cyberpunk
+ 'sanityinc-tomorrow-bright
  '(fringe ((t (:foreground "red")))))
 (global-hl-line-mode t)
 
