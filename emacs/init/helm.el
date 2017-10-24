@@ -7,7 +7,7 @@
  '(helm-find-files-doc-header "")
  '(helm-command-prefix-key nil)
  '(helm-full-frame nil)
- '(helm-split-window-in-side-p t)
+ ;; '(helm-split-window-in-side-p t)
  '(helm-move-to-line-cycle-in-source t)
  '(helm-ff-search-library-in-sexp t)
  '(helm-ff-file-name-history-use-recentf t)
