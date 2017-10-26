@@ -7,6 +7,8 @@
 (custom-theme-set-faces
  'sanityinc-tomorrow-bright
  '(fringe ((t (:foreground "red")))))
+(set-face-attribute 'trailing-whitespace nil
+                    :background "red")
 (global-hl-line-mode t)
 
 ;; from rubikitch's post
