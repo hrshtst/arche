@@ -10,6 +10,8 @@
 (global-set-key [C-f11] 'toggle-frame-maximized)
 ;; toggle lines to be truncated
 (global-set-key (kbd "C-c t") 'toggle-truncate-lines)
+;; clean trailing whitespaces
+(global-set-key (kbd "C-c w") 'whitespace-cleanup)
 ;; backspace and help
 (keyboard-translate ?\C-h ?\C-?)              ; Backspace
 (global-set-key "\M-?" 'help-for-help)        ; Help
