@@ -95,3 +95,6 @@
 
 ;; rtags
 (el-get-bundle rtags)
+
+;; markdown
+(el-get-bundle markdown-mode)
