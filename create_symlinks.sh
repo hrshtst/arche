@@ -49,10 +49,6 @@ ln_if_target_exist ~/src/git/contrib/completion/git-completion.bash ~/.git-compl
 ln_if_target_exist ~/src/git/contrib/completion/git-prompt.sh ~/.git-prompt.sh
 ln_if_target_exist $PWD/git/gitignore ~/.gitignore
 
-# ssh
-mkdir_if_not_exist ~/.ssh
-ln_if_target_exist $PWD/ssh/config ~/.ssh/
-
 # vim
 mkdir_if_not_exist ~/.vim
 ln_if_target_exist $PWD/vim/_vimrc ~/.vim
