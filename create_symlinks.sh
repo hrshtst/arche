@@ -44,3 +44,10 @@ ln_if_target_exist ~/src/tmux/examples/bash_completion_tmux.sh ~/.bash_completio
 # git
 ln_if_target_exist $PWD/git/gitconfig ~/.gitconfig
 ln_if_target_exist ~/src/git/contrib/completion/git-completion.bash ~/.git-completion.bash
+
+# ssh
+mkdir_if_not_exist ~/.ssh
+ln_if_target_exist $PWD/ssh/config ~/.ssh/
+
+# vim
+ln_if_target_exist $PWD/vim ~/.vim
