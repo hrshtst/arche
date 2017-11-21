@@ -136,6 +136,14 @@ make_link bash_completion_make.sh .bash_completion_make.sh
 # Make symbolic links for tmux
 timid_mkdir $HOME/.tmux/plugins
 make_link tmux.conf .tmux.conf
+if [[ ! -d $HOME/.tmux/plugins/tpm ]]; then
+  echo ""
+  echo "You should run the following command to install tmux plugin manager:"
+  echo "    git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm"
+  echo "After installing it, you should type the following on tmux:"
+  echo "    <prefix> Shift+I"
+  echo ""
+fi
 
 
 # Make symbolic links for Git
