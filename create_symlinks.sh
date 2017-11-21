@@ -1,60 +1,156 @@
-#!/bin/sh
+#!/bin/bash -eu
+#
+# Create symbolic links to proper locations
 
-set -eux
+SCRIPT_DIR="$(cd "$(dirname "$0")" ; pwd -P)"
 
-mkdir_if_not_exist () {
-    local dir=$1
-    if [ ! -d $dir ]; then
-        mkdir -p $dir
-    fi
+warn() {
+  echo "warning: $@" >&2
 }
 
-ln_if_target_exist () {
-    local target=$1
-    local link=$2
-    if [ -f $target -o -d $target ]; then
-        ln -sf $target $link
-    else
-        echo "$target doesn't exist!"
-        return 1
-    fi
+error() {
+  echo "error: $@" >&2
+  exit 1
 }
 
-# emacs
-mkdir_if_not_exist ~/.emacs.d
-ln_if_target_exist $PWD/emacs/el-get-recipes ~/.emacs.d/
-ln_if_target_exist $PWD/emacs/init ~/.emacs.d/
-ln_if_target_exist $PWD/emacs/init.el ~/.emacs.d/
-ln_if_target_exist $PWD/emacs/init-el-get.el ~/.emacs.d/
-ln_if_target_exist $PWD/emacs/init-loader ~/.emacs.d/
-ln_if_target_exist $PWD/emacs/snippets ~/.emacs.d/
-ln_if_target_exist $PWD/emacs/themes ~/.emacs.d/
 
-# keyboard
-ln_if_target_exist $PWD/keyboard/Xmodmap_hhk ~/.Xmodmap
-
-# bash
-ln_if_target_exist $PWD/shell/bashrc ~/.bashrc
-ln_if_target_exist $PWD/shell/bash_aliases ~/.bash_aliases
-ln_if_target_exist $PWD/shell/bash_completion_make.sh ~/.bash_completion_make.sh
-
-# tmux
-mkdir_if_not_exist ~/.tmux/plugins
-ln_if_target_exist $PWD/shell/tmux.conf ~/.tmux.conf
-#ln_if_target_exist ~/src/tmux/examples/bash_completion_tmux.sh ~/.bash_completion_tmux.sh
-
-# git
-ln_if_target_exist $PWD/git/gitconfig ~/.gitconfig
-ln_if_target_exist ~/src/git/contrib/completion/git-completion.bash ~/.git-completion.bash
-ln_if_target_exist ~/src/git/contrib/completion/git-prompt.sh ~/.git-prompt.sh
-ln_if_target_exist $PWD/git/gitignore ~/.gitignore
-
-# vim
-mkdir_if_not_exist ~/.vim
-ln_if_target_exist $PWD/vim/_vimrc ~/.vim
-ln_if_target_exist $PWD/vim/_gvimrc ~/.vim
-ln_if_target_exist $PWD/vim/vimfiles ~/.vim
+##################################################
+# Returns 0 if specified file or directory exists.
+# Returns 1 otherwise.
+# Globals:
+#   None
+# Arguments:
+#   1: file or directory to check existence
+# Returns:
+#   0: if the argument exists as a file or a directory
+#   1: otherwise
+##################################################
+exists() {
+  local arg=$1
+  if [[ -d $arg || -f $arg ]]; then
+    return 0
+  else
+    return 1
+  fi
+}
 
 
-echo ""
-echo "Successfully executed."
+##################################################
+# Makes directories if they does not exist
+# Otherwise, it shows warning
+# Globals:
+#   None
+# Arguments:
+#   1: target directory path
+# Returns:
+#   None
+##################################################
+timid_mkdir() {
+  local dir=$1
+  if ! exists $dir; then
+    mkdir -p $dir
+  else
+    warn "'$dir' already exists (skipped making directory)"
+  fi
+}
+
+
+##################################################
+# Creates a symbolic link to a target after validating
+# if the target exists and where to create the link
+# is free
+# Globals:
+#   None
+# Arguments:
+#   1. target path
+#   2. link path
+# Returns:
+#   None
+##################################################
+safe_ln() {
+  local target=$1
+  local link=$2
+  if ! exists $target; then
+    error "'$target' doesn't exist!"
+  elif exists $link; then
+    warn "'$link' already exists (skipped creating link)"
+  else
+    ln -sf $target $link
+  fi
+}
+
+
+##################################################
+# Create symbolic link to a target with omiting
+# directories (instead specify by global variables)
+# Globals:
+#   DST_DIR: directory where link will be created
+#   SRC_DIR: directory where target exists
+# Arguments:
+#   1: target filename to create a link
+#   2: link name (optional)
+# Returns:
+#   None
+##################################################
+DST_DIR="."
+SRC_DIR="."
+make_link() {
+  local target=$1
+  local link=${2:-$target}
+  safe_ln $SRC_DIR/$target $DST_DIR/$link
+}
+
+# Check if the current directory is where this script exists
+if [[ "$PWD" != "$SCRIPT_DIR" ]]; then
+  error "please execute this script on a directory where it exists"
+fi
+
+
+# Make symbolic links for Emacs
+DST_DIR="$HOME/.emacs.d"
+SRC_DIR="$PWD/emacs"
+timid_mkdir $DST_DIR
+make_link el-get-recipes
+make_link init
+make_link init.el
+make_link init-el-get.el
+make_link init-loader
+make_link snippets
+make_link themes
+
+
+# Make symbolic links for Xmodmap
+DST_DIR="$HOME"
+SRC_DIR="$PWD/keyboard"
+make_link Xmodmap_hhk .Xmodmap
+
+
+# Make symbolic links for bash
+DST_DIR="$HOME"
+SRC_DIR="$PWD/shell"
+make_link bashrc .bashrc
+make_link bash_aliases .bash_aliases
+make_link bash_completion_make.sh .bash_completion_make.sh
+
+
+# Make symbolic links for tmux
+timid_mkdir $HOME/.tmux/plugins
+make_link tmux.conf .tmux.conf
+
+
+# Make symbolic links for Git
+DST_DIR="$HOME"
+SRC_DIR="$PWD/git"
+make_link gitconfig .gitconfig
+make_link git-completion.bash .git-completion.bash
+make_link git-prompt.sh .git-prompt.sh
+make_link gitignore .gitignore
+
+
+# Make symbolic links for Vim
+DST_DIR="$HOME/.vim"
+SRC_DIR="$PWD/vim"
+timid_mkdir $DST_DIR
+make_link _vimrc
+make_link _gvimrc
+make_link vimfiles
