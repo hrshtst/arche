@@ -36,6 +36,32 @@ exists() {
 
 
 ##################################################
+# Returns 0 if specified two files are equivalent
+# Returns 1 otherwise.
+# Globals:
+#   None
+# Arguments:
+#   1: file
+#   2: file
+# Returns:
+#   0: if the arguments are equivalent
+#   1: otherwise
+##################################################
+equivalent() {
+  # local realpath1=$(realpath $1)
+  # local realpath2=$(realpath $2)
+  local realpath1=$(readlink -f $1)
+  local realpath2=$(readlink -f $2)
+
+  if [[ $realpath1 = $realpath2 ]]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+
+##################################################
 # Makes directories if they does not exist
 # Otherwise, it shows warning
 # Globals:
@@ -72,6 +98,9 @@ safe_ln() {
   local link=$2
   if ! exists $target; then
     error "'$target' doesn't exist!"
+  elif equivalent $target $link; then
+    # $target and $link are equivalent
+    :
   elif exists $link; then
     warn "'$link' already exists (skipped creating link)"
   else
