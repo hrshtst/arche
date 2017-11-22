@@ -5,32 +5,11 @@
   (setq indent-tabs-mode nil)
   (setq indent-level 4)
   (setq python-indent 4)
-  (setq tab-width 4)
-  ;; jedi
-  (setq jedi:setup-function nil)        ; Fix not to call jedi:ac-setup
-  (setq jedi:mode-function nil)         ; when calling jedi:setup
-  (jedi:setup)
-  (setq jedi:complete-on-dot t)
-  (setq jedi:environment-root "env")
-  (setq jedi:environment-virtualenv
-        (append python-environment-virtualenv
-                '("--python" "python3")))
-  (setq jedi:tooltip-method nil)
-  (setq-local company-backends '(company-jedi company-dabbrev)))
-
-(eval-after-load "jedi"
-  '(progn
-     (setq jedi:server-command
-           (list python-python-command jedi:server-script))))
+  (setq tab-width 4))
 
 (with-eval-after-load 'python
   (add-hook 'python-mode-hook 'my/python-mode-hook)
-
   ;; binding
-  (define-key python-mode-map (kbd "C-M-i") 'company-complete)
-  (define-key python-mode-map (kbd "M-t") 'jedi:goto-definition)
-  (define-key python-mode-map (kbd "C-t") 'jedi:goto-definition-pop-marker)
-
   (smartrep-define-key
       python-mode-map "C-c" '(("h" . 'python-indent-shift-left)
                               ("l" . 'python-indent-shift-right))))
