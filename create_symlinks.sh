@@ -4,12 +4,7 @@
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" ; pwd -P)"
 
-INSTALL_TYPE=full
-check_args() {
-  if [[ $1 == simple ]]; then
-    INSTALL_TYPE=simple
-  fi
-}
+INSTALL_TYPE=${1:-full}
 
 warn() {
   echo "warning: $@" >&2
@@ -140,10 +135,6 @@ make_link() {
 if [[ "$PWD" != "$SCRIPT_DIR" ]]; then
   error "please execute this script on a directory where it exists"
 fi
-
-
-# Check arguments
-check_args "$@"
 
 
 # Make symbolic links for Emacs
