@@ -170,8 +170,17 @@ make_link bash_completion_make.sh .bash_completion_make.sh
 
 
 # Make symbolic links for tmux
+DST_DIR="$HOME"
+SRC_DIR="$PWD/shell"
 timid_mkdir $HOME/.tmux/plugins
 make_link tmux.conf .tmux.conf
+
+timid_mkdir $HOME/usr/bin
+DST_DIR="$HOME/usr/bin"
+SRC_DIR="$PWD/bin"
+make_link git-echo-branch-tmux-current-pane
+make_link git-echo-username-and-email
+
 if [[ ! -d $HOME/.tmux/plugins/tpm ]]; then
   echo ""
   echo "You should run the following command to install tmux plugin manager:"
