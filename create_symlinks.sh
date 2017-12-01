@@ -207,3 +207,9 @@ timid_mkdir $DST_DIR
 make_link _vimrc
 make_link _gvimrc
 make_link vimfiles
+
+
+# Make symbolic links for gtags
+DST_DIR="$HOME"
+SRC_DIR="$PWD/tag"
+make_link gtags.conf .globalrc
