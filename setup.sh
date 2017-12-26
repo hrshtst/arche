@@ -279,6 +279,74 @@ safe_ln() {
 
 
 ##################################################
+# Copy files after validating whether the source
+# exists and the destination is free
+# Globals:
+#   None
+# Arguments:
+#   1. source path
+#   2. destination path
+# Returns:
+#   None
+##################################################
+safe_copy() {
+  local src=$1
+  local dst=$2
+  if ! exists $src; then
+    error "'$src' doesn't exist!"
+  elif exists $dst; then
+    warn "'$dst' already exists (skipped copying file)"
+  else
+    if [[ $FLAG_DRY_RUN == FALSE ]]; then
+      cp -rf $src $dst
+    else
+      echo cp -rf $src $dst
+    fi
+  fi
+}
+
+
+##################################################
+# Replace fake symlink file with actual target file.
+# Available only on Windows.
+# Globals:
+#   None
+# Arguments:
+#   1. symlink path
+# Returns:
+#   None
+##################################################
+expand_symlink() {
+  local link=$1
+  local dst_dir="$(cd "$(dirname "$link")" ; pwd)"
+  local src="$(readlink -e "$dst_dir"/$(cat $link))"
+  if [[ $FLAG_DRY_RUN == FALSE ]]; then
+    cp $src $link
+  else
+    echo cp $src $link
+  fi
+}
+
+
+##################################################
+# Replace all the fake symlink files with actual files
+# in a directory.
+# Available only on Windows.
+# Globals:
+#   None
+# Arguments:
+#   1. directory
+# Returns:
+#   None
+##################################################
+expand_all_symlinks_in_dir() {
+  for i in $1/*; do
+    expand_symlink $i
+  done
+}
+
+
+##################################################
 # Create symbolic link to a target with omiting
 # directories (instead specify by global variables)
 # Globals:
@@ -295,7 +363,11 @@ SRC_DIR="."
 make_link() {
   local target=$1
   local link=${2:-$target}
-  safe_ln $SRC_DIR/$target $DST_DIR/$link
+  if [[ $(uname) == "Linux" ]]; then
+    safe_ln $SRC_DIR/$target $DST_DIR/$link
+  else
+    safe_copy $SRC_DIR/$target $DST_DIR/$link
+  fi
 }
 
 
