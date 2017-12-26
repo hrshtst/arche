@@ -2,10 +2,43 @@
 #
 # Create symbolic links for useful applications
 
+
 SCRIPT_DIR="$(cd "$(dirname "$0")" ; pwd -P)"
+PACKAGE_LIST="emacs emacs-simple bash tmux git vim keyboard gtags"
+GROUP_LIST="full simple windows"
+GIVEN_GROUP=
+GIVEN_PACKAGE_LIST=
 
-INSTALL_TYPE=${1:-full}
 
+##################################################
+# Returns package names that are contained in a group
+# Globals:
+#   None
+# Arguments:
+#   None
+# Returns:
+#   None
+##################################################
+group_full() {
+  echo "emacs bash tmux git vim keyboard gtags"
+}
+group_simple() {
+  echo "emacs-simple bash tmux git vim keyboard gtags"
+}
+group_windows() {
+  echo "emacs-simple bash tmux git vim keyboard gtags"
+}
+
+
+##################################################
+# Utility functions
+# Globals:
+#   None
+# Arguments:
+#   None
+# Returns:
+#   None
+##################################################
 warn() {
   echo "warning: $@" >&2
 }
@@ -13,6 +46,126 @@ warn() {
 error() {
   echo "error: $@" >&2
   exit 1
+}
+
+
+##################################################
+# Find if a string is contained in a list.
+# Globals:
+#   None
+# Arguments:
+#   1: string to find
+#   2: list of strings which are separated by space
+# Returns:
+#   0: string is found within the list
+#   1: otherwise
+##################################################
+contains() {
+  str="$1"
+  shift
+  for i in $@; do
+    if [[ $str = $i ]]; then
+      return 0
+    fi
+  done
+  return 1
+}
+
+
+##################################################
+# Show help message
+# Globals:
+#   None
+# Arguments:
+#   None
+# Returns:
+#   None
+##################################################
+usage() {
+  cat <<END;
+Usage:
+  ${0} [OPTION]... PACKAGE...
+Configure settings for specified PACKAGEs.
+
+Options:
+  -h, --help                Show this message.
+
+Available packages:
+  * emacs           full installation of settings for Emacs
+  * emacs-simple    installation of reduced settings for Emacs
+  * emacs-windows   installation of settings for Emacs on Windows
+  * bash            create symlink to .bashrc
+  * tmux            create symlink to .tmux.conf
+  * git             create symlink to .gitconfig
+  * vim             installation of settings for Vim
+  * keyboard        create symlink to .Xmodmap
+  * gtags           create symlink to .gtagsrc
+
+Available package groups:
+  * full            full installation
+  * simple          minimum installation
+  * windows         cusomized installation for Windows
+
+Examples:
+  ${0}
+  ${0} full
+      install full packages
+  ${0} simple
+      install minimum packages
+  ${0} windows
+      install packages available on Windows
+  ${0} emacs-simple bash git
+      install selected packages
+END
+}
+
+
+##################################################
+# Check arguments
+# Globals:
+#   None
+# Arguments:
+#   None
+# Returns:
+#   None
+##################################################
+check_args() {
+  while [[ $# -gt 0 ]]; do
+    case $1 in
+      -h|--help)
+        usage
+        exit 0
+        ;;
+      --)
+        shift
+        break
+        ;;
+      --*|-*)
+        echo "unrecognized option: $1" >&2
+        usage
+        exit 1
+        ;;
+      *)
+        if contains "$1" "$GROUP_LIST"; then
+          GIVEN_GROUP="$1"
+        elif contains "$1" "$PACKAGE_LIST"; then
+          GIVEN_PACKAGE_LIST="${GIVEN_PACKAGE_LIST}$1 "
+        else
+          echo "unrecognized package: $1" >&2
+          usage
+          exit 1
+        fi
+        shift
+        ;;
+    esac
+  done
+
+  if [[ -z $GIVEN_PACKAGE_LIST ]] && [[ -z $GIVEN_GROUP ]]; then
+    GIVEN_GROUP=full
+  fi
+  if [[ -n $GIVEN_GROUP ]]; then
+    GIVEN_PACKAGE_LIST=$(group_${GIVEN_GROUP})
+  fi
 }
 
 
@@ -131,85 +284,130 @@ make_link() {
   safe_ln $SRC_DIR/$target $DST_DIR/$link
 }
 
-# Check if the current directory is where this script exists
-if [[ "$PWD" != "$SCRIPT_DIR" ]]; then
-  error "please execute this script on a directory where it exists"
-fi
+
+##################################################
+# Check if the current working directory is the specified one
+# Globals:
+#   None
+# Arguments:
+#   1: directory path
+# Returns:
+#   Exit with 1 if the CWD is not the specified path.
+##################################################
+check_cwd() {
+  # Check if the current directory is where this script exists
+  if [[ "$PWD" != "$1" ]]; then
+    error "please execute this script on a directory where it exists"
+  fi
+}
 
 
-# Make symbolic links for Emacs
-DST_DIR="$HOME/.emacs.d"
-SRC_DIR="$PWD/emacs"
-timid_mkdir $DST_DIR
-make_link el-get-recipes
-make_link init
-make_link init.el
-if [[ $INSTALL_TYPE = simple ]]; then
-  make_link init-el-get-simple.el init-el-get.el
-  make_link init-loader-simple init-loader
-else
+##################################################
+# Functions to install each package
+##################################################
+install_emacs() {
+  DST_DIR="$HOME/.emacs.d"
+  SRC_DIR="$PWD/emacs"
+  timid_mkdir $DST_DIR
+  make_link el-get-recipes
+  make_link init
+  make_link init.el
   make_link init-el-get.el
   make_link init-loader
-fi
-make_link snippets
-make_link themes
+  make_link snippets
+  make_link themes
+}
+
+install_emacs-simple() {
+  DST_DIR="$HOME/.emacs.d"
+  SRC_DIR="$PWD/emacs"
+  timid_mkdir $DST_DIR
+  make_link el-get-recipes
+  make_link init
+  make_link init.el
+  make_link init-el-get-simple.el init-el-get.el
+  make_link init-loader-simple init-loader
+  make_link snippets
+  make_link themes
+}
+
+install_bash() {
+  DST_DIR="$HOME"
+  SRC_DIR="$PWD/shell"
+  make_link bashrc .bashrc
+  make_link bash_aliases .bash_aliases
+  make_link bash_completion_make.sh .bash_completion_make.sh
+}
+
+install_tmux() {
+  DST_DIR="$HOME"
+  SRC_DIR="$PWD/shell"
+  timid_mkdir $HOME/.tmux/plugins
+  make_link tmux.conf .tmux.conf
+
+  timid_mkdir $HOME/usr/bin
+  DST_DIR="$HOME/usr/bin"
+  SRC_DIR="$PWD/bin"
+  make_link git-echo-branch-tmux-current-pane
+  make_link git-echo-username-and-email
+
+  if [[ ! -d $HOME/.tmux/plugins/tpm ]]; then
+    cat <<END;
+You should run the following command to install tmux plugin manager:
+    git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+After installing it, you should type the following on tmux:
+    <prefix> Shift+I
+
+END
+  fi
+}
+
+install_git() {
+  DST_DIR="$HOME"
+  SRC_DIR="$PWD/git"
+  make_link gitconfig .gitconfig
+  make_link git-completion.bash .git-completion.bash
+  make_link git-prompt.sh .git-prompt.sh
+  make_link gitignore .gitignore
+}
+
+install_vim() {
+  DST_DIR="$HOME/.vim"
+  SRC_DIR="$PWD/vim"
+  timid_mkdir $DST_DIR
+  make_link _vimrc
+  make_link _gvimrc
+  make_link vimfiles
+}
+
+install_keyboard() {
+  DST_DIR="$HOME"
+  SRC_DIR="$PWD/keyboard"
+  make_link Xmodmap_hhk .Xmodmap
+}
+
+install_gtags() {
+  DST_DIR="$HOME"
+  SRC_DIR="$PWD/tag"
+  make_link gtags.conf .globalrc
+}
 
 
-# Make symbolic links for Xmodmap
-DST_DIR="$HOME"
-SRC_DIR="$PWD/keyboard"
-make_link Xmodmap_hhk .Xmodmap
+##################################################
+# Main functions
+# Globals:
+#   None
+# Arguments:
+#   None
+# Returns:
+#   None
+##################################################
+main() {
+  check_cwd "$SCRIPT_DIR"
+  check_args "$@"
+  for package in $GIVEN_PACKAGE_LIST; do
+    install_${package}
+  done
+}
 
-
-# Make symbolic links for bash
-DST_DIR="$HOME"
-SRC_DIR="$PWD/shell"
-make_link bashrc .bashrc
-make_link bash_aliases .bash_aliases
-make_link bash_completion_make.sh .bash_completion_make.sh
-
-
-# Make symbolic links for tmux
-DST_DIR="$HOME"
-SRC_DIR="$PWD/shell"
-timid_mkdir $HOME/.tmux/plugins
-make_link tmux.conf .tmux.conf
-
-timid_mkdir $HOME/usr/bin
-DST_DIR="$HOME/usr/bin"
-SRC_DIR="$PWD/bin"
-make_link git-echo-branch-tmux-current-pane
-make_link git-echo-username-and-email
-
-if [[ ! -d $HOME/.tmux/plugins/tpm ]]; then
-  echo ""
-  echo "You should run the following command to install tmux plugin manager:"
-  echo "    git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm"
-  echo "After installing it, you should type the following on tmux:"
-  echo "    <prefix> Shift+I"
-  echo ""
-fi
-
-
-# Make symbolic links for Git
-DST_DIR="$HOME"
-SRC_DIR="$PWD/git"
-make_link gitconfig .gitconfig
-make_link git-completion.bash .git-completion.bash
-make_link git-prompt.sh .git-prompt.sh
-make_link gitignore .gitignore
-
-
-# Make symbolic links for Vim
-DST_DIR="$HOME/.vim"
-SRC_DIR="$PWD/vim"
-timid_mkdir $DST_DIR
-make_link _vimrc
-make_link _gvimrc
-make_link vimfiles
-
-
-# Make symbolic links for gtags
-DST_DIR="$HOME"
-SRC_DIR="$PWD/tag"
-make_link gtags.conf .globalrc
+main "$@"
