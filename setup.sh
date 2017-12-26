@@ -1,6 +1,6 @@
 #!/bin/bash -eu
 #
-# Create symbolic links to proper locations
+# Create symbolic links for useful applications
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" ; pwd -P)"
 
