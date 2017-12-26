@@ -8,6 +8,7 @@ PACKAGE_LIST="emacs emacs-simple bash tmux git vim keyboard gtags"
 GROUP_LIST="full simple windows"
 GIVEN_GROUP=
 GIVEN_PACKAGE_LIST=
+FLAG_DRY_RUN=FALSE
 
 
 ##################################################
@@ -88,6 +89,7 @@ Usage:
 Configure settings for specified PACKAGEs.
 
 Options:
+      --dry-run             Do not operate on files (Default: $FLAG_DRY_RUN)
   -h, --help                Show this message.
 
 Available packages:
@@ -132,6 +134,10 @@ END
 check_args() {
   while [[ $# -gt 0 ]]; do
     case $1 in
+      --dry-run)
+        FLAG_DRY_RUN=TRUE
+        shift
+        ;;
       -h|--help)
         usage
         exit 0
@@ -229,7 +235,11 @@ equivalent() {
 timid_mkdir() {
   local dir=$1
   if ! exists $dir; then
-    mkdir -p $dir
+    if [[ $FLAG_DRY_RUN == FALSE ]]; then
+      mkdir -p $dir
+    else
+      echo mkdir -p $dir
+    fi
   else
     warn "'$dir' already exists (skipped making directory)"
   fi
@@ -259,7 +269,11 @@ safe_ln() {
   elif exists $link; then
     warn "'$link' already exists (skipped creating link)"
   else
-    ln -sf $target $link
+    if [[ $FLAG_DRY_RUN == FALSE ]]; then
+      ln -sf $target $link
+    else
+      echo ln -sf $target $link
+    fi
   fi
 }
 
