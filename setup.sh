@@ -9,6 +9,7 @@ GROUP_LIST="full simple windows"
 GIVEN_GROUP=
 GIVEN_PACKAGE_LIST=
 FLAG_DRY_RUN=FALSE
+FLAG_CLEAN=FALSE
 
 
 ##################################################
@@ -118,6 +119,8 @@ Examples:
       install packages available on Windows
   ${0} emacs-simple bash git
       install selected packages
+  ${0} clean
+      clean installed settings
 END
 }
 
@@ -156,6 +159,8 @@ check_args() {
           GIVEN_GROUP="$1"
         elif contains "$1" "$PACKAGE_LIST"; then
           GIVEN_PACKAGE_LIST="${GIVEN_PACKAGE_LIST}$1 "
+        elif [[ "$1" == "clean" ]]; then
+          FLAG_CLEAN=TRUE
         else
           echo "unrecognized package: $1" >&2
           usage
@@ -494,6 +499,54 @@ install_gtags() {
 
 
 ##################################################
+# Functions to install each package
+##################################################
+clean_emacs() {
+  rm -rf "$HOME/.emacs.d"
+}
+
+clean_emacs-simple() {
+  clean_emacs
+}
+
+clean_emacs-windows() {
+  clean_emacs
+}
+
+clean_bash() {
+  rm -f "$HOME/.bashrc"
+  rm -f "$HOME/.bash_aliases"
+  rm -f "$HOME/.bash_completion_make.sh"
+}
+
+clean_tmux() {
+  rm -f "$HOME/.tmux.conf"
+  rm -rf "$HOME/.tmux"
+  rm -f "$HOME/usr/bin/git-echo-branch-tmux-current-pane"
+  rm -f "$HOME/usr/bin/git-echo-username-and-email"
+}
+
+clean_git() {
+  rm -f "$HOME/.gitconfig"
+  rm -f "$HOME/.git-completion.bash"
+  rm -f "$HOME/.git-prompt.sh"
+  rm -f "$HOME/.gitignore"
+}
+
+clean_vim() {
+  rm -rf "$HOME/.vim"
+}
+
+clean_keyboard() {
+  rm -f "$HOME/.Xmodmap"
+}
+
+clean_gtags() {
+  rm -r "$HOME/.globalrc"
+}
+
+
+##################################################
 # Main functions
 # Globals:
 #   None
@@ -506,7 +559,11 @@ main() {
   check_cwd "$SCRIPT_DIR"
   check_args "$@"
   for package in $GIVEN_PACKAGE_LIST; do
-    install_${package}
+    if [[ $FLAG_CLEAN == TRUE ]]; then
+      clean_${package}
+    else
+      install_${package}
+    fi
   done
 }
 
