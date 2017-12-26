@@ -81,7 +81,6 @@
 (el-get-bundle cmake-mode)
 (el-get-bundle irony-mode)
 (el-get-bundle company-irony)
-(el-get-bundle cmake-ide)
 
 ;; python
 (el-get-bundle syohex/emacs-company-jedi
