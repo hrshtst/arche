@@ -27,7 +27,7 @@ group_simple() {
   echo "emacs-simple bash tmux git vim keyboard gtags"
 }
 group_windows() {
-  echo "emacs-simple bash tmux git vim keyboard gtags"
+  echo "emacs-windows bash tmux git vim keyboard gtags"
 }
 
 
@@ -413,6 +413,20 @@ install_emacs-simple() {
   make_link init.el
   make_link init-el-get-simple.el init-el-get.el
   make_link init-loader-simple init-loader
+  make_link snippets
+  make_link themes
+}
+
+install_emacs-windows() {
+  DST_DIR="$HOME/.emacs.d"
+  SRC_DIR="$PWD/emacs"
+  timid_mkdir $DST_DIR
+  make_link el-get-recipes
+  make_link init
+  make_link init.el
+  make_link init-el-get-simple.el init-el-get.el
+  make_link init-loader-simple init-loader
+  expand_all_symlinks_in_dir $DST_DIR/init-loader
   make_link snippets
   make_link themes
 }
