@@ -1,6 +1,4 @@
 ;; global key settings
-(require 'smartrep)
-
 (global-set-key (kbd "M-ESC ESC") 'read-only-mode)
 (global-set-key [delete] 'delete-char)
 (global-set-key (kbd "C-M-l") 'goto-line)
@@ -46,24 +44,3 @@
                        ("e" . (end-of-buffer-other-window 0))
                        ("-" . 'goto-last-change)
                        ("+" . 'goto-last-change-reverse)))
-
-(smartrep-define-key
-    undo-tree-map "C-x" '(("u" . 'undo-tree-undo)
-                          ("U" . 'undo-tree-redo)))
-
-;; search
-(global-set-key (kbd "M-%") 'anzu-query-replace-regexp)
-(global-set-key (kbd "ESC M-%") 'anzu-query-replace-at-cursor)
-(global-set-key (kbd "C-x %") 'anzu-replace-at-cursor-thing)
-(define-key isearch-mode-map [remap isearch-query-replace]  #'anzu-isearch-query-replace)
-(define-key isearch-mode-map [remap isearch-query-replace-regexp] #'anzu-isearch-query-replace-regexp)
-
-;; magit
-(define-key global-map (kbd "C-x g") 'magit-status)
-
-;; flycheck
-(define-key global-map (kbd "M-l") 'my/flycheck-list-errors)
-(smartrep-define-key
-    global-map "M-g" '(("M-n" . 'flycheck-next-error)
-                       ("M-p" . 'flycheck-previous-error)))
-

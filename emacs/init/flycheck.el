@@ -28,3 +28,10 @@
 (with-eval-after-load 'flycheck
   (flycheck-pos-tip-mode)
   (flycheck-irony-setup))
+
+;; keybinding
+(define-key global-map (kbd "M-l") 'my/flycheck-list-errors)
+(smartrep-define-key
+    global-map "M-g" '(("M-n" . 'flycheck-next-error)
+                       ("M-p" . 'flycheck-previous-error)))
+

@@ -119,6 +119,9 @@
 ;; delete selection mode
 (delete-selection-mode 1)
 
+;; smartrep
+(require 'smartrep)
+
 ;; remove text properties when yanking
 (setq-default yank-excluded-properties t)
 
