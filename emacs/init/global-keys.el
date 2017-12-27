@@ -1,4 +1,6 @@
 ;; global key settings
+(require 'smartrep)
+
 (global-set-key (kbd "M-ESC ESC") 'read-only-mode)
 (global-set-key [delete] 'delete-char)
 (global-set-key (kbd "C-M-l") 'goto-line)
@@ -19,7 +21,7 @@
 (global-set-key [C-return] 'rectangle-mark-mode)
 
 ;; goto-line
-(global-set-key "\M-g \M-g" (lambda (x) (interactive "nLine: ") (goto-line x)))
+(global-set-key "\M-g \M-g" 'avy-goto-line)
 
 ;; Ctrl-q map
 (defvar my/ctrl-q-map (make-sparse-keymap)
@@ -35,19 +37,19 @@
 
 ;; control buffers
 (define-key global-map (kbd "C-q") nil)
-;; (smartrep-define-key
-;;     global-map "C-q" '(("n" . (scroll-other-window 1))
-;;                        ("p" . (scroll-other-window -1))
-;;                        ("N" . 'scroll-other-window)
-;;                        ("P" . (scroll-other-window '-))
-;;                        ("a" . (beginning-of-buffer-other-window 0))
-;;                        ("e" . (end-of-buffer-other-window 0))
-;;                        ("-" . 'goto-last-change)
-;;                        ("+" . 'goto-last-change-reverse)))
+(smartrep-define-key
+    global-map "C-q" '(("n" . (scroll-other-window 1))
+                       ("p" . (scroll-other-window -1))
+                       ("N" . 'scroll-other-window)
+                       ("P" . (scroll-other-window '-))
+                       ("a" . (beginning-of-buffer-other-window 0))
+                       ("e" . (end-of-buffer-other-window 0))
+                       ("-" . 'goto-last-change)
+                       ("+" . 'goto-last-change-reverse)))
 
-;; (smartrep-define-key
-;;     undo-tree-map "C-x" '(("u" . 'undo-tree-undo)
-;;                           ("U" . 'undo-tree-redo)))
+(smartrep-define-key
+    undo-tree-map "C-x" '(("u" . 'undo-tree-undo)
+                          ("U" . 'undo-tree-redo)))
 
 ;; search
 (global-set-key (kbd "M-%") 'anzu-query-replace-regexp)
@@ -61,7 +63,7 @@
 
 ;; flycheck
 (define-key global-map (kbd "M-l") 'my/flycheck-list-errors)
-;; (smartrep-define-key
-;;     global-map "M-g" '(("M-n" . 'flycheck-next-error)
-;;                        ("M-p" . 'flycheck-previous-error)))
+(smartrep-define-key
+    global-map "M-g" '(("M-n" . 'flycheck-next-error)
+                       ("M-p" . 'flycheck-previous-error)))
 
