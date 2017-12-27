@@ -15,3 +15,6 @@
     (other-window 1)
     (set-window-buffer thiswin (window-buffer))
     (set-window-buffer (selected-window) thisbuf)))
+
+(global-set-key [f2] 'swap-screen)
+(global-set-key [S-f2] 'swap-screen-with-cursor)

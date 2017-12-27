@@ -14,8 +14,6 @@
 (add-hook 'c-mode-hook 'my/c-mode-hook)
 (add-hook 'c++-mode-hook 'my/c-mode-hook)
 
-;;
 ;; gdb
-;;
 (setq gdb-many-windows t)
 (add-hook 'gdb-mode-hook '(lambda () (gud-tooltip-mode t)))

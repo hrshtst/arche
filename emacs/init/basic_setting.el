@@ -62,18 +62,20 @@
 (unless (server-running-p)
   (server-start))
 
-;; undo setting
-(setq-default undo-no-redo t
-              undo-limit 600000
-              undo-strong-limit 900000)
-;; undo-tree
-(global-undo-tree-mode)
-(define-key undo-tree-map (kbd "C-/") 'undo-tree-undo)
-(define-key undo-tree-map (kbd "M-_") 'nil)
+;; save mini-buffer history
+(savehist-mode 1)
+
+;; save cursor place of visited file
+(save-place-mode +1)
+
+;; show current function in mini-buffer
+(which-function-mode +1)
+(setq-default which-func-unknown "")
 
 ;; set fill column
 (setq-default fill-column 68)
 
+;; clean display of mode line
 (defvar mode-line-cleaner-alist
   '( ;; For minor-mode, first char is 'space'
     (yas-minor-mode . " Ys")
@@ -114,11 +116,11 @@
  '(show-paren-delay 0) ; default: 0.15
 )
 
-;; delete section mode
+;; delete selection mode
 (delete-selection-mode 1)
 
 ;; remove text properties when yanking
-(setq yank-excluded-properties t)
+(setq-default yank-excluded-properties t)
 
 ;; show buffer or file name on title bar
 (setq frame-title-format
@@ -128,9 +130,6 @@
         (:eval (if (buffer-modified-p)
                    " •"))
         " - Emacs@" system-name))
-
-;; smart repetition
-(require 'smartrep)
 
 ;; for debug
 ;; (setq debug-on-error t)

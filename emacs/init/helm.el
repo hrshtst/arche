@@ -28,6 +28,22 @@
 (add-hook 'helm-minibuffer-set-up-hook
           'spacemacs//helm-hide-minibuffer-maybe)
 
+;; keybindings
+(define-key global-map (kbd "C-;")       'helm-mini)
+(define-key global-map (kbd "M-x")       'helm-M-x)
+(define-key global-map (kbd "C-x C-f")   'helm-find-files)
+(define-key global-map (kbd "C-x C-r")   'helm-recentf)
+(define-key global-map (kbd "M-y")       'helm-show-kill-ring)
+(define-key global-map (kbd "C-c i")     'helm-imenu)
+(define-key global-map (kbd "C-c d")     'helm-descbinds)
+(define-key global-map (kbd "C-c s")     'helm-ag)
+(define-key global-map (kbd "C-c a")     'helm-apropos)
+(define-key global-map (kbd "C-x b")     'helm-buffers-list)
+(define-key global-map (kbd "C-x C-b")   'helm-for-files)
+(define-key global-map (kbd "C-x C-;")   'helm-for-files)
+(define-key global-map (kbd "C-c C-SPC") 'helm-all-mark-rings)
+(define-key global-map (kbd "M-z")       'helm-resume)
+
 (with-eval-after-load 'helm
   (helm-autoresize-mode 1)
   (helm-mode 1)
@@ -47,22 +63,3 @@
   ;; Complimentation with TAB
   (define-key helm-find-files-map (kbd "TAB") 'helm-execute-persistent-action)
   (define-key helm-read-file-map (kbd "TAB") 'helm-execute-persistent-action))
-
-;; setting for helm-swoop
-(custom-set-variables
- '(helm-multi-swoop-edit-save t)
- '(helm-swoop-split-with-multiple-windows nil)
- '(helm-swoop-split-direction 'split-window-vertically)
- '(helm-swoop-speed-or-color nil)
- '(helm-swoop-move-to-line-cycle t)
- '(helm-swoop-use-line-number-face t)
- '(helm-swoop-use-fuzzy-match nil))
-
-(with-eval-after-load 'helm-swoop
-  (define-key isearch-mode-map (kbd "M-i") 'helm-swoop-from-isearch)
-  (define-key helm-swoop-map (kbd "M-i") 'helm-multi-swoop-all-from-helm-swoop)
-  (define-key helm-swoop-map (kbd "M-m") 'helm-multi-swoop-current-mode-from-helm-swoop)
-  (define-key helm-swoop-map (kbd "C-r") 'helm-previous-line)
-  (define-key helm-swoop-map (kbd "C-s") 'helm-next-line)
-  (define-key helm-multi-swoop-map (kbd "C-r") 'helm-previous-line)
-  (define-key helm-multi-swoop-map (kbd "C-s") 'helm-next-line))
