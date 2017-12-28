@@ -31,8 +31,7 @@
 (el-get-bundle abo-abo/avy)
 
 ;; undo
-;; (el-get-bundle undo-tree)
-(el-get-bundle emacsmirror/undo-tree)
+(el-get-bundle undo-tree)
 
 ;; dired+
 (el-get-bundle dired+)
