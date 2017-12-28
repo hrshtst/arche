@@ -50,6 +50,9 @@
   (setq perspeen-use-tab t)
   (perspeen-mode))
 
+;; atomic-chrome
+(el-get-bundle atomic-chrome (atomic-chrome-start-server))
+
 ;; helm
 (el-get-bundle helm)
 ;; helm plugins
