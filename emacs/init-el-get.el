@@ -79,6 +79,7 @@
 
 ;; C/C++
 (el-get-bundle cmake-mode)
+(el-get-bundle google-c-style)
 
 ;; python
 (el-get-bundle syohex/emacs-company-jedi
