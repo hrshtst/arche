@@ -77,6 +77,10 @@
 (el-get-bundle irony-mode)
 (el-get-bundle company-irony)
 
+;; projectile
+(el-get-bundle projectile)
+(el-get-bundle helm-projectile)
+
 ;; C/C++
 (el-get-bundle cmake-mode)
 (el-get-bundle google-c-style)
