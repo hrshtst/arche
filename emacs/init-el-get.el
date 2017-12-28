@@ -34,6 +34,9 @@
 ;; (el-get-bundle undo-tree)
 (el-get-bundle emacsmirror/undo-tree)
 
+;; dired+
+(el-get-bundle dired+)
+
 ;; theme
 (el-get-bundle powerline)
 (el-get-bundle color-theme-sanityinc-tomorrow)
