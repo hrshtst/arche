@@ -31,8 +31,10 @@
 (el-get-bundle abo-abo/avy)
 
 ;; undo
-;; (el-get-bundle undo-tree)
-(el-get-bundle emacsmirror/undo-tree)
+(el-get-bundle undo-tree)
+
+;; dired+
+(el-get-bundle dired+)
 
 ;; theme
 (el-get-bundle powerline)
@@ -47,6 +49,9 @@
   :features perspeen
   (setq perspeen-use-tab t)
   (perspeen-mode))
+
+;; atomic-chrome
+(el-get-bundle atomic-chrome (atomic-chrome-start-server))
 
 ;; helm
 (el-get-bundle helm)
@@ -74,6 +79,7 @@
 
 ;; C/C++
 (el-get-bundle cmake-mode)
+(el-get-bundle google-c-style)
 
 ;; markdown
 (el-get-bundle markdown-mode)
