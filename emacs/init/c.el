@@ -1,5 +1,16 @@
 ;;;; C and C++ and assembly language setting
 
+;; Refer:
+;;   - https://eklitzke.org/smarter-emacs-clang-format
+(defun clang-format-buffer-smart ()
+  "Reformat buffer if .clang-format exists in the projectile root."
+  (when (f-exists? (expand-file-name ".clang-format" (projectile-project-root)))
+    (clang-format-buffer)))
+
+(defun clang-format-buffer-smart-on-save ()
+  "Add auto-save hook for clang-format-buffer-smart."
+  (add-hook 'before-save-hook 'clang-format-buffer-smart nil t))
+
 (defun my/c-mode-hook ()
   (c-set-style "bsd")
   (setq c-basic-offset 2)
@@ -7,7 +18,8 @@
   (setq indent-tabs-mode nil)
   (setq comment-style 'indent)
   (c-toggle-auto-newline t)
-  (c-toggle-hungry-state t))
+  (c-toggle-hungry-state t)
+  (clang-format-buffer-smart-on-save))
 
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 
