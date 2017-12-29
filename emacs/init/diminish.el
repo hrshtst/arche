@@ -24,6 +24,7 @@
 (rename-minor-mode "flyspell" flyspell-mode "Fs")
 (rename-minor-mode "helm" helm-mode nil)
 (rename-minor-mode "helm-gtags" helm-gtags-mode nil)
+(rename-minor-mode "irony" irony-mode nil)
 (rename-minor-mode "paredit" paredit-mode "()")
 (rename-minor-mode "smartparens" smartparens-mode nil)
 (rename-minor-mode "smooth-scroll" smooth-scroll-mode nil)
