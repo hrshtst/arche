@@ -39,6 +39,9 @@
 ;; expand-region
 (el-get-bundle expand-region)
 
+;; diminish
+(el-get-bundle diminish)
+
 ;; theme
 (el-get-bundle powerline)
 (el-get-bundle color-theme-sanityinc-tomorrow)
