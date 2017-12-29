@@ -42,6 +42,9 @@
 ;; diminish
 (el-get-bundle diminish)
 
+;; smartparens
+(el-get-bundle smartparens)
+
 ;; theme
 (el-get-bundle powerline)
 (el-get-bundle color-theme-sanityinc-tomorrow)

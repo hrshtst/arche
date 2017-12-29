@@ -75,13 +75,6 @@
 ;; set fill column
 (setq-default fill-column 68)
 
-;; show paren mode
-(show-paren-mode t)
-(custom-set-variables
- '(show-paren-style 'mixed)
- '(show-paren-delay 0) ; default: 0.15
-)
-
 ;; delete selection mode
 (delete-selection-mode 1)
 
