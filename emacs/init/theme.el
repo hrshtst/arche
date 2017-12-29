@@ -9,6 +9,8 @@
  '(fringe ((t (:foreground "red")))))
 (set-face-attribute 'trailing-whitespace nil
                     :background "red")
+(set-face-attribute 'region nil
+                    :background "#b0c4de")
 (global-hl-line-mode t)
 
 ;; from rubikitch's post
