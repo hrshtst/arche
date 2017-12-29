@@ -28,6 +28,7 @@
 (rename-minor-mode "smartparens" smartparens-mode nil)
 (rename-minor-mode "smooth-scroll" smooth-scroll-mode nil)
 (rename-minor-mode "undo-tree" undo-tree-mode nil)
+(rename-minor-mode "which-key" which-key-mode nil)
 (rename-minor-mode "yasnippet" yas-minor-mode " Y")
 
 (setq-default projectile-mode-line

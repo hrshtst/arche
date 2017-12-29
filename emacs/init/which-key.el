@@ -1,0 +1,1 @@
+;; settings for which-key

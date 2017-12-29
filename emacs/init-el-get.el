@@ -45,6 +45,9 @@
 ;; smartparens
 (el-get-bundle smartparens)
 
+;; which-key
+(el-get-bundle which-key (which-key-mode))
+
 ;; theme
 (el-get-bundle powerline)
 (el-get-bundle color-theme-sanityinc-tomorrow)
