@@ -48,6 +48,9 @@
 ;; which-key
 (el-get-bundle which-key (which-key-mode))
 
+;; open-junk-file
+(el-get-bundle open-junk-file)
+
 ;; theme
 (el-get-bundle powerline)
 (el-get-bundle color-theme-sanityinc-tomorrow)
