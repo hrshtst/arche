@@ -4,7 +4,7 @@
 
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" ; pwd -P)"
-PACKAGE_LIST="emacs emacs-simple bash tmux git vim keyboard gtags"
+PACKAGE_LIST="emacs emacs-simple emacs-windows bash tmux git vim keyboard gtags"
 GROUP_LIST="full simple windows"
 GIVEN_GROUP=
 GIVEN_PACKAGE_LIST=
