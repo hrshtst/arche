@@ -19,7 +19,7 @@
 (global-set-key [C-return] 'rectangle-mark-mode)
 
 ;; goto-line
-(global-set-key "\M-g \M-g" 'avy-goto-line)
+(global-set-key (kbd "M-g M-g") 'avy-goto-line)
 
 ;; Ctrl-q map
 (defvar my/ctrl-q-map (make-sparse-keymap)
