@@ -1,6 +1,4 @@
 ;; flycheck
-(add-hook 'after-init-hook #'global-flycheck-mode)
-
 (defun my/flycheck-list-errors ()
   (interactive)
   (unless (bound-and-true-p flycheck-mode)
@@ -8,6 +6,10 @@
   (call-interactively 'flycheck-list-errors))
 
 (custom-set-variables
+ '(flycheck-display-errors-function
+   (lambda (errors)
+     (let ((messages (mapcar #'flycheck-error-message errors)))
+       (popup-tip (mapconcat 'identity messages "\n")))))
  '(flycheck-display-errors-delay 0.5)
  '(flycheck-idle-change-delay 1.0))
 
@@ -23,15 +25,14 @@
                             (setq flycheck-clang-language-standard "c++11")
                             (setq flycheck-gcc-language-standard "c++11")))
 
-(setq flycheck-highlighting-mode 'nil)
-
-(with-eval-after-load 'flycheck
-  (flycheck-pos-tip-mode)
-  (flycheck-irony-setup))
-
 ;; keybinding
 (define-key global-map (kbd "M-l") 'my/flycheck-list-errors)
+(define-key flycheck-mode-map (kbd "M-n") 'flycheck-next-error)
+(define-key flycheck-mode-map (kbd "M-p") 'flycheck-previous-error)
 (smartrep-define-key
     global-map "M-g" '(("M-n" . 'flycheck-next-error)
                        ("M-p" . 'flycheck-previous-error)))
 
+(eval-after-load 'flycheck
+  '(add-hook 'flycheck-mode-hook #'flycheck-irony-setup))
+(add-hook 'after-init-hook #'global-flycheck-mode)
