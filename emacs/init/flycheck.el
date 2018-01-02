@@ -27,12 +27,12 @@
 
 ;; keybinding
 (define-key global-map (kbd "M-l") 'my/flycheck-list-errors)
-(define-key flycheck-mode-map (kbd "M-n") 'flycheck-next-error)
-(define-key flycheck-mode-map (kbd "M-p") 'flycheck-previous-error)
 (smartrep-define-key
     global-map "M-g" '(("M-n" . 'flycheck-next-error)
                        ("M-p" . 'flycheck-previous-error)))
+(with-eval-after-load 'flycheck
+  (add-hook 'flycheck-mode-hook #'flycheck-irony-setup)
+  (define-key flycheck-mode-map (kbd "M-n") 'flycheck-next-error)
+  (define-key flycheck-mode-map (kbd "M-p") 'flycheck-previous-error))
 
-(eval-after-load 'flycheck
-  '(add-hook 'flycheck-mode-hook #'flycheck-irony-setup))
 (add-hook 'after-init-hook #'global-flycheck-mode)
