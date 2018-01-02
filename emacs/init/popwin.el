@@ -15,8 +15,9 @@
 (push '(flycheck-error-list-mode :stick t) popwin:special-display-config)
 
 ;; yatex
-(require 'popwin-yatex)
-(push '("*YaTeX-typesetting*") popwin:special-display-config)
-(push '("*latex-math-preview-expression*") popwin:special-display-config)
+(when (require 'yatex nil 'noerror)
+  (require 'popwin-yatex)
+  (push '("*YaTeX-typesetting*") popwin:special-display-config)
+  (push '("*latex-math-preview-expression*") popwin:special-display-config))
 
 (setq popwin:popup-window-height 0.5)
