@@ -95,6 +95,8 @@
 ;; C/C++
 (el-get-bundle cmake-mode)
 (el-get-bundle google-c-style)
+(el-get-bundle clang-format)
+(el-get-bundle company-c-headers)
 
 ;; markdown
 (el-get-bundle markdown-mode)
