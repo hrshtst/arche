@@ -6,12 +6,11 @@
   (call-interactively 'flycheck-list-errors))
 
 (custom-set-variables
- '(flycheck-display-errors-function
-   (lambda (errors)
-     (let ((messages (mapcar #'flycheck-error-message errors)))
-       (popup-tip (mapconcat 'identity messages "\n")))))
  '(flycheck-display-errors-delay 0.5)
  '(flycheck-idle-change-delay 1.0))
+
+(eval-after-load 'flycheck
+  '(add-hook 'flycheck-mode-hook 'flycheck-popup-tip-mode))
 
 (defvar flycheck-c/c++-include-path)
 (setq flycheck-c/c++-include-path

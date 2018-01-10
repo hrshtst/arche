@@ -85,7 +85,8 @@
 
 ;; flycheck
 (el-get-bundle flycheck)
-(el-get-bundle flycheck-pos-tip)
+(el-get-bundle flycheck/flycheck-popup-tip
+  :depends popup)
 (el-get-bundle flycheck-irony)
 
 ;; irony-mode
