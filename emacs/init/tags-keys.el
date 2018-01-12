@@ -35,7 +35,6 @@
 (with-eval-after-load 'cc-mode
   (define-key c-mode-base-map (kbd "M-t") (function tags-find-symbol-at-point))
   (define-key c-mode-base-map (kbd "M-r") (function tags-find-references-at-point))
-  (define-key c-mode-base-map (kbd "M-;") (function tags-find-file))
   (define-key c-mode-base-map (kbd "M-s") (function tags-find-symbol))
   (define-key c-mode-base-map (kbd "M-R") (function tags-find-references))
   (define-key c-mode-base-map (kbd "M-.") (function rtags-find-virtuals-at-point))
