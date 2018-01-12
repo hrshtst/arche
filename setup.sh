@@ -4,7 +4,7 @@
 
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" ; pwd -P)"
-PACKAGE_LIST="emacs emacs-simple emacs-windows bash tmux git vim keyboard gtags"
+PACKAGE_LIST="emacs emacs-simple emacs-windows bash tmux git vim keyboard gtags pandoc"
 GROUP_LIST="full simple windows"
 GIVEN_GROUP=
 GIVEN_PACKAGE_LIST=
@@ -22,13 +22,13 @@ FLAG_CLEAN=FALSE
 #   None
 ##################################################
 group_full() {
-  echo "emacs bash tmux git vim keyboard gtags"
+  echo "emacs bash tmux git vim keyboard gtags pandoc"
 }
 group_simple() {
-  echo "emacs-simple bash tmux git vim keyboard gtags"
+  echo "emacs-simple bash tmux git vim keyboard gtags pandoc"
 }
 group_windows() {
-  echo "emacs-windows bash tmux git vim keyboard gtags"
+  echo "emacs-windows bash tmux git vim keyboard gtags pandoc"
 }
 
 
@@ -497,6 +497,12 @@ install_gtags() {
   make_link gtags.conf .globalrc
 }
 
+install_pandoc() {
+  DST_DIR="$HOME"
+  SRC_DIR="$PWD"
+  make_link pandoc .pandoc
+}
+
 
 ##################################################
 # Functions to install each package
@@ -542,7 +548,11 @@ clean_keyboard() {
 }
 
 clean_gtags() {
-  rm -r "$HOME/.globalrc"
+  rm -f "$HOME/.globalrc"
+}
+
+clean_pandoc() {
+  rm -rf "$HOME/.pandoc"
 }
 
 
