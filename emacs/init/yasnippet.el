@@ -15,8 +15,7 @@
 
 (custom-set-variables
  '(yas-snippet-dirs (list (concat user-emacs-directory "snippets")
-                          yas-installed-snippets-dir))
- '(yas-alias-to-yas/prefix-p nil))
+                          yas-installed-snippets-dir)))
 
 (with-eval-after-load 'yasnippet
   (define-key yas-keymap (kbd "<tab>") nil)
