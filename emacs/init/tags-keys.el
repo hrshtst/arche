@@ -1,7 +1,11 @@
 ;; keybindings for rtags and gtags
 
+(when (require 'rtags nil 'noerror)
+  (defvar rtags-is-installed t))
+
 (defun use-rtags ()
-  (and (rtags-executable-find "rc")
+  (and (boundp 'rtags-is-installed)
+       (rtags-executable-find "rc")
        (rtags-is-indexed)))
 
 (defun tags-find-symbol-at-point ()
