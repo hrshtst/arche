@@ -1,4 +1,4 @@
-#name : #ifndef XXX; #define XXX; #endif
+#name : Header guard default
 # key: once
 # --
 #ifndef ${1:__`(upcase (file-name-nondirectory (file-name-sans-extension (buffer-file-name))))`_H__}
