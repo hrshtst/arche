@@ -9,8 +9,12 @@
  '(flycheck-display-errors-delay 0.5)
  '(flycheck-idle-change-delay 1.0))
 
-(eval-after-load 'flycheck
-  '(add-hook 'flycheck-mode-hook 'flycheck-popup-tip-mode))
+(with-eval-after-load "flycheck"
+  (add-hook 'flycheck-mode-hook 'flycheck-popup-tip-mode)
+  (when (executable-find "cpplint.py")
+    (require 'flycheck-google-cpplint)
+    (flycheck-add-next-checker 'c/c++-cppcheck
+                               '(warning . c/c++-googlelint))))
 
 (defvar flycheck-c/c++-include-path)
 (setq flycheck-c/c++-include-path

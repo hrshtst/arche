@@ -86,8 +86,10 @@
 ;; flycheck
 (el-get-bundle flycheck)
 (el-get-bundle flycheck/flycheck-popup-tip
-  :depends popup)
+  :depends (flycheck popup))
 (el-get-bundle flycheck-irony)
+(el-get-bundle flycheck/flycheck-google-cpplint
+  :depends (flycheck))
 
 ;; irony-mode
 (el-get-bundle irony-mode)
