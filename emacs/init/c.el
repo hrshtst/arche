@@ -12,7 +12,6 @@
   (add-hook 'before-save-hook 'clang-format-buffer-smart nil t))
 
 (defun my/c-mode-hook ()
-  (c-set-style "bsd")
   (setq c-basic-offset 2)
   (setq c-auto-align-backslashes nil)
   (setq indent-tabs-mode nil)
@@ -24,10 +23,10 @@
 
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 
+(add-hook 'c-mode-common-hook 'google-set-c-style)
+(add-hook 'c-mode-common-hook 'google-make-newline-indent)
 (add-hook 'c-mode-hook 'my/c-mode-hook)
 (add-hook 'c++-mode-hook 'my/c-mode-hook)
-(add-hook 'c++-mode-hook 'google-set-c-style)
-(add-hook 'c++-mode-hook 'google-make-newline-indent)
 
 ;; gdb
 (setq gdb-many-windows t)
