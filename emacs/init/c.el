@@ -4,7 +4,7 @@
 ;;   - https://eklitzke.org/smarter-emacs-clang-format
 (defun clang-format-buffer-smart ()
   "Reformat buffer if .clang-format exists in the projectile root."
-  (when (f-exists? (expand-file-name ".clang-format" (projectile-project-root)))
+  (when (file-exists-p (expand-file-name ".clang-format" (projectile-project-root)))
     (clang-format-buffer)))
 
 (defun clang-format-buffer-smart-on-save ()
