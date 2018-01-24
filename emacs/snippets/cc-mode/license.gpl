@@ -1,0 +1,24 @@
+# -*- mode: snippet -*-
+# name: License GPLv3
+# key: license
+# --
+/* ${1:`(file-name-nondirectory (file-name-sans-extension (buffer-file-name)))`} - ${2:a brief description}
+ *
+ * Copyright (c) `(format-time-string "%Y")` ${3:Hiroshi Atsuta} <${4:atsuta.hiroshi@gmail.com}>
+ *
+ * This file is part of ${5:Foobar}.
+ *
+ * ${5:$(if (> (length yas-text) 0) (concat (upcase (substring yas-text 0 1)) (substring yas-text 1)) nil)} is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * ${5:$(if (> (length yas-text) 0) (concat (upcase (substring yas-text 0 1)) (substring yas-text 1)) nil)} is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with $5.  If not, see <http://www.gnu.org/licenses/>.
+ */
+$0
