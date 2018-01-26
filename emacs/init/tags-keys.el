@@ -13,7 +13,7 @@
   (call-interactively (if (use-rtags) 'rtags-find-symbol-at-point 'helm-gtags-find-tag-from-here)))
 (defun tags-find-references-at-point ()
   (interactive)
-  (callinteractively (if (use-rtags) 'rtags-find-references-at-point 'helm-gtags-find-rtag)))
+  (call-interactively (if (use-rtags) 'rtags-find-references-at-point 'helm-gtags-find-rtag)))
 (defun tags-find-symbol ()
   (interactive)
   (call-interactively (if (use-rtags) 'rtags-find-symbol 'helm-gtags-find-symbol)))
