@@ -9,6 +9,7 @@ GROUP_LIST="full simple windows"
 GIVEN_GROUP=
 GIVEN_PACKAGE_LIST=
 FLAG_DRY_RUN=FALSE
+FLAG_FORCE=FALSE
 FLAG_CLEAN=FALSE
 
 
@@ -91,6 +92,7 @@ Configure settings for specified PACKAGEs.
 
 Options:
       --dry-run             Do not operate on files (Default: $FLAG_DRY_RUN)
+  -f, --force               Remove exisiting destinations.
   -h, --help                Show this message.
 
 Available packages:
@@ -141,6 +143,10 @@ check_args() {
         FLAG_DRY_RUN=TRUE
         shift
         ;;
+      -f|--force)
+        FLAG_FORCE=TRUE
+        shift
+        ;;
       -h|--help)
         usage
         exit 0
@@ -176,6 +182,10 @@ check_args() {
   fi
   if [[ -n $GIVEN_GROUP ]]; then
     GIVEN_PACKAGE_LIST=$(group_${GIVEN_GROUP})
+    if [[ $GIVEN_GROUP == windows ]]; then
+      warn "flag '--force' was automatically set"
+      FLAG_FORCE=TRUE
+    fi
   fi
 }
 
@@ -284,6 +294,35 @@ safe_ln() {
 
 
 ##################################################
+# Creates a symbolic link to a target after validating
+# if the target exists even if the destination already
+# exists.
+# Globals:
+#   None
+# Arguments:
+#   1. target path
+#   2. link path
+# Returns:
+#   None
+##################################################
+force_ln() {
+  local target=$1
+  local link=$2
+  if ! exists $target; then
+    error "'$target' doesn't exist!"
+  else
+    if [[ $FLAG_DRY_RUN == FALSE ]]; then
+      rm -rf $link
+      ln -sf $target $link
+    else
+      echo rm -rf $link
+      echo ln -sf $target $link
+    fi
+  fi
+}
+
+
+##################################################
 # Copy files after validating whether the source
 # exists and the destination is free
 # Globals:
@@ -305,6 +344,34 @@ safe_copy() {
     if [[ $FLAG_DRY_RUN == FALSE ]]; then
       cp -rf $src $dst
     else
+      echo cp -rf $src $dst
+    fi
+  fi
+}
+
+
+##################################################
+# Copy files after validating whether the source
+# exists even if the destination already exists
+# Globals:
+#   None
+# Arguments:
+#   1. source path
+#   2. destination path
+# Returns:
+#   None
+##################################################
+force_copy() {
+  local src=$1
+  local dst=$2
+  if ! exists $src; then
+    error "'$src' doesn't exist!"
+  else
+    if [[ $FLAG_DRY_RUN == FALSE ]]; then
+      rm -rf $dst
+      cp -rf $src $dst
+    else
+      echo rm -rf $dst
       echo cp -rf $src $dst
     fi
   fi
@@ -369,9 +436,17 @@ make_link() {
   local target=$1
   local link=${2:-$target}
   if [[ $(uname) == "Linux" ]]; then
-    safe_ln $SRC_DIR/$target $DST_DIR/$link
+    if [[ $FLAG_FORCE == FALSE ]]; then
+      safe_ln $SRC_DIR/$target $DST_DIR/$link
+    else
+      force_ln $SRC_DIR/$target $DST_DIR/$link
+    fi
   else
-    safe_copy $SRC_DIR/$target $DST_DIR/$link
+    if [[ $FLAG_FORCE == FALSE ]]; then
+      safe_copy $SRC_DIR/$target $DST_DIR/$link
+    else
+      force_copy $SRC_DIR/$target $DST_DIR/$link
+    fi
   fi
 }
 
