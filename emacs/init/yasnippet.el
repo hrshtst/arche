@@ -10,7 +10,7 @@
                 sh-mode-hook
                 markdown-mode-hook
                 makefile-mode-hook
-                text-mode))
+                text-mode-hook))
   (add-hook hook 'yas-minor-mode))
 
 (custom-set-variables

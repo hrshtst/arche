@@ -93,6 +93,9 @@
                    " •"))
         " - Emacs@" system-name))
 
+;; follow compilation buffer
+(setq compilation-scroll-output t)
+
 ;; for debug
 ;; (setq debug-on-error t)
 (add-to-list 'minor-mode-alist '(debug-on-error " (^^)"))

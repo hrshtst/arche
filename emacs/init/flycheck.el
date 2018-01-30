@@ -13,7 +13,7 @@
   (add-hook 'flycheck-mode-hook 'flycheck-popup-tip-mode)
   (when (executable-find "cpplint.py")
     (require 'flycheck-google-cpplint)
-    (flycheck-add-next-checker 'c/c++-cppcheck
+    (flycheck-add-next-checker 'irony
                                '(warning . c/c++-googlelint))))
 
 (defvar flycheck-c/c++-include-path)
