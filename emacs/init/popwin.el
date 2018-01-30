@@ -15,7 +15,7 @@
 (push '(flycheck-error-list-mode :stick t) popwin:special-display-config)
 
 ;; undo-tree
-(push '(" *undo-tree*" :width 0.3 :position right) popwin:special-display-config)
+(push '(" *undo-tree*" :stick t :width 0.3 :position right) popwin:special-display-config)
 
 ;; yatex
 (when (require 'yatex nil 'noerror)
