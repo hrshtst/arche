@@ -9,13 +9,6 @@
  '(flycheck-display-errors-delay 0.5)
  '(flycheck-idle-change-delay 1.0))
 
-(with-eval-after-load "flycheck"
-  (add-hook 'flycheck-mode-hook 'flycheck-popup-tip-mode)
-  (when (executable-find "cpplint.py")
-    (require 'flycheck-google-cpplint)
-    (flycheck-add-next-checker 'irony
-                               '(warning . c/c++-googlelint))))
-
 (defvar flycheck-c/c++-include-path)
 (setq flycheck-c/c++-include-path
       (list "." ".." "./include" "../include" (expand-file-name "~/usr/include") "./gtest/include"))
@@ -28,6 +21,13 @@
                             (setq flycheck-clang-language-standard "c++11")
                             (setq flycheck-gcc-language-standard "c++11")))
 
+(defun my/set-flycheck-irony-next-checker ()
+  (when (and (flycheck-may-use-checker 'irony)
+	     (executable-find "cpplint.py"))
+    (require 'flycheck-google-cpplint)
+    (flycheck-add-next-checker 'irony
+                               '(warning . c/c++-googlelint))))
+
 ;; keybinding
 (define-key global-map (kbd "M-l") 'my/flycheck-list-errors)
 (smartrep-define-key
@@ -35,6 +35,8 @@
                        ("M-p" . 'flycheck-previous-error)))
 (with-eval-after-load 'flycheck
   (add-hook 'flycheck-mode-hook #'flycheck-irony-setup)
+  (add-hook 'flycheck-mode-hook #'flycheck-popup-tip-mode)
+  (add-hook 'flycheck-mode-hook #'my/set-flycheck-irony-next-checker)
   (define-key flycheck-mode-map (kbd "M-n") 'flycheck-next-error)
   (define-key flycheck-mode-map (kbd "M-p") 'flycheck-previous-error))
 
