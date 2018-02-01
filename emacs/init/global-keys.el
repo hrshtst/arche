@@ -39,7 +39,6 @@
 (define-key my/ctrl-q-map (kbd "SPC") 'popwin:select-popup-window)
 
 ;; control buffers
-(define-key global-map (kbd "C-q") nil)
 (smartrep-define-key
     global-map "C-q" '(("n" . (scroll-other-window 1))
                        ("p" . (scroll-other-window -1))
