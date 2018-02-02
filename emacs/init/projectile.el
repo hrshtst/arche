@@ -33,3 +33,7 @@
 
 (projectile-global-mode)
 (helm-projectile-on)
+
+;; keybindings
+(global-set-key [f5] 'projectile-compile-project)
+(global-set-key [f6] 'projectile-test-project)
