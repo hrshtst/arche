@@ -33,10 +33,10 @@
 (define-key my/ctrl-q-map (kbd "C-f") 'flyspell-mode)
 (define-key my/ctrl-q-map (kbd "C-m") 'flycheck-mode)
 ;; popwin
-(define-key my/ctrl-q-map (kbd "l")   'popwin:popup-last-buffer)
+(define-key my/ctrl-q-map (kbd "SPC") 'popwin:popup-last-buffer)
 (define-key my/ctrl-q-map (kbd "s")   'popwin:stick-popup-window)
 (define-key my/ctrl-q-map (kbd "f")   'popwin:find-file)
-(define-key my/ctrl-q-map (kbd "SPC") 'popwin:select-popup-window)
+(define-key my/ctrl-q-map (kbd "q")   'popwin:select-popup-window)
 
 ;; control buffers
 (smartrep-define-key
