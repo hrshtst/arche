@@ -18,7 +18,7 @@
   (setq comment-style 'indent)
   (c-toggle-auto-newline t)
   (c-toggle-hungry-state t)
-  (setq-local company-backends '((company-c-headers company-irony company-yasnippet company-dabbrev)))
+  (setq-local company-backends '((company-c-headers company-irony company-yasnippet)))
   (clang-format-buffer-smart-on-save))
 
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
