@@ -27,6 +27,7 @@
 (add-hook 'c-mode-common-hook 'google-make-newline-indent)
 (add-hook 'c-mode-hook 'my/c-mode-hook)
 (add-hook 'c++-mode-hook 'my/c-mode-hook)
+(add-hook 'c++-mode-hook #'modern-c++-font-lock-mode)
 
 ;; gdb
 (setq gdb-many-windows t)

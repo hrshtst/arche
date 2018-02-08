@@ -104,6 +104,7 @@
 (el-get-bundle google-c-style)
 (el-get-bundle clang-format)
 (el-get-bundle company-c-headers)
+(el-get-bundle ludwigpacifici/modern-cpp-font-lock)
 
 ;; markdown
 (el-get-bundle markdown-mode)
