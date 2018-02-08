@@ -4,7 +4,7 @@
 
 ;; basic
 (push '("*Help*" :stick t :noselect t) popwin:special-display-config)
-(push '(compilation-mode :noselect t) popwin:special-display-config)
+(push '(compilation-mode) popwin:special-display-config)
 
 ;; python
 (push '("*Python*"   :stick t) popwin:special-display-config)
