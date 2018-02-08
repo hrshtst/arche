@@ -3,6 +3,7 @@
 (global-set-key [delete] 'delete-char)
 (global-set-key (kbd "C-M-l") 'goto-line)
 (global-set-key (kbd "M-'") 'avy-goto-word-1)
+(global-set-key (kbd "C-'") 'avy-goto-char-timer)
 (global-set-key (kbd "C-x RET R") 'revert-buffer)
 
 ;; toggle fullscreen/maximized
