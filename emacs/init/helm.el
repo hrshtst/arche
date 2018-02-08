@@ -11,9 +11,11 @@
  '(helm-move-to-line-cycle-in-source t)
  '(helm-ff-search-library-in-sexp t)
  '(helm-ff-file-name-history-use-recentf t)
+ '(helm-ff-skip-boring-files t)
  '(helm-echo-input-in-header-line t)
  '(helm-autoresize-max-height 0)
- '(helm-autoresize-min-height 20))
+ '(helm-autoresize-min-height 20)
+ '(helm-boring-buffer-regexp-list '("\\` " "\\`\\*helm" "\\`\\*Echo Area" "\\`\\*Minibuf" "\\*tramp" "\\*epc" "\\*magit")))
 
 (defun spacemacs//helm-hide-minibuffer-maybe ()
   "Hide minibuffer in Helm session if we use the header line as input field."
