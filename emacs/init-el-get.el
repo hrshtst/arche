@@ -35,6 +35,7 @@
 
 ;; dired+
 (el-get-bundle dired+)
+(el-get-bundle purcell/diredfl)
 
 ;; expand-region
 (el-get-bundle expand-region)

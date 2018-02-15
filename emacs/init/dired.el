@@ -1,4 +1,4 @@
-;;;; dired
+;; dired
 (with-eval-after-load 'dired
   ;; Not create new buffer, if you chenge directory in dired
   (put 'dired-find-alternate-file 'disabled nil)
@@ -22,3 +22,5 @@
   '(dired-flagged ((t (:background "red" :foreground "#eee" :underline t :weight bold))))
   '(dired-marked ((t (:underline t :weight bold))))
 )
+
+(diredfl-global-mode)
