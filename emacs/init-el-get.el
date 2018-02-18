@@ -100,6 +100,9 @@
 (el-get-bundle projectile)
 (el-get-bundle helm-projectile)
 
+;; doxymacs
+(el-get-bundle doxymacs)
+
 ;; C/C++
 (el-get-bundle cmake-mode)
 (el-get-bundle google-c-style)
