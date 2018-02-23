@@ -1,17 +1,18 @@
 [user]
         name = Hiroshi Atsuta
         email = atsuta.hiroshi@gmail.com
-[core]
-        editor = vim
-        pager = lv -c
-        excludesfile = ~/.gitignore
-[color]
-        ui = auto
+
 [alias]
+        # short aliases
         co = checkout
         cm = commit
         st = status
         br = branch
+        df = diff
+        lg = log -p
+        rso = remote show origin
+        me = config user.name
+
         unstage = reset -q HEAD --
         discard = checkout --
         nevermind = !git reset --hard HEAD && git clean -d -f
@@ -44,3 +45,21 @@
         mergetrail = log --ancestry-path --merges
         unmerged = diff --name-only --diff-filter=U
         tree = log --graph --date=short --pretty='format:%C(yellow)%h%Creset %s %Cgreen(%an)%Creset %Cred%d%Creset'
+
+[color]
+        ui = auto
+
+[core]
+        autocrlf = input
+        ignorecase = false
+        whitespace = cr-at-eol
+        editor = vim
+        pager = less -x4
+        fscache = true
+        excludesfile = ~/.gitignore
+
+[push]
+        default = upstream
+
+[help]
+        autocorrect = 1
