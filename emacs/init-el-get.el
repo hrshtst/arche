@@ -83,6 +83,7 @@
 
 ;; yasnippet
 (el-get-bundle yasnippet)
+(el-get-bundle yasnippet-snippets)
 
 ;; flycheck
 (el-get-bundle flycheck)
