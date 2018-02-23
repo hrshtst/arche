@@ -130,6 +130,14 @@ export PYTHONPATH=$HOME/usr/lib/python3.5/site-packages:$PYTHONPATH
 # for GNU global
 export GTAGSLIBPATH=$HOME/usr/src
 
+# for pipsi
+export PATH=$HOME/.local/bin:$PATH
+if [[ $(hostname) == rmc-lx* ]]; then
+   export PIPSI_HOME=/home_local/atsu_hi/pipsi
+   # for pipenv
+   export WORKON_HOME=/home_local/atsu_hi/virtualenvs
+fi
+
 # git-completion & git-prompt
 if [ -f ~/.git-completion.bash -a -f ~/.git-prompt.sh ]; then
     if [[ $EUID -ne 0 ]]; then
