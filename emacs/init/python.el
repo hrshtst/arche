@@ -7,8 +7,9 @@
   (setq python-indent 4)
   (setq tab-width 4))
 
+(add-hook 'python-mode-hook 'my/python-mode-hook)
+
 (with-eval-after-load 'python
-  (add-hook 'python-mode-hook 'my/python-mode-hook)
   ;; binding
   (smartrep-define-key
       python-mode-map "C-c" '(("h" . 'python-indent-shift-left)
