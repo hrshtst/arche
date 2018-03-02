@@ -1,0 +1,55 @@
+#!/bin/bash -e
+
+if [[ -z $1 ]]; then
+  echo "usage:"
+  echo "  catch-select-test <test executable file>"
+  exit 1
+fi
+
+test_exe=$1
+TRUE=0
+FALSE=1
+
+is_executable () {
+  if [[ -d $1 ]]; then
+    return $FALSE
+  else
+    if [[ -f $1 && -x $1 ]]; then
+      return $TRUE
+    else
+      return $FALSE
+    fi
+  fi
+}
+
+list_tests () {
+  local candidates
+  candidates=$($test_exe --list-tests)
+  candidates=$(echo "$candidates" | sed -e '/\[.\+\]/d')
+  candidates=$(echo "$candidates" | sed -e '/All available test cases:/d')
+  candidates=$(echo "$candidates" | sed -e '/[0-9]\+ test cases/d')
+  candidates=$(echo "$candidates" | sed -e 's/^[[:space:]]*//g')
+  echo "$candidates"
+}
+
+select_test () {
+  local selected
+  selected=$(list_tests | peco --prompt "TEST CASE>" --select-1)
+  # escape ','
+  selected=$(echo "$selected" | sed -e 's/,/\\,/g')
+  echo $selected
+}
+
+select_and_execute_test () {
+  local test
+  test="$(select_test)"
+  if [[ -n $test ]]; then
+    $test_exe "$test"
+  fi
+}
+
+if ! is_executable $test_exe; then
+  echo "$test_exe is not an executable file"
+  exit 1
+fi
+select_and_execute_test
