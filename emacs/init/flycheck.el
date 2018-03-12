@@ -21,6 +21,10 @@
                             (setq flycheck-clang-language-standard "c++11")
                             (setq flycheck-gcc-language-standard "c++11")))
 
+(custom-set-variables
+ ;; '(flycheck-googlelint-filter "-whitespace,+whitespace/braces")
+ '(flycheck-googlelint-filter "-readability/check"))
+
 (defun my/set-flycheck-irony-next-checker ()
   (when (and (flycheck-may-use-checker 'irony)
 	     (executable-find "cpplint.py"))
