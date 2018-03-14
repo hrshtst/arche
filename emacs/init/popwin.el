@@ -17,6 +17,9 @@
 ;; undo-tree
 (push '(" *undo-tree*" :stick t :width 0.3 :position right) popwin:special-display-config)
 
+;; dired
+(push '(dired-mode :noselect t :position top) popwin:special-display-config)
+
 ;; yatex
 (when (require 'yatex nil 'noerror)
   (require 'popwin-yatex)

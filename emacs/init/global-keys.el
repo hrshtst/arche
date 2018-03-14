@@ -38,6 +38,7 @@
 (define-key my/ctrl-q-map (kbd "s")   'popwin:stick-popup-window)
 (define-key my/ctrl-q-map (kbd "f")   'popwin:find-file)
 (define-key my/ctrl-q-map (kbd "q")   'popwin:select-popup-window)
+(define-key my/ctrl-q-map (kbd "d")   'dired-jump-other-window)
 
 ;; control buffers
 (smartrep-define-key
