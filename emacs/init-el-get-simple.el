@@ -111,6 +111,9 @@
 ;; markdown
 (el-get-bundle markdown-mode)
 
+;; fish script
+(el-get-bundle emacs-fish)
+
 ;; magit
 (el-get-bundle magit)
 
