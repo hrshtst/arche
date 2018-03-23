@@ -63,3 +63,7 @@
 
 [help]
         autocorrect = 1
+
+[ghq]
+        root = ~/.ghq
+        root = ~/.go/src
