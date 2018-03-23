@@ -89,6 +89,18 @@
 ;;----------------------------------------------------------------
 
 ;; replace zenkaku characters
+;; (defun replace-dot-comma ()
+;;   (let ((curpos (point)))
+;;     (goto-char (point-min))
+;;     (while (search-forward "。" nil t) (replace-match "．"))
+;;     (goto-char (point-min))
+;;     (while (search-forward "、" nil t) (replace-match "，"))
+;;     (goto-char curpos)))
+
+;; (add-hook 'yatex-mode-hook
+;;           '(lambda ()
+;;              (add-hook 'before-save-hook 'replace-dot-comma nil 'make-it-local)))
+
 (defun replace-zenkaku-yatex ()
   (if (string= mode-name "やてふ")
       (replace-zenkaku)))
