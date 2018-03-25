@@ -4,7 +4,7 @@
 
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" ; pwd -P)"
-PACKAGE_LIST="emacs emacs-simple emacs-windows bash tmux git vim keyboard gtags pandoc"
+PACKAGE_LIST="emacs emacs-simple emacs-windows bash tmux git vim keyboard gtags pandoc fish"
 GROUP_LIST="full simple windows"
 GIVEN_GROUP=
 GIVEN_PACKAGE_LIST=
@@ -23,13 +23,13 @@ FLAG_CLEAN=FALSE
 #   None
 ##################################################
 group_full() {
-  echo "emacs bash tmux git vim keyboard gtags pandoc"
+  echo "emacs bash tmux git vim keyboard gtags pandoc fish"
 }
 group_simple() {
-  echo "emacs-simple bash tmux git vim keyboard gtags pandoc"
+  echo "emacs-simple bash tmux git vim keyboard gtags pandoc fish"
 }
 group_windows() {
-  echo "emacs-windows bash tmux git vim keyboard gtags pandoc"
+  echo "emacs-windows bash tmux git vim keyboard gtags pandoc fish"
 }
 
 
@@ -105,6 +105,7 @@ Available packages:
   * vim             installation of settings for Vim
   * keyboard        create symlink to .Xmodmap
   * gtags           create symlink to .gtagsrc
+  * fish            create symlink to .config/fish/...
 
 Available package groups:
   * full            full installation
@@ -578,6 +579,19 @@ install_pandoc() {
   make_link pandoc .pandoc
 }
 
+install_fish() {
+  DST_DIR="$HOME/.config/fish"
+  SRC_DIR="$PWD/fish"
+  timid_mkdir $DST_DIR/functions
+  make_link aliases.fish
+  make_link config.fish
+  make_link env.fish
+  make_link fishfile
+  make_link functions/abspath.fish
+  make_link functions/load-script.fish
+  make_link functions/md.fish
+}
+
 
 ##################################################
 # Functions to install each package
@@ -628,6 +642,16 @@ clean_gtags() {
 
 clean_pandoc() {
   rm -rf "$HOME/.pandoc"
+}
+
+clean_fish() {
+  rm -f "$HOME/.config/fish/aliases.fish"
+  rm -f "$HOME/.config/fish/config.fish"
+  rm -f "$HOME/.config/fish/env.fish"
+  rm -f "$HOME/.config/fish/fishfile"
+  rm -f "$HOME/.config/fish/functions/abspath.fish"
+  rm -f "$HOME/.config/fish/functions/load-script.fish"
+  rm -f "$HOME/.config/fish/functions/md.fish"
 }
 
 
