@@ -590,6 +590,8 @@ install_fish() {
   make_link functions/abspath.fish
   make_link functions/load-script.fish
   make_link functions/md.fish
+  make_link functions/append-to-path.fish
+  make_link functions/prepend-to-path.fish
 }
 
 
