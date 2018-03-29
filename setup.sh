@@ -587,11 +587,9 @@ install_fish() {
   make_link config.fish
   make_link env.fish
   make_link fishfile
-  make_link functions/abspath.fish
-  make_link functions/load-script.fish
-  make_link functions/md.fish
-  make_link functions/append-to-path.fish
-  make_link functions/prepend-to-path.fish
+  for i in $SRC_DIR/functions/*.fish; do
+    make_link functions/$(basename $i)
+  done
 }
 
 
