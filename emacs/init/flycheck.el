@@ -23,7 +23,7 @@
 
 (custom-set-variables
  ;; '(flycheck-googlelint-filter "-whitespace,+whitespace/braces")
- '(flycheck-googlelint-filter "-readability/check"))
+ '(flycheck-googlelint-filter "-readability/check,-legal/copyright"))
 
 (defun my/set-flycheck-irony-next-checker ()
   (when (and (flycheck-may-use-checker 'irony)
