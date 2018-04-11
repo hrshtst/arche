@@ -9,7 +9,11 @@ function catch_select_test_case
     set -l catch_test $argv[1]
     set -l peco_flags --prompt "TEST CASE>" --select-1
     eval $catch_test --list-test-names-only | peco $peco_flags | read testcase
-    set testcase (echo "$testcase" | sed -e 's/,/\\\,/g')
+    set testcase (echo "$testcase" | sed -e 's/,/\\\,/g')              # , -> \,
+    set testcase (echo "$testcase" | sed -e 's/*/\\\\\\\\\\\*/g')      # * -> \\\*
+    set testcase (echo "$testcase" | sed -e 's/\\\/\\\\\\\\\\\\\\\/g') # \ -> \\\\
+    set testcase (echo "$testcase" | sed -e 's/\[/\\\[/g')             # [ -> \[
+    set testcase (echo "$testcase" | sed -e 's/\"/\\\"/g')             # " -> \"
 
     if [ $testcase ]
         commandline "$catch_test \"$testcase\""
