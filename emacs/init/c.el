@@ -21,8 +21,6 @@
   (setq-local company-backends '((company-c-headers company-irony company-yasnippet)))
   (clang-format-buffer-smart-on-save))
 
-(add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
-
 (add-hook 'c-mode-common-hook 'google-set-c-style)
 (add-hook 'c-mode-common-hook 'google-make-newline-indent)
 (add-hook 'c-mode-hook 'my/c-mode-hook)
