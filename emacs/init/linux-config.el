@@ -1,5 +1,5 @@
 ;; font
-(let ((size (if (>= (x-display-pixel-width) 3000) 18 13.5)))
+(let ((size (if (>= (x-display-pixel-width) 3000) 16 13.5)))
   (condition-case err
       (let ((myfont (format "Ricty Discord-%d" size)))
         (set-frame-font myfont)
