@@ -35,5 +35,6 @@
 (helm-projectile-on)
 
 ;; keybindings
+(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 (global-set-key [f5] 'projectile-compile-project)
 (global-set-key [f6] 'projectile-test-project)
