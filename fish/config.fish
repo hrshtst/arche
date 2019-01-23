@@ -15,10 +15,10 @@ set -g theme_nerd_fonts yes
 set -g theme_newline_cursor yes
 
 # install fisherman
-if not test -f ~/.config/fish/functions/fisher.fish
-  echo "Installing fisherman for the first time"
-  curl -sLo ~/.config/fish/functions/fisher.fish --create-dirs git.io/fisher
-  fisher
+if not functions -q fisher
+    set -q XDG_CONFIG_HOME; or set XDG_CONFIG_HOME ~/.config
+    curl https://git.io/fisher --create-dirs -sLo $XDG_CONFIG_HOME/fish/functions/fisher.fish
+    fish -c fisher
 end
 
 # http://news.ycombinator.com/item?id=4492682
