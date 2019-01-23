@@ -57,7 +57,6 @@
 (el-get-bundle color-theme-sanityinc-tomorrow)
 
 ;; buffer
-(el-get-bundle ibukanov/pc-bufsw (pc-bufsw-default-keybindings))
 (el-get-bundle popwin)
 
 ;; perspeen (multi workspaces)
@@ -100,9 +99,6 @@
 ;; projectile
 (el-get-bundle projectile)
 (el-get-bundle helm-projectile)
-
-;; doxymacs
-(el-get-bundle doxymacs)
 
 ;; C/C++
 (el-get-bundle cmake-mode)
