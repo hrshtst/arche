@@ -183,7 +183,3 @@ load_if_exist () {
 
 load_if_exist ~/.bash_completion_tmux.sh
 load_if_exist ~/.bash_completion_make.sh
-load_if_exist /opt/ros/indigo/setup.bash
-load_if_exist /usr/share/drcsim/setup.sh
-load_if_exist ~/develop/catkin_ws/devel/setup.bash
-load_if_exist ~/catkin_ws/devel/setup.bash
