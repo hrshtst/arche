@@ -32,6 +32,13 @@
     (flycheck-add-next-checker 'irony
                                '(warning . c/c++-googlelint))))
 
+(add-hook 'python-mode-hook '(lambda ()
+                               (setq flycheck-python-flake8-executable (executable-find "flake8"))))
+
+(defun my/set-flycheck-flake8-checker ()
+  (setq flycheck-python-flake8-executable (executable-find "flake8"))
+  )
+
 ;; keybinding
 (define-key global-map (kbd "M-l") 'my/flycheck-list-errors)
 (smartrep-define-key
