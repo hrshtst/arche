@@ -4,7 +4,7 @@
 
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" ; pwd -P)"
-PACKAGE_LIST="emacs emacs-simple emacs-windows bash tmux git vim keyboard gtags pandoc fish"
+PACKAGE_LIST="emacs emacs-simple emacs-windows bash tmux git vim keyboard gtags pandoc fish python"
 GROUP_LIST="full simple windows"
 GIVEN_GROUP=
 GIVEN_PACKAGE_LIST=
@@ -23,10 +23,10 @@ FLAG_CLEAN=FALSE
 #   None
 ##################################################
 group_full() {
-  echo "emacs bash tmux git vim keyboard gtags pandoc fish"
+  echo "emacs bash tmux git vim keyboard gtags pandoc fish python"
 }
 group_simple() {
-  echo "emacs-simple bash tmux git vim keyboard gtags pandoc fish"
+  echo "emacs-simple bash tmux git vim keyboard gtags pandoc fish python"
 }
 group_windows() {
   echo "emacs-windows bash tmux git vim keyboard gtags pandoc fish"
@@ -106,6 +106,7 @@ Available packages:
   * keyboard        create symlink to .Xmodmap
   * gtags           create symlink to .gtagsrc
   * fish            create symlink to .config/fish/...
+  * python          create symlink to .config/flake8
 
 Available package groups:
   * full            full installation
@@ -592,6 +593,12 @@ install_fish() {
   done
 }
 
+install_python() {
+  DST_DIR="$HOME/.config"
+  SRC_DIR="$PWD/python"
+  make_link flake8
+}
+
 
 ##################################################
 # Functions to install each package
@@ -652,6 +659,10 @@ clean_fish() {
   rm -f "$HOME/.config/fish/functions/abspath.fish"
   rm -f "$HOME/.config/fish/functions/load-script.fish"
   rm -f "$HOME/.config/fish/functions/md.fish"
+}
+
+clean_python() {
+  rm -f "$HOME/.config/flake8"
 }
 
 
