@@ -124,6 +124,9 @@
 ;; fish script
 (el-get-bundle emacs-fish)
 
+;; TOML
+(el-get-bundle toml-mode)
+
 ;; magit
 (el-get-bundle magit)
 
