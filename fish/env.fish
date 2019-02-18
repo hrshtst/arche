@@ -33,3 +33,5 @@ prepend-to-path /usr/lib/go-1.10/bin
 # GNU global
 set -gx GTAGSLIBPATH $HOME/usr/src
 
+# pkg-config
+set -gx PKG_CONFIG_PATH $HOME/usr/lib/pkgconfig
