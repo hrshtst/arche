@@ -1,5 +1,4 @@
 [flake8]
-# E302: exected 2 blank lines, found 0
 # F403: from . import *
-ignore = E302,F403
-max-line-length = 110
+ignore = F403
+max-line-length = 120
