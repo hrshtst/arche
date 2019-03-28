@@ -3,6 +3,7 @@
 ;; enable yasnippet as minor mode in some specific modes
 (dolist (hook '(c-mode-hook
                 c++-mode-hook
+                cmake-mode-hook
                 emacs-lisp-mode-hook
                 html-mode-hook
                 python-mode-hook
