@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -eu
-DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
-source "${DIR}/scripts/functions.sh"
+THIS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+source "${THIS_DIR}/scripts/functions.sh"
 
 # check bash version
 set +e
@@ -59,14 +59,14 @@ while [[ $# > 0 ]]; do
 done
 set -- "${POSITIONAL[@]}"
 
-source "${DIR}/scripts/deploy.sh"
-source "${DIR}/scripts/init.sh"
-source "${DIR}/scripts/clean.sh"
+source "${THIS_DIR}/scripts/deploy.sh"
+source "${THIS_DIR}/scripts/init.sh"
+source "${THIS_DIR}/scripts/clean.sh"
 
 update() {
   set +e
   if has "git"; then
-    cd "${DIR}"
+    cd "${THIS_DIR}"
     git pull origin master
     git submodule init
     git submodule update
@@ -86,13 +86,13 @@ main() {
       update
       ;;
     deploy)
-      deploy "${DIR}" "${HOME_DIR}"
+      deploy "${THIS_DIR}" "${HOME_DIR}"
       ;;
     init*)
       init
       ;;
     clean)
-      clean "${DIR}" "${HOME_DIR}"
+      clean "${THIS_DIR}" "${HOME_DIR}"
       ;;
     *)
       usage
