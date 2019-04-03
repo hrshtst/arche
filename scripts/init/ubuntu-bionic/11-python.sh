@@ -8,7 +8,24 @@ source "${THIS_DIR}/scripts/functions.sh"
 source "${THIS_DIR}/scripts/init/ubuntu-bionic/apt-get-common.sh"
 
 declare -a requested_packages=(
-  'tmux'
+  'build-essential'
+  'curl'
+  'git'
+  'libbz2-dev'
+  'libffi-dev'
+  'liblzma-dev'
+  'libncurses5-dev'
+  'libncursesw5-dev'
+  'libreadline-dev'
+  'libsqlite3-dev'
+  'libssl-dev'
+  'llvm'
+  'make'
+  'python-openssl'
+  'tk-dev'
+  'wget'
+  'xz-utils'
+  'zlib1g-dev'
 )
 
 ## to get sorted list, uncomment below and execute
@@ -25,4 +42,5 @@ if [[ "${#missing_packages[@]}" > 0 ]]; then
   [[ $? ]] && ok
 fi
 
-git_clone_or_update https://github.com/tmux-plugins/tpm ${HOME}/.tmux/plugins/tpm
+git_clone_or_update https://github.com/pyenv/pyenv.git ${HOME}/.pyenv
+
