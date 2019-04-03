@@ -8,9 +8,17 @@ error() {
   echo "$(tput setaf 1)$@$(tput sgr0)" >&2
 }
 
+message() {
+  echo "$(tput setaf 2)$@$(tput sgr0)"
+}
+
 abort() {
   error "$1" 1>&2
   exit "${2:-1}"
+}
+
+ok() {
+  message "done! ✔"
 }
 
 has() {

@@ -86,13 +86,19 @@ main() {
       update
       ;;
     deploy)
+      message "Deploying dotfiles..."
       deploy "${THIS_DIR}" "${HOME_DIR}"
+      ok
       ;;
     init*)
+      message "Initializing..."
       init
+      ok
       ;;
     clean)
+      message "Cleaning dotfiles..."
       clean "${THIS_DIR}" "${HOME_DIR}"
+      ok
       ;;
     *)
       usage
