@@ -60,18 +60,14 @@ done
 set -- "${POSITIONAL[@]}"
 
 source "${THIS_DIR}/scripts/deploy.sh"
-# source "${THIS_DIR}/scripts/init.sh"
 source "${THIS_DIR}/scripts/clean.sh"
 
 update() {
   set +e
   if has "git"; then
     cd "${THIS_DIR}"
-    git pull origin master
-    git submodule init
-    git submodule update
-    git submodule foreach git pull origin master
-    cd - &>/dev/null
+    git_update
+    back_to_oldwd
   else
     abort "command 'git' is unavailable"
   fi
