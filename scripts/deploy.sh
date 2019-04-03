@@ -28,23 +28,33 @@ deploy_dotfiles() {
     make_link "${name}" "${home_dir}/${name}"
   done
   set -e
-  cd - &>/dev/null
+  back_to_oldwd
 }
 
-deploy_config() {
+_deploy_files() {
   local dotfiles_dir="$1"
   local home_dir="$2"
+  local target_dir="$3"
 
   cd "${dotfiles_dir}"
-  find .config -mindepth 1 -type d -print0 | xargs -r0 -n 1 -I{} mkdir -p "${home_dir}/{}"
+  mkdir -p "${home_dir}/${target_dir}"
+  find "${target_dir}" -mindepth 1 -type d -print0 | xargs -r0 -n 1 -I{} mkdir -p "${home_dir}/{}"
   unset list
   while IFS= read -r -d '' file; do
     list+=("$file")
-  done < <(find .config -type f -print0)
+  done < <(find  "${target_dir}" -type f -print0)
   for file in "${list[@]}"; do
     make_link "${file}" "${home_dir}/${file}"
   done
-  cd - &>/dev/null
+  back_to_oldwd
+}
+
+deploy_config() {
+  _deploy_files "$1" "$2" ".config"
+}
+
+deploy_bin() {
+  _deploy_files "$1" "$2" "usr/bin"
 }
 
 deploy() {
@@ -53,4 +63,5 @@ deploy() {
 
   deploy_dotfiles "${dotfiles_dir}" "${home_dir}"
   deploy_config "${dotfiles_dir}" "${home_dir}"
+  deploy_bin "${dotfiles_dir}" "${home_dir}"
 }
