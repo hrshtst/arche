@@ -14,7 +14,7 @@ info() {
 
 abort() {
   error "$@" 1>&2
-  exit "${2:-1}"
+  exit -1
 }
 
 ok() {
@@ -116,3 +116,54 @@ vercomp() {
   return 0
 }
 
+back_to_oldwd() {
+  cd - &>/dev/null
+}
+
+is_git_repo() {
+  if git rev-parse --git-dir > /dev/null 2>&1; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+git_update() {
+  git pull origin master
+  git submodule init
+  git submodule update
+  git submodule foreach git pull origin master
+}
+
+_git_clone_or_update() {
+  set +e
+  if ! is_git_repo; then
+    git clone --recursive "${uri}"
+  else
+    git_update
+  fi
+  set -e
+}
+
+git_clone_or_update() {
+  local uri="$1"
+  local dest="${2:-}"
+  local clone=false
+  local update=false
+
+  set +e
+  if ! has git; then
+    error "'git' command is unavailable."
+    return 1
+  fi
+  set -e
+
+  if [[ -z "${dest}" ]]; then
+    _git_clone_or_update
+  else
+    mkdir -p "${dest}"
+    cd "${dest}"
+    _git_clone_or_update
+    back_to_oldwd
+  fi
+}
