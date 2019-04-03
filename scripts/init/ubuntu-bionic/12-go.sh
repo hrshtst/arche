@@ -27,3 +27,18 @@ if [[ "${#missing_packages[@]}" > 0 ]]; then
   [[ $? ]] && ok
   go get github.com/motemen/ghq
 fi
+
+set +e
+# install peco
+ver=v0.5.3
+name=peco_linux_amd64
+if ! has peco; then
+  mkdir -p "${HOME}/usr/bin"
+  cd "${HOME}/usr/bin"
+  wget https://github.com/peco/peco/releases/download/${ver}/${name}.tar.gz
+  tar xvfz ${name}
+  mv ${name}/peco .
+  rm -rf ${name} ${name}.tar.gz
+  back_to_oldwd
+fi
+set -e
