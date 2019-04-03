@@ -28,6 +28,5 @@ find_missing_packages() {
 add_apt_repository() {
   local repo="$1"
 
-  # sudo add-apt-repository -uy "${repo}"
-  echo sudo add-apt-repository -uy "${repo}"
+  sudo add-apt-repository -uy "${repo}"
 }
