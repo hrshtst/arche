@@ -54,11 +54,9 @@ declare -a requested_packages=(
   'python-dev'
   'python-virtualenv'
   'silversearcher-ag'
-  'texlive-full'
   'vim'
   'xclip'
   'xsel'
-  'xzdec'
   'zlib1g-dev'
 )
 

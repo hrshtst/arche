@@ -29,6 +29,7 @@ end
 set -gx GOPATH $HOME/.go:$HOME/develop/go
 prepend-to-path $HOME/.go/bin
 prepend-to-path /usr/lib/go-1.10/bin
+prepend-to-path /usr/lib/go-1.11/bin
 
 # GNU global
 set -gx GTAGSLIBPATH $HOME/usr/src
