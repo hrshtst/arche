@@ -32,16 +32,16 @@ clean() {
   while IFS= read -r -d '' file; do
     list+=("$(echo "${file}" | sed "s|^\./||" )")
   done < <(find . -maxdepth 1 -name ".??*" -print0)
-  # find dotfiles in ${dotfiles_dir}/.config
+  # find symlinks in ${dotfiles_dir}/{.config,usr/bin}
   while IFS= read -r -d '' file; do
     list+=("$file")
-  done < <(find .config -type f -print0)
+  done < <(find .config usr/bin -type f -print0)
 
   for file in "${list[@]}"; do
     remove_if_symlink_to_dotfile "${home_dir}" "${dotfiles_dir}" "${file}"
   done
 
   remove_broken_symlinks "${home_dir}"
-  find .config -type d -print0 | xargs -r0 -n 1 -I{} bash -c 'remove_broken_symlinks "$@"' _ "${home_dir}/{}"
+  find .config usr/bin -type d -print0 | xargs -r0 -n 1 -I{} bash -c 'remove_broken_symlinks "$@"' _ "${home_dir}/{}"
   cd - &>/dev/null
 }
