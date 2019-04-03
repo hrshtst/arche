@@ -60,7 +60,7 @@ done
 set -- "${POSITIONAL[@]}"
 
 source "${THIS_DIR}/scripts/deploy.sh"
-source "${THIS_DIR}/scripts/init.sh"
+# source "${THIS_DIR}/scripts/init.sh"
 source "${THIS_DIR}/scripts/clean.sh"
 
 update() {
@@ -86,17 +86,17 @@ main() {
       update
       ;;
     deploy)
-      message "Deploying dotfiles..."
+      info "Deploying dotfiles..."
       deploy "${THIS_DIR}" "${HOME_DIR}"
       ok
       ;;
     init*)
-      message "Initializing..."
-      init
+      info "Initializing..."
+      bash "${THIS_DIR}/scripts/init.sh" "${THIS_DIR}"
       ok
       ;;
     clean)
-      message "Cleaning dotfiles..."
+      info "Cleaning dotfiles..."
       clean "${THIS_DIR}" "${HOME_DIR}"
       ok
       ;;

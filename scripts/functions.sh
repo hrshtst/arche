@@ -8,17 +8,17 @@ error() {
   echo "$(tput setaf 1)$@$(tput sgr0)" >&2
 }
 
-message() {
+info() {
   echo "$(tput setaf 2)$@$(tput sgr0)"
 }
 
 abort() {
-  error "$1" 1>&2
+  error "$@" 1>&2
   exit "${2:-1}"
 }
 
 ok() {
-  message "done! ✔"
+  info "done! ✔"
 }
 
 has() {
@@ -54,6 +54,41 @@ abspath() {
 parentdir() {
   local path="$(abspath "$1")"
   echo "${path%/*}"
+}
+
+lower() {
+  echo "${1,,}"
+}
+
+upper() {
+  echo "${1^^}"
+}
+
+detect_os() {
+  export OS_NAME
+  export OS_VERSION
+  export OS_CODENAME
+  set +e
+  if [[ -f /etc/os-release ]]; then
+    source /etc/os-release
+    OS_NAME="$(lower $NAME)"
+    OS_VERSION="$VERSION_ID"
+    OS_CODENAME="$(lower $VERSION_CODENAME)"
+  elif has lsb_release; then
+    OS_NAME="$(lower $(lsb_release -si))"
+    OS_VERSION="$(lsb_release -sr)"
+    OS_CODENAME="$(lower $(lsb_release -sc))"
+  elif [[ -f /etc/lsb-release ]]; then
+    source /etc/lsb-release
+    OS_NAME="$(lower $DISTRIB_ID)"
+    OS_VERSION="$DISTRIB_RELEASE"
+    OS_CODENAME="$(lower $DISTRIB_CODENAME)"
+  else
+    OS_NAME="$(lower $(uname -s))"
+    OS_VERSION="$(uname -r)"
+    OS_CODENAME=
+  fi
+  set -e
 }
 
 vercomp() {
