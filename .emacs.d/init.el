@@ -42,7 +42,7 @@
   (cd (getenv "HOME")))
 
 ;; If non-default initialiation file is specified, set
-;; user-emacs-directory to its directory.
+;; `user-emacs-directory' to its directory.
 (when load-file-name
   (setq-default user-emacs-directory
                 (file-name-directory load-file-name)))
@@ -63,6 +63,8 @@
 
 ;;; Setup package manager
 
+;;;; straight.el
+
 ;; Bootstrap straight.el
 (defvar bootstrap-version)
 (let ((bootstrap-file
@@ -76,5 +78,23 @@
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
+
+;;;; use-package
+
+;; Package `use-package' allows us to make package configuration much
+;; more confortable and provides lazy loading in very easy way.
+(straight-use-package 'use-package)
+(setq straight-use-package-by-default t)
+(setq use-package-always-defer t)
+
+
+;;;; blackout
+
+;; Package `blackout' provides a function to hide or customize the
+;; display of major and minor modes in the mode line.
+(use-package blackout
+  :straight (:host github :repo "raxod502/blackout")
+  :demand t)
+
 
 ;;; init.el ends here
