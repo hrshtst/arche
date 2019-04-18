@@ -61,9 +61,7 @@
                    (format "custom-%d-%d.el" (emacs-pid) (random))
                    temporary-file-directory))
 
-;;; Setup package manager
-
-;;;; straight.el
+;;; straight.el
 
 ;; Bootstrap straight.el
 (defvar bootstrap-version)
@@ -79,7 +77,7 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
-;;;; use-package
+;;; use-package
 
 ;; Package `use-package' allows us to make package configuration much
 ;; more confortable and provides lazy loading in very easy way.
@@ -87,14 +85,23 @@
 (setq straight-use-package-by-default t)
 (setq use-package-always-defer t)
 
-
-;;;; blackout
+;;; blackout
 
 ;; Package `blackout' provides a function to hide or customize the
 ;; display of major and minor modes in the mode line.
 (use-package blackout
-  :straight (:host github :repo "raxod502/blackout")
-  :demand t)
+             :straight (:host github :repo "raxod502/blackout")
+             :demand t)
+
+;;; el-patch
+
+;; Package `el-patch' provides a way to customize the behavior of Emacs
+;; Lisp functions that do not provide variables and hooks to let us make
+;; them what we want. Also, this can be used to override the definition
+;; of an internal function from another package to make them work as
+;; desired.
+(straight-use-package 'el-patch
+                      :demand t)
 
 
 ;;; init.el ends here
