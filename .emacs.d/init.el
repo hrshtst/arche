@@ -29,6 +29,13 @@
 
 ;;; Code:
 
+;;; Load utility libraries
+
+(require 'cl-lib)
+(require 'map)
+
+;;; Start Emacs with appropriate setting
+
 ;; Change working directory to HOME unless non-default initialization
 ;; file is specified.
 (unless load-file-name
@@ -53,5 +60,21 @@
 (setq custom-file (expand-file-name
                    (format "custom-%d-%d.el" (emacs-pid) (random))
                    temporary-file-directory))
+
+;;; Setup package manager
+
+;; Bootstrap straight.el
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
 
 ;;; init.el ends here
