@@ -85,13 +85,20 @@
 (setq straight-use-package-by-default t)
 (setq use-package-always-defer t)
 
+(defmacro use-feature (name &rest args)
+  "Like `use-package', but with `straight-use-package-by-default' disabled."
+  (declare (indent defun))
+  `(use-package ,name
+     :straight nil
+     ,@args))
+
 ;;; blackout
 
 ;; Package `blackout' provides a function to hide or customize the
 ;; display of major and minor modes in the mode line.
 (use-package blackout
-             :straight (:host github :repo "raxod502/blackout")
-             :demand t)
+  :straight (:host github :repo "raxod502/blackout")
+  :demand t)
 
 ;;; el-patch
 
@@ -101,7 +108,23 @@
 ;; of an internal function from another package to make them work as
 ;; desired.
 (straight-use-package 'el-patch
-                      :demand t)
+  :demand t)
+
+;;; bind-key
+
+;; Package `bind-key' provides a useful macro which is much prettier and
+;; surely takes effect.
+(use-package bind-key)
+
+;;; exec-path-from-shell
+
+;; Package `exec-path-from-shell' ensures environment variables inside
+;; Emacs are copied from the user's shell
+(use-package exec-path-from-shell
+  :if (memq window-system '(mac ns x))
+  :config
+  (exec-path-from-shell-initialize)
+  (exec-path-from-shell-copy-envs '("GOPATH")))
 
 
 ;;; init.el ends here
