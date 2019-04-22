@@ -101,30 +101,33 @@
   :demand t)
 
 ;;; el-patch
-
-;; Package `el-patch' provides a way to customize the behavior of Emacs
-;; Lisp functions that do not provide variables and hooks to let us make
-;; them what we want. Also, this can be used to override the definition
-;; of an internal function from another package to make them work as
-;; desired.
 (straight-use-package 'el-patch
   :demand t)
 
 ;;; bind-key
-
-;; Package `bind-key' provides a useful macro which is much prettier and
-;; surely takes effect.
 (use-package bind-key)
 
-;;; exec-path-from-shell
+(defvar my/keymap (make-sparse-keymap)
+  "Keymap for my own commands is bound under M-g.")
 
-;; Package `exec-path-from-shell' ensures environment variables inside
-;; Emacs are copied from the user's shell
+(bind-key* "M-g" my/keymap)
+
+(defmacro my/bind-key (key-name command &optional predicate)
+  "Bind a key in `my/keymap'."
+  `(bind-key ,key-name ,command my/keymap ,predicate))
+
+;;; exec-path-from-shell
 (use-package exec-path-from-shell
   :if (memq window-system '(mac ns x))
   :config
   (exec-path-from-shell-initialize)
   (exec-path-from-shell-copy-envs '("GOPATH")))
+
+;;; ivy
+(use-package ivy
+  :config
+  (setq ivy-use-virtual-buffers t)
+  (setq ivy-extra-directories nil))
 
 
 ;;; init.el ends here
