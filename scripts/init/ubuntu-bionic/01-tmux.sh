@@ -9,6 +9,8 @@ source "${THIS_DIR}/scripts/init/ubuntu-bionic/apt-get-common.sh"
 
 declare -a requested_packages=(
   'tmux'
+  'xclip'
+  'xsel'
 )
 
 ## to get sorted list, uncomment below and execute
@@ -21,7 +23,7 @@ declare -a requested_packages=(
 find_missing_packages
 if [[ "${#missing_packages[@]}" > 0 ]]; then
   info "Installing missing packages..."
-  echo sudo apt install -y "${missing_packages[@]}"
+  sudo apt install -y "${missing_packages[@]}"
   [[ $? ]] && ok
 fi
 

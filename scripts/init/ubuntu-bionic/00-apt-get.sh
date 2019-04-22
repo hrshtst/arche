@@ -9,7 +9,6 @@ source "${THIS_DIR}/scripts/init/ubuntu-bionic/apt-get-common.sh"
 
 # add repositories
 sudo apt install -y software-properties-common
-add_apt_repository ppa:kelleyk/emacs
 sudo apt upgrade -y
 [[ $? ]] && info "Package update done."
 
@@ -23,8 +22,6 @@ declare -a requested_packages=(
   'cmake'
   'cmigemo'
   'curl'
-  'emacs-mozc-bin'
-  'emacs26'
   'ffmpeg'
   'flake8'
   'fontforge'
@@ -49,14 +46,11 @@ declare -a requested_packages=(
   'mercurial'
   'pandoc'
   'powerline'
-  'pstoedit'
   'python3-dev'
   'python-dev'
   'python-virtualenv'
   'silversearcher-ag'
   'vim'
-  'xclip'
-  'xsel'
   'zlib1g-dev'
 )
 
