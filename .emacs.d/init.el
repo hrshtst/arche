@@ -61,8 +61,9 @@
                    (format "custom-%d-%d.el" (emacs-pid) (random))
                    temporary-file-directory))
 
-;;; straight.el
+;;; Package management
 
+;;;; straight.el
 ;; Bootstrap straight.el
 (defvar bootstrap-version)
 (let ((bootstrap-file
@@ -77,10 +78,7 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
-;;; use-package
-
-;; Package `use-package' allows us to make package configuration much
-;; more confortable and provides lazy loading in very easy way.
+;;;; use-package
 (straight-use-package 'use-package)
 (setq straight-use-package-by-default t)
 (setq use-package-always-defer t)
@@ -92,19 +90,16 @@
      :straight nil
      ,@args))
 
-;;; blackout
-
-;; Package `blackout' provides a function to hide or customize the
-;; display of major and minor modes in the mode line.
+;;;; blackout
 (use-package blackout
   :straight (:host github :repo "raxod502/blackout")
   :demand t)
 
-;;; el-patch
+;;;; el-patch
 (straight-use-package 'el-patch
   :demand t)
 
-;;; bind-key
+;;;; bind-key
 (use-package bind-key)
 
 (defvar my/keymap (make-sparse-keymap)
@@ -116,18 +111,36 @@
   "Bind a key in `my/keymap'."
   `(bind-key ,key-name ,command my/keymap ,predicate))
 
-;;; exec-path-from-shell
+;;; Environment variables
+
+;;;; exec-path-from-shell
 (use-package exec-path-from-shell
   :if (memq window-system '(mac ns x))
+  :demand t
   :config
   (exec-path-from-shell-initialize)
   (exec-path-from-shell-copy-envs '("GOPATH")))
 
-;;; ivy
+;;; Candidate selection
+
+;;;; ivy
 (use-package ivy
+  :init
+  (ivy-mode 1)
   :config
   (setq ivy-use-virtual-buffers t)
-  (setq ivy-extra-directories nil))
+  (setq ivy-count-format "(%d/%d) ")
+  (setq ivy-extra-directories nil)
+  (setq enable-recursive-minibuffers t)
+  :blackout t)
 
+;;;; ivy-hydra
+(use-package ivy-hydra)
+
+;;;; counsel
+(use-package counsel
+  :init
+  (counsel-mode 1)
+  :blackout t)
 
 ;;; init.el ends here
