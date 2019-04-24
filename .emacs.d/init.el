@@ -13,9 +13,9 @@
 ;;; License:
 
 ;; This program is free software; you can redistribute it and/or
-;; modify it under the terms of the GNU General Public License
-;; as published by the Free Software Foundation; either version 3
-;; of the License, or (at your option) any later version.
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 3 of
+;; the License, or (at your option) any later version.
 ;;
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -36,8 +36,8 @@
 
 ;;; Start Emacs with appropriate setting
 
-;; Change working directory to HOME unless non-default initialization
-;; file is specified.
+;; Change working directory to HOME unless non-default
+;; initialization file is specified.
 (unless load-file-name
   (cd (getenv "HOME")))
 
@@ -135,6 +135,7 @@
 (use-package ivy
   :init
   (ivy-mode +1)
+  :bind* (("C-c C-r" . ivy-resume))
   :config
   (setq ivy-use-virtual-buffers t)
   (setq ivy-count-format "(%d/%d) ")
@@ -154,5 +155,23 @@
          ("C-c j" . counsel-git-grep)
          ("C-c k" . counsel-git-ag))
   :blackout t)
+
+;;; Window management
+
+;; Feature `windmove' allows us to move between windows by S-left,
+;; S-right, S-up, and S-down.
+(use-feature windmove
+  :demand t
+  :config
+  (windmove-default-keybindings))
+
+;; Feature `winner' provides undo/redo function for window
+;; configuration by C-c left and C-c right, respectively. For
+;; instance, use C-x 1 to focus on a particular window, then return
+;; to the previous layout with C-c left.
+(use-feature winner
+  :demand t
+  :config
+  (winner-mode +1))
 
 ;;; init.el ends here
