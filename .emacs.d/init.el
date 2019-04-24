@@ -95,9 +95,17 @@
   :straight (:host github :repo "raxod502/blackout")
   :demand t)
 
+;;; Keep ~/.emacs.d clean
+(use-package no-littering
+  :demand t)
+
+;;; Function tweaking
+
 ;;;; el-patch
 (straight-use-package 'el-patch
   :demand t)
+
+;;; Keybindings
 
 ;;;; bind-key
 (use-package bind-key)
@@ -126,7 +134,7 @@
 ;;;; ivy
 (use-package ivy
   :init
-  (ivy-mode 1)
+  (ivy-mode +1)
   :config
   (setq ivy-use-virtual-buffers t)
   (setq ivy-count-format "(%d/%d) ")
@@ -140,7 +148,7 @@
 ;;;; counsel
 (use-package counsel
   :init
-  (counsel-mode 1)
+  (counsel-mode +1)
   :blackout t)
 
 ;;; init.el ends here
