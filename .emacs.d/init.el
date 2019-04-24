@@ -79,6 +79,9 @@
   (load bootstrap-file nil 'nomessage))
 
 ;;;; use-package
+
+;; Package `use-package' allows us to make package configuration much
+;; more confortable and provides lazy loading in very easy way.
 (straight-use-package 'use-package)
 (setq straight-use-package-by-default t)
 (setq use-package-always-defer t)
@@ -91,23 +94,39 @@
      ,@args))
 
 ;;;; blackout
+
+;; Package `blackout' provides a function to hide or customize the
+;; display of major and minor modes in the mode line.
 (use-package blackout
   :straight (:host github :repo "raxod502/blackout")
   :demand t)
 
 ;;; Keep ~/.emacs.d clean
+
+;; Package `no-littering' changes the default paths for lots of
+;; different packages. As a result, ~/.emacs.d is much more clean
+;; and organized.
 (use-package no-littering
   :demand t)
 
 ;;; Function tweaking
 
 ;;;; el-patch
+
+;; Package `el-patch' provides a way to customize the behavior of
+;; Emacs Lisp functions that do not provide variables and hooks to
+;; let us make them what we want. Also, this can be used to override
+;; the definition of an internal function from another package to
+;; make them work as desired.
 (straight-use-package 'el-patch
   :demand t)
 
 ;;; Keybindings
 
 ;;;; bind-key
+
+;; Package `bind-key' provides a useful macro which is much prettier
+;; and surely takes effect.
 (use-package bind-key)
 
 (defvar my/keymap (make-sparse-keymap)
@@ -122,6 +141,9 @@
 ;;; Environment variables
 
 ;;;; exec-path-from-shell
+
+;; Package `exec-path-from-shell' ensures environment variables
+;; inside Emacs are copied from the user's shell
 (use-package exec-path-from-shell
   :if (memq window-system '(mac ns x))
   :demand t
@@ -193,6 +215,5 @@
 ;; `list-buffers' command.
 (use-feature ibuffer
   :bind (([remap list-buffers] . ibuffer)))
-
 
 ;;; init.el ends here
