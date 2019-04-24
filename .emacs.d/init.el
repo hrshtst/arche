@@ -149,6 +149,10 @@
 (use-package counsel
   :init
   (counsel-mode +1)
+  :bind (("C-c c" . counsel-find-file)
+         ("C-c g" . counsel-git)
+         ("C-c j" . counsel-git-grep)
+         ("C-c k" . counsel-git-ag))
   :blackout t)
 
 ;;; init.el ends here
