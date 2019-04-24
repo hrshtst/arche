@@ -174,4 +174,25 @@
   :config
   (winner-mode +1))
 
+;; Package `transpose-frame' provides interactive commands to
+;; transpose windows arrangement: `flip-frame', `flop-frame',
+;; `transpose-frame', `rotate-frame-clockwise',
+;; `rotate-frame-anticlockwise', `rotate-frame'.
+(use-package transpose-frame)
+
+;; Package `buffer-move' provides interactive commands to swap
+;; windows: `buf-move-up', `buf-move-down', `buf-move-left',
+;; `buf-move-right'.
+(use-package buffer-move
+  :bind (("C-S-<up>" . buf-move-up)
+         ("C-S-<down>" . buf-move-down)
+         ("C-S-<left>" . buf-move-left)
+         ("C-S-<right>" . buf-move-right)))
+
+;; Feature `ibuffer' provides a more modern replacement for the
+;; `list-buffers' command.
+(use-feature ibuffer
+  :bind (([remap list-buffers] . ibuffer)))
+
+
 ;;; init.el ends here
