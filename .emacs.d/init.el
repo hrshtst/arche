@@ -378,12 +378,15 @@
   :config
   (projectile-mode +1)
 
-  (defun radian--projectile-indexing-method-p (method)
-    "Non-nil if METHOD is a safe value for `projectile-indexing-method'."
-    (memq method '(native alien)))
-
   (put 'projectile-indexing-method 'safe-local-variable
-       #'radian--projectile-indexing-method-p)
+       (lambda (arg) (memq arg '(native alien))))
+
+  (projectile-register-project-type 'cmake '("CMakeLists.txt")
+                                    :configure "cmake %s"
+                                    :compile "cmake --build ."
+                                    :test "ctest"
+                                    :test-prefix "test_"
+                                    :test-suffix"_test")
 
   :blackout t)
 
@@ -455,5 +458,8 @@ counterparts."
   :config
 
   (setq counsel-projectile-sort-files t))
+
+
+;;; Editing
 
 ;;; init.el ends here
