@@ -541,4 +541,22 @@ newline."
   :config
   (delete-selection-mode +1))
 
+;;;; Undo/redo
+
+;; Package `undo-tree' replaces the default Emacs undo system, which
+;; is confusing and difficult to use, with intuitive undo/redo
+;; system.
+(use-package undo-tree
+  :demand t
+  :bind (;; This overrides the default binding of M-/, which is to
+         ;; `dabbrev-expand'.
+         :map undo-tree-map
+         ("M-/" . undo-tree-redo))
+  :config
+  (global-undo-tree-mode +1)
+  ;; Disable undo-in-region because the implementation is very buggy
+  ;; and usually lose undo history by accident.
+  (setq undo-tree-enable-undo-in-region nil)
+  :blackout t)
+
 ;;; init.el ends here
