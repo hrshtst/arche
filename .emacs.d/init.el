@@ -559,4 +559,20 @@ newline."
   (setq undo-tree-enable-undo-in-region nil)
   :blackout t)
 
+;;;; Navigation
+
+;; Feature `subword' remaps word-based editing commands to
+;; subword-based commands that handle symbols with mixed uppercase
+;; and lowercase letters, e.g. "GtkWidget", "EmacsFrameClass",
+;; "NSGraphicsContext".
+(use-feature subword
+  :demand t
+  :config
+  (global-subword-mode +1)
+  :blackout t)
+
+;; After typing C-u C-<SPC>, we can type just C-<SPC> to cycle mark
+;; ring instead of C-u C-<SPC>.
+(setq set-mark-command-repeat-pop t)
+
 ;;; init.el ends here
