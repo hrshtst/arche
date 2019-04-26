@@ -462,4 +462,83 @@ counterparts."
 
 ;;; Editing
 
+;;;; Text formatting
+;; When region is active, capitalize it.
+(bind-key "M-c" #'capitalize-dwim)
+(bind-key "M-l" #'downcase-dwim)
+(bind-key "M-u" #'upcase-dwim)
+
+;; When filling paragraphs, assume that sentences end with one space
+;; rather than two.
+(setq sentence-end-double-space nil)
+
+;; Trigger auto-fill after punctutation characters, not just
+;; whitespace.
+(mapcar
+ (lambda (c)
+   (set-char-table-range auto-fill-chars c t))
+ "!-=+]};:'\",.?")
+
+(define-minor-mode my/fix-whitespace-mode
+  "Minor mode to automatically fix whitespace on save.
+If enabled, then saving the buffer deletes all trailing
+whitespace and ensures that the file ends with exactly one
+newline."
+  nil nil nil
+  (if my/fix-whitespace-mode
+      (progn
+        (setq require-final-newline t)
+        (add-hook 'before-save-hook #'delete-trailing-whitespace nil 'local))
+    (setq require-final-newline nil)
+    (remove-hook 'before-save-hook #'delete-trailing-whitespace 'local)))
+
+(define-globalized-minor-mode my/fix-whitespace-global-mode
+  my/fix-whitespace-mode my/fix-whitespace-mode)
+
+(my/fix-whitespace-global-mode +1)
+
+(put 'my/fix-whitespace-mode 'safe-local-variable #'booleanp)
+
+;; Feature `whitespace' provides a minor mode for highlighting
+;; whitespace.
+(use-feature whitespace
+  :init
+  (define-minor-mode my/highlight-long-lines-mode
+    "Minor mode for highlighting long lines."
+    nil nil nil
+    (if my/highlight-long-lines-mode
+        (progn
+          (setq-local whitespace-style '(face lines-tail))
+          (setq-local whitespace-line-column 79)
+          (whitespace-mode +1))
+      (whitespace-mode -1)
+      (kill-local-variable 'whitespace-style)
+      (kill-local-variable 'whitespace-line-column)))
+  :blackout t)
+
+;; Feature `outline' provides major and minor modes for collapsing
+;; sections of a buffer into an outline-like format.
+(use-feature outline
+  :demand t
+  :config
+  (define-globalized-minor-mode global-outline-minor-mode
+    outline-minor-mode outline-minor-mode)
+
+  (global-outline-minor-mode +1)
+  :blackout outline-minor-mode)
+
+;;;; Kill and yank
+
+;; Eliminate duplicates in the kill ring.
+(setq kill-do-not-save-duplicates t)
+
+;; Remove text properties when yanking
+(setq yank-excluded-properties t)
+
+;; Feature `delsel' allows us to delete selection.
+(use-feature delsel
+  :demand t
+  :config
+  (delete-selection-mode +1))
+
 ;;; init.el ends here
