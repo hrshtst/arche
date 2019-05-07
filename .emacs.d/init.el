@@ -178,7 +178,8 @@
   :bind (("C-c c" . counsel-find-file)
          ("C-c g" . counsel-git)
          ("C-c j" . counsel-git-grep)
-         ("C-c k" . counsel-git-ag))
+         ("C-c k" . counsel-git-ag)
+         ("C-c m" . counsel-mark-ring))
   :blackout t)
 
 ;;; Window management
@@ -574,5 +575,26 @@ newline."
 ;; After typing C-u C-<SPC>, we can type just C-<SPC> to cycle mark
 ;; ring instead of C-u C-<SPC>.
 (setq set-mark-command-repeat-pop t)
+
+;; Package `back-button' provides an alternative way for navigation
+;; which enables us to move the point back and forth over all the
+;; positions where pushed the mark.
+(use-package back-button
+  :demand t
+  :config
+  (back-button-mode +1)
+  :blackout t)
+
+;; `exchange-point-and-mark' can be used to push the current point
+;; to the mark ring then go to the one previous point in the mark
+;; ring, but it highlights the region between them. This disables
+;; highlighting after jumping.
+(defun my/exchange-point-and-mark ()
+  "Disable highlight after `exchange-point-and-mark'."
+  (interactive)
+  (exchange-point-and-mark)
+  (deactivate-mark))
+
+(bind-key "C-x C-x" 'my/exchange-point-and-mark)
 
 ;;; init.el ends here
