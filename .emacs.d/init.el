@@ -597,4 +597,35 @@ newline."
 
 (bind-key "C-x C-x" 'my/exchange-point-and-mark)
 
+;;;; Find and replace
+
+;; Package `visual-regexp' provides an alternative version of
+;; `replace-regexp' with live visual feedback directly in the
+;; buffer.
+(use-package visual-regexp
+  :bind (("M-%" . vr/query-replace)))
+
+;; Package `visual-regexp-steroids' allows `visual-regexp' to use
+;; modern regexp engines; for example, Python or Perl regexps.
+(use-package visual-regexp-steroids
+  :demand t
+  :after visual-regexp
+  :config
+  ;; Use Emacs-style regular expressions by default, instead of
+  ;; Python-style.
+  (setq vr/engine 'emacs))
+
+;; Feature `isearch' provides a basic and fast mechanism for jumping
+;; forward or backward to occurrences of a given search string.
+(use-feature isearch
+  :config
+  ;; Eliminate the 0.25s idle delay for isearch highlighting.
+  (setq isearch-lazy-highlight-initial-delay 0))
+
+;; Package `swiper' provides an alternative to `isearch' which instead
+;; uses `ivy' to display and select from the results.
+(use-package swiper
+  :bind (("C-s" . swiper)
+         ("C-r" . swiper)))
+
 ;;; init.el ends here
