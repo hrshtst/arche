@@ -628,4 +628,43 @@ newline."
   :bind (("C-s" . swiper)
          ("C-r" . swiper)))
 
+;;; Electricity: automatic things
+;;;; Autorevert
+
+;; Feature `autorevert' automatically reverts the buffer when its
+;; visited file changes on disk.
+(use-feature autorevert
+  :config
+  (setq auto-revert-interval 1)
+  (global-auto-revert-mode +1)
+  :blackout auto-revert-mode)
+
+;;;; Automatic parens paring
+
+;; Package `smartparens' provides functions to deal with parens
+;; pairs, highlight matching paired parens and provide keybindings
+;; for operating on paired parens.
+(use-package smartparens
+  :demand t
+
+  :config
+  ;; Load the default pair definitions.
+  (require 'smartparens-config)
+
+  ;; Enable Smartparens in all buffers.
+  (smartparens-global-mode +1)
+
+  ;; Set up keybindings for Smartparens functions with keybindings
+  ;; of corresponding paredit functions.
+  (sp-use-paredit-bindings)
+
+  ;; Highlight matching parens.
+  (show-smartparens-global-mode +1)
+
+  ;; Work around https://github.com/Fuco1/smartparens/issues/783.
+  (setq sp-escape-quotes-after-insert nil)
+
+  :blackout t)
+
+
 ;;; init.el ends here
