@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: #!/bin/sh
+# key: shebang
+# --
+#!/bin/sh
+$0
