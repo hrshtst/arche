@@ -685,8 +685,9 @@ newline."
               ("<tab>" . nil))
 
   :config
-  ;; Reduce verbosity. Suppress messages about successful snippet
-  ;; loading on Emacs init. Errors should still be shown.
+  ;; Reduce verbosity. Default is 3. Suppress messages about
+  ;; successful snippet loading on Emacs init. Errors should still
+  ;; be shown.
   (setq yas-verbosity 2)
 
   ;; Specify directory which contains personal snippets.
