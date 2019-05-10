@@ -666,5 +666,45 @@ newline."
 
   :blackout t)
 
+;;;; Snippet expansion
+
+;; Feature `abbrev' provides functionality for expanding user-defined
+;; abbreviations.
+(use-feature abbrev
+  :blackout t)
+
+;; Package `yasnippet' allows us to type an abbreviation and
+;; automatically expand it into function templates.
+(use-package yasnippet
+  :hook
+  (prog-mode . yas-minor-mode)
+
+  :bind (:map yas-minor-mode-map
+              ;; Disable TAB from expanding snippets.
+              ("TAB" . nil)
+              ("<tab>" . nil))
+
+  :config
+  ;; Reduce verbosity. Suppress messages about successful snippet
+  ;; loading on Emacs init. Errors should still be shown.
+  (setq yas-verbosity 2)
+
+  ;; Specify directory which contains personal snippets.
+  (add-to-list 'yas-snippet-dirs (concat user-emacs-directory "snippets"))
+
+  ;; Loading the snippet table is required before calling
+  ;; `yas-minor-mode'.
+  (yas-reload-all)
+
+  :blackout yas-minor-mode)
+
+;; Package `yasnippet-snippets' contains the standard collection of
+;; snippets.
+(use-package yasnippet-snippets)
+
+;; Package `ivy-yasnippet' allows to choose a snippet and preview it
+;; with ivy interface.
+(use-package ivy-yasnippet
+  :bind (("C-c y" . ivy-yasnippet)))
 
 ;;; init.el ends here
