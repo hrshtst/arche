@@ -1037,4 +1037,50 @@ nor requires Flycheck to be loaded."
   (add-to-list 'safe-local-variable-values
                '(lisp-indent-function . common-lisp-indent-function)))
 
+;;;; C, C++, Objective-C, Java
+
+;; Feature `cc-mode' provides major modes for C, C++, Objective-C, and
+;; Java.
+(use-feature cc-mode
+  :config
+  (my/defhook my/c-mode-setup ()
+    c-mode-common-hook
+    "Enable `auto-line' and `hungry-delete' minor modes."
+    (c-toggle-auto-hungry-state +1)))
+
+;; Package `google-c-style' provides the google C/C++ coding style.
+(use-package google-c-style
+  :straight (:type git :host github :repo "google/styleguide" :branch "gh-pages")
+  :hook ((c-mode-common . google-set-c-style)
+         (c-mode-common . google-make-newline-indent)))
+
+;; Package `modern-cpp-font-lock' provides syntax highliting support
+;; for modern C++.
+(use-package modern-cpp-font-lock
+  :hook (c++-mode . modern-c++-font-lock-mode)
+  :blackout t)
+
+;; Package `clang-format' provides functionality to use clang-format
+;; with emacs integration.
+(use-package clang-format
+  :if (executable-find "clang-format")
+  :init
+  (defun my/clang-format-buffer-on-projectile ()
+    "Reformat buffer if .clang-format exists in the projectile root."
+    (when (and (featurep 'projectile)
+               (file-exists-p (expand-file-name ".clang-format" (projectile-project-root))))
+      (clang-format-buffer)))
+
+  (define-minor-mode my/clang-format-buffer-on-projectile-mode
+    "Minor mode to reformat buffer on save using clang-format if
+    .clang-format is found in project root."  nil nil nil
+    (if my/clang-format-buffer-on-projectile-mode
+        (add-hook 'before-save-hook #'my/clang-format-buffer-on-projectile nil 'local)
+      (remove-hook 'before-save-hook #'my/clang-format-buffer-on-projectile 'local)))
+
+  (put 'my/clang-format-buffer-on-projectile-mode 'safe-local-variable #'booleanp)
+
+  (add-hook 'c-mode-common-hook #'my/clang-format-buffer-on-projectile-mode))
+
+
 ;;; init.el ends here
