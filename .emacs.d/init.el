@@ -523,6 +523,10 @@ counterparts."
    (set-char-table-range auto-fill-chars c t))
  "!-=+]};:'\",.?")
 
+(defun my/auto-fill-disable ()
+  "Disable `auto-fill-mode' in the current buffer."
+  (auto-fill-mode -1))
+
 (define-minor-mode my/fix-whitespace-mode
   "Minor mode to automatically fix whitespace on save.
 If enabled, then saving the buffer deletes all trailing
@@ -1010,5 +1014,27 @@ nor requires Flycheck to be loaded."
   ;; Flycheck errors from being shown (the errors flash briefly and
   ;; then disappear).
   (setq lsp-ui-sideline-show-hover nil))
+
+;;; Language support
+;;;; Plain text
+
+;; Feature `text-mode' provides a major mode for editing plain text.
+(use-feature text-mode
+  :config
+  (add-hook 'text-mode-hook #'auto-fill-mode)
+
+  (my/defhook my/flycheck-text-setup ()
+    text-mode-hook
+    "Disable some Flycheck checkers for plain text."
+    (my/flycheck-disable-checkers 'proselint)))
+
+;;;; Lisp languages
+
+;; Feature `lisp-mode' provides a base major mode for Lisp languages,
+;; and supporting functions for dealing with Lisp code.
+(use-feature lisp-mode
+  :init
+  (add-to-list 'safe-local-variable-values
+               '(lisp-indent-function . common-lisp-indent-function)))
 
 ;;; init.el ends here
