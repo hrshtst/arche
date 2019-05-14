@@ -222,7 +222,8 @@ function. DOCSTRING and BODY are as in `defun'."
          ("C-c g" . counsel-git)
          ("C-c j" . counsel-git-grep)
          ("C-c k" . counsel-git-ag)
-         ("C-c m" . counsel-mark-ring))
+         ("C-c m" . counsel-mark-ring)
+         ("C-c C-r" . counsel-recentf))
   :blackout t)
 
 ;;; Window management
