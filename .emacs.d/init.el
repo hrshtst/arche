@@ -34,6 +34,49 @@
 (require 'cl-lib)
 (require 'map)
 
+;;; Define utility functions
+(defmacro my/defadvice (name arglist where place docstring &rest body)
+  "Define an advice called NAME and add it to a function.
+ARGLIST is as in `defun'. WHERE is a keyword as passed to
+`advice-add', and PLACE is the function to which to add the
+advice, like in `advice-add'. DOCSTRING and BODY are as in
+`defun'."
+  (declare (indent 2)
+           (doc-string 5))
+  (unless (stringp docstring)
+    (error "my/defadvice: no docstring provided"))
+  `(progn
+     (defun ,name ,arglist
+       ,(let ((article (if (string-match-p "^:[aeiou]" (symbol-name where))
+                           "an"
+                         "a")))
+          (format "%s\n\nThis is %s `%S' advice for `%S'."
+                  docstring article where
+                  (if (and (listp place)
+                           (memq (car place) ''function))
+                      (cadr place)
+                    place)))
+       ,@body)
+     (advice-add ',place ',where #',name)
+     ',name))
+
+(defmacro my/defhook (name arglist hook docstring &rest body)
+  "Define a function called NAME and add it to a hook.
+ARGLIST is as in `defun'. HOOK is the hook to which to add the
+function. DOCSTRING and BODY are as in `defun'."
+  (declare (indent 2)
+           (doc-string 4))
+  (unless (string-match-p "-hook$" (symbol-name hook))
+    (error "Symbol `%S' is not a hook" hook))
+  (unless (stringp docstring)
+    (error "my/defhook: no docstring provided"))
+  `(progn
+     (defun ,name ,arglist
+       ,(format "%s\n\nThis function is for use in `%S'."
+                docstring hook)
+       ,@body)
+     (add-hook ',hook ',name)))
+
 ;;; Start Emacs with appropriate setting
 
 ;; Change working directory to HOME unless non-default
@@ -634,6 +677,7 @@ newline."
 ;; Feature `autorevert' automatically reverts the buffer when its
 ;; visited file changes on disk.
 (use-feature autorevert
+  :defer 2
   :config
   (setq auto-revert-interval 1)
   (global-auto-revert-mode +1)
@@ -707,5 +751,264 @@ newline."
 ;; with ivy interface.
 (use-package ivy-yasnippet
   :bind (("C-c y" . ivy-yasnippet)))
+
+;;; IDE-like features
+;;;; Language servers
+
+;; Package `lsp-mode' is an Emacs client for the Language Server
+;; Protocol, which provides IDE-like features.
+(use-package lsp-mode
+  :init
+  (my/defhook my/enable-lsp ()
+     prog-mode-hook
+     "Enable `lsp-mode' for most programming modes."
+     (unless (derived-mode-p
+              ;; `lsp-mode' doesn't support Elisp. There's nothing to
+              ;; do for the *scratch* buffer.
+              #'emacs-lisp-mode
+              ;; Disable for modes that is a specialized framework
+              ;; available for
+              #'python-mode)
+       (lsp)))
+
+  :config
+  ;; Use Flycheck, not Flymake.
+  (setq lsp-prefer-flymake nil))
+
+;;;; Indentation
+
+;; Don't use tabs for indentation.
+(setq-default indent-tabs-mode nil)
+
+;;;; Autocompletion
+
+;; Package `company' provides a text completion framework.  It uses
+;;  pluggable back-ends and front-ends to retrieve and display
+;;  completion candidates.
+(use-package company
+  :defer 3
+  :init
+  (defvar my/company-backends-global
+    '(company-capf
+      company-files
+      (company-dabbrev-code company-keywords)
+      company-dabbrev)
+    "Values for `company-backends' used everywhere. If
+`company-backends' is overridden, then these backends will still
+be included.")
+
+  :bind (;; Remap the standard Emacs keybindings for invoking
+         ;; completion to instead use Company. You might think this
+         ;; could be put in the `:bind*' declaration below, but it
+         ;; seems that `bind-key*' does not work with remappings.
+         ([remap completion-at-point] . company-manual-begin)
+         ([remap complete-symbol] . company-manual-begin)
+
+         ;; The following are keybindings that take effect whenever
+         ;; the completions menu is visible, even if the user has not
+         ;; explicitly interacted with Company.
+
+         :map company-active-map
+
+         ;; Make TAB always complete the current selection, instead of
+         ;; only completing a common prefix.
+         ("<tab>" . company-complete-selection)
+         ("TAB" . company-complete-selection)
+
+         ;; The following are keybindings that only take effect if the
+         ;; user has explicitly interacted with Company. Note that
+         ;; `:map' from above is "sticky", and applies also below: see
+         ;; https://github.com/jwiegley/use-package/issues/334#issuecomment-349473819.
+
+         :filter (company-explicit-action-p)
+
+         ;; Make RET trigger a completion if and only if the user has
+         ;; explicitly interacted with Company, instead of always
+         ;; doing so.
+         ("<return>" . company-complete-selection)
+         ("RET" . company-complete-selection)
+
+         ;; We then make <up> and <down> abort the completions menu
+         ;; unless the user has interacted explicitly. Note that we
+         ;; use `company-select-previous' instead of
+         ;; `company-select-previous-or-abort'. I think the former
+         ;; makes more sense since the general idea of this `company'
+         ;; configuration is to decide whether or not to steal
+         ;; keypresses based on whether the user has explicitly
+         ;; interacted with `company', not based on the number of
+         ;; candidates.
+         ;;
+         ;; Note that M-p and M-n work regardless of whether explicit
+         ;; interaction has happened yet, and note also that M-TAB
+         ;; when the completions menu is open counts as an
+         ;; interaction.
+         ("<up>" . company-select-previous)
+         ("<down>" . company-select-next))
+
+  :bind* (;; The default keybinding for `completion-at-point' and
+          ;; `complete-symbol' is M-TAB or equivalently C-M-i. We
+          ;; already remapped those bindings to `company-manual-begin'
+          ;; above. Here we make sure that they definitely invoke
+          ;; `company-manual-begin' even if a minor mode binds M-TAB
+          ;; directly.
+          ("M-TAB" . company-manual-begin))
+
+  :config
+
+  ;; Always display the entire suggestion list onscreen, placing it
+  ;; above the cursor if necessary.
+  (setq company-tooltip-minimum company-tooltip-limit)
+
+  ;; Always display suggestions in the tooltip, even if there is only
+  ;; one. Also, don't display metadata in the echo area. (This
+  ;; conflicts with ElDoc.)
+  (setq company-frontends '(company-pseudo-tooltip-frontend))
+
+  ;; Show quick-reference numbers in the tooltip. (Select a completion
+  ;; with M-1 through M-0.)
+  (setq company-show-numbers t)
+
+  ;; Prevent non-matching input (which will dismiss the completions
+  ;; menu), but only if the user interacts explicitly with Company.
+  (setq company-require-match #'company-explicit-action-p)
+
+  ;; Company appears to override our settings in `company-active-map'
+  ;; based on `company-auto-complete-chars'. Turning it off ensures we
+  ;; have full control.
+  (setq company-auto-complete-chars nil)
+
+  ;; Only search the current buffer to get suggestions for
+  ;; `company-dabbrev' (a backend that creates suggestions from text
+  ;; found in your buffers). This prevents Company from causing lag
+  ;; once you have a lot of buffers open.
+  (setq company-dabbrev-other-buffers nil)
+
+  ;; Make the `company-dabbrev' backend fully case-sensitive, to
+  ;; improve the UX when working with domain-specific words that have
+  ;; particular casing.
+  (setq company-dabbrev-ignore-case nil)
+  (setq company-dabbrev-downcase nil)
+
+  ;; When candidates in the autocompletion tooltip have additional
+  ;; metadata, like a type signature, align that information to the
+  ;; right-hand side. This usually makes it look neater.
+  (setq company-tooltip-align-annotations t)
+
+  (global-company-mode +1)
+
+  :blackout t)
+
+;; Package `company-lsp' provides a Company completion backend for
+;; `lsp-mode'.
+(use-package company-lsp)
+
+;;;; Jump to definition
+
+;; Package `dumb-jump' is an Emacs "jump to definition" package with
+;; support for multiple programming languages that favors "just
+;; working". This means minimal configuration with absolutely no
+;; stored indexes (TAGS) or persistent background processes.
+(use-package dumb-jump
+  :init
+  (dumb-jump-mode +1)
+
+  :bind (:map dumb-jump-mode-map
+              ("M-Q" . dumb-jump-quick-look))
+  :bind* (("C-M-d" . dumb-jump-go-prompt)
+          ("C-x 4 g" . dumb-jump-go-other-window)
+          ("C-x 4 d" . my/dumb-jump-go-prompt-other-window))
+
+  :config
+  (defun my/dumb-jump-go-prompt-other-window ()
+    "Like `dumb-jump-go-prompt' but use a different window."
+    (interactive)
+    (let ((dumb-jump-window 'other))
+      (dumb-jump-go-prompt))))
+
+;;;; Display contextual metadata
+
+;; Feature `eldoc' provides a minor mode which allows function
+;; signatures or other metadata to be displayed in the echo area.
+(use-feature eldoc
+  :demand t
+
+  :config
+  ;; Always truncate ElDoc messages to one line. This prevents the
+  ;; echo area from resizing itself unexpectedly when point is on a
+  ;; variable with a multiline docstring.
+  (setq eldoc-echo-area-use-multiline-p nil)
+
+  ;; Original code from
+  ;; https://github.com/PythonNut/emacs-config/blob/1a92a1ff1d563fa6a9d7281bbcaf85059c0c40d4/modules/config-intel.el#L130-L137,
+  ;; thanks!
+  (my/defadvice my/advice-disable-eldoc-on-flycheck
+      (&rest _)
+    :after-while eldoc-display-message-no-interference-p
+    "Disable ElDoc when point is on a Flycheck overlay.
+This prevents ElDoc and Flycheck from fighting over the echo
+area."
+    (not (and (bound-and-true-p flycheck-mode)
+              (flycheck-overlay-errors-at (point)))))
+
+  :blackout t)
+
+;;;; Syntax checking and code linting
+
+;; Package `flycheck' provides a framework for in-buffer error and
+;; warning highlighting, or more generally syntax checking.
+(use-package flycheck
+  :defer 4
+
+  :init
+  (defun my/flycheck-disable-checkers (&rest checkers)
+    "Disable the given Flycheck syntax CHECKERS, symbols.
+This function affects only the current buffer, and neither causes
+nor requires Flycheck to be loaded."
+    (unless (boundp 'flycheck-disabled-checkers)
+      (setq flycheck-disabled-checkers nil))
+    (make-local-variable 'flycheck-disabled-checkers)
+    (dolist (checker checkers)
+      (cl-pushnew checker flycheck-disabled-checkers)))
+
+  :bind-keymap (("C-c !" . flycheck-command-map))
+
+  :config
+  (global-flycheck-mode +1)
+
+  (dolist (name '("python" "python2" "python3"))
+    (add-to-list 'safe-local-variable-values
+                 `(flycheck-python-pycompile-executable . ,name)))
+
+  ;; Run a syntax check when changing buffers, just in case you
+  ;; modified some other files that impact the current one. See
+  ;; https://github.com/flycheck/flycheck/pull/1308.
+  (add-to-list 'flycheck-check-syntax-automatically 'idle-buffer-switch)
+
+  ;; For the above functionality, check syntax in a buffer that you
+  ;; switched to only briefly. This allows "refreshing" the syntax
+  ;; check state for several buffers quickly after e.g. changing a
+  ;; config file.
+  (setq flycheck-buffer-switch-check-intermediate-buffers t)
+
+  ;; Display errors in the echo area after only 0.2 seconds, not 0.9.
+  (setq flycheck-display-errors-delay 0.2)
+
+  :config
+  (my/bind-key "p" #'flycheck-previous-error)
+  (my/bind-key "n" #'flycheck-next-error)
+
+  :blackout t)
+
+;; Package `lsp-ui' provides Flycheck integration for `lsp-mode', as
+;; well as various other UI elements that integrate with `lsp-mode'.
+(use-package lsp-ui
+  :bind (("C-c f" . lsp-ui-sideline-apply-code-actions))
+
+  :config
+  ;; Don't show symbol definitions in the sideline. They are pretty
+  ;; noisy, and there appears to currently be a bug where they prevent
+  ;; Flycheck errors from being shown (the errors flash briefly and
+  ;; then disappear).
+  (setq lsp-ui-sideline-show-hover nil))
 
 ;;; init.el ends here
