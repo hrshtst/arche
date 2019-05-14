@@ -19,6 +19,7 @@ declare -a requested_packages=(
   'clang'
   'clang-format'
   'clang-tidy'
+  'clang-tools'
   'cmake'
   'cmigemo'
   'curl'
