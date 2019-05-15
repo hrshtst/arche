@@ -7,6 +7,7 @@ THIS_DIR="${1}"
 source "${THIS_DIR}/scripts/functions.sh"
 source "${THIS_DIR}/scripts/init/ubuntu-bionic/apt-get-common.sh"
 
+# See: https://apt.llvm.org/
 curl https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
 sudo sh -c "cat << EOF > /etc/apt/sources.list.d/llvm.list
 # i386 not available
