@@ -885,12 +885,14 @@ newline."
   ;; right-hand side. This usually makes it look neater.
   (setq company-tooltip-align-annotations t)
 
-  (defun company-mode/backend-with-yas (backend)
+  (defun my/company-backend-append-yas (backend)
     (if (and (listp backend) (member 'company-yasnippet backend))
         backend
       (append (if (consp backend) backend (list backend))
               '(:with company-yasnippet))))
-  (setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
+  (defun my/company-backend-ensure-yas ()
+    (setq company-backends (mapcar #'my/company-backend-append-yas company-backends)))
+  (my/company-backend-ensure-yas)
 
   :blackout t)
 
@@ -898,7 +900,7 @@ newline."
 ;; `lsp-mode'.
 (use-package company-lsp
   :config
-  (push '(company-lsp :with company-yasnippet) company-backends))
+  (my/company-backend-ensure-yas))
 
 ;;;; Jump to definition
 
