@@ -223,7 +223,7 @@ function. DOCSTRING and BODY are as in `defun'."
          ("C-c j" . counsel-git-grep)
          ("C-c k" . counsel-git-ag)
          ("C-c m" . counsel-mark-ring)
-         ("C-c C-r" . counsel-recentf))
+         ("C-x C-r" . counsel-recentf))
   :blackout t)
 
 ;;; Window management
@@ -279,15 +279,6 @@ function. DOCSTRING and BODY are as in `defun'."
   (save-place-mode +1))
 
 ;; Package `projectile' provides a set of functions to operate on
-;; project level such as Git repository, CMake project, etc.
-;; (use-package projectile
-;;   :init
-;;   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-;;   (projectile-mode +1)
-;;   :defer 1
-;;   :config
-;;   :blackout t)
-
 (use-package projectile
   :init/el-patch
 
