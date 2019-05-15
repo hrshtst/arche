@@ -716,8 +716,7 @@ newline."
 ;; Package `yasnippet' allows us to type an abbreviation and
 ;; automatically expand it into function templates.
 (use-package yasnippet
-  :hook
-  (prog-mode . yas-minor-mode)
+  :commands (yas-minor-mode)
 
   :bind (:map yas-minor-mode-map
               ;; Disable TAB from expanding snippets.
@@ -758,6 +757,8 @@ newline."
   (my/defhook my/enable-lsp ()
      prog-mode-hook
      "Enable `lsp-mode' for most programming modes."
+     ;; `lsp-mode' requires `yas-minor-mode' enabled.
+     (yas-minor-mode +1)
      (unless (derived-mode-p
               ;; `lsp-mode' doesn't support Elisp. There's nothing to
               ;; do for the *scratch* buffer.
