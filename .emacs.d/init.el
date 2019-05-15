@@ -783,22 +783,13 @@ newline."
 ;;  completion candidates.
 (use-package company
   :defer 3
-  :init
-  (defvar my/company-backends-global
-    '(company-capf
-      company-files
-      (company-dabbrev-code company-keywords)
-      company-dabbrev)
-    "Values for `company-backends' used everywhere. If
-`company-backends' is overridden, then these backends will still
-be included.")
 
   :bind (;; Remap the standard Emacs keybindings for invoking
          ;; completion to instead use Company. You might think this
          ;; could be put in the `:bind*' declaration below, but it
          ;; seems that `bind-key*' does not work with remappings.
-         ([remap completion-at-point] . company-manual-begin)
-         ([remap complete-symbol] . company-manual-begin)
+         ;; ([remap completion-at-point] . company-manual-begin)
+         ;; ([remap complete-symbol] . company-manual-begin)
 
          ;; The following are keybindings that take effect whenever
          ;; the completions menu is visible, even if the user has not
