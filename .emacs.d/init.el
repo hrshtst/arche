@@ -783,6 +783,9 @@ newline."
 ;;  pluggable back-ends and front-ends to retrieve and display
 ;;  completion candidates.
 (use-package company
+  :init
+  (global-company-mode +1)
+
   :defer 3
 
   :bind (;; Remap the standard Emacs keybindings for invoking
@@ -882,13 +885,20 @@ newline."
   ;; right-hand side. This usually makes it look neater.
   (setq company-tooltip-align-annotations t)
 
-  (global-company-mode +1)
+  (defun company-mode/backend-with-yas (backend)
+    (if (and (listp backend) (member 'company-yasnippet backend))
+        backend
+      (append (if (consp backend) backend (list backend))
+              '(:with company-yasnippet))))
+  (setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
 
   :blackout t)
 
 ;; Package `company-lsp' provides a Company completion backend for
 ;; `lsp-mode'.
-(use-package company-lsp)
+(use-package company-lsp
+  :config
+  (push '(company-lsp :with company-yasnippet) company-backends))
 
 ;;;; Jump to definition
 
