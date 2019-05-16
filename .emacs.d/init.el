@@ -713,9 +713,45 @@ newline."
 ;; pairs, highlight matching paired parens and provide keybindings
 ;; for operating on paired parens.
 (use-package smartparens
+  :init/el-patch
+
+  (defvar sp-paredit-bindings '(
+                                ("C-M-f" . sp-forward-sexp) ;; navigation
+                                ("C-M-b" . sp-backward-sexp)
+                                ("C-M-u" . sp-backward-up-sexp)
+                                ("C-M-d" . sp-down-sexp)
+                                ("C-M-p" . sp-backward-down-sexp)
+                                ("C-M-n" . sp-up-sexp)
+                                ("M-s" . sp-splice-sexp) ;; depth-changing commands
+                                ("M-<up>" . sp-splice-sexp-killing-backward)
+                                ("M-<down>" . sp-splice-sexp-killing-forward)
+                                ("M-r" . sp-splice-sexp-killing-around)
+                                ("M-(" . sp-wrap-round)
+                                ("C-)" . sp-forward-slurp-sexp) ;; barf/slurp
+                                ("C-<right>" . sp-forward-slurp-sexp)
+                                ("C-}" . sp-forward-barf-sexp)
+                                ("C-<left>" . sp-forward-barf-sexp)
+                                ("C-(" . sp-backward-slurp-sexp)
+                                ("C-M-<left>" . sp-backward-slurp-sexp)
+                                ("C-{" . sp-backward-barf-sexp)
+                                ("C-M-<right>" . sp-backward-barf-sexp)
+                                ("M-S" . sp-split-sexp) ;; misc
+                                ("M-j" . sp-join-sexp)
+                                (el-patch-remove
+                                 ("M-?" . sp-convolute-sexp))
+                                )
+    (el-patch-concat
+      "Paredit inspired bindings.
+
+Alist containing the default paredit bindings to corresponding
+smartparens functions."
+      (el-patch-add
+        "\n\nCommand for `sp-convolute-sexp' has been removed.")))
+
   :demand t
 
   :config
+
   ;; Load the default pair definitions.
   (require 'smartparens-config)
 
@@ -728,6 +764,11 @@ newline."
 
   ;; Highlight matching parens.
   (show-smartparens-global-mode +1)
+
+  ;; Prevent all transient highlighting of inserted pairs.
+  (setq sp-highlight-pair-overlay nil)
+  (setq sp-highlight-wrap-overlay nil)
+  (setq sp-highlight-wrap-tag-overlay nil)
 
   ;; Work around https://github.com/Fuco1/smartparens/issues/783.
   (setq sp-escape-quotes-after-insert nil)
@@ -1013,14 +1054,24 @@ nor requires Flycheck to be loaded."
 ;; Package `lsp-ui' provides Flycheck integration for `lsp-mode', as
 ;; well as various other UI elements that integrate with `lsp-mode'.
 (use-package lsp-ui
-  :bind (("C-c f" . lsp-ui-sideline-apply-code-actions))
+
+  :bind (:map lsp-ui-mode-map
+    ("C-c f" . lsp-ui-sideline-apply-code-actions)
+    ([remap xref-find-definitions] . lsp-ui-peek-find-definitions)
+    ([remap xref-find-references] . lsp-ui-peek-find-references))
 
   :config
-  ;; Don't show symbol definitions in the sideline. They are pretty
-  ;; noisy, and there appears to currently be a bug where they prevent
-  ;; Flycheck errors from being shown (the errors flash briefly and
-  ;; then disappear).
-  (setq lsp-ui-sideline-show-hover nil))
+
+  (my/defadvice my/advice-lsp-ui-apply-single-fix (orig-fun &rest args)
+    :around lsp-ui-sideline-apply-code-actions
+    "Apply code fix immediately if only one is possible."
+    (cl-letf* ((orig-completing-read (symbol-function #'completing-read))
+               ((symbol-function #'completing-read)
+                (lambda (prompt collection &rest args)
+                  (if (= (safe-length collection) 1)
+                      (car collection)
+                    (apply orig-completing-read prompt collection args)))))
+      (apply orig-fun args))))
 
 ;;; Language support
 ;;;; Plain text
