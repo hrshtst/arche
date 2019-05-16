@@ -196,6 +196,7 @@ function. DOCSTRING and BODY are as in `defun'."
   :demand t
 
   :config
+
   (exec-path-from-shell-initialize)
   (exec-path-from-shell-copy-envs '("GOPATH")))
 
@@ -204,11 +205,13 @@ function. DOCSTRING and BODY are as in `defun'."
 ;;;; ivy
 (use-package ivy
   :init
+
   (ivy-mode +1)
 
   :bind* (("C-c C-r" . ivy-resume))
 
   :config
+
   (setq ivy-use-virtual-buffers t)
   (setq ivy-count-format "(%d/%d) ")
   (setq ivy-extra-directories nil)
@@ -222,6 +225,7 @@ function. DOCSTRING and BODY are as in `defun'."
 ;;;; counsel
 (use-package counsel
   :init
+
   (counsel-mode +1)
 
   :bind (("C-c c" . counsel-find-file)
@@ -234,11 +238,13 @@ function. DOCSTRING and BODY are as in `defun'."
 
          :map minibuffer-local-map
          ("C-r" . counsel-minibuffer-history))
+
   :blackout t)
 
 ;; Package `prescient' is a library for intelligent sorting and
 ;; filtering in various contexts.
 (use-package prescient
+
   :config
 
   ;; Remember usage statistics across Emacs sessions.
@@ -261,6 +267,7 @@ function. DOCSTRING and BODY are as in `defun'."
 (use-feature windmove
   :demand t
   :config
+
   (windmove-default-keybindings))
 
 ;; Feature `winner' provides undo/redo function for window
@@ -270,6 +277,7 @@ function. DOCSTRING and BODY are as in `defun'."
 (use-feature winner
   :demand t
   :config
+
   (winner-mode +1))
 
 ;; Package `transpose-frame' provides interactive commands to
@@ -304,6 +312,7 @@ function. DOCSTRING and BODY are as in `defun'."
 (use-feature saveplace
   :demand t
   :config
+
   (save-place-mode +1))
 
 ;; Package `projectile' provides a set of functions to operate on
@@ -434,12 +443,16 @@ function. DOCSTRING and BODY are as in `defun'."
     "Keymap for Projectile mode.")
 
   :init
+
   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 
   (projectile-mode +1)
 
   :defer 1
   :config
+
+  ;; Enable the mode again now that we have all the supporting hooks
+  ;; and stuff defined.
   (projectile-mode +1)
 
   (put 'projectile-indexing-method 'safe-local-variable
@@ -521,6 +534,8 @@ counterparts."
 
   :config
 
+  ;; Sort files using `prescient', instead of just showing them in
+  ;; lexicographic order.
   (setq counsel-projectile-sort-files t))
 
 
@@ -571,6 +586,7 @@ newline."
 ;; whitespace.
 (use-feature whitespace
   :init
+
   (define-minor-mode my/highlight-long-lines-mode
     "Minor mode for highlighting long lines."
     nil nil nil
@@ -582,6 +598,7 @@ newline."
       (whitespace-mode -1)
       (kill-local-variable 'whitespace-style)
       (kill-local-variable 'whitespace-line-column)))
+
   :blackout t)
 
 ;; Feature `outline' provides major and minor modes for collapsing
@@ -589,10 +606,12 @@ newline."
 (use-feature outline
   :demand t
   :config
+
   (define-globalized-minor-mode global-outline-minor-mode
     outline-minor-mode outline-minor-mode)
 
   (global-outline-minor-mode +1)
+
   :blackout outline-minor-mode)
 
 ;;;; Kill and yank
@@ -607,6 +626,7 @@ newline."
 (use-feature delsel
   :demand t
   :config
+
   (delete-selection-mode +1))
 
 ;;;; Undo/redo
@@ -621,10 +641,13 @@ newline."
          :map undo-tree-map
          ("M-/" . undo-tree-redo))
   :config
+
   (global-undo-tree-mode +1)
+
   ;; Disable undo-in-region because the implementation is very buggy
   ;; and usually lose undo history by accident.
   (setq undo-tree-enable-undo-in-region nil)
+
   :blackout t)
 
 ;;;; Navigation
@@ -636,7 +659,9 @@ newline."
 (use-feature subword
   :demand t
   :config
+
   (global-subword-mode +1)
+
   :blackout t)
 
 ;; After typing C-u C-<SPC>, we can type just C-<SPC> to cycle mark
@@ -649,7 +674,9 @@ newline."
 (use-package back-button
   :demand t
   :config
+
   (back-button-mode +1)
+
   :blackout t)
 
 ;; `exchange-point-and-mark' can be used to push the current point
@@ -678,6 +705,7 @@ newline."
   :demand t
   :after visual-regexp
   :config
+
   ;; Use Emacs-style regular expressions by default, instead of
   ;; Python-style.
   (setq vr/engine 'emacs))
@@ -686,6 +714,7 @@ newline."
 ;; forward or backward to occurrences of a given search string.
 (use-feature isearch
   :config
+
   ;; Eliminate the 0.25s idle delay for isearch highlighting.
   (setq isearch-lazy-highlight-initial-delay 0))
 
@@ -703,8 +732,10 @@ newline."
 (use-feature autorevert
   :defer 2
   :config
+
   (setq auto-revert-interval 1)
   (global-auto-revert-mode +1)
+
   :blackout auto-revert-mode)
 
 ;;;; Automatic parens paring
@@ -749,7 +780,6 @@ smartparens functions."
         "\n\nCommand for `sp-convolute-sexp' has been removed.")))
 
   :demand t
-
   :config
 
   ;; Load the default pair definitions.
@@ -793,6 +823,7 @@ smartparens functions."
               ("<tab>" . nil))
 
   :config
+
   ;; Reduce verbosity. Default is 3. Suppress messages about
   ;; successful snippet loading on Emacs init. Errors should still
   ;; be shown.
@@ -823,6 +854,7 @@ smartparens functions."
 ;; Protocol, which provides IDE-like features.
 (use-package lsp-mode
   :init
+
   (my/defhook my/enable-lsp ()
      prog-mode-hook
      "Enable `lsp-mode' for most programming modes."
@@ -838,6 +870,7 @@ smartparens functions."
        (lsp)))
 
   :config
+
   ;; Use Flycheck, not Flymake.
   (setq lsp-prefer-flymake nil))
 
@@ -859,24 +892,24 @@ smartparens functions."
 
   :bind (:map company-active-map
 
-         ;; Select candidate using "C-n" and "C-p".
-         ("C-n" . company-select-next)
-         ("C-p" . company-select-previous)
+              ;; Select candidate using "C-n" and "C-p".
+              ("C-n" . company-select-next)
+              ("C-p" . company-select-previous)
 
-         ;; Invoke filtering by "C-s".
-         ("C-s" . company-filter-candidates)
+              ;; Invoke filtering by "C-s".
+              ("C-s" . company-filter-candidates)
 
-         ;; Make TAB always complete the current selection.
-         ("<tab>" . company-complete-selection)
-         ("TAB" . company-complete-selection)
-         ;; Also, make "C-f" complete the selection.
-         ("C-f" . company-complete-selection)
+              ;; Make TAB always complete the current selection.
+              ("<tab>" . company-complete-selection)
+              ("TAB" . company-complete-selection)
+              ;; Also, make "C-f" complete the selection.
+              ("C-f" . company-complete-selection)
 
-         :map company-search-map
+              :map company-search-map
 
-         ;; Move within filtered candidates.
-         ("C-n" . company-select-next)
-         ("C-p" . company-select-previous))
+              ;; Move within filtered candidates.
+              ("C-n" . company-select-next)
+              ("C-p" . company-select-previous))
 
   :bind* (;; Invoke company manually.
           ("M-TAB" . company-complete))
@@ -951,6 +984,7 @@ smartparens functions."
 ;; `lsp-mode'.
 (use-package company-lsp
   :config
+
   ;; Ensure that yasnippet candidates appear in lsp-mode.
   (my/company-backend-ensure-yas))
 
@@ -962,15 +996,18 @@ smartparens functions."
 ;; stored indexes (TAGS) or persistent background processes.
 (use-package dumb-jump
   :init
+
   (dumb-jump-mode +1)
 
   :bind (:map dumb-jump-mode-map
               ("M-Q" . dumb-jump-quick-look))
+
   :bind* (("C-M-d" . dumb-jump-go-prompt)
           ("C-x 4 g" . dumb-jump-go-other-window)
           ("C-x 4 d" . my/dumb-jump-go-prompt-other-window))
 
   :config
+
   (defun my/dumb-jump-go-prompt-other-window ()
     "Like `dumb-jump-go-prompt' but use a different window."
     (interactive)
@@ -983,8 +1020,8 @@ smartparens functions."
 ;; signatures or other metadata to be displayed in the echo area.
 (use-feature eldoc
   :demand t
-
   :config
+
   ;; Always truncate ElDoc messages to one line. This prevents the
   ;; echo area from resizing itself unexpectedly when point is on a
   ;; variable with a multiline docstring.
@@ -1010,8 +1047,8 @@ area."
 ;; warning highlighting, or more generally syntax checking.
 (use-package flycheck
   :defer 4
-
   :init
+
   (defun my/flycheck-disable-checkers (&rest checkers)
     "Disable the given Flycheck syntax CHECKERS, symbols.
 This function affects only the current buffer, and neither causes
@@ -1025,6 +1062,7 @@ nor requires Flycheck to be loaded."
   :bind-keymap (("C-c !" . flycheck-command-map))
 
   :config
+
   (global-flycheck-mode +1)
 
   (dolist (name '("python" "python2" "python3"))
@@ -1046,6 +1084,7 @@ nor requires Flycheck to be loaded."
   (setq flycheck-display-errors-delay 0.2)
 
   :config
+
   (my/bind-key "p" #'flycheck-previous-error)
   (my/bind-key "n" #'flycheck-next-error)
 
@@ -1079,6 +1118,7 @@ nor requires Flycheck to be loaded."
 ;; Feature `text-mode' provides a major mode for editing plain text.
 (use-feature text-mode
   :config
+
   (add-hook 'text-mode-hook #'auto-fill-mode)
 
   (my/defhook my/flycheck-text-setup ()
@@ -1092,6 +1132,7 @@ nor requires Flycheck to be loaded."
 ;; and supporting functions for dealing with Lisp code.
 (use-feature lisp-mode
   :init
+
   (add-to-list 'safe-local-variable-values
                '(lisp-indent-function . common-lisp-indent-function)))
 
@@ -1101,6 +1142,7 @@ nor requires Flycheck to be loaded."
 ;; Java.
 (use-feature cc-mode
   :config
+
   (my/defadvice my/advice-inhibit-c-submode-indicators (&rest _)
     :override c-update-modeline
     "Unconditionally inhibit CC submode indicators in the mode lighter.")
@@ -1113,6 +1155,7 @@ nor requires Flycheck to be loaded."
 ;; Package `google-c-style' provides the google C/C++ coding style.
 (use-package google-c-style
   :straight (:type git :host github :repo "google/styleguide" :branch "gh-pages")
+
   :hook ((c-mode-common . google-set-c-style)
          (c-mode-common . google-make-newline-indent)))
 
@@ -1128,6 +1171,7 @@ nor requires Flycheck to be loaded."
 (use-package clang-format
   :if (executable-find "clang-format")
   :init
+
   (defun my/clang-format-buffer-on-projectile ()
     "Reformat buffer if .clang-format exists in the projectile root."
     (when (and (featurep 'projectile)
