@@ -1198,12 +1198,21 @@ nor requires Flycheck to be loaded."
 
 ;; Package `markdown-mode' provides a major mode for Markdown.
 (use-package markdown-mode
+  :init
+
+  (when (executable-find "pandoc")
+    (setq markdown-command "pandoc -s --self-contained -t html5 -c ~/.pandoc/github-markdown.css"))
+
+  :mode (("README\\.md\\'" . gfm-mode)
+         ("\\.md\\'" . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode))
 
   :bind (;; C-c C-s p is a really dumb binding, we prefer C-c C-s C-p.
          ;; Same for C-c C-s q.
          :map markdown-mode-style-map
               ("C-p" . markdown-insert-pre)
               ("C-q" . markdown-insert-blockquote))
+
   :config
 
   (my/defhook my/flycheck-markdown-setup ()
