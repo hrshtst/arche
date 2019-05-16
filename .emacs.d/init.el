@@ -1110,7 +1110,9 @@ nor requires Flycheck to be loaded."
                   (if (= (safe-length collection) 1)
                       (car collection)
                     (apply orig-completing-read prompt collection args)))))
-      (apply orig-fun args))))
+      (apply orig-fun args)))
+
+  (setq lsp-ui-sideline-ignore-duplicate t))
 
 ;;; Language support
 ;;;; Plain text
