@@ -1189,5 +1189,38 @@ nor requires Flycheck to be loaded."
 
   (add-hook 'c-mode-common-hook #'my/clang-format-buffer-on-projectile-mode))
 
+;;;; Go
+
+;; Package `go-mode' provides a major mode for Go.
+(use-package go-mode)
+
+;;;; Markdown
+
+;; Package `markdown-mode' provides a major mode for Markdown.
+(use-package markdown-mode
+
+  :bind (;; C-c C-s p is a really dumb binding, we prefer C-c C-s C-p.
+         ;; Same for C-c C-s q.
+         :map markdown-mode-style-map
+              ("C-p" . markdown-insert-pre)
+              ("C-q" . markdown-insert-blockquote))
+  :config
+
+  (my/defhook my/flycheck-markdown-setup ()
+    markdown-mode-hook
+    "Disable some Flycheck checkers for Markdown."
+    (my/flycheck-disable-checkers
+     'markdown-markdownlint-cli
+     'markdown-mdl
+     'proselint))
+
+  (my/defadvice my/disable-markdown-metadata-fontification (&rest _)
+    :override markdown-match-generic-metadata
+    "Prevent fontification of YAML metadata blocks in `markdown-mode'.
+This prevents a mis-feature wherein if the first line of a
+Markdown document has a colon in it, then it's distractingly and
+usually wrongly fontified as a metadata block. See
+https://github.com/jrblevin/markdown-mode/issues/328."
+    (prog1 nil (goto-char (point-max)))))
 
 ;;; init.el ends here
