@@ -1050,6 +1050,10 @@ nor requires Flycheck to be loaded."
 ;; Java.
 (use-feature cc-mode
   :config
+  (my/defadvice my/advice-inhibit-c-submode-indicators (&rest _)
+    :override c-update-modeline
+    "Unconditionally inhibit CC submode indicators in the mode lighter.")
+
   (my/defhook my/c-mode-setup ()
     c-mode-common-hook
     "Enable `auto-line' and `hungry-delete' minor modes."
@@ -1065,7 +1069,8 @@ nor requires Flycheck to be loaded."
 ;; for modern C++.
 (use-package modern-cpp-font-lock
   :hook (c++-mode . modern-c++-font-lock-mode)
-  :blackout t)
+
+  :blackout modern-c++-font-lock-mode)
 
 ;; Package `clang-format' provides functionality to use clang-format
 ;; with emacs integration.
