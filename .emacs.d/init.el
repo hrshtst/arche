@@ -192,7 +192,9 @@ function. DOCSTRING and BODY are as in `defun'."
 ;; inside Emacs are copied from the user's shell
 (use-package exec-path-from-shell
   :if (memq window-system '(mac ns x))
+
   :demand t
+
   :config
   (exec-path-from-shell-initialize)
   (exec-path-from-shell-copy-envs '("GOPATH")))
@@ -203,12 +205,15 @@ function. DOCSTRING and BODY are as in `defun'."
 (use-package ivy
   :init
   (ivy-mode +1)
+
   :bind* (("C-c C-r" . ivy-resume))
+
   :config
   (setq ivy-use-virtual-buffers t)
   (setq ivy-count-format "(%d/%d) ")
   (setq ivy-extra-directories nil)
   (setq enable-recursive-minibuffers t)
+
   :blackout t)
 
 ;;;; ivy-hydra
@@ -218,13 +223,36 @@ function. DOCSTRING and BODY are as in `defun'."
 (use-package counsel
   :init
   (counsel-mode +1)
+
   :bind (("C-c c" . counsel-find-file)
          ("C-c g" . counsel-git)
          ("C-c j" . counsel-git-grep)
-         ("C-c k" . counsel-git-ag)
+         ("C-c k" . counsel-ag)
+         ("C-x l" . counsel-locate)
          ("C-c m" . counsel-mark-ring)
-         ("C-x C-r" . counsel-recentf))
+         ("C-x C-r" . counsel-recentf)
+
+         :map minibuffer-local-map
+         ("C-r" . counsel-minibuffer-history))
   :blackout t)
+
+;; Package `prescient' is a library for intelligent sorting and
+;; filtering in various contexts.
+(use-package prescient
+  :config
+
+  ;; Remember usage statistics across Emacs sessions.
+  (prescient-persist-mode +1))
+
+;; Package `ivy-prescient' provides intelligent sorting and filtering
+;; for candidates in Ivy menus.
+(use-package ivy-prescient
+  :demand t
+  :after ivy
+  :config
+
+  ;; Use `prescient' for Ivy menus.
+  (ivy-prescient-mode +1))
 
 ;;; Window management
 
@@ -780,69 +808,37 @@ newline."
 ;;;; Autocompletion
 
 ;; Package `company' provides a text completion framework.  It uses
-;;  pluggable back-ends and front-ends to retrieve and display
-;;  completion candidates.
+;; pluggable back-ends and front-ends to retrieve and display
+;; completion candidates.
 (use-package company
   :init
   (global-company-mode +1)
 
   :defer 3
 
-  :bind (;; Remap the standard Emacs keybindings for invoking
-         ;; completion to instead use Company. You might think this
-         ;; could be put in the `:bind*' declaration below, but it
-         ;; seems that `bind-key*' does not work with remappings.
-         ;; ([remap completion-at-point] . company-manual-begin)
-         ;; ([remap complete-symbol] . company-manual-begin)
+  :bind (:map company-active-map
 
-         ;; The following are keybindings that take effect whenever
-         ;; the completions menu is visible, even if the user has not
-         ;; explicitly interacted with Company.
+         ;; Select candidate using "C-n" and "C-p".
+         ("C-n" . company-select-next)
+         ("C-p" . company-select-previous)
 
-         :map company-active-map
+         ;; Invoke filtering by "C-s".
+         ("C-s" . company-filter-candidates)
 
-         ;; Make TAB always complete the current selection, instead of
-         ;; only completing a common prefix.
+         ;; Make TAB always complete the current selection.
          ("<tab>" . company-complete-selection)
          ("TAB" . company-complete-selection)
+         ;; Also, make "C-f" complete the selection.
+         ("C-f" . company-complete-selection)
 
-         ;; The following are keybindings that only take effect if the
-         ;; user has explicitly interacted with Company. Note that
-         ;; `:map' from above is "sticky", and applies also below: see
-         ;; https://github.com/jwiegley/use-package/issues/334#issuecomment-349473819.
+         :map company-search-map
 
-         :filter (company-explicit-action-p)
+         ;; Move within filtered candidates.
+         ("C-n" . company-select-next)
+         ("C-p" . company-select-previous))
 
-         ;; Make RET trigger a completion if and only if the user has
-         ;; explicitly interacted with Company, instead of always
-         ;; doing so.
-         ("<return>" . company-complete-selection)
-         ("RET" . company-complete-selection)
-
-         ;; We then make <up> and <down> abort the completions menu
-         ;; unless the user has interacted explicitly. Note that we
-         ;; use `company-select-previous' instead of
-         ;; `company-select-previous-or-abort'. I think the former
-         ;; makes more sense since the general idea of this `company'
-         ;; configuration is to decide whether or not to steal
-         ;; keypresses based on whether the user has explicitly
-         ;; interacted with `company', not based on the number of
-         ;; candidates.
-         ;;
-         ;; Note that M-p and M-n work regardless of whether explicit
-         ;; interaction has happened yet, and note also that M-TAB
-         ;; when the completions menu is open counts as an
-         ;; interaction.
-         ("<up>" . company-select-previous)
-         ("<down>" . company-select-next))
-
-  :bind* (;; The default keybinding for `completion-at-point' and
-          ;; `complete-symbol' is M-TAB or equivalently C-M-i. We
-          ;; already remapped those bindings to `company-manual-begin'
-          ;; above. Here we make sure that they definitely invoke
-          ;; `company-manual-begin' even if a minor mode binds M-TAB
-          ;; directly.
-          ("M-TAB" . company-manual-begin))
+  :bind* (;; Invoke company manually.
+          ("M-TAB" . company-complete))
 
   :config
 
@@ -885,6 +881,10 @@ newline."
   ;; right-hand side. This usually makes it look neater.
   (setq company-tooltip-align-annotations t)
 
+  ;; Make selecting item before first or after last wrap around.
+  (setq company-selection-wrap-around t)
+
+  ;; Add candidates from yasnippet to backends.
   (defun my/company-backend-append-yas (backend)
     (if (and (listp backend) (member 'company-yasnippet backend))
         backend
@@ -896,10 +896,21 @@ newline."
 
   :blackout t)
 
+;; Package `company-prescient' provides intelligent sorting and
+;; filtering for candidates in Company completions.
+(use-package company-prescient
+  :demand t
+  :after company
+  :config
+
+  ;; Use `prescient' for Company menus.
+  (company-prescient-mode +1))
+
 ;; Package `company-lsp' provides a Company completion backend for
 ;; `lsp-mode'.
 (use-package company-lsp
   :config
+  ;; Ensure that yasnippet candidates appear in lsp-mode.
   (my/company-backend-ensure-yas))
 
 ;;;; Jump to definition
