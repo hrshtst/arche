@@ -10,7 +10,7 @@ source "${THIS_DIR}/scripts/init/ubuntu-bionic/apt-get-common.sh"
 declare -a requested_packages=(
   'ghostscript'
   'texlive-full'
-  'xzdecj'
+  'xzdec'
 )
 
 ## to get sorted list, uncomment below and execute
