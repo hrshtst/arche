@@ -866,7 +866,8 @@ smartparens functions."
               #'emacs-lisp-mode
               ;; Disable for modes that is a specialized framework
               ;; available for
-              #'python-mode)
+              ;;#'python-mode
+              )
        (lsp)))
 
   :config
@@ -1065,10 +1066,6 @@ nor requires Flycheck to be loaded."
 
   (global-flycheck-mode +1)
 
-  (dolist (name '("python" "python2" "python3"))
-    (add-to-list 'safe-local-variable-values
-                 `(flycheck-python-pycompile-executable . ,name)))
-
   ;; Run a syntax check when changing buffers, just in case you
   ;; modified some other files that impact the current one. See
   ;; https://github.com/flycheck/flycheck/pull/1308.
@@ -1233,5 +1230,68 @@ Markdown document has a colon in it, then it's distractingly and
 usually wrongly fontified as a metadata block. See
 https://github.com/jrblevin/markdown-mode/issues/328."
     (prog1 nil (goto-char (point-max)))))
+
+;;;; Python
+
+;; Feature `python' provides a major mode for Python.
+(use-feature python
+  :config
+
+   ;; Django's coding standards style.
+  (setq python-fill-docstring-style 'django)
+
+  ;; Don't warn if guessing the indention fails, just set it to the value
+  ;; of `python-indent-offset'.
+  (setq python-indent-guess-indent-offset-verbose nil)
+
+  (my/defhook my/python-no-reindent-on-colon ()
+    python-mode-hook
+    "Don't reindent on typing a colon.
+See https://emacs.stackexchange.com/a/3338/12534."
+    (setq electric-indent-chars (delq ?: electric-indent-chars))))
+
+;; Package `pipenv' provides interactive commands wrapping the
+;; Pipenv, a minor mode with a keymap for the useful commands, and a
+;; high-level pipenv-activate / pipenv-deactivate interface for
+;; virtual environment integration with Emacs session.
+(use-package pipenv
+  :hook (python-mode . pipenv-mode)
+
+  :init
+  (setq
+   pipenv-projectile-after-switch-function
+   #'pipenv-projectile-after-switch-extended)
+
+  :blackout t)
+
+;; Feature `rst-mode' provides a major mode for ReST.
+(use-feature rst-mode
+  :config
+
+  (my/defhook my/flycheck-rst-setup ()
+    rst-mode-hook
+    "If inside Sphinx project, disable the `rst' Flycheck checker.
+This prevents it from signalling spurious errors. See also
+https://github.com/flycheck/flycheck/issues/953."
+    (when (locate-dominating-file default-directory "conf.py")
+      (my/flycheck-disable-checkers 'rst))))
+
+;; Package `pip-requirements' provides a major mode for
+;; requirements.txt files used by Pip.
+(use-package pip-requirements
+
+  ;; The default mode lighter is "pip-require". Ew.
+  :blackout "Requirements")
+
+(use-package sphinx-doc
+  :demand t
+  :after python
+  :config
+
+  (add-hook 'python-mode-hook
+            (lambda ()
+              (sphinx-doc-mode +1)))
+
+  :blackout t)
 
 ;;; init.el ends here
