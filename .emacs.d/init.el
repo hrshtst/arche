@@ -1294,4 +1294,26 @@ https://github.com/flycheck/flycheck/issues/953."
 
   :blackout t)
 
+;;;; TeX
+;; https://www.tug.org/begin.html
+
+;; Package `auctex' provides major modes for TeX code, including
+;; compiler and viewer integration.
+(straight-use-package 'auctex)
+
+;; Feature `tex' from package `auctex' provides the base major mode
+;; for TeX.
+(use-feature tex
+  :config
+
+  ;; The following configuration is recommended in the manual at
+  ;; https://www.gnu.org/software/auctex/manual/auctex/Quick-Start.html.
+  (setq TeX-auto-save t)
+  (setq TeX-parse-self t)
+
+  (my/defhook my/flycheck-tex-setup ()
+    TeX-mode-hook
+    "Disable some Flycheck checkers in TeX buffers."
+    (my/flycheck-disable-checkers 'tex-chktex 'tex-lacheck)))
+
 ;;; init.el ends here
