@@ -1396,4 +1396,62 @@ https://github.com/flycheck/flycheck/issues/953."
 
   (setq preview-scale-function 1.2))
 
+;;; Configuration file formats
+
+;; Package `apache-mode' provides a major mode for .htaccess and
+;; similar files.
+(use-package apache-mode)
+
+;; Package `crontab-mode' provides a major mode for crontab files.
+(use-package crontab-mode)
+
+;; Package `dockerfile-mode' provides a major mode for Dockerfiles.
+(use-package dockerfile-mode)
+
+;; Package `gitconfig-mode' provides a major mode for .gitconfig and
+;; .gitmodules files.
+(use-package gitconfig-mode)
+
+;; Package `gitignore-mode' provides a major mode for .gitignore
+;; files.
+(use-package gitignore-mode)
+
+;; Package `json-mode' provides a major mode for JSON.
+(use-package json-mode
+  :config
+
+  (my/defhook my/fix-json-indentation ()
+    json-mode-hook
+    "Set the tab width to 2 for JSON."
+    (setq-local tab-width 2)))
+
+;; Package `pip-requirements' provides a major mode for
+;; requirements.txt files used by Pip.
+(use-package pip-requirements
+
+  ;; The default mode lighter is "pip-require". Ew.
+  :blackout "Requirements")
+
+;; Package `pkgbuild-mode' provides a major mode for PKGBUILD files
+;; used by Arch Linux and derivatives.
+(use-package pkgbuild-mode)
+
+;; Package `ssh-config-mode' provides major modes for files in ~/.ssh.
+(use-package ssh-config-mode)
+
+;; Package `terraform-mode' provides major modes for Terraform
+;; configuration files.
+(use-package terraform-mode)
+
+;; Package `toml-mode' provides a major mode for TOML.
+(use-package toml-mode
+  ;; Correct the capitalization from "Toml" to "TOML".
+  :blackout "TOML")
+
+;; Package `yaml-mode' provides a major mode for YAML.
+(use-package yaml-mode
+  :config
+
+  (add-hook 'yaml-mode-hook #'my/auto-fill-disable))
+
 ;;; init.el ends here
