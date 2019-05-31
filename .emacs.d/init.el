@@ -1304,6 +1304,13 @@ https://github.com/flycheck/flycheck/issues/953."
 ;; Feature `tex' from package `auctex' provides the base major mode
 ;; for TeX.
 (use-feature tex
+  :init
+
+  (my/defhook my/yasnippet-tex-setup ()
+    TeX-mode-hook
+    "Enable `yasnippet-minor-mode' for `TeX-mode'."
+    (yas-minor-mode +1))
+
   :config
 
   ;; The following configuration is recommended in the manual at
@@ -1311,9 +1318,82 @@ https://github.com/flycheck/flycheck/issues/953."
   (setq TeX-auto-save t)
   (setq TeX-parse-self t)
 
+  (setq-default TeX-master nil) ; Query for master file.
+
   (my/defhook my/flycheck-tex-setup ()
     TeX-mode-hook
     "Disable some Flycheck checkers in TeX buffers."
     (my/flycheck-disable-checkers 'tex-chktex 'tex-lacheck)))
+
+;; Feature `tex-buf' from package `auctex' provides support for
+;; running TeX commands and displaying their output.
+(use-feature tex-buf
+  :config
+
+  ;; Save buffers automatically when compiling, instead of prompting.
+  (setq TeX-save-query nil))
+
+;; Feature `latex' from package `auctex' provides the major mode for
+;; LaTeX.
+(use-feature latex
+  :config
+
+  ;; Don't be afraid to break inline math between lines.
+  (setq LaTeX-fill-break-at-separators nil)
+
+  ;; When inserting a left brace, delete the current selection first,
+  ;; as per `delete-selection-mode'.
+  (put 'LaTeX-insert-left-brace 'delete-selection t)
+
+  (put 'LaTeX-using-Biber 'safe-local-variable #'booleanp))
+
+;; Feature `font-latex' from package `auctex' provides the syntax
+;; highlighting for the LaTeX major mode.
+(use-feature font-latex
+  :init
+
+  ;; Do the following customizations before `font-latex' is loaded,
+  ;; since otherwise we would have to call
+  ;; `font-latex-update-sectioning-faces'.
+
+  ;; Prevent superscripts and subscripts from being displayed in a
+  ;; different font size.
+  (setq font-latex-fontify-script nil)
+
+  ;; Prevent section headers from being displayed in different font
+  ;; sizes.
+  (setq font-latex-fontify-sectioning 1))
+
+;; Feature `reftex' is a specialized feature for support of labels,
+;; references, citations, and the index in LaTeX.
+(use-feature reftex
+  :init
+
+  (add-hook 'LaTeX-mode-hook 'turn-on-reftex))
+
+;; Package `company-auctex' provides a Company backend that uses
+;; information from AUCTeX for autocompletion.
+(use-package company-auctex
+  :demand t
+  :after (:all company tex)
+  :config
+
+  (company-auctex-init))
+
+;; Package `acutex-latexmk' provides LatexMk support for AUCTeX.
+(use-package auctex-latexmk
+  :demand t
+  :after tex
+  :config
+
+  (setq auctex-latexmk-inherit-TeX-PDF-mode t)
+  (auctex-latexmk-setup))
+
+;; Package `latex-math-preview' provides preview of particular
+;; region in LaTeX file and displays it.
+(use-package latex-math-preview
+  :config
+
+  (setq preview-scale-function 1.2))
 
 ;;; init.el ends here
