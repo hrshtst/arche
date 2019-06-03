@@ -2193,4 +2193,33 @@ spaces."
                         (format-mode-line my/mode-line-right))
                        'fixedcase 'literal)))
 
-;;; init.el ends here
+;;;; Color theme
+
+;; Package `zerodark-theme' provides a good-looking color theme that
+;; works in both windowed and tty Emacs.
+(straight-register-package
+ '(zerodark-theme :host github :repo "NicolasPetton/zerodark-theme"))
+(use-package zerodark-theme)
+
+;; Prune the build cache for straight.el; this will prevent it from
+;; growing too large. Do this after the final hook to prevent packages
+;; installed there from being pruned.
+(straight-prune-build-cache)
+
+;; Occasionally prune the build directory as well. For similar reasons
+;; as above, we need to do this after local configuration.
+(when (= 0 (random 100))
+  (straight-prune-build-directory))
+
+;; Enable color theme as late as is humanly possible. This reduces
+;; frame flashing and other artifacts during startup.
+(use-feature zerodark-theme
+  :demand t
+  :config
+
+  (load-theme 'zerodark 'no-confirm))
+
+;; Local Variables:
+;; indent-tabs-mode: nil
+;; outline-regexp: ";;;;* "
+;; End:
