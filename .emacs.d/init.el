@@ -90,6 +90,11 @@ function. DOCSTRING and BODY are as in `defun'."
   (setq-default user-emacs-directory
                 (file-name-directory load-file-name)))
 
+;; Set `user-init-file' to user initilization file.
+(setq-default user-init-file
+              (if load-file-name load-file-name
+                (expand-file-name "init.el" user-emacs-directory)))
+
 ;; Make sure Emacs is running on modern version, otherwise abort.
 (let ((minimum-emacs-version "26"))
   (when (version< emacs-version minimum-emacs-version)
@@ -1453,5 +1458,179 @@ https://github.com/flycheck/flycheck/issues/953."
   :config
 
   (add-hook 'yaml-mode-hook #'my/auto-fill-disable))
+
+;;; Introspection
+;;;; Help
+
+;; Package `helpful' is an alternative to the built-in Emacs help
+;; that provides much more contextual information.
+(use-package helpful
+  :init
+
+  (use-feature counsel
+    :config
+
+    ;; Have the alternate "help" action for `counsel-M-x' use Helpful
+    ;; instead of the default Emacs help.
+    (setf (nth 0 (alist-get "h" (plist-get ivy--actions-list 'counsel-M-x)
+                            nil nil #'equal))
+          (lambda (x) (helpful-function (intern x)))))
+
+  :bind (;; Remap standard commands.
+         ([remap describe-function] . helpful-callable)
+         ([remap describe-variable] . helpful-variable)
+         ([remap describe-symbol]   . helpful-symbol)
+         ([remap describe-key]      . helpful-key)
+
+         ;; Suggested bindings from the documentation at
+         ;; https://github.com/Wilfred/helpful.
+
+         :map help-map
+         ("F" . helpful-function)
+         ("M-f" . helpful-macro)
+         ("C" . helpful-command)
+
+         :map global-map
+         ("C-c C-d" . helpful-at-point))
+
+  :config
+
+  ;; Make it so you can quit out of `helpful-key' with C-g, like for
+  ;; every other command. Put this in a minor mode so it can be
+  ;; disabled.
+  (define-minor-mode my/universal-keyboard-quit-mode
+    "Minor mode for making C-g work in `helpful-key'."
+    :global t
+    (if my/universal-keyboard-quit-mode
+        (my/defadvice my/advice-helpful-key-allow-keyboard-quit
+            (func &rest args)
+          :before helpful-key
+          "Make C-g work in `helpful-key'."
+          ;; The docstring of `add-function' says that if we make our
+          ;; advice interactive and the interactive spec is *not* a
+          ;; function, then it overrides the original function's
+          ;; interactive spec.
+          (interactive
+           (list
+            (let ((ret (read-key-sequence "Press key: ")))
+              (when (equal ret "\^G")
+                (signal 'quit nil))
+              ret))))
+      (advice-remove
+       #'helpful-key #'my/advice-helpful-key-allow-keyboard-quit)))
+
+  (my/universal-keyboard-quit-mode +1))
+
+;;;; Keybindings
+
+;; Package `which-key' is a minor mode for Emacs that displays the
+;; key bindings following your currently entered incomplete command
+;; (a prefix) in a popup.
+(use-package which-key
+  :demand t
+  :config
+
+  (which-key-mode +1)
+
+  :blackout which-key-mode)
+
+;;;; Custom
+
+;; Feature `cus-edit' powers Customize buffers and related
+;; functionality.
+(use-feature cus-edit
+  :config
+
+  ;; Don't show the search box in Custom.
+  (setq custom-search-field nil))
+
+;;;; Emacs Lisp development
+
+;; Feature `elisp-mode' provides the major mode for Emacs Lisp. It
+;; also provides the major mode for the *scratch* buffer, which is
+;; very similar but slightly different.
+(use-feature elisp-mode
+  :config
+
+  (my/defhook my/flycheck-elisp-setup ()
+    emacs-lisp-mode-hook
+    "Disable some Flycheck checkers for Emacs Lisp."
+    ;; These checkers suck at reporting error locations, so they're
+    ;; actually quite distracting to work with.
+    (my/flycheck-disable-checkers 'emacs-lisp 'emacs-lisp-checkdoc))
+
+  ;; Note that this function is actually defined in `elisp-mode'
+  ;; because screw modularity.
+  (my/defadvice my/advice-company-elisp-use-helpful
+      (func &rest args)
+    :around elisp--company-doc-buffer
+    "Cause `company' to use Helpful to show Elisp documentation."
+    (cl-letf (((symbol-function #'describe-function) #'helpful-function)
+              ((symbol-function #'describe-variable) #'helpful-variable)
+              ((symbol-function #'help-buffer) #'current-buffer))
+      (apply func args)))
+
+  ;; The default mode lighter has a space instead of a hyphen.
+  ;; Disgusting!
+  :blackout (lisp-interaction-mode . "Lisp-Interaction"))
+
+(defun my/reload-init ()
+  (interactive)
+  (message "Reloading init-file...")
+  (load user-init-file nil 'nomessage)
+  (message "Reloading init-file...done"))
+
+(my/bind-key "r" #'my/reload-init)
+
+(defun my/eval-buffer-or-region (&optional start end)
+  "Evaluate the current region, or the whole buffer if no region is active.
+In Lisp code, START and END denote the region to be evaluated;
+they default to `point-min' and `point-max' respectively.
+
+If evaluating a buffer visiting this file, then delegate instead
+to `my/reload-init'."
+  (interactive)
+  (if (and (string= buffer-file-name user-init-file)
+           (not (region-active-p)))
+      (my/reload-init)
+    (let ((name nil))
+      (if (region-active-p)
+          (progn
+            (setq start (region-beginning))
+            (setq end (region-end))
+            (setq name "region"))
+        (setq start (point-min))
+        (setq end (point-max))
+        (setq name (buffer-name)))
+      (let ((load-file-name (buffer-file-name)))
+        (message "Evaluating %s..." name)
+        (eval-region start end)
+        (message "Evaluating %s...done" name)))))
+
+(bind-key "C-c C-k" #'my/eval-buffer-or-region)
+
+;;;;; Emacs Lisp linting
+
+;; Feature `checkdoc' provides some tools for validating Elisp
+;; docstrings against common conventions.
+(use-feature checkdoc
+  :init
+
+  ;; Not sure why this isn't included by default.
+  (put 'checkdoc-package-keywords-flag 'safe-local-variable #'booleanp))
+
+;; Package `elisp-lint', not installed, provides a linting framework
+;; for Elisp code.
+(use-feature elisp-lint
+  :init
+
+  ;; From the package. We need this because some packages set this as
+  ;; a file-local variable, but we don't install the package so Emacs
+  ;; doesn't know the variable is safe.
+  (put 'elisp-lint-indent-specs 'safe-local-variable #'listp))
+
+;; Package `package-lint' provides a command that lets you check for
+;; common package.el packaging problems in your packages.
+(use-package package-lint)
 
 ;;; init.el ends here
