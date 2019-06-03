@@ -1668,4 +1668,69 @@ to `my/reload-init'."
   ;; Prevent annoying "Omitted N lines" messages when auto-reverting.
   (setq dired-omit-verbose nil))
 
+;;;; Version control
+
+;; Feature `vc-hooks' provides hooks for the Emacs VC package. We
+;; don't use VC, because Magit is superior in pretty much every way.
+(use-feature vc-hooks
+  :config
+
+  ;; Disable VC. This improves performance and disables some annoying
+  ;; warning messages and prompts, especially regarding symlinks. See
+  ;; https://stackoverflow.com/a/6190338/3538165.
+  (setq vc-handled-backends nil))
+
+;; Feature `smerge-mode' provides an interactive mode for visualizing
+;; and resolving Git merge conflicts.
+(use-feature smerge-mode
+  :blackout t)
+
+;; Package `magit' is an interface to the version control system
+;; Git, implemented as an Emacs package.
+(use-package magit
+  :bind (;; This is the primary entry point for Magit. Binding to C-x
+         ;; g is recommended in the manual:
+         ;; https://magit.vc/manual/magit.html#Getting-Started
+         ("C-x g" . magit-status))
+
+  :init
+
+  ;; Suppress the message we get about "Turning on
+  ;; magit-auto-revert-mode" when loading Magit.
+  (setq magit-no-message '("Turning on magit-auto-revert-mode..."))
+
+  :config
+
+  ;; Enable C-c M-g as a shortcut to go to a popup of Magit commands
+  ;; relevant to the current file.
+  (global-magit-file-mode +1)
+
+  ;; The default location for git-credential-cache is in
+  ;; ~/.config/git/credential. However, if ~/.git-credential-cache/
+  ;; exists, then it is used instead. Magit seems to be hardcoded to
+  ;; use the latter, so here we override it to have more correct
+  ;; behavior.
+  (unless (file-exists-p "~/.git-credential-cache/")
+    (let* ((xdg-config-home (or (getenv "XDG_CONFIG_HOME")
+                                (expand-file-name "~/.config/")))
+           (socket (expand-file-name "git/credential/socket" xdg-config-home)))
+      (setq magit-credential-cache-daemon-socket socket)))
+
+  ;; Don't try to save unsaved buffers when using Magit. We know
+  ;; perfectly well that we need to save our buffers if we want Magit
+  ;; to see them.
+  (setq magit-save-repository-buffers nil)
+
+  (transient-append-suffix 'magit-merge "-s"
+    '("-u" "Allow unrelated" "--allow-unrelated-histories"))
+
+  (transient-append-suffix 'magit-pull "-r"
+    '("-a" "Autostash" "--autostash")))
+
+;; Package `forge' provides a GitHub/GitLab/etc. interface directly
+;; within Magit.
+(use-package forge
+  :demand t
+  :after magit)
+
 ;;; init.el ends here
