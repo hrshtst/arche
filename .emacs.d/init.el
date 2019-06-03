@@ -1633,4 +1633,39 @@ to `my/reload-init'."
 ;; common package.el packaging problems in your packages.
 (use-package package-lint)
 
+;;; Applications
+;;;; Filesystem management
+
+;; When deleting a file interactively, move it to the trash instead.
+(setq delete-by-moving-to-trash t)
+
+;;;;; Dired
+
+;; For some reason, the autoloads from `dired-aux' and `dired-x' are
+;; not loaded automatically. Do it.
+(require 'dired-loaddefs)
+
+;; Feature `dired' provides a simplistic filesystem manager in Emacs.
+(use-feature dired
+  :bind (:map dired-mode-map
+              ("J" . dired-up-directory))
+  :config
+
+  ;; Disable the prompt about whether I want to kill the Dired
+  ;; buffer for a deleted directory.
+  (setq dired-clean-confirm-killing-deleted-buffers nil)
+
+  ;; Instantly revert Dired buffers on re-visiting them, with no
+  ;; message.
+  (setq dired-auto-revert-buffer t))
+
+(use-feature dired-x
+  :bind (;; Bindings for jumping to the current directory in Dired.
+         ("C-x C-j" . dired-jump)
+         ("C-x 4 C-j" . dired-jump-other-window))
+  :config
+
+  ;; Prevent annoying "Omitted N lines" messages when auto-reverting.
+  (setq dired-omit-verbose nil))
+
 ;;; init.el ends here
