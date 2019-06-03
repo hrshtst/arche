@@ -1936,4 +1936,261 @@ This is passed to `set-frame-font'."
 (unless (display-graphic-p)
   (menu-bar-mode -1))
 
+;;;; Mode line
+
+(defun my/mode-line-buffer-modified-status ()
+  "Return a mode line construct indicating buffer modification status.
+This is [*] if the buffer has been modified and whitespace
+otherwise. (Non-file-visiting buffers are never considered to be
+modified.) It is shown in the same color as the buffer name, i.e.
+`mode-line-buffer-id'."
+  (propertize
+   (if (and (buffer-modified-p)
+            (buffer-file-name))
+       "[*]"
+     "   ")
+   'face 'mode-line-buffer-id))
+
+;; Normally the buffer name is right-padded with whitespace until it
+;; is at least 12 characters. This is a waste of space, so we
+;; eliminate the padding here. Check the docstrings for more
+;; information.
+(setq-default mode-line-buffer-identification
+              (propertized-buffer-identification "%b"))
+
+(defvar-local my/mode-line-project-and-branch nil
+  "Mode line construct showing Projectile project and Git status.
+The format is [project:branch*], where the * is shown if the
+working directory is dirty. Either component can be missing; this
+might happen if Projectile is not available or if the project is
+not version-controlled with Git. If nothing should be displayed,
+this variable is set to nil.
+
+This variable is actually only a cached value; it is set by
+`my/mode-line-compute-project-and-branch' for performance
+reasons.
+
+See also `my/show-git-mode'.")
+
+;; Don't clear the cache when switching major modes (or using M-x
+;; normal-mode).
+(put 'my/mode-line-project-and-branch 'permanent-local t)
+
+(defun my/mode-line-recompute-project-and-branch ()
+  "Recalculate and set `my/mode-line-project-and-branch'.
+Force a redisplay of the mode line if necessary. This is
+buffer-local."
+  (unless (file-remote-p default-directory)
+    (condition-case-unless-debug err
+        (let ((old my/mode-line-project-and-branch)
+              (new
+               (let* (;; Don't insist on having Projectile loaded.
+                      (project-name (when (featurep 'projectile)
+                                      (projectile-project-name)))
+                      ;; Projectile returns "-" to mean "no project".
+                      ;; I'm still wondering what happens if someone
+                      ;; makes a project named "-".
+                      (project-name (unless (equal project-name "-")
+                                      project-name))
+                      ;; Check if we are actually in a Git repo, and Git
+                      ;; is available, and we want to show the Git
+                      ;; status.
+                      (git (and
+                            my/show-git-mode
+                            (executable-find "git")
+                            (locate-dominating-file default-directory ".git")))
+                      (branch-name
+                       (when git
+                         ;; Determine a reasonable string to show for
+                         ;; the current branch. This is actually more or
+                         ;; less the same logic as we use for the Radian
+                         ;; Zsh prompt.
+                         (with-temp-buffer
+                           ;; First attempt uses symbolic-ref, which
+                           ;; returns the branch name if it exists.
+                           (call-process "git" nil '(t nil) nil
+                                         "symbolic-ref" "HEAD")
+                           (if (> (buffer-size) 0)
+                               ;; It actually returns something like
+                               ;; refs/heads/master, though, so let's
+                               ;; try to trim it if possible.
+                               (let ((regex "^\\(refs/heads/\\)?\\(.+\\)$")
+                                     (str (string-trim (buffer-string))))
+                                 (if (string-match regex str)
+                                     (match-string 2 str)
+                                   ;; If it's something weird then just
+                                   ;; show it literally.
+                                   str))
+                             ;; If symbolic-ref didn't return anything
+                             ;; on stdout (we discarded stderr), we
+                             ;; probably have a detached head and we
+                             ;; should show the abbreviated commit hash
+                             ;; (e.g. b007692).
+                             (erase-buffer)
+                             (call-process "git" nil '(t nil) nil
+                                           "rev-parse" "--short" "HEAD")
+                             (if (> (buffer-size) 0)
+                                 (string-trim (buffer-string))
+                               ;; We shouldn't get here. Unfortunately,
+                               ;; it turns out that we do every once in
+                               ;; a while. (I have no idea why.)
+                               "???")))))
+                      (dirty (when git
+                               (with-temp-buffer
+                                 (call-process "git" nil t nil
+                                               "status" "--porcelain")
+                                 (if (> (buffer-size) 0)
+                                     "*" "")))))
+                 (cond
+                  ((and project-name git)
+                   (format "  [%s:%s%s]" project-name branch-name dirty))
+                  (project-name
+                   (format "  [%s]" project-name))
+                  ;; This should never happen unless you do something
+                  ;; perverse like create a version-controlled
+                  ;; Projectile project whose name is a hyphen, but we
+                  ;; want to handle it anyway.
+                  (git
+                   (format "  [%s%s]" branch-name dirty))))))
+          (unless (equal old new)
+            (setq my/mode-line-project-and-branch new)
+            (force-mode-line-update)))
+      (error
+       ;; We should not usually get an error here. In the case that we
+       ;; do, however, let's try to avoid displaying garbage data, and
+       ;; instead delete the construct entirely from the mode line.
+       (unless (null my/mode-line-project-and-branch)
+         (setq my/mode-line-project-and-branch nil)
+         (force-mode-line-update))))))
+
+;; We will make sure this information is updated after some time of
+;; inactivity, for the current buffer.
+
+(defcustom my/mode-line-update-delay 1
+  "Seconds of inactivity before updating the mode line.
+Specifically, this entails updating the Projectile project, Git
+branch, and dirty status, which are the most computationally
+taxing elements."
+  :type 'number)
+
+;; We only need one global timer pair for all the buffers, since we
+;; will only be updating the cached mode line value for the current
+;; buffer.
+;;
+;; The way this is set up, the main idle timer runs each time that
+;; Emacs is idle for exactly one second. That triggers a recomputation
+;; of the mode line, and also schedules the repeat timer, which
+;; reschedules itself repeatedly. Why do we need two timers? If we
+;; tried to use just the idle timer, then the recomputation would only
+;; get scheduled once per idle session, one second in, instead of
+;; going once per second after one second of initial idleness. If we
+;; tried to use just the repeat timer, then we would get
+;; ever-increasing delays before it would fire, in each new idle
+;; session. Why? Because the pattern for scheduling an idle timer
+;; repeatedly is to increase the idle delay, since the idle time is
+;; not re-set just because a timer fired. And if the idle session ends
+;; between timer fires, then the repeat timer will be stuck with a
+;; really long idle delay, and won't fire again.
+
+(defun my/mode-line-recompute-and-reschedule ()
+  "Compute mode line data and re-set timers.
+The delay is `my/mode-line-update-delay'. The timers are
+`my/mode-line-idle-timer' and
+`my/mode-line-repeat-timer'."
+
+  ;; Cancel any existing timer (we wouldn't want to introduce
+  ;; duplicate timers!), and do it early in a half-hearted attempt to
+  ;; avoid race conditions.
+  (when my/mode-line-repeat-timer
+    (cancel-timer my/mode-line-repeat-timer))
+
+  ;; Do the computation.
+  (my/mode-line-recompute-project-and-branch)
+
+  ;; If Emacs is already idle (meaning that the main idle timer has
+  ;; already been triggered, and won't go again), then we need to
+  ;; schedule the repeat timer. Otherwise, the main idle timer will be
+  ;; triggered when Emacs does become idle, and we don't need to
+  ;; schedule anything. There's no need to clear an old repeat timer,
+  ;; since the idle timer will always get called before the repeat
+  ;; timer and that will cause the repeat timer to be re-set as below.
+  (when (current-idle-time)
+    (setq my/mode-line-repeat-timer
+          (run-with-idle-timer
+           (time-add (current-idle-time) my/mode-line-update-delay)
+           nil #'my/mode-line-recompute-and-reschedule))))
+
+(defvar my/mode-line-idle-timer
+  (run-with-idle-timer
+   my/mode-line-update-delay 'repeat
+   #'my/mode-line-recompute-and-reschedule)
+  "Timer that recomputes information for the mode line, or nil.
+This runs once each time Emacs is idle.
+Future recomputations are scheduled under
+`my/mode-line-repeat-timer'. See also
+`my/mode-line-recompute-and-reschedule' and
+`my/mode-line-recompute-project-and-branch'.")
+
+(defvar my/mode-line-repeat-timer nil
+  "Timer that recomputes information for the mode line, or nil.
+This is scheduled repeatedly at intervals after
+`my/mode-line-idle-timer' runs once. See also
+`my/mode-line-recompute-and-reschedule' and
+`my/mode-line-recompute-project-and-branch'.")
+
+;; Make `mode-line-position' show the column, not just the row.
+(column-number-mode +1)
+
+(define-minor-mode my/show-git-mode
+  "Minor mode for showing Git status in mode line.
+
+If enabled, then both the current Projectile project and the
+current Git branch are shown in the mode line. Otherwise, only
+the former is shown.")
+
+(define-globalized-minor-mode my/show-git-global-mode
+  my/show-git-mode my/show-git-mode)
+
+(my/show-git-global-mode +1)
+
+;; https://emacs.stackexchange.com/a/7542/12534
+(defun my/mode-line-align (left right)
+  "Render a left/right aligned string for the mode line.
+LEFT and RIGHT are strings, and the return value is a string that
+displays them left- and right-aligned respectively, separated by
+spaces."
+  (let ((width (- (window-total-width) (length left))))
+    (format (format "%%s%%%ds" width) left right)))
+
+(defcustom my/mode-line-left
+  '(;; Show [*] if the buffer is modified.
+    (:eval (my/mode-line-buffer-modified-status))
+    " "
+    ;; Show the name of the current buffer.
+    mode-line-buffer-identification
+    "   "
+    ;; Show the row and column of point.
+    mode-line-position
+    ;; Show the current Projectile project and Git branch.
+    my/mode-line-project-and-branch
+    ;; Show the active major and minor modes.
+    "  "
+    mode-line-modes)
+  "Composite mode line construct to be shown left-aligned."
+  :type 'sexp)
+
+(defcustom my/mode-line-right nil
+  "Composite mode line construct to be shown right-aligned."
+  :type 'sexp)
+
+;; Actually reset the mode line format to show all the things we just
+;; defined.
+(setq-default mode-line-format
+              '(:eval (replace-regexp-in-string
+                       "%" "%%"
+                       (my/mode-line-align
+                        (format-mode-line my/mode-line-left)
+                        (format-mode-line my/mode-line-right))
+                       'fixedcase 'literal)))
+
 ;;; init.el ends here
