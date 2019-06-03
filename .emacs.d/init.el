@@ -1845,4 +1845,95 @@ Also run `my/atomic-chrome-setup-hook'."
   ;; version of `cl-lib', and fails horribly.
   (setq esup-depth 0))
 
+;;; Startup
+
+;; Disable the *About GNU Emacs* buffer at startup, and go straight
+;; for the scratch buffer.
+(setq inhibit-startup-screen t)
+
+;; Remove the initial *scratch* message. Start with a blank screen, we
+;; know what we're doing.
+(setq initial-scratch-message nil)
+
+;;; Miscellaneous
+
+;; Enable all disabled commands.
+(setq disabled-command-function nil)
+
+;; Disable warnings from obsolete advice system. They don't provide
+;; useful diagnostic information and often they can't be fixed except
+;; by changing packages upstream.
+(setq ad-redefinition-action 'accept)
+
+;;; Appearance
+
+;; Allow you to resize frames however you want, not just in whole
+;; columns. "The 80s called, they want their user interface back"
+(setq frame-resize-pixelwise t)
+
+;; Turn off the alarm bell.
+(setq ring-bell-function #'ignore)
+
+;; Display keystrokes in the echo area immediately, not after one
+;; second. We can't set the delay to zero because somebody thought it
+;; would be a good idea to have that value suppress keystroke display
+;; entirely.
+(setq echo-keystrokes 1e-6)
+
+;; Don't blink the cursor on the opening paren when you insert a
+;; closing paren, as we already have superior handling of that from
+;; Smartparens.
+(setq blink-matching-paren nil)
+
+;; Disable the contextual menu that pops up when you right-click.
+(unbind-key "<C-down-mouse-1>")
+
+(defcustom my/font nil
+  "Default font, as a string. Nil means use the default.
+This is passed to `set-frame-font'."
+  :type '(choice string (const :tag "Default" nil)))
+
+(defcustom my/font-size nil
+  "Default font size, in pixels. Nil means use the default."
+  :type '(choice integer (const :tag "Default" nil)))
+
+(when (eq system-type 'gnu/linux)
+    (custom-set-variables '(my/font "Ricty Discord")))
+
+(when (>= (x-display-pixel-width) 3000)
+    (custom-set-variables '(my/font-size 140)))
+
+(when (display-graphic-p)
+
+  ;; Disable the scroll bars.
+  (scroll-bar-mode -1)
+
+  ;; Disable the tool bar and menu bar. See
+  ;; <https://github.com/raxod502/radian/issues/180> for why we do it
+  ;; this way instead of via `tool-bar-mode' and `menu-bar-mode'.
+  (push '(tool-bar-lines . 0) default-frame-alist)
+  (push '(menu-bar-lines . 0) default-frame-alist)
+
+  ;; Prevent the cursor from blinking.
+  (blink-cursor-mode -1)
+
+  ;; Set the default font size.
+  (when my/font-size
+    (set-face-attribute 'default nil :height my/font-size))
+
+  ;; Set the default font.
+  (when my/font
+    (set-frame-font my/font 'keep-size t))
+
+  ;; Use the same font for fixed-pitch text as the rest of Emacs.
+  (set-face-attribute 'fixed-pitch nil :family 'unspecified))
+
+;; For terminal Emacs only, disable the menu bar the proper way (using
+;; `menu-bar-mode'). Unlike in windowed Emacs, this doesn't have a big
+;; performance impact. Furthermore, if we don't do it this way in the
+;; terminal, then you can see the menu bar during startup
+;; unfortunately.
+(unless (display-graphic-p)
+  (menu-bar-mode -1))
+
 ;;; init.el ends here
