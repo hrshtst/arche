@@ -1733,4 +1733,116 @@ to `my/reload-init'."
   :demand t
   :after magit)
 
+;;;; External commands
+
+;; Feature `compile' provides a way to run a shell command from Emacs
+;; and view the output in real time, with errors and warnings
+;; highlighted and hyperlinked.
+(use-feature compile
+  :init
+
+  (my/bind-key "m" #'compile)
+
+  :config
+
+  ;; Automatically scroll the Compilation buffer as output appears,
+  ;; but stop at the first error.
+  (setq compilation-scroll-output 'first-error)
+
+  ;; Don't ask about saving buffers when invoking `compile'. Try to
+  ;; save them all immediately using `save-some-buffers'.
+  (setq compilation-ask-about-save nil)
+
+  ;; Actually, don't bother saving buffers at all. That's dumb. We
+  ;; know to save our buffers if we want them to be updated on disk.
+  (setq compilation-save-buffers-predicate
+        (lambda ()))
+
+  (my/defadvice my/advice-compile-pop-to-buffer (buf)
+    :filter-return compilation-start
+    "Pop to compilation buffer on \\[compile]."
+    (prog1 buf
+      (select-window (get-buffer-window buf)))))
+
+;;;; Internet applications
+
+;; Feature `browse-url' provides commands for opening URLs in
+;; browsers.
+(use-feature browse-url
+  :init
+
+  (defun my/browse-url-predicate ()
+    "Return non-nil if \\[browse-url-at-point] should be rebound."
+    ;; All of these major modes provide more featureful bindings for
+    ;; C-c C-o than `browse-url-at-point'.
+    (not (derived-mode-p 'markdown-mode 'org-mode 'org-agenda-mode)))
+
+  :bind* (:filter (my/browse-url-predicate)
+                  ("C-c C-o" . browse-url-at-point)))
+
+;; Feature `bug-reference' provides a mechanism for hyperlinking issue
+;; tracker references (like #20), so that you can open them in a web
+;; browser easily.
+(use-feature bug-reference
+  :config
+
+  (bind-key "C-c C-o" #'bug-reference-push-button bug-reference-map))
+
+;; Package `git-link' provides a simple function M-x git-link which
+;; copies to the kill ring a link to the current line of code or
+;; selection on GitHub, GitLab, etc.
+(use-package git-link
+  :config
+
+  ;; Link to a particular revision of a file rather than using the
+  ;; branch name in the URL.
+  (setq git-link-use-commit t))
+
+;; Package `atomic-chrome' provides a way for you to edit textareas
+;; in Chrome or Firefox using Emacs. See
+;; https://chrome.google.com/webstore/detail/atomic-chrome/lhaoghhllmiaaagaffababmkdllgfcmc
+;; for the Chrome extension.
+(use-package atomic-chrome
+  :defer 5
+  :config
+
+  (defvar-local my/atomic-chrome-url nil
+    "The URL of the text area being edited.")
+
+  (defcustom my/atomic-chrome-setup-hook nil
+    "Hook run while setting up an `atomic-chrome' buffer."
+    :type 'hook)
+
+  (my/defadvice my/advice-atomic-chrome-setup (url)
+    :after atomic-chrome-set-major-mode
+    "Save the URL in `my/atomic-chrome-url'.
+Also run `my/atomic-chrome-setup-hook'."
+    (setq my/atomic-chrome-url url)
+    (run-hooks 'my/atomic-chrome-setup-hook))
+
+  ;; Edit in Markdown by default, because many sites support it and
+  ;; it's not a big deal if the text area doesn't actually support
+  ;; Markdown.
+  (setq atomic-chrome-default-major-mode 'markdown-mode)
+
+  ;; Edit in a specific mode for a specific website.
+  (setq atomic-chrome-url-major-mode-alist
+        '(("github\\.com" . gfm-mode)
+          ("redmine" . textile-mode)))
+
+  ;; Listen for requests from the Chrome/Firefox extension.
+  (atomic-chrome-start-server))
+
+;;;; Emacs profiling
+
+;; Package `esup' allows you to run a child Emacs process with special
+;; profiling functionality, and to collect timing results for each
+;; form in your init-file.
+(use-package esup
+  :config
+
+  ;; Work around a bug where esup tries to step into the byte-compiled
+  ;; version of `cl-lib', and fails horribly.
+  (setq esup-depth 0))
+
 ;;; init.el ends here
