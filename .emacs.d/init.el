@@ -240,9 +240,23 @@ function. DOCSTRING and BODY are as in `defun'."
   (exec-path-from-shell-initialize)
   (exec-path-from-shell-copy-envs '("GOPATH")))
 
+;;; Clipboard integration
+
+;; If you have something on the system clipboard, and then kill
+;; something in Emacs, then by default whatever you had on the system
+;; clipboard is gone and there is no way to get it back. Setting the
+;; following option makes it so that when you kill something in Emacs,
+;; whatever was previously on the system clipboard is pushed into the
+;; kill ring. This way, you can paste it with `yank-pop'.
+(setq save-interprogram-paste-before-kill t)
+
 ;;; Candidate selection
 
-;;;; ivy
+;; Package `ivy' provides a user interface for choosing from a list of
+;; options by typing a query to narrow the list, and then selecting
+;; one of the remaining candidates. This offers a significant
+;; improvement over the default Emacs interface for candidate
+;; selection.
 (use-package ivy
   :init
 
@@ -259,11 +273,45 @@ function. DOCSTRING and BODY are as in `defun'."
 
   :blackout t)
 
-;;;; ivy-hydra
+;; Package `ivy-hydra' provides the C-o binding for Ivy menus which
+;; allows you to pick from a set of options for what to do with a
+;; selected candidate.
 (use-package ivy-hydra)
 
-;;;; counsel
+;; Package `counsel' provides purpose-built replacements for many
+;; built-in Emacs commands that use enhanced configurations of `ivy'
+;; to provide extra features.
 (use-package counsel
+  :init/el-patch
+
+  (defvar counsel-mode-map
+    (let ((map (make-sparse-keymap)))
+      (dolist (binding
+               '((execute-extended-command . counsel-M-x)
+                 (describe-bindings . counsel-descbinds)
+                 (el-patch-remove
+                   (describe-function . counsel-describe-function)
+                   (describe-variable . counsel-describe-variable))
+                 (apropos-command . counsel-apropos)
+                 (describe-face . counsel-describe-face)
+                 (list-faces-display . counsel-faces)
+                 (find-file . counsel-find-file)
+                 (find-library . counsel-find-library)
+                 (imenu . counsel-imenu)
+                 (load-library . counsel-load-library)
+                 (load-theme . counsel-load-theme)
+                 (yank-pop . counsel-yank-pop)
+                 (info-lookup-symbol . counsel-info-lookup-symbol)
+                 (pop-to-mark-command . counsel-mark-ring)
+                 (bookmark-jump . counsel-bookmark)))
+        (define-key map (vector 'remap (car binding)) (cdr binding)))
+      map)
+    (el-patch-concat
+      "Map for `counsel-mode'.
+Remaps built-in functions to counsel replacements."
+      (el-patch-add
+        "\n\nBindings that are remapped by `helpful' have been removed.")))
+
   :init
 
   (counsel-mode +1)
@@ -284,7 +332,6 @@ function. DOCSTRING and BODY are as in `defun'."
 ;; Package `prescient' is a library for intelligent sorting and
 ;; filtering in various contexts.
 (use-package prescient
-
   :config
 
   ;; Remember usage statistics across Emacs sessions.
@@ -301,6 +348,18 @@ function. DOCSTRING and BODY are as in `defun'."
   (ivy-prescient-mode +1))
 
 ;;; Window management
+
+(arche-defadvice arche--advice-keyboard-quit-minibuffer-first
+    (keyboard-quit)
+  :around keyboard-quit
+  "Cause \\[keyboard-quit] to exit the minibuffer, if it is active.
+Normally, \\[keyboard-quit] will just act in the current buffer.
+This advice modifies the behavior so that it will instead exit an
+active minibuffer, even if the minibuffer is not selected."
+  (if-let ((minibuffer (active-minibuffer-window)))
+      (with-current-buffer (window-buffer minibuffer)
+        (minibuffer-keyboard-quit))
+    (funcall keyboard-quit)))
 
 ;; Feature `windmove' allows us to move between windows by S-left,
 ;; S-right, S-up, and S-down.
@@ -584,7 +643,7 @@ counterparts."
 ;;;; Text formatting
 ;; When region is active, capitalize it.
 (bind-key "M-c" #'capitalize-dwim)
-(bind-key "M-l" #'downcase-dwim)
+(bind-key "M-d" #'downcase-dwim)
 (bind-key "M-u" #'upcase-dwim)
 
 ;; When filling paragraphs, assume that sentences end with one space
@@ -598,7 +657,7 @@ counterparts."
    (set-char-table-range auto-fill-chars c t))
  "!-=+]};:'\",.?")
 
-(defun arche-auto-fill-disable ()
+(defun arche--auto-fill-disable ()
   "Disable `auto-fill-mode' in the current buffer."
   (auto-fill-mode -1))
 
@@ -1492,7 +1551,7 @@ https://github.com/flycheck/flycheck/issues/953."
 (use-package yaml-mode
   :config
 
-  (add-hook 'yaml-mode-hook #'arche-auto-fill-disable))
+  (add-hook 'yaml-mode-hook #'arche--auto-fill-disable))
 
 ;;; Introspection
 ;;;; Help
