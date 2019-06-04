@@ -50,8 +50,16 @@
 (require 'cl-lib)
 (require 'map)
 
+;; Define customization group named "arche".
+
+(defgroup arche nil
+  "Customize Emacs configuration."
+  :prefix "arche-"
+  :group 'emacs)
+
 ;;; Define utility functions
-(defmacro my/defadvice (name arglist where place docstring &rest body)
+
+(defmacro arche-defadvice (name arglist where place docstring &rest body)
   "Define an advice called NAME and add it to a function.
 ARGLIST is as in `defun'. WHERE is a keyword as passed to
 `advice-add', and PLACE is the function to which to add the
@@ -60,7 +68,7 @@ advice, like in `advice-add'. DOCSTRING and BODY are as in
   (declare (indent 2)
            (doc-string 5))
   (unless (stringp docstring)
-    (error "my/defadvice: no docstring provided"))
+    (error "arche-defadvice: no docstring provided"))
   `(progn
      (defun ,name ,arglist
        ,(let ((article (if (string-match-p "^:[aeiou]" (symbol-name where))
@@ -76,7 +84,7 @@ advice, like in `advice-add'. DOCSTRING and BODY are as in
      (advice-add ',place ',where #',name)
      ',name))
 
-(defmacro my/defhook (name arglist hook docstring &rest body)
+(defmacro arche-defhook (name arglist hook docstring &rest body)
   "Define a function called NAME and add it to a hook.
 ARGLIST is as in `defun'. HOOK is the hook to which to add the
 function. DOCSTRING and BODY are as in `defun'."
@@ -85,7 +93,7 @@ function. DOCSTRING and BODY are as in `defun'."
   (unless (string-match-p "-hook$" (symbol-name hook))
     (error "Symbol `%S' is not a hook" hook))
   (unless (stringp docstring)
-    (error "my/defhook: no docstring provided"))
+    (error "arche-defhook: no docstring provided"))
   `(progn
      (defun ,name ,arglist
        ,(format "%s\n\nThis function is for use in `%S'."
@@ -196,14 +204,14 @@ function. DOCSTRING and BODY are as in `defun'."
 ;; and surely takes effect.
 (use-package bind-key)
 
-(defvar my/keymap (make-sparse-keymap)
+(defvar arche-keymap (make-sparse-keymap)
   "Keymap for my own commands is bound under M-g.")
 
-(bind-key* "M-g" my/keymap)
+(bind-key* "M-g" arche-keymap)
 
-(defmacro my/bind-key (key-name command &optional predicate)
-  "Bind a key in `my/keymap'."
-  `(bind-key ,key-name ,command my/keymap ,predicate))
+(defmacro arche-bind-key (key-name command &optional predicate)
+  "Bind a key in `arche-keymap'."
+  `(bind-key ,key-name ,command arche-keymap ,predicate))
 
 ;;; Environment variables
 
@@ -579,39 +587,39 @@ counterparts."
    (set-char-table-range auto-fill-chars c t))
  "!-=+]};:'\",.?")
 
-(defun my/auto-fill-disable ()
+(defun arche-auto-fill-disable ()
   "Disable `auto-fill-mode' in the current buffer."
   (auto-fill-mode -1))
 
-(define-minor-mode my/fix-whitespace-mode
+(define-minor-mode arche-fix-whitespace-mode
   "Minor mode to automatically fix whitespace on save.
 If enabled, then saving the buffer deletes all trailing
 whitespace and ensures that the file ends with exactly one
 newline."
   nil nil nil
-  (if my/fix-whitespace-mode
+  (if arche-fix-whitespace-mode
       (progn
         (setq require-final-newline t)
         (add-hook 'before-save-hook #'delete-trailing-whitespace nil 'local))
     (setq require-final-newline nil)
     (remove-hook 'before-save-hook #'delete-trailing-whitespace 'local)))
 
-(define-globalized-minor-mode my/fix-whitespace-global-mode
-  my/fix-whitespace-mode my/fix-whitespace-mode)
+(define-globalized-minor-mode arche-fix-whitespace-global-mode
+  arche-fix-whitespace-mode arche-fix-whitespace-mode)
 
-(my/fix-whitespace-global-mode +1)
+(arche-fix-whitespace-global-mode +1)
 
-(put 'my/fix-whitespace-mode 'safe-local-variable #'booleanp)
+(put 'arche-fix-whitespace-mode 'safe-local-variable #'booleanp)
 
 ;; Feature `whitespace' provides a minor mode for highlighting
 ;; whitespace.
 (use-feature whitespace
   :init
 
-  (define-minor-mode my/highlight-long-lines-mode
+  (define-minor-mode arche-highlight-long-lines-mode
     "Minor mode for highlighting long lines."
     nil nil nil
-    (if my/highlight-long-lines-mode
+    (if arche-highlight-long-lines-mode
         (progn
           (setq-local whitespace-style '(face lines-tail))
           (setq-local whitespace-line-column 79)
@@ -704,13 +712,13 @@ newline."
 ;; to the mark ring then go to the one previous point in the mark
 ;; ring, but it highlights the region between them. This disables
 ;; highlighting after jumping.
-(defun my/exchange-point-and-mark ()
+(defun arche-exchange-point-and-mark ()
   "Disable highlight after `exchange-point-and-mark'."
   (interactive)
   (exchange-point-and-mark)
   (deactivate-mark))
 
-(bind-key "C-x C-x" 'my/exchange-point-and-mark)
+(bind-key "C-x C-x" 'arche-exchange-point-and-mark)
 
 ;;;; Find and replace
 
@@ -876,7 +884,7 @@ smartparens functions."
 (use-package lsp-mode
   :init
 
-  (my/defhook my/enable-lsp ()
+  (arche-defhook arche-enable-lsp ()
      prog-mode-hook
      "Enable `lsp-mode' for most programming modes."
      ;; `lsp-mode' requires `yas-minor-mode' enabled.
@@ -981,14 +989,14 @@ smartparens functions."
   (setq company-selection-wrap-around t)
 
   ;; Add candidates from yasnippet to backends.
-  (defun my/company-backend-append-yas (backend)
+  (defun arche-company-backend-append-yas (backend)
     (if (and (listp backend) (member 'company-yasnippet backend))
         backend
       (append (if (consp backend) backend (list backend))
               '(:with company-yasnippet))))
-  (defun my/company-backend-ensure-yas ()
-    (setq company-backends (mapcar #'my/company-backend-append-yas company-backends)))
-  (my/company-backend-ensure-yas)
+  (defun arche-company-backend-ensure-yas ()
+    (setq company-backends (mapcar #'arche-company-backend-append-yas company-backends)))
+  (arche-company-backend-ensure-yas)
 
   :blackout t)
 
@@ -1008,7 +1016,7 @@ smartparens functions."
   :config
 
   ;; Ensure that yasnippet candidates appear in lsp-mode.
-  (my/company-backend-ensure-yas))
+  (arche-company-backend-ensure-yas))
 
 ;;;; Jump to definition
 
@@ -1026,11 +1034,11 @@ smartparens functions."
 
   :bind* (("C-M-d" . dumb-jump-go-prompt)
           ("C-x 4 g" . dumb-jump-go-other-window)
-          ("C-x 4 d" . my/dumb-jump-go-prompt-other-window))
+          ("C-x 4 d" . arche-dumb-jump-go-prompt-other-window))
 
   :config
 
-  (defun my/dumb-jump-go-prompt-other-window ()
+  (defun arche-dumb-jump-go-prompt-other-window ()
     "Like `dumb-jump-go-prompt' but use a different window."
     (interactive)
     (let ((dumb-jump-window 'other))
@@ -1052,7 +1060,7 @@ smartparens functions."
   ;; Original code from
   ;; https://github.com/PythonNut/emacs-config/blob/1a92a1ff1d563fa6a9d7281bbcaf85059c0c40d4/modules/config-intel.el#L130-L137,
   ;; thanks!
-  (my/defadvice my/advice-disable-eldoc-on-flycheck
+  (arche-defadvice arche-advice-disable-eldoc-on-flycheck
       (&rest _)
     :after-while eldoc-display-message-no-interference-p
     "Disable ElDoc when point is on a Flycheck overlay.
@@ -1071,7 +1079,7 @@ area."
   :defer 4
   :init
 
-  (defun my/flycheck-disable-checkers (&rest checkers)
+  (defun arche-flycheck-disable-checkers (&rest checkers)
     "Disable the given Flycheck syntax CHECKERS, symbols.
 This function affects only the current buffer, and neither causes
 nor requires Flycheck to be loaded."
@@ -1103,8 +1111,8 @@ nor requires Flycheck to be loaded."
 
   :config
 
-  (my/bind-key "p" #'flycheck-previous-error)
-  (my/bind-key "n" #'flycheck-next-error)
+  (arche-bind-key "p" #'flycheck-previous-error)
+  (arche-bind-key "n" #'flycheck-next-error)
 
   :blackout t)
 
@@ -1119,7 +1127,7 @@ nor requires Flycheck to be loaded."
 
   :config
 
-  (my/defadvice my/advice-lsp-ui-apply-single-fix (orig-fun &rest args)
+  (arche-defadvice arche-advice-lsp-ui-apply-single-fix (orig-fun &rest args)
     :around lsp-ui-sideline-apply-code-actions
     "Apply code fix immediately if only one is possible."
     (cl-letf* ((orig-completing-read (symbol-function #'completing-read))
@@ -1141,10 +1149,10 @@ nor requires Flycheck to be loaded."
 
   (add-hook 'text-mode-hook #'auto-fill-mode)
 
-  (my/defhook my/flycheck-text-setup ()
+  (arche-defhook arche-flycheck-text-setup ()
     text-mode-hook
     "Disable some Flycheck checkers for plain text."
-    (my/flycheck-disable-checkers 'proselint)))
+    (arche-flycheck-disable-checkers 'proselint)))
 
 ;;;; Lisp languages
 
@@ -1163,11 +1171,11 @@ nor requires Flycheck to be loaded."
 (use-feature cc-mode
   :config
 
-  (my/defadvice my/advice-inhibit-c-submode-indicators (&rest _)
+  (arche-defadvice arche-advice-inhibit-c-submode-indicators (&rest _)
     :override c-update-modeline
     "Unconditionally inhibit CC submode indicators in the mode lighter.")
 
-  (my/defhook my/c-mode-setup ()
+  (arche-defhook arche-c-mode-setup ()
     c-mode-common-hook
     "Enable `auto-line' and `hungry-delete' minor modes."
     (c-toggle-auto-hungry-state +1)))
@@ -1192,22 +1200,22 @@ nor requires Flycheck to be loaded."
   :if (executable-find "clang-format")
   :init
 
-  (defun my/clang-format-buffer-on-projectile ()
+  (defun arche-clang-format-buffer-on-projectile ()
     "Reformat buffer if .clang-format exists in the projectile root."
     (when (and (featurep 'projectile)
                (file-exists-p (expand-file-name ".clang-format" (projectile-project-root))))
       (clang-format-buffer)))
 
-  (define-minor-mode my/clang-format-buffer-on-projectile-mode
+  (define-minor-mode arche-clang-format-buffer-on-projectile-mode
     "Minor mode to reformat buffer on save using clang-format if
     .clang-format is found in project root."  nil nil nil
-    (if my/clang-format-buffer-on-projectile-mode
-        (add-hook 'before-save-hook #'my/clang-format-buffer-on-projectile nil 'local)
-      (remove-hook 'before-save-hook #'my/clang-format-buffer-on-projectile 'local)))
+    (if arche-clang-format-buffer-on-projectile-mode
+        (add-hook 'before-save-hook #'arche-clang-format-buffer-on-projectile nil 'local)
+      (remove-hook 'before-save-hook #'arche-clang-format-buffer-on-projectile 'local)))
 
-  (put 'my/clang-format-buffer-on-projectile-mode 'safe-local-variable #'booleanp)
+  (put 'arche-clang-format-buffer-on-projectile-mode 'safe-local-variable #'booleanp)
 
-  (add-hook 'c-mode-common-hook #'my/clang-format-buffer-on-projectile-mode))
+  (add-hook 'c-mode-common-hook #'arche-clang-format-buffer-on-projectile-mode))
 
 ;;;; Go
 
@@ -1235,15 +1243,15 @@ nor requires Flycheck to be loaded."
 
   :config
 
-  (my/defhook my/flycheck-markdown-setup ()
+  (arche-defhook arche-flycheck-markdown-setup ()
     markdown-mode-hook
     "Disable some Flycheck checkers for Markdown."
-    (my/flycheck-disable-checkers
+    (arche-flycheck-disable-checkers
      'markdown-markdownlint-cli
      'markdown-mdl
      'proselint))
 
-  (my/defadvice my/disable-markdown-metadata-fontification (&rest _)
+  (arche-defadvice arche-disable-markdown-metadata-fontification (&rest _)
     :override markdown-match-generic-metadata
     "Prevent fontification of YAML metadata blocks in `markdown-mode'.
 This prevents a mis-feature wherein if the first line of a
@@ -1265,7 +1273,7 @@ https://github.com/jrblevin/markdown-mode/issues/328."
   ;; of `python-indent-offset'.
   (setq python-indent-guess-indent-offset-verbose nil)
 
-  (my/defhook my/python-no-reindent-on-colon ()
+  (arche-defhook arche-python-no-reindent-on-colon ()
     python-mode-hook
     "Don't reindent on typing a colon.
 See https://emacs.stackexchange.com/a/3338/12534."
@@ -1289,13 +1297,13 @@ See https://emacs.stackexchange.com/a/3338/12534."
 (use-feature rst-mode
   :config
 
-  (my/defhook my/flycheck-rst-setup ()
+  (arche-defhook arche-flycheck-rst-setup ()
     rst-mode-hook
     "If inside Sphinx project, disable the `rst' Flycheck checker.
 This prevents it from signalling spurious errors. See also
 https://github.com/flycheck/flycheck/issues/953."
     (when (locate-dominating-file default-directory "conf.py")
-      (my/flycheck-disable-checkers 'rst))))
+      (arche-flycheck-disable-checkers 'rst))))
 
 ;; Package `pip-requirements' provides a major mode for
 ;; requirements.txt files used by Pip.
@@ -1327,7 +1335,7 @@ https://github.com/flycheck/flycheck/issues/953."
 (use-feature tex
   :init
 
-  (my/defhook my/yasnippet-tex-setup ()
+  (arche-defhook arche-yasnippet-tex-setup ()
     TeX-mode-hook
     "Enable `yasnippet-minor-mode' for `TeX-mode'."
     (yas-minor-mode +1))
@@ -1341,10 +1349,10 @@ https://github.com/flycheck/flycheck/issues/953."
 
   (setq-default TeX-master nil) ; Query for master file.
 
-  (my/defhook my/flycheck-tex-setup ()
+  (arche-defhook arche-flycheck-tex-setup ()
     TeX-mode-hook
     "Disable some Flycheck checkers in TeX buffers."
-    (my/flycheck-disable-checkers 'tex-chktex 'tex-lacheck)))
+    (arche-flycheck-disable-checkers 'tex-chktex 'tex-lacheck)))
 
 ;; Feature `tex-buf' from package `auctex' provides support for
 ;; running TeX commands and displaying their output.
@@ -1441,7 +1449,7 @@ https://github.com/flycheck/flycheck/issues/953."
 (use-package json-mode
   :config
 
-  (my/defhook my/fix-json-indentation ()
+  (arche-defhook arche-fix-json-indentation ()
     json-mode-hook
     "Set the tab width to 2 for JSON."
     (setq-local tab-width 2)))
@@ -1473,7 +1481,7 @@ https://github.com/flycheck/flycheck/issues/953."
 (use-package yaml-mode
   :config
 
-  (add-hook 'yaml-mode-hook #'my/auto-fill-disable))
+  (add-hook 'yaml-mode-hook #'arche-auto-fill-disable))
 
 ;;; Introspection
 ;;;; Help
@@ -1514,11 +1522,11 @@ https://github.com/flycheck/flycheck/issues/953."
   ;; Make it so you can quit out of `helpful-key' with C-g, like for
   ;; every other command. Put this in a minor mode so it can be
   ;; disabled.
-  (define-minor-mode my/universal-keyboard-quit-mode
+  (define-minor-mode arche-universal-keyboard-quit-mode
     "Minor mode for making C-g work in `helpful-key'."
     :global t
-    (if my/universal-keyboard-quit-mode
-        (my/defadvice my/advice-helpful-key-allow-keyboard-quit
+    (if arche-universal-keyboard-quit-mode
+        (arche-defadvice arche-advice-helpful-key-allow-keyboard-quit
             (func &rest args)
           :before helpful-key
           "Make C-g work in `helpful-key'."
@@ -1533,9 +1541,9 @@ https://github.com/flycheck/flycheck/issues/953."
                 (signal 'quit nil))
               ret))))
       (advice-remove
-       #'helpful-key #'my/advice-helpful-key-allow-keyboard-quit)))
+       #'helpful-key #'arche-advice-helpful-key-allow-keyboard-quit)))
 
-  (my/universal-keyboard-quit-mode +1))
+  (arche-universal-keyboard-quit-mode +1))
 
 ;;;; Keybindings
 
@@ -1568,16 +1576,16 @@ https://github.com/flycheck/flycheck/issues/953."
 (use-feature elisp-mode
   :config
 
-  (my/defhook my/flycheck-elisp-setup ()
+  (arche-defhook arche-flycheck-elisp-setup ()
     emacs-lisp-mode-hook
     "Disable some Flycheck checkers for Emacs Lisp."
     ;; These checkers suck at reporting error locations, so they're
     ;; actually quite distracting to work with.
-    (my/flycheck-disable-checkers 'emacs-lisp 'emacs-lisp-checkdoc))
+    (arche-flycheck-disable-checkers 'emacs-lisp 'emacs-lisp-checkdoc))
 
   ;; Note that this function is actually defined in `elisp-mode'
   ;; because screw modularity.
-  (my/defadvice my/advice-company-elisp-use-helpful
+  (arche-defadvice arche-advice-company-elisp-use-helpful
       (func &rest args)
     :around elisp--company-doc-buffer
     "Cause `company' to use Helpful to show Elisp documentation."
@@ -1590,25 +1598,25 @@ https://github.com/flycheck/flycheck/issues/953."
   ;; Disgusting!
   :blackout (lisp-interaction-mode . "Lisp-Interaction"))
 
-(defun my/reload-init ()
+(defun arche-reload-init ()
   (interactive)
   (message "Reloading init-file...")
   (load user-init-file nil 'nomessage)
   (message "Reloading init-file...done"))
 
-(my/bind-key "r" #'my/reload-init)
+(arche-bind-key "r" #'arche-reload-init)
 
-(defun my/eval-buffer-or-region (&optional start end)
+(defun arche-eval-buffer-or-region (&optional start end)
   "Evaluate the current region, or the whole buffer if no region is active.
 In Lisp code, START and END denote the region to be evaluated;
 they default to `point-min' and `point-max' respectively.
 
 If evaluating a buffer visiting this file, then delegate instead
-to `my/reload-init'."
+to `arche-reload-init'."
   (interactive)
   (if (and (string= buffer-file-name user-init-file)
            (not (region-active-p)))
-      (my/reload-init)
+      (arche-reload-init)
     (let ((name nil))
       (if (region-active-p)
           (progn
@@ -1623,7 +1631,7 @@ to `my/reload-init'."
         (eval-region start end)
         (message "Evaluating %s...done" name)))))
 
-(bind-key "C-c C-k" #'my/eval-buffer-or-region)
+(bind-key "C-c C-k" #'arche-eval-buffer-or-region)
 
 ;;;;; Emacs Lisp linting
 
@@ -1757,7 +1765,7 @@ to `my/reload-init'."
 (use-feature compile
   :init
 
-  (my/bind-key "m" #'compile)
+  (arche-bind-key "m" #'compile)
 
   :config
 
@@ -1774,7 +1782,7 @@ to `my/reload-init'."
   (setq compilation-save-buffers-predicate
         (lambda ()))
 
-  (my/defadvice my/advice-compile-pop-to-buffer (buf)
+  (arche-defadvice arche-advice-compile-pop-to-buffer (buf)
     :filter-return compilation-start
     "Pop to compilation buffer on \\[compile]."
     (prog1 buf
@@ -1787,13 +1795,13 @@ to `my/reload-init'."
 (use-feature browse-url
   :init
 
-  (defun my/browse-url-predicate ()
+  (defun arche-browse-url-predicate ()
     "Return non-nil if \\[browse-url-at-point] should be rebound."
     ;; All of these major modes provide more featureful bindings for
     ;; C-c C-o than `browse-url-at-point'.
     (not (derived-mode-p 'markdown-mode 'org-mode 'org-agenda-mode)))
 
-  :bind* (:filter (my/browse-url-predicate)
+  :bind* (:filter (arche-browse-url-predicate)
                   ("C-c C-o" . browse-url-at-point)))
 
 ;; Feature `bug-reference' provides a mechanism for hyperlinking issue
@@ -1822,19 +1830,19 @@ to `my/reload-init'."
   :defer 5
   :config
 
-  (defvar-local my/atomic-chrome-url nil
+  (defvar-local arche-atomic-chrome-url nil
     "The URL of the text area being edited.")
 
-  (defcustom my/atomic-chrome-setup-hook nil
+  (defcustom arche-atomic-chrome-setup-hook nil
     "Hook run while setting up an `atomic-chrome' buffer."
     :type 'hook)
 
-  (my/defadvice my/advice-atomic-chrome-setup (url)
+  (arche-defadvice arche-advice-atomic-chrome-setup (url)
     :after atomic-chrome-set-major-mode
-    "Save the URL in `my/atomic-chrome-url'.
-Also run `my/atomic-chrome-setup-hook'."
-    (setq my/atomic-chrome-url url)
-    (run-hooks 'my/atomic-chrome-setup-hook))
+    "Save the URL in `arche-atomic-chrome-url'.
+Also run `arche-atomic-chrome-setup-hook'."
+    (setq arche-atomic-chrome-url url)
+    (run-hooks 'arche-atomic-chrome-setup-hook))
 
   ;; Edit in Markdown by default, because many sites support it and
   ;; it's not a big deal if the text area doesn't actually support
@@ -1904,20 +1912,20 @@ Also run `my/atomic-chrome-setup-hook'."
 ;; Disable the contextual menu that pops up when you right-click.
 (unbind-key "<C-down-mouse-1>")
 
-(defcustom my/font nil
+(defcustom arche-font nil
   "Default font, as a string. Nil means use the default.
 This is passed to `set-frame-font'."
   :type '(choice string (const :tag "Default" nil)))
 
-(defcustom my/font-size nil
+(defcustom arche-font-size nil
   "Default font size, in pixels. Nil means use the default."
   :type '(choice integer (const :tag "Default" nil)))
 
 (when (eq system-type 'gnu/linux)
-    (custom-set-variables '(my/font "Ricty Discord")))
+    (custom-set-variables '(arche-font "Ricty Discord")))
 
 (when (>= (x-display-pixel-width) 3000)
-    (custom-set-variables '(my/font-size 140)))
+    (custom-set-variables '(arche-font-size 140)))
 
 (when (display-graphic-p)
 
@@ -1934,12 +1942,12 @@ This is passed to `set-frame-font'."
   (blink-cursor-mode -1)
 
   ;; Set the default font size.
-  (when my/font-size
-    (set-face-attribute 'default nil :height my/font-size))
+  (when arche-font-size
+    (set-face-attribute 'default nil :height arche-font-size))
 
   ;; Set the default font.
-  (when my/font
-    (set-frame-font my/font 'keep-size t))
+  (when arche-font
+    (set-frame-font arche-font 'keep-size t))
 
   ;; Use the same font for fixed-pitch text as the rest of Emacs.
   (set-face-attribute 'fixed-pitch nil :family 'unspecified))
@@ -1954,7 +1962,7 @@ This is passed to `set-frame-font'."
 
 ;;;; Mode line
 
-(defun my/mode-line-buffer-modified-status ()
+(defun arche-mode-line-buffer-modified-status ()
   "Return a mode line construct indicating buffer modification status.
 This is [*] if the buffer has been modified and whitespace
 otherwise. (Non-file-visiting buffers are never considered to be
@@ -1974,7 +1982,7 @@ modified.) It is shown in the same color as the buffer name, i.e.
 (setq-default mode-line-buffer-identification
               (propertized-buffer-identification "%b"))
 
-(defvar-local my/mode-line-project-and-branch nil
+(defvar-local arche-mode-line-project-and-branch nil
   "Mode line construct showing Projectile project and Git status.
 The format is [project:branch*], where the * is shown if the
 working directory is dirty. Either component can be missing; this
@@ -1983,22 +1991,22 @@ not version-controlled with Git. If nothing should be displayed,
 this variable is set to nil.
 
 This variable is actually only a cached value; it is set by
-`my/mode-line-compute-project-and-branch' for performance
+`arche-mode-line-compute-project-and-branch' for performance
 reasons.
 
-See also `my/show-git-mode'.")
+See also `arche-show-git-mode'.")
 
 ;; Don't clear the cache when switching major modes (or using M-x
 ;; normal-mode).
-(put 'my/mode-line-project-and-branch 'permanent-local t)
+(put 'arche-mode-line-project-and-branch 'permanent-local t)
 
-(defun my/mode-line-recompute-project-and-branch ()
-  "Recalculate and set `my/mode-line-project-and-branch'.
+(defun arche-mode-line-recompute-project-and-branch ()
+  "Recalculate and set `arche-mode-line-project-and-branch'.
 Force a redisplay of the mode line if necessary. This is
 buffer-local."
   (unless (file-remote-p default-directory)
     (condition-case-unless-debug err
-        (let ((old my/mode-line-project-and-branch)
+        (let ((old arche-mode-line-project-and-branch)
               (new
                (let* (;; Don't insist on having Projectile loaded.
                       (project-name (when (featurep 'projectile)
@@ -2012,7 +2020,7 @@ buffer-local."
                       ;; is available, and we want to show the Git
                       ;; status.
                       (git (and
-                            my/show-git-mode
+                            arche-show-git-mode
                             (executable-find "git")
                             (locate-dominating-file default-directory ".git")))
                       (branch-name
@@ -2069,20 +2077,20 @@ buffer-local."
                   (git
                    (format "  [%s%s]" branch-name dirty))))))
           (unless (equal old new)
-            (setq my/mode-line-project-and-branch new)
+            (setq arche-mode-line-project-and-branch new)
             (force-mode-line-update)))
       (error
        ;; We should not usually get an error here. In the case that we
        ;; do, however, let's try to avoid displaying garbage data, and
        ;; instead delete the construct entirely from the mode line.
-       (unless (null my/mode-line-project-and-branch)
-         (setq my/mode-line-project-and-branch nil)
+       (unless (null arche-mode-line-project-and-branch)
+         (setq arche-mode-line-project-and-branch nil)
          (force-mode-line-update))))))
 
 ;; We will make sure this information is updated after some time of
 ;; inactivity, for the current buffer.
 
-(defcustom my/mode-line-update-delay 1
+(defcustom arche-mode-line-update-delay 1
   "Seconds of inactivity before updating the mode line.
 Specifically, this entails updating the Projectile project, Git
 branch, and dirty status, which are the most computationally
@@ -2108,20 +2116,20 @@ taxing elements."
 ;; between timer fires, then the repeat timer will be stuck with a
 ;; really long idle delay, and won't fire again.
 
-(defun my/mode-line-recompute-and-reschedule ()
+(defun arche-mode-line-recompute-and-reschedule ()
   "Compute mode line data and re-set timers.
-The delay is `my/mode-line-update-delay'. The timers are
-`my/mode-line-idle-timer' and
-`my/mode-line-repeat-timer'."
+The delay is `arche-mode-line-update-delay'. The timers are
+`arche-mode-line-idle-timer' and
+`arche-mode-line-repeat-timer'."
 
   ;; Cancel any existing timer (we wouldn't want to introduce
   ;; duplicate timers!), and do it early in a half-hearted attempt to
   ;; avoid race conditions.
-  (when my/mode-line-repeat-timer
-    (cancel-timer my/mode-line-repeat-timer))
+  (when arche-mode-line-repeat-timer
+    (cancel-timer arche-mode-line-repeat-timer))
 
   ;; Do the computation.
-  (my/mode-line-recompute-project-and-branch)
+  (arche-mode-line-recompute-project-and-branch)
 
   ;; If Emacs is already idle (meaning that the main idle timer has
   ;; already been triggered, and won't go again), then we need to
@@ -2131,46 +2139,46 @@ The delay is `my/mode-line-update-delay'. The timers are
   ;; since the idle timer will always get called before the repeat
   ;; timer and that will cause the repeat timer to be re-set as below.
   (when (current-idle-time)
-    (setq my/mode-line-repeat-timer
+    (setq arche-mode-line-repeat-timer
           (run-with-idle-timer
-           (time-add (current-idle-time) my/mode-line-update-delay)
-           nil #'my/mode-line-recompute-and-reschedule))))
+           (time-add (current-idle-time) arche-mode-line-update-delay)
+           nil #'arche-mode-line-recompute-and-reschedule))))
 
-(defvar my/mode-line-idle-timer
+(defvar arche-mode-line-idle-timer
   (run-with-idle-timer
-   my/mode-line-update-delay 'repeat
-   #'my/mode-line-recompute-and-reschedule)
+   arche-mode-line-update-delay 'repeat
+   #'arche-mode-line-recompute-and-reschedule)
   "Timer that recomputes information for the mode line, or nil.
 This runs once each time Emacs is idle.
 Future recomputations are scheduled under
-`my/mode-line-repeat-timer'. See also
-`my/mode-line-recompute-and-reschedule' and
-`my/mode-line-recompute-project-and-branch'.")
+`arche-mode-line-repeat-timer'. See also
+`arche-mode-line-recompute-and-reschedule' and
+`arche-mode-line-recompute-project-and-branch'.")
 
-(defvar my/mode-line-repeat-timer nil
+(defvar arche-mode-line-repeat-timer nil
   "Timer that recomputes information for the mode line, or nil.
 This is scheduled repeatedly at intervals after
-`my/mode-line-idle-timer' runs once. See also
-`my/mode-line-recompute-and-reschedule' and
-`my/mode-line-recompute-project-and-branch'.")
+`arche-mode-line-idle-timer' runs once. See also
+`arche-mode-line-recompute-and-reschedule' and
+`arche-mode-line-recompute-project-and-branch'.")
 
 ;; Make `mode-line-position' show the column, not just the row.
 (column-number-mode +1)
 
-(define-minor-mode my/show-git-mode
+(define-minor-mode arche-show-git-mode
   "Minor mode for showing Git status in mode line.
 
 If enabled, then both the current Projectile project and the
 current Git branch are shown in the mode line. Otherwise, only
 the former is shown.")
 
-(define-globalized-minor-mode my/show-git-global-mode
-  my/show-git-mode my/show-git-mode)
+(define-globalized-minor-mode arche-show-git-global-mode
+  arche-show-git-mode arche-show-git-mode)
 
-(my/show-git-global-mode +1)
+(arche-show-git-global-mode +1)
 
 ;; https://emacs.stackexchange.com/a/7542/12534
-(defun my/mode-line-align (left right)
+(defun arche-mode-line-align (left right)
   "Render a left/right aligned string for the mode line.
 LEFT and RIGHT are strings, and the return value is a string that
 displays them left- and right-aligned respectively, separated by
@@ -2178,9 +2186,9 @@ spaces."
   (let ((width (- (window-total-width) (length left))))
     (format (format "%%s%%%ds" width) left right)))
 
-(defcustom my/mode-line-left
+(defcustom arche-mode-line-left
   '(;; Show [*] if the buffer is modified.
-    (:eval (my/mode-line-buffer-modified-status))
+    (:eval (arche-mode-line-buffer-modified-status))
     " "
     ;; Show the name of the current buffer.
     mode-line-buffer-identification
@@ -2188,14 +2196,14 @@ spaces."
     ;; Show the row and column of point.
     mode-line-position
     ;; Show the current Projectile project and Git branch.
-    my/mode-line-project-and-branch
+    arche-mode-line-project-and-branch
     ;; Show the active major and minor modes.
     "  "
     mode-line-modes)
   "Composite mode line construct to be shown left-aligned."
   :type 'sexp)
 
-(defcustom my/mode-line-right nil
+(defcustom arche-mode-line-right nil
   "Composite mode line construct to be shown right-aligned."
   :type 'sexp)
 
@@ -2204,9 +2212,9 @@ spaces."
 (setq-default mode-line-format
               '(:eval (replace-regexp-in-string
                        "%" "%%"
-                       (my/mode-line-align
-                        (format-mode-line my/mode-line-left)
-                        (format-mode-line my/mode-line-right))
+                       (arche-mode-line-align
+                        (format-mode-line arche-mode-line-left)
+                        (format-mode-line arche-mode-line-right))
                        'fixedcase 'literal)))
 
 ;;;; Color theme
