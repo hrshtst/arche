@@ -721,12 +721,21 @@ newline."
 ;; Remove text properties when yanking
 (setq yank-excluded-properties t)
 
+;; If point is at the beginning of a line, kill the entire line
+;; including the following newline.
+(setq kill-whole-line t)
+
 ;; Feature `delsel' allows us to delete selection.
 (use-feature delsel
   :demand t
   :config
 
   (delete-selection-mode +1))
+
+;; Package `expand-region' provides increase or decrease the selected
+;; region by semantic units.
+(use-package expand-region
+  :bind (("C-=" . er/expand-region)))
 
 ;;;; Undo/redo
 
