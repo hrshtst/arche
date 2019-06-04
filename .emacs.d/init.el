@@ -216,9 +216,9 @@ function. DOCSTRING and BODY are as in `defun'."
 (use-package bind-key)
 
 (defvar arche-keymap (make-sparse-keymap)
-  "Keymap for my own commands is bound under M-g.")
+  "Keymap for my own commands is bound under M-l.")
 
-(bind-key* "M-g" arche-keymap)
+(bind-key* "M-l" arche-keymap)
 
 (defmacro arche-bind-key (key-name command &optional predicate)
   "Bind a key in `arche-keymap'."
