@@ -1,2 +1,4 @@
 /straight
 /var
+/etc
+!/straight/versions/default.el
