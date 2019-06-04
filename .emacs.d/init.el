@@ -12,7 +12,7 @@
 ;; which is a Greek word with senses "beginning", "origin" or "source
 ;; of action", is used for namespace partitioning. For the most part,
 ;; code written by Radon Rosborough
-;; (https://github.com/raxod502/radian) is reused.
+;; (https://github.com/raxod502/radian) is modified and reused.
 
 ;;; License:
 
@@ -134,8 +134,19 @@ function. DOCSTRING and BODY are as in `defun'."
                    temporary-file-directory))
 
 ;;; Package management
-
 ;;;; straight.el
+
+;; Use the develop branch of straight.el on Radian's develop branch.
+(setq straight-repository-branch "develop")
+
+;; If watchexec and Python are installed, use file watchers to detect
+;; package modifications. This saves time at startup. Otherwise, use
+;; the ever-reliable find(1).
+(if (and (executable-find "watchexec")
+         (executable-find "python3"))
+    (setq straight-check-for-modifications '(watch-files find-when-checking))
+  (setq straight-check-for-modifications '(find-at-startup find-when-checking)))
+
 ;; Bootstrap straight.el
 (defvar bootstrap-version)
 (let ((bootstrap-file
