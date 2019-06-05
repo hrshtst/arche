@@ -262,7 +262,8 @@ function. DOCSTRING and BODY are as in `defun'."
 
   (ivy-mode +1)
 
-  :bind* (("C-c C-r" . ivy-resume))
+  :bind* (("C-c C-r" . ivy-resume)
+          ("C-;" . ivy-switch-buffer))
 
   :config
 
@@ -322,6 +323,7 @@ Remaps built-in functions to counsel replacements."
          ("C-c k" . counsel-ag)
          ("C-x l" . counsel-locate)
          ("C-c m" . counsel-mark-ring)
+         ("C-c d" . counsel-descbinds)
          ("C-x C-r" . counsel-recentf)
 
          :map minibuffer-local-map
