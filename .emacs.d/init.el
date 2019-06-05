@@ -842,6 +842,7 @@ newline."
   :config
 
   (setq auto-revert-interval 1)
+
   (global-auto-revert-mode +1)
 
   :blackout auto-revert-mode)
@@ -963,7 +964,7 @@ smartparens functions."
 (use-package lsp-mode
   :init
 
-  (arche-defhook arche-enable-lsp ()
+  (arche-defhook arche--enable-lsp ()
      prog-mode-hook
      "Enable `lsp-mode' for most programming modes."
      ;; `lsp-mode' requires `yas-minor-mode' enabled.
@@ -1139,7 +1140,7 @@ smartparens functions."
   ;; Original code from
   ;; https://github.com/PythonNut/emacs-config/blob/1a92a1ff1d563fa6a9d7281bbcaf85059c0c40d4/modules/config-intel.el#L130-L137,
   ;; thanks!
-  (arche-defadvice arche-advice-disable-eldoc-on-flycheck
+  (arche-defadvice arche--advice-disable-eldoc-on-flycheck
       (&rest _)
     :after-while eldoc-display-message-no-interference-p
     "Disable ElDoc when point is on a Flycheck overlay.
@@ -1158,7 +1159,7 @@ area."
   :defer 4
   :init
 
-  (defun arche-flycheck-disable-checkers (&rest checkers)
+  (defun arche--flycheck-disable-checkers (&rest checkers)
     "Disable the given Flycheck syntax CHECKERS, symbols.
 This function affects only the current buffer, and neither causes
 nor requires Flycheck to be loaded."
@@ -1206,7 +1207,7 @@ nor requires Flycheck to be loaded."
 
   :config
 
-  (arche-defadvice arche-advice-lsp-ui-apply-single-fix (orig-fun &rest args)
+  (arche-defadvice arche--advice-lsp-ui-apply-single-fix (orig-fun &rest args)
     :around lsp-ui-sideline-apply-code-actions
     "Apply code fix immediately if only one is possible."
     (cl-letf* ((orig-completing-read (symbol-function #'completing-read))
@@ -1228,10 +1229,10 @@ nor requires Flycheck to be loaded."
 
   (add-hook 'text-mode-hook #'auto-fill-mode)
 
-  (arche-defhook arche-flycheck-text-setup ()
+  (arche-defhook arche--flycheck-text-setup ()
     text-mode-hook
     "Disable some Flycheck checkers for plain text."
-    (arche-flycheck-disable-checkers 'proselint)))
+    (arche--flycheck-disable-checkers 'proselint)))
 
 ;;;; Lisp languages
 
@@ -1250,11 +1251,11 @@ nor requires Flycheck to be loaded."
 (use-feature cc-mode
   :config
 
-  (arche-defadvice arche-advice-inhibit-c-submode-indicators (&rest _)
+  (arche-defadvice arche--advice-inhibit-c-submode-indicators (&rest _)
     :override c-update-modeline
     "Unconditionally inhibit CC submode indicators in the mode lighter.")
 
-  (arche-defhook arche-c-mode-setup ()
+  (arche-defhook arche--c-mode-setup ()
     c-mode-common-hook
     "Enable `auto-line' and `hungry-delete' minor modes."
     (c-toggle-auto-hungry-state +1)))
@@ -1322,15 +1323,15 @@ nor requires Flycheck to be loaded."
 
   :config
 
-  (arche-defhook arche-flycheck-markdown-setup ()
+  (arche-defhook arche--flycheck-markdown-setup ()
     markdown-mode-hook
     "Disable some Flycheck checkers for Markdown."
-    (arche-flycheck-disable-checkers
+    (arche--flycheck-disable-checkers
      'markdown-markdownlint-cli
      'markdown-mdl
      'proselint))
 
-  (arche-defadvice arche-disable-markdown-metadata-fontification (&rest _)
+  (arche-defadvice arche--disable-markdown-metadata-fontification (&rest _)
     :override markdown-match-generic-metadata
     "Prevent fontification of YAML metadata blocks in `markdown-mode'.
 This prevents a mis-feature wherein if the first line of a
@@ -1352,7 +1353,7 @@ https://github.com/jrblevin/markdown-mode/issues/328."
   ;; of `python-indent-offset'.
   (setq python-indent-guess-indent-offset-verbose nil)
 
-  (arche-defhook arche-python-no-reindent-on-colon ()
+  (arche-defhook arche--python-no-reindent-on-colon ()
     python-mode-hook
     "Don't reindent on typing a colon.
 See https://emacs.stackexchange.com/a/3338/12534."
@@ -1376,13 +1377,13 @@ See https://emacs.stackexchange.com/a/3338/12534."
 (use-feature rst-mode
   :config
 
-  (arche-defhook arche-flycheck-rst-setup ()
+  (arche-defhook arche--flycheck-rst-setup ()
     rst-mode-hook
     "If inside Sphinx project, disable the `rst' Flycheck checker.
 This prevents it from signalling spurious errors. See also
 https://github.com/flycheck/flycheck/issues/953."
     (when (locate-dominating-file default-directory "conf.py")
-      (arche-flycheck-disable-checkers 'rst))))
+      (arche--flycheck-disable-checkers 'rst))))
 
 ;; Package `pip-requirements' provides a major mode for
 ;; requirements.txt files used by Pip.
@@ -1414,7 +1415,7 @@ https://github.com/flycheck/flycheck/issues/953."
 (use-feature tex
   :init
 
-  (arche-defhook arche-yasnippet-tex-setup ()
+  (arche-defhook arche--yasnippet-tex-setup ()
     TeX-mode-hook
     "Enable `yasnippet-minor-mode' for `TeX-mode'."
     (yas-minor-mode +1))
@@ -1428,10 +1429,10 @@ https://github.com/flycheck/flycheck/issues/953."
 
   (setq-default TeX-master nil) ; Query for master file.
 
-  (arche-defhook arche-flycheck-tex-setup ()
+  (arche-defhook arche--flycheck-tex-setup ()
     TeX-mode-hook
     "Disable some Flycheck checkers in TeX buffers."
-    (arche-flycheck-disable-checkers 'tex-chktex 'tex-lacheck)))
+    (arche--flycheck-disable-checkers 'tex-chktex 'tex-lacheck)))
 
 ;; Feature `tex-buf' from package `auctex' provides support for
 ;; running TeX commands and displaying their output.
@@ -1528,7 +1529,7 @@ https://github.com/flycheck/flycheck/issues/953."
 (use-package json-mode
   :config
 
-  (arche-defhook arche-fix-json-indentation ()
+  (arche-defhook arche--fix-json-indentation ()
     json-mode-hook
     "Set the tab width to 2 for JSON."
     (setq-local tab-width 2)))
@@ -1605,7 +1606,7 @@ https://github.com/flycheck/flycheck/issues/953."
     "Minor mode for making C-g work in `helpful-key'."
     :global t
     (if arche-universal-keyboard-quit-mode
-        (arche-defadvice arche-advice-helpful-key-allow-keyboard-quit
+        (arche-defadvice arche--advice-helpful-key-allow-keyboard-quit
             (func &rest args)
           :before helpful-key
           "Make C-g work in `helpful-key'."
@@ -1620,7 +1621,7 @@ https://github.com/flycheck/flycheck/issues/953."
                 (signal 'quit nil))
               ret))))
       (advice-remove
-       #'helpful-key #'arche-advice-helpful-key-allow-keyboard-quit)))
+       #'helpful-key #'arche--advice-helpful-key-allow-keyboard-quit)))
 
   (arche-universal-keyboard-quit-mode +1))
 
@@ -1655,16 +1656,16 @@ https://github.com/flycheck/flycheck/issues/953."
 (use-feature elisp-mode
   :config
 
-  (arche-defhook arche-flycheck-elisp-setup ()
+  (arche-defhook arche--flycheck-elisp-setup ()
     emacs-lisp-mode-hook
     "Disable some Flycheck checkers for Emacs Lisp."
     ;; These checkers suck at reporting error locations, so they're
     ;; actually quite distracting to work with.
-    (arche-flycheck-disable-checkers 'emacs-lisp 'emacs-lisp-checkdoc))
+    (arche--flycheck-disable-checkers 'emacs-lisp 'emacs-lisp-checkdoc))
 
   ;; Note that this function is actually defined in `elisp-mode'
   ;; because screw modularity.
-  (arche-defadvice arche-advice-company-elisp-use-helpful
+  (arche-defadvice arche--advice-company-elisp-use-helpful
       (func &rest args)
     :around elisp--company-doc-buffer
     "Cause `company' to use Helpful to show Elisp documentation."
@@ -1830,6 +1831,15 @@ to `arche-reload-init'."
   (transient-append-suffix 'magit-pull "-r"
     '("-a" "Autostash" "--autostash")))
 
+;; Feature `git-commit' from package `magit' provides the commit
+;; message editing capabilities of Magit.
+(use-feature git-commit
+  :config
+
+  ;; Max length for commit message summary is 50 characters as per
+  ;; https://chris.beams.io/posts/git-commit/.
+  (setq git-commit-summary-max-length 50))
+
 ;; Package `forge' provides a GitHub/GitLab/etc. interface directly
 ;; within Magit.
 (use-package forge
@@ -1861,7 +1871,7 @@ to `arche-reload-init'."
   (setq compilation-save-buffers-predicate
         (lambda ()))
 
-  (arche-defadvice arche-advice-compile-pop-to-buffer (buf)
+  (arche-defadvice arche--advice-compile-pop-to-buffer (buf)
     :filter-return compilation-start
     "Pop to compilation buffer on \\[compile]."
     (prog1 buf
@@ -1916,7 +1926,7 @@ to `arche-reload-init'."
     "Hook run while setting up an `atomic-chrome' buffer."
     :type 'hook)
 
-  (arche-defadvice arche-advice-atomic-chrome-setup (url)
+  (arche-defadvice arche--advice-atomic-chrome-setup (url)
     :after atomic-chrome-set-major-mode
     "Save the URL in `arche-atomic-chrome-url'.
 Also run `arche-atomic-chrome-setup-hook'."
@@ -2000,12 +2010,6 @@ This is passed to `set-frame-font'."
   "Default font size, in pixels. Nil means use the default."
   :type '(choice integer (const :tag "Default" nil)))
 
-(when (eq system-type 'gnu/linux)
-    (custom-set-variables '(arche-font "Ricty Discord")))
-
-(when (>= (x-display-pixel-width) 3000)
-    (custom-set-variables '(arche-font-size 140)))
-
 (when (display-graphic-p)
 
   ;; Disable the scroll bars.
@@ -2019,6 +2023,14 @@ This is passed to `set-frame-font'."
 
   ;; Prevent the cursor from blinking.
   (blink-cursor-mode -1)
+
+  ;; Use Ricty font.
+  (when (eq system-type 'gnu/linux)
+    (custom-set-variables '(arche-font "Ricty Discord")))
+
+  ;; When using large monitor, increase font size.
+  (when (>= (x-display-pixel-width) 3000)
+    (custom-set-variables '(arche-font-size 140)))
 
   ;; Set the default font size.
   (when arche-font-size
@@ -2079,7 +2091,7 @@ See also `arche-show-git-mode'.")
 ;; normal-mode).
 (put 'arche-mode-line-project-and-branch 'permanent-local t)
 
-(defun arche-mode-line-recompute-project-and-branch ()
+(defun arche--mode-line-recompute-project-and-branch ()
   "Recalculate and set `arche-mode-line-project-and-branch'.
 Force a redisplay of the mode line if necessary. This is
 buffer-local."
@@ -2111,8 +2123,9 @@ buffer-local."
                          (with-temp-buffer
                            ;; First attempt uses symbolic-ref, which
                            ;; returns the branch name if it exists.
-                           (call-process "git" nil '(t nil) nil
-                                         "symbolic-ref" "HEAD")
+                           (ignore-errors
+                             (call-process "git" nil '(t nil) nil
+                                           "symbolic-ref" "HEAD"))
                            (if (> (buffer-size) 0)
                                ;; It actually returns something like
                                ;; refs/heads/master, though, so let's
@@ -2130,8 +2143,9 @@ buffer-local."
                              ;; should show the abbreviated commit hash
                              ;; (e.g. b007692).
                              (erase-buffer)
-                             (call-process "git" nil '(t nil) nil
-                                           "rev-parse" "--short" "HEAD")
+                             (ignore-errors
+                               (call-process "git" nil '(t nil) nil
+                                             "rev-parse" "--short" "HEAD"))
                              (if (> (buffer-size) 0)
                                  (string-trim (buffer-string))
                                ;; We shouldn't get here. Unfortunately,
@@ -2140,8 +2154,9 @@ buffer-local."
                                "???")))))
                       (dirty (when git
                                (with-temp-buffer
-                                 (call-process "git" nil t nil
-                                               "status" "--porcelain")
+                                 (ignore-errors
+                                   (call-process "git" nil t nil
+                                                 "status" "--porcelain"))
                                  (if (> (buffer-size) 0)
                                      "*" "")))))
                  (cond
@@ -2195,20 +2210,20 @@ taxing elements."
 ;; between timer fires, then the repeat timer will be stuck with a
 ;; really long idle delay, and won't fire again.
 
-(defun arche-mode-line-recompute-and-reschedule ()
+(defun arche--mode-line-recompute-and-reschedule ()
   "Compute mode line data and re-set timers.
 The delay is `arche-mode-line-update-delay'. The timers are
-`arche-mode-line-idle-timer' and
-`arche-mode-line-repeat-timer'."
+`arche--mode-line-idle-timer' and
+`arche--mode-line-repeat-timer'."
 
   ;; Cancel any existing timer (we wouldn't want to introduce
   ;; duplicate timers!), and do it early in a half-hearted attempt to
   ;; avoid race conditions.
-  (when arche-mode-line-repeat-timer
-    (cancel-timer arche-mode-line-repeat-timer))
+  (when arche--mode-line-repeat-timer
+    (cancel-timer arche--mode-line-repeat-timer))
 
   ;; Do the computation.
-  (arche-mode-line-recompute-project-and-branch)
+  (arche--mode-line-recompute-project-and-branch)
 
   ;; If Emacs is already idle (meaning that the main idle timer has
   ;; already been triggered, and won't go again), then we need to
@@ -2218,28 +2233,28 @@ The delay is `arche-mode-line-update-delay'. The timers are
   ;; since the idle timer will always get called before the repeat
   ;; timer and that will cause the repeat timer to be re-set as below.
   (when (current-idle-time)
-    (setq arche-mode-line-repeat-timer
+    (setq arche--mode-line-repeat-timer
           (run-with-idle-timer
            (time-add (current-idle-time) arche-mode-line-update-delay)
-           nil #'arche-mode-line-recompute-and-reschedule))))
+           nil #'arche--mode-line-recompute-and-reschedule))))
 
-(defvar arche-mode-line-idle-timer
+(defvar arche--mode-line-idle-timer
   (run-with-idle-timer
    arche-mode-line-update-delay 'repeat
-   #'arche-mode-line-recompute-and-reschedule)
+   #'arche--mode-line-recompute-and-reschedule)
   "Timer that recomputes information for the mode line, or nil.
 This runs once each time Emacs is idle.
 Future recomputations are scheduled under
-`arche-mode-line-repeat-timer'. See also
-`arche-mode-line-recompute-and-reschedule' and
-`arche-mode-line-recompute-project-and-branch'.")
+`arche--mode-line-repeat-timer'. See also
+`arche--mode-line-recompute-and-reschedule' and
+`arche--mode-line-recompute-project-and-branch'.")
 
-(defvar arche-mode-line-repeat-timer nil
+(defvar arche--mode-line-repeat-timer nil
   "Timer that recomputes information for the mode line, or nil.
 This is scheduled repeatedly at intervals after
-`arche-mode-line-idle-timer' runs once. See also
-`arche-mode-line-recompute-and-reschedule' and
-`arche-mode-line-recompute-project-and-branch'.")
+`arche--mode-line-idle-timer' runs once. See also
+`arche--mode-line-recompute-and-reschedule' and
+`arche--mode-line-recompute-project-and-branch'.")
 
 ;; Make `mode-line-position' show the column, not just the row.
 (column-number-mode +1)
