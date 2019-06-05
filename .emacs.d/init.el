@@ -399,6 +399,14 @@ active minibuffer, even if the minibuffer is not selected."
 (use-feature ibuffer
   :bind (([remap list-buffers] . ibuffer)))
 
+;; Package `elscreen' provides a tabbed window session manager like
+;; GNU screen.
+(use-package elscreen
+  :demand t
+  :config
+
+  (elscreen-start))
+
 ;;; Finding files
 
 ;; Follow symlinks when opening files.
