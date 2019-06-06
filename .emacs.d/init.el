@@ -679,8 +679,19 @@ counterparts."
 
 
 ;;; Editing
+;;;; Language environment
+
+;; Use Japanese input method by default.
+(set-language-environment "Japanese")
+
+;; Use UTF-8 as default coding system.
+(prefer-coding-system 'utf-8-unix)
+
+;; Set process coding system to UTF-8 on Windows.
+(setq default-process-coding-system '(undecided-dos . utf-8-unix))
 
 ;;;; Text formatting
+
 ;; When region is active, capitalize it.
 (bind-key "M-c" #'capitalize-dwim)
 (bind-key "M-d" #'downcase-dwim)
@@ -2016,6 +2027,9 @@ Also run `arche-atomic-chrome-setup-hook'."
 ;; by changing packages upstream.
 (setq ad-redefinition-action 'accept)
 
+;; Answer yes or no questions with y or n.
+(defalias 'yes-or-no-p 'y-or-n-p)
+
 ;;; Appearance
 
 ;; Allow you to resize frames however you want, not just in whole
@@ -2090,6 +2104,37 @@ This is passed to `set-frame-font'."
   (menu-bar-mode -1))
 
 ;;;; Mode line
+
+;; Display the end-of-line format more **mnemonic**.
+(set eol-mnemonic-dos "(CRLF)")
+(set eol-mnemonic-unix "(LF)")
+(set eol-mnemonic-mac "(CR)")
+(set eol-mnemonic-undecided "(?)")
+
+(defun arche--mode-line-buffer-coding-system-base ()
+  "Return the name of the current buffer coding system base in
+more mnemonic way than default one. This is not the complete list
+of all the available coding systems, but rather most used ones."
+  (let ((coding-system-name
+         (symbol-name (coding-system-base buffer-file-coding-system))))
+    (cond ((string-match "utf-8" coding-system-name) "U8")
+          ((string-match "utf-16" coding-system-name) "U16")
+          ((string-match "japanese-shift-jis" coding-system-name) "SJIS")
+          ((string-match "cp\\([0-9]+\\)" coding-system-name)
+           (match-string 1 coding-system-name))
+          ((string-match "japanese-iso-8bit" coding-system-name) "EUC")
+          (t "???"))))
+
+(defun arche-mode-line-buffer-coding-system ()
+  "Return the current buffer coding system with its end-of-line format."
+  (format "%s%s"
+          (arche--mode-line-buffer-coding-system-base)
+          (mode-line-eol-desc)))
+
+(defun arche-mode-line-input-method ()
+  "Return the current input method."
+  (if current-input-method-title
+      (concat current-input-method-title ":") ""))
 
 (defun arche-mode-line-buffer-modified-status ()
   "Return a mode line construct indicating buffer modification status.
@@ -2319,12 +2364,16 @@ spaces."
     (format (format "%%s%%%ds" width) left right)))
 
 (defcustom arche-mode-line-left
-  '(;; Show [*] if the buffer is modified.
-    (:eval (arche-mode-line-buffer-modified-status))
+  '(;; Show current input method.
+    (:eval (arche-mode-line-input-method))
+    ;; Show buffer coding system.
+    (:eval (arche-mode-line-buffer-coding-system))
     " "
     ;; Show the name of the current buffer.
     mode-line-buffer-identification
-    "   "
+    ;; Show [*] if the buffer is modified.
+    (:eval (arche-mode-line-buffer-modified-status))
+    "  "
     ;; Show the row and column of point.
     mode-line-position
     ;; Show the current Projectile project and Git branch.
@@ -2336,7 +2385,8 @@ spaces."
   :type 'sexp)
 
 (defcustom arche-mode-line-right
-  '((:eval ((lambda ()
+  '(;; Show eyebrowse window conf list and current one.
+    (:eval ((lambda ()
               (when (featurep 'eyebrowse)
                 (eyebrowse-mode-line-indicator))))))
   "Composite mode line construct to be shown right-aligned."
