@@ -401,13 +401,34 @@ active minibuffer, even if the minibuffer is not selected."
 (use-feature ibuffer
   :bind (([remap list-buffers] . ibuffer)))
 
-;; Package `elscreen' provides a tabbed window session manager like
-;; GNU screen.
-(use-package elscreen
+;; Package `eyebrowse' provides window configuration manager which
+;; allows us to save several window configurations and switch to one
+;; of them anytime.
+(use-package eyebrowse
+  :init
+
+  (setq eyebrowse-keymap-prefix (kbd "C-z"))
+
+  :bind (:map eyebrowse-mode-map
+         ("C-z p" . eyebrowse-prev-window-config)
+         ("C-z n" . eyebrowse-next-window-config)
+         ("C-z SPC" . eyebrowse-last-window-config)
+         ("C-z k" . eyebrowse-close-window-config)
+         ("C-z ." . eyebrowse-rename-window-config)
+         ("C-z ," . eyebrowse-switch-to-window-config)
+         ("C-z c" . eyebrowse-create-window-config))
+
   :demand t
   :config
 
-  (elscreen-start))
+  ;; Wrap around when switching to the next/previous window config.
+  (setq eyebrowse-wrap-around t)
+
+  ;; Clean up and display the scratch buffer when creating new
+  ;; workspace.
+  (setq eyebrowse-new-workspace t)
+
+  (eyebrowse-mode +1))
 
 ;;; Finding files
 
@@ -1022,8 +1043,6 @@ smartparens functions."
               ;; Make TAB always complete the current selection.
               ("<tab>" . company-complete-selection)
               ("TAB" . company-complete-selection)
-              ;; Also, make "C-f" complete the selection.
-              ("C-f" . company-complete-selection)
 
               :map company-search-map
 
@@ -2307,7 +2326,10 @@ spaces."
   "Composite mode line construct to be shown left-aligned."
   :type 'sexp)
 
-(defcustom arche-mode-line-right nil
+(defcustom arche-mode-line-right
+  '((:eval ((lambda ()
+              (when (featurep 'eyebrowse)
+                (eyebrowse-mode-line-indicator))))))
   "Composite mode line construct to be shown right-aligned."
   :type 'sexp)
 
