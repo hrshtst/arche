@@ -430,6 +430,15 @@ active minibuffer, even if the minibuffer is not selected."
 
   (eyebrowse-mode +1))
 
+;; Package `pc-bufsw' provides a quick buffer switcher, which switches
+;; buffers according to most recently used order with C-TAB and
+;; C-S-TAB.
+(use-package pc-bufsw
+  :demand t
+  :config
+
+  (pc-bufsw t))
+
 ;;; Finding files
 
 ;; Follow symlinks when opening files.
