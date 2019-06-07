@@ -703,6 +703,71 @@ counterparts."
 ;; Set process coding system to UTF-8 on Windows.
 (setq default-process-coding-system '(undecided-dos . utf-8-unix))
 
+;; Package `mozc' provides Emacs with a Japanese IME interface for
+;; Mozc.
+(use-package mozc
+  :if (executable-find "mozc_emacs_helper")
+
+  :bind* (("S-SPC" . toggle-input-method))
+
+  :demand t
+  :config
+
+  ;; Display an indicator when mozc-mode enabled.
+  (setq mozc-leim-title "も"))
+
+;; Package `mozc-im' provides `input-method-function' for Mozc, which
+;; allows to use Mozc interface even in isearch field and ansi-term.
+(use-package mozc-im
+  :init
+
+  (defvar-local mozc-im-mode nil
+    "Whether `mozc-im-mode' is enabled or not. Non-nil means
+    `mozc-im-mode' is enabled.")
+
+  :demand t
+  :after mozc
+  :config
+
+  (setq default-input-method "japanese-mozc-im")
+
+  ;; Store whether mozc-im mode is enabled or not. Variable
+  ;; `mozc-im-mode' is used for changing cursor color.
+  (add-hook 'mozc-im-activate-hook (lambda () (setq mozc-im-mode t)))
+  (add-hook 'mozc-im-deactivate-hook (lambda () (setq mozc-im-mode nil))))
+
+;; Package `mozc-popup' provides candidate selection menu with popup
+;; style, which significantly reduces a lag for showing up menu
+;; implemented in the original mozc package.
+(use-package mozc-popup
+  :demand t
+  :after mozc
+  :config
+
+  (setq mozc-candidate-style 'popup))
+
+;; Package `ccc' provides buffer local cursor color control library.
+;; For the sake of clarity, cursor color is changed to lighter color
+;; when mozc mode is enabled.
+(use-package ccc
+  :commands (ccc-set-buffer-local-cursor-color)
+  :init
+
+  (defvar arche--cursor-color-mozc-enabled "orange"
+    "Cursor color when mozc mode is enabled.")
+
+  :hook ((input-method-activate . arche-cursor-color-change)
+         (input-method-inactivate . arche-cursor-color-change))
+
+  :after (:all mozc mozc-im)
+  :demand t
+  :config
+
+  (defun arche-cursor-color-change ()
+    (if (or mozc-im-mode mozc-mode)
+        (ccc-set-buffer-local-cursor-color arche--cursor-color-mozc-enabled)
+      (ccc-set-buffer-local-cursor-color nil))))
+
 ;;;; Text formatting
 
 ;; When region is active, capitalize it.
