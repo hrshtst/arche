@@ -2106,10 +2106,10 @@ This is passed to `set-frame-font'."
 ;;;; Mode line
 
 ;; Display the end-of-line format more **mnemonic**.
-(set eol-mnemonic-dos "(CRLF)")
-(set eol-mnemonic-unix "(LF)")
-(set eol-mnemonic-mac "(CR)")
-(set eol-mnemonic-undecided "(?)")
+(setq eol-mnemonic-dos "(CRLF)")
+(setq eol-mnemonic-unix "(LF)")
+(setq eol-mnemonic-mac "(CR)")
+(setq eol-mnemonic-undecided "(?)")
 
 (defun arche--mode-line-buffer-coding-system-base ()
   "Return the name of the current buffer coding system base in
