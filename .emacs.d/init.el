@@ -371,6 +371,17 @@ active minibuffer, even if the minibuffer is not selected."
 
   (windmove-default-keybindings))
 
+;; Select another window in cyclic ordering with C-t.
+(bind-key "C-t" #'other-window)
+
+(defun other-window-backwards ()
+    "Select window in backward ordering to `other-window' with
+positive count."
+    (interactive)
+    (other-window -1))
+
+(bind-key "C-S-t" #'other-window-backwards)
+
 ;; Feature `winner' provides undo/redo function for window
 ;; configuration by C-c left and C-c right, respectively. For
 ;; instance, use C-x 1 to focus on a particular window, then return
