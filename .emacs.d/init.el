@@ -2136,7 +2136,8 @@ of all the available coding systems, but rather most used ones."
           ((string-match "cp\\([0-9]+\\)" coding-system-name)
            (match-string 1 coding-system-name))
           ((string-match "japanese-iso-8bit" coding-system-name) "EUC")
-          (t "???"))))
+          ((string-match "undecided" coding-system-name) "-")
+          (t "?"))))
 
 (defun arche-mode-line-buffer-coding-system ()
   "Return the current buffer coding system with its end-of-line format."
