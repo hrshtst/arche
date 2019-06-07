@@ -763,7 +763,13 @@ counterparts."
   :demand t
   :config
 
+  ;; Register ccc-related functions to appropriate hooks.
+  (ccc-setup)
+
   (defun arche-cursor-color-change ()
+    "Change cursor color depending on whether mozc-mode is
+enabled. If mozc-mode is enabled, change cursor color to
+`arche--cursor-color-mozc-enabled'."
     (if (or mozc-im-mode mozc-mode)
         (ccc-set-buffer-local-cursor-color arche--cursor-color-mozc-enabled)
       (ccc-set-buffer-local-cursor-color nil))))
