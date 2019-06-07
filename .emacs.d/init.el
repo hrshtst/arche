@@ -677,6 +677,19 @@ counterparts."
   ;; lexicographic order.
   (setq counsel-projectile-sort-files t))
 
+;;; Saving files
+
+;; Assemble backup files in temporary directory.
+(setq backup-directory-alist '((".*" . ,temporary-file-directory)))
+
+;; Assemble autosave files in temporary directory.
+(setq auto-save-file-name-transforms '((".*" ,temporary-file-directory t)))
+
+;; Delete autosave files automatically.
+(setq delete-auto-save-files t)
+
+;; Don't make lockfiles.
+(setq create-lockfiles nil)
 
 ;;; Editing
 ;;;; Language environment
