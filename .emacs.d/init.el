@@ -2498,6 +2498,22 @@ spaces."
                         (format-mode-line arche-mode-line-right))
                        'fixedcase 'literal)))
 
+;;;; Highlighting
+
+;; Package `dimmer' makes the buffer window on focus more visible by
+;; dimming the faces in the other buffers.
+(use-package dimmer
+  :demand t
+  :config
+
+  (dimmer-mode +1)
+
+  ;; Make the other buffers a little bit dimmer than default. Default
+  ;; value is 0.2.
+  (setq dimmer-fraction 0.3)
+
+  :blackout t)
+
 ;;;; Color theme
 
 ;; Package `zerodark-theme' provides a good-looking color theme that
