@@ -872,6 +872,9 @@ newline."
 
 ;;;; Region selection
 
+;; Bind `rectangle-mark-mode' to "C-c RET"
+(bind-key "C-c RET" #'rectangle-mark-mode)
+
 ;; Package `expand-region' provides increase or decrease the selected
 ;; region by semantic units.
 (use-package expand-region
