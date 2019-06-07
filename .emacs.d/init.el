@@ -867,6 +867,11 @@ newline."
 
   (delete-selection-mode +1))
 
+;; Use "C-h" as backspace.
+(bind-key* "C-h" #'delete-backward-char)
+
+;;;; Region selection
+
 ;; Package `expand-region' provides increase or decrease the selected
 ;; region by semantic units.
 (use-package expand-region
@@ -1757,6 +1762,9 @@ https://github.com/flycheck/flycheck/issues/953."
        #'helpful-key #'arche--advice-helpful-key-allow-keyboard-quit)))
 
   (arche-universal-keyboard-quit-mode +1))
+
+;; Use "M-h" instead of "C-h".
+(bind-key "M-h" #'help-for-help)
 
 ;;;; Keybindings
 
