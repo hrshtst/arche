@@ -679,11 +679,11 @@ counterparts."
 
 ;;; Saving files
 
-;; Assemble backup files in temporary directory.
-(setq backup-directory-alist '((".*" . ,temporary-file-directory)))
+;; Store all backup files in temporary directory.
+(setq backup-directory-alist `((".*" . ,temporary-file-directory)))
 
-;; Assemble autosave files in temporary directory.
-(setq auto-save-file-name-transforms '((".*" ,temporary-file-directory t)))
+;; Store all autosave files in temporary directory.
+(setq auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
 
 ;; Delete autosave files automatically.
 (setq delete-auto-save-files t)
