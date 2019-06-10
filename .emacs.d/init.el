@@ -1285,6 +1285,19 @@ smartparens functions."
 
 ;;;; Jump to definition
 
+;; Package `imenu-list' creates a buffer which is populated with the
+;; current buffer's imenu entries. This buffer is shown as a sidebar.
+(use-package imenu-list
+  :bind (("<f10>" . imenu-list-smart-toggle))
+
+  :config
+
+  ;; Set the focus to the imenu-list buffer when activating.
+  (setq imenu-list-focus-after-activation t)
+
+  ;; Always shows the buffer with the constant size.
+  (setq imenu-list-auto-resize nil))
+
 ;; Package `dumb-jump' is an Emacs "jump to definition" package with
 ;; support for multiple programming languages that favors "just
 ;; working". This means minimal configuration with absolutely no
