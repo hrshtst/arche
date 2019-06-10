@@ -382,6 +382,23 @@ positive count."
 
 (bind-key "C-S-t" #'other-window-backwards)
 
+;; Package `ace-window' provides window selection with simple
+;; operation. When more than two windows on the frame, calling
+;; `ace-window' shows the first character of each window label upper
+;; left of the window. Pressing that character will switch to that
+;; window.
+(use-package ace-window
+  :bind ("M-o" . ace-window)
+  :config
+
+  ;; Initial characters used in window labels would like to be on the
+  ;; home positions.
+  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+
+  ;; Make the face of leading character more visible.
+  (set-face-attribute 'aw-leading-char-face nil
+                      :foreground "yellow" :height 250))
+
 ;; Feature `winner' provides undo/redo function for window
 ;; configuration by C-c left and C-c right, respectively. For
 ;; instance, use C-x 1 to focus on a particular window, then return
@@ -2515,7 +2532,7 @@ spaces."
 ;; dimming the faces in the other buffers.
 (use-package dimmer
   :straight (;; Use gonewest818's fork, which improves feature to
-             ;; exclude from dimming.
+             ;; exclude buffers from dimming.
              :host github :repo "gonewest818/dimmer.el"
                    :fork (:repo "cmccloud/dimmer.el" :branch "feature/improvements"))
 
