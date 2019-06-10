@@ -861,6 +861,11 @@ newline."
       (kill-local-variable 'whitespace-style)
       (kill-local-variable 'whitespace-line-column)))
 
+  :config
+
+  ;; Show trailing whitespaces
+  (setq show-trailing-whitespace t)
+
   :blackout t)
 
 ;; Feature `outline' provides major and minor modes for collapsing
@@ -1153,24 +1158,31 @@ newline."
 
   :defer 3
 
-  :bind (:map company-active-map
+  :bind (;; Remap the standard Emacs keybindings for invoking
+         ;; completion to Company.
+         ([remap completion-at-point] . company-manual-begin)
+         ([remap complete-symbol] . company-manual-begin)
 
-              ;; Select candidate using "C-n" and "C-p".
-              ("C-n" . company-select-next)
-              ("C-p" . company-select-previous)
+         ;; The followings are keybindings that take effect whenever
+         ;; the completions menu is visible.
+         :map company-active-map
 
-              ;; Invoke filtering by "C-s".
-              ("C-s" . company-filter-candidates)
+         ;; Invoke filtering by "C-s".
+         ("C-s" . company-filter-candidates)
 
-              ;; Make TAB always complete the current selection.
-              ("<tab>" . company-complete-selection)
-              ("TAB" . company-complete-selection)
+         ;; Make TAB always complete the current selection.
+         ("<tab>" . company-complete-selection)
+         ("TAB" . company-complete-selection)
 
-              :map company-search-map
+         ;; The followings are keybindings that only take effect if
+         ;; the user has explicitly interacted with Company.
+         :filter (company-explicit-action-p)
 
-              ;; Move within filtered candidates.
-              ("C-n" . company-select-next)
-              ("C-p" . company-select-previous))
+         ;; Make RET trigger a completion if and only if the user has
+         ;; explicitly interacted with Company, instead of always
+         ;; doing so.
+         ("<return>" . company-complete-selection)
+         ("RET" . company-complete-selection))
 
   :bind* (;; Invoke company manually.
           ("M-TAB" . company-complete))
