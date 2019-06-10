@@ -1158,12 +1158,7 @@ newline."
 
   :defer 3
 
-  :bind (;; Remap the standard Emacs keybindings for invoking
-         ;; completion to Company.
-         ([remap completion-at-point] . company-manual-begin)
-         ([remap complete-symbol] . company-manual-begin)
-
-         ;; The followings are keybindings that take effect whenever
+  :bind (;; The followings are keybindings that take effect whenever
          ;; the completions menu is visible.
          :map company-active-map
 
@@ -2055,7 +2050,16 @@ to `arche-reload-init'."
     :filter-return compilation-start
     "Pop to compilation buffer on \\[compile]."
     (prog1 buf
-      (select-window (get-buffer-window buf)))))
+      (select-window (get-buffer-window buf))))
+
+  (use-feature ansi-color
+    :config
+
+    (arche-defhook arche--colorize-compilation-buffer ()
+      compilation-filter-hook
+      "Colorize compilation buffer with ansi color."
+      (let ((inhibit-read-only t))
+        (ansi-color-apply-on-region (point-min) (point-max))))))
 
 ;;;; Internet applications
 
