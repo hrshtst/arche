@@ -1040,41 +1040,7 @@ newline."
 ;; pairs, highlight matching paired parens and provide keybindings
 ;; for operating on paired parens.
 (use-package smartparens
-  :init/el-patch
-
-  (defvar sp-paredit-bindings '(
-                                ("C-M-f" . sp-forward-sexp) ;; navigation
-                                ("C-M-b" . sp-backward-sexp)
-                                ("C-M-u" . sp-backward-up-sexp)
-                                ("C-M-d" . sp-down-sexp)
-                                ("C-M-p" . sp-backward-down-sexp)
-                                ("C-M-n" . sp-up-sexp)
-                                ("M-s" . sp-splice-sexp) ;; depth-changing commands
-                                ("M-<up>" . sp-splice-sexp-killing-backward)
-                                ("M-<down>" . sp-splice-sexp-killing-forward)
-                                ("M-r" . sp-splice-sexp-killing-around)
-                                ("M-(" . sp-wrap-round)
-                                ("C-)" . sp-forward-slurp-sexp) ;; barf/slurp
-                                ("C-<right>" . sp-forward-slurp-sexp)
-                                ("C-}" . sp-forward-barf-sexp)
-                                ("C-<left>" . sp-forward-barf-sexp)
-                                ("C-(" . sp-backward-slurp-sexp)
-                                ("C-M-<left>" . sp-backward-slurp-sexp)
-                                ("C-{" . sp-backward-barf-sexp)
-                                ("C-M-<right>" . sp-backward-barf-sexp)
-                                ("M-S" . sp-split-sexp) ;; misc
-                                ("M-j" . sp-join-sexp)
-                                (el-patch-remove
-                                 ("M-?" . sp-convolute-sexp))
-                                )
-    (el-patch-concat
-      "Paredit inspired bindings.
-
-Alist containing the default paredit bindings to corresponding
-smartparens functions."
-      (el-patch-add
-        "\n\nCommand for `sp-convolute-sexp' has been removed.")))
-
+  :bind* (("C-M-p" . sp-previous-sexp))
   :demand t
   :config
 
@@ -1084,9 +1050,9 @@ smartparens functions."
   ;; Enable Smartparens in all buffers.
   (smartparens-global-mode +1)
 
-  ;; Set up keybindings for Smartparens functions with keybindings
-  ;; of corresponding paredit functions.
-  (sp-use-paredit-bindings)
+  ;; Set up keybindings for Smartparens functions with default
+  ;; keybindings.
+  (sp-use-smartparens-bindings)
 
   ;; Highlight matching parens.
   (show-smartparens-global-mode +1)
@@ -1308,9 +1274,10 @@ smartparens functions."
   (dumb-jump-mode +1)
 
   :bind (:map dumb-jump-mode-map
-              ("M-Q" . dumb-jump-quick-look))
+              ("M-Q" . dumb-jump-quick-look)
+              ("M-t" . dumb-jump-back))
 
-  :bind* (("C-M-d" . dumb-jump-go-prompt)
+  :bind* (("C-M-o" . dumb-jump-go-prompt)
           ("C-x 4 g" . dumb-jump-go-other-window)
           ("C-x 4 d" . arche-dumb-jump-go-prompt-other-window))
 
