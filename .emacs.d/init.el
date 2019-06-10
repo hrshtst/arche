@@ -970,6 +970,22 @@ newline."
 
 (bind-key "C-x C-x" 'arche-exchange-point-and-mark)
 
+;; Package `avy' provides a fast navigation within the currently
+;; displaying windows. Calling `avy-goto-char' with a couple of
+;; characters shows words that the first of charcters match with the
+;; given ones. Pressing the highlighted charcters makes the point jump
+;; to it.
+(use-package avy
+  :bind (("C-:" . avy-goto-char)
+         ("C-'" . avy-goto-char-timer)
+         ("M-g M-g" . avy-goto-line)
+         ("C-c C-j" . avy-resume))
+
+  :config
+
+  ;; Make background dark during selection.
+  (setq avy-background t))
+
 ;;;; Find and replace
 
 ;; Package `visual-regexp' provides an alternative version of
