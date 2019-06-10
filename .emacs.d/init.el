@@ -2544,6 +2544,12 @@ spaces."
 
 ;;;; Highlighting
 
+;; Package `col-highlight' highlights the current column.
+(use-package col-highlight
+  :config
+
+  (arche-bind-key "c" #'column-highlight-mode))
+
 ;; Package `dimmer' makes the buffer window on focus more visible by
 ;; dimming the faces in the other buffers.
 (use-package dimmer
