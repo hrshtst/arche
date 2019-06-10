@@ -2514,14 +2514,39 @@ spaces."
 ;; Package `dimmer' makes the buffer window on focus more visible by
 ;; dimming the faces in the other buffers.
 (use-package dimmer
+  :straight (;; Use gonewest818's fork, which improves feature to
+             ;; exclude from dimming.
+             :host github :repo "gonewest818/dimmer.el"
+                   :fork (:repo "cmccloud/dimmer.el" :branch "feature/improvements"))
+
+  :init/el-patch
+
+  (defun dimmer-config-change-hook ()
+    "Process all buffers if window configuration has changed."
+    (dimmer--dbg "dimmer-config-change-hook")
+    (el-patch-add (dimmer-restore-all))
+    (unless (bound-and-true-p dimmer-timer)
+      (setq dimmer-timer (run-at-time nil nil #'dimmer-process-all))
+      ;; Queue up a sanity-check in case something forces a window change on us
+      ;; This is useful mainly trying to keep up with other asychronous processes
+      ;; - like those used in magit, for example, which often call `select-window'
+      ;; sometime after changing the window configuration.
+      (run-at-time 0.2 nil #'dimmer-command-hook)))
+
   :demand t
   :config
-
-  (dimmer-mode +1)
 
   ;; Make the other buffers a little bit dimmer than default. Default
   ;; value is 0.2.
   (setq dimmer-fraction 0.3)
+
+  ;; Some buffers should be never dimmed.
+  (setq dimmer-exclusion-predicates '(window-minibuffer-p))
+  (setq dimmer-exclusion-regexp-list
+        '("^\\*Minibuf-[0-9]+\\*" "^.\\*which-key\\*$"
+          "^*Messages*" "*LV*"))
+
+  (dimmer-mode +1)
 
   :blackout t)
 
