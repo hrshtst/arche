@@ -1303,9 +1303,9 @@ newline."
               ("M-Q" . dumb-jump-quick-look)
               ("M-t" . dumb-jump-back))
 
-  :bind* (("C-M-o" . dumb-jump-go-prompt)
+  :bind* (("C-M-s" . dumb-jump-go-prompt)
           ("C-x 4 g" . dumb-jump-go-other-window)
-          ("C-x 4 d" . arche-dumb-jump-go-prompt-other-window))
+          ("C-x 4 s" . arche-dumb-jump-go-prompt-other-window))
 
   :config
 
