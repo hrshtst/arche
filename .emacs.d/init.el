@@ -2556,7 +2556,8 @@ spaces."
              :host github :repo "gonewest818/dimmer.el"
                    :fork (:repo "cmccloud/dimmer.el" :branch "feature/improvements"))
 
-  :init/el-patch
+  :demand t
+  :config/el-patch
 
   (defun dimmer-config-change-hook ()
     "Process all buffers if window configuration has changed."
@@ -2570,7 +2571,6 @@ spaces."
       ;; sometime after changing the window configuration.
       (run-at-time 0.2 nil #'dimmer-command-hook)))
 
-  :demand t
   :config
 
   ;; Make the other buffers a little bit dimmer than default. Default
