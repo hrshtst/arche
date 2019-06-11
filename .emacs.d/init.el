@@ -473,8 +473,25 @@ positive count."
 
 ;; Follow symlinks when opening files.
 (setq find-file-visit-truename t)
+
 ;; Suppress warning "X and Y are the same file".
 (setq find-file-suppress-same-file-warnings t)
+
+;; Feature `recentf' builds a list of recently opend files.
+(use-feature recentf
+  :demand t
+  :config
+
+  ;; Increase the number of saved items.
+  (setq recentf-max-saved-items 2000)
+
+  ;; Periodically execute clean-up in 10 minites.
+  (setq recentf-auto-cleanup (* 10 60))
+
+  ;; Run update of the list periodically.
+  (run-at-time t (* 10 60) 'recentf-save-list)
+
+  (recentf-mode +1))
 
 ;; Feature `saveplace' remembers place in files so as to move point
 ;; to saved position automatically when visiting them later.
