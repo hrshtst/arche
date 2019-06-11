@@ -444,7 +444,9 @@ positive count."
          ("C-z k" . eyebrowse-close-window-config)
          ("C-z ." . eyebrowse-rename-window-config)
          ("C-z ," . eyebrowse-switch-to-window-config)
-         ("C-z c" . eyebrowse-create-window-config))
+         ("C-z c" . eyebrowse-create-window-config)
+         ("C-z h" . winner-undo)
+         ("C-z l" . winner-redo))
 
   :demand t
   :config
