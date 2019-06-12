@@ -194,8 +194,6 @@ function. DOCSTRING and BODY are as in `defun'."
 
 ;;; Function tweaking
 
-;;;; el-patch
-
 ;; Package `el-patch' provides a way to customize the behavior of
 ;; Emacs Lisp functions that do not provide variables and hooks to
 ;; let us make them what we want. Also, this can be used to override
@@ -209,8 +207,6 @@ function. DOCSTRING and BODY are as in `defun'."
 
 ;;; Keybindings
 
-;;;; bind-key
-
 ;; Package `bind-key' provides a useful macro which is much prettier
 ;; and surely takes effect.
 (use-package bind-key)
@@ -223,6 +219,10 @@ function. DOCSTRING and BODY are as in `defun'."
 (defmacro arche-bind-key (key-name command &optional predicate)
   "Bind a key in `arche-keymap'."
   `(bind-key ,key-name ,command arche-keymap ,predicate))
+
+;; Package `hydra' provides a feature to tie related commands into a
+;; family of short bindings with a common prefix.
+(use-package hydra)
 
 ;;; Environment variables
 
