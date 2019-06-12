@@ -393,11 +393,16 @@ positive count."
 
   ;; Initial characters used in window labels would like to be on the
   ;; home positions.
-  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+  (setq aw-keys '(?a ?s ?d ?f ?j ?k ?l))
 
   ;; Make the face of leading character more visible.
   (set-face-attribute 'aw-leading-char-face nil
-                      :foreground "yellow" :height 250))
+                      :foreground "yellow"
+                      :weight 'bold
+                      :height 3.0)
+
+  ;; Always enable to issue dispatch functions for even one window.
+  (setq aw-dispatch-always t))
 
 ;; Feature `winner' provides undo/redo function for window
 ;; configuration by C-c left and C-c right, respectively. For
