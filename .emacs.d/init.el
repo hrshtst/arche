@@ -575,7 +575,9 @@ _q_uit
   (setq recentf-auto-cleanup (* 10 60))
 
   ;; Run update of the list periodically.
-  (run-at-time t (* 10 60) 'recentf-save-list)
+  (run-at-time t (* 10 60) (lambda ()
+                             (let ((save-silently t))
+                               (recentf-save-list))))
 
   (recentf-mode +1))
 
