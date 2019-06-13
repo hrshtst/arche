@@ -324,6 +324,7 @@ Remaps built-in functions to counsel replacements."
          ("C-x l" . counsel-locate)
          ("C-c m" . counsel-mark-ring)
          ("C-c d" . counsel-descbinds)
+         ("C-c u" . counsel-unicode-char)
          ("C-x C-r" . counsel-recentf)
 
          :map minibuffer-local-map
