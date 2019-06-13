@@ -1458,11 +1458,28 @@ nor requires Flycheck to be loaded."
   ;; Display errors in the echo area after only 0.2 seconds, not 0.9.
   (setq flycheck-display-errors-delay 0.2)
 
-  :config
-
+  ;; Bind keys to navigation of errors
   (arche-bind-key "p" #'flycheck-previous-error)
   (arche-bind-key "n" #'flycheck-next-error)
   (arche-bind-key "l" #'flycheck-list-errors)
+
+  ;; Define hydra keymap for flycheck
+  (use-feature hydra
+    :config
+
+    (defhydra hydra-flycheck
+      (:pre flycheck-list-errors
+            :post (quit-windows-on "*Flycheck errors*")
+            :hint nil)
+      "Errors"
+      ("f" flycheck-error-list-set-filter "Filter")
+      ("j" flycheck-next-error            "Next")
+      ("k" flycheck-previous-error        "Previous")
+      ("h" flycheck-first-error           "First")
+      ("l" (progn (goto-char (point-max)) (flycheck-previous-error)) "Last")
+      ("q" nil))
+
+    (bind-key "C-M-l" #'hydra-flycheck/body))
 
   :blackout t)
 
@@ -2149,6 +2166,23 @@ to `arche-reload-init'."
     "Pop to compilation buffer on \\[compile]."
     (prog1 buf
       (select-window (get-buffer-window buf))))
+
+  ;; Define hydra keymap for compilation buffer.
+  (use-feature hydra
+    :config
+
+    (defhydra hydra-next-error (global-map "C-x" :hint nil)
+      "
+Compilation errors:
+_j_: next error      _h_: first error    _q_uit
+_k_: previous error  _l_: last error
+"
+      ("`" next-error)
+      ("j" next-error :bind nil)
+      ("k" previous-error :bind nil)
+      ("h" first-error :bind nil)
+      ("l" (progn (goto-char (point-max)) (previous-error)) :bind nil)
+      ("q" nil)))
 
   (use-feature ansi-color
     :config
