@@ -1172,8 +1172,10 @@ _h_ ^ ^ _l_   _y_ank      _t_ype     _e_xchange-point
          (user-error nil)) "last")
   ("g" goto-line "go")
   ("G" avy-goto-line "avy go")
+  ("n" next-line "next line")
+  ("p" previous-line "prev line")
   ("v" recenter-top-bottom "recenter")
-  ("m" set-mark-commannd "mark" :bind nil)
+  ("m" set-mark-command "mark" :bind nil)
   ("q" nil "quit"))
 
 (bind-key "M-g" #'hydra-goto-map/body)
