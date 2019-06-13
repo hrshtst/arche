@@ -473,18 +473,8 @@ positive count."
 (use-package eyebrowse
   :init
 
+  ;; Suppress defining default prefix C-c C-w
   (setq eyebrowse-keymap-prefix (kbd "C-z"))
-
-  :bind (:map eyebrowse-mode-map
-         ("C-z p" . eyebrowse-prev-window-config)
-         ("C-z n" . eyebrowse-next-window-config)
-         ("C-z SPC" . eyebrowse-last-window-config)
-         ("C-z k" . eyebrowse-close-window-config)
-         ("C-z ." . eyebrowse-rename-window-config)
-         ("C-z ," . eyebrowse-switch-to-window-config)
-         ("C-z c" . eyebrowse-create-window-config)
-         ("C-z h" . winner-undo)
-         ("C-z l" . winner-redo))
 
   :demand t
   :config
@@ -496,7 +486,24 @@ positive count."
   ;; workspace.
   (setq eyebrowse-new-workspace t)
 
-  (eyebrowse-mode +1))
+  (eyebrowse-mode +1)
+
+  ;; Define keybindings with hydra.
+  (use-feature hydra
+    :config
+
+    (defhydra hydra-eyebrowse (global-map "C-z" :hint nil)
+      "eyebrowse"
+      ("p" eyebrowse-prev-window-config "next")
+      ("n" eyebrowse-next-window-config "prev")
+      ("SPC" eyebrowse-last-window-config "last" :exit t)
+      ("k" eyebrowse-close-window-config "close")
+      ("." eyebrowse-rename-window-config "rename" :exit t)
+      ("," eyebrowse-switch-to-window-config "switch" :exit t)
+      ("c" eyebrowse-create-window-config "create" :exit t)
+      ("h" winner-undo "undo")
+      ("l" winner-redo "redo")
+      ("q" nil))))
 
 ;; Package `pc-bufsw' provides a quick buffer switcher, which switches
 ;; buffers according to most recently used order with C-TAB and
