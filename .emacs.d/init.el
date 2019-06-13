@@ -1152,13 +1152,31 @@ _h_ ^ ^ _l_   _y_ank      _t_ype     _e_xchange-point
 (use-package avy
   :bind (("C-:" . avy-goto-char)
          ("C-'" . avy-goto-char-timer)
-         ("M-g M-g" . avy-goto-line)
          ("C-c C-j" . avy-resume))
 
   :config
 
   ;; Make background dark during selection.
   (setq avy-background t))
+
+;; Define `goto-map' with hydra keybindings.
+(defhydra hydra-goto-map (:pre (linum-mode +1)
+                          :post (linum-mode -1))
+  "goto-map"
+  ("h" first-error "first")
+  ("j" next-error "next")
+  ("k" previous-error "previous")
+  ("l" (condition-case err
+           (while t
+             (next-error))
+         (user-error nil)) "last")
+  ("g" goto-line "go")
+  ("G" avy-goto-line "avy go")
+  ("v" recenter-top-bottom "recenter")
+  ("m" set-mark-commannd "mark" :bind nil)
+  ("q" nil "quit"))
+
+(bind-key "M-g" #'hydra-goto-map/body)
 
 ;;;; Find and replace
 
