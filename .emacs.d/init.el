@@ -1462,6 +1462,7 @@ nor requires Flycheck to be loaded."
 
   (arche-bind-key "p" #'flycheck-previous-error)
   (arche-bind-key "n" #'flycheck-next-error)
+  (arche-bind-key "l" #'flycheck-list-errors)
 
   :blackout t)
 
