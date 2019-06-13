@@ -1159,6 +1159,14 @@ _h_ ^ ^ _l_   _y_ank      _t_ype     _e_xchange-point
   ;; Make background dark during selection.
   (setq avy-background t))
 
+(defun arche-last-error ()
+  "Visit last error message and corresponding source code."
+  (interactive)
+  (condition-case err
+      (while t
+        (next-error))
+    (user-error nil)))
+
 ;; Define `goto-map' with hydra keybindings.
 (defhydra hydra-goto-map (:pre (linum-mode +1)
                           :post (linum-mode -1))
@@ -1166,10 +1174,7 @@ _h_ ^ ^ _l_   _y_ank      _t_ype     _e_xchange-point
   ("h" first-error "first")
   ("j" next-error "next")
   ("k" previous-error "previous")
-  ("l" (condition-case err
-           (while t
-             (next-error))
-         (user-error nil)) "last")
+  ("l" arche-last-error "last")
   ("g" goto-line "go")
   ("G" avy-goto-line "avy go")
   ("n" next-line "next line")
@@ -2273,10 +2278,7 @@ _k_: previous error  _l_: last error
       ("j" next-error :bind nil)
       ("k" previous-error :bind nil)
       ("h" first-error :bind nil)
-      ("l" (condition-case err
-             (while t
-               (next-error))
-           (user-error nil)) :bind nil)
+      ("l" arche-last-error :bind nil)
       ("q" nil)))
 
   (use-feature ansi-color
