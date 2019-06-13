@@ -369,7 +369,39 @@ active minibuffer, even if the minibuffer is not selected."
   :demand t
   :config
 
-  (windmove-default-keybindings))
+  (windmove-default-keybindings)
+
+  (defun arche-move-splitter-left (arg)
+    "Move window splitter left."
+    (interactive "p")
+    (if (let ((windmove-wrap-around))
+          (windmove-find-other-window 'right))
+        (shrink-window-horizontally arg)
+      (enlarge-window-horizontally arg)))
+
+  (defun arche-move-splitter-right (arg)
+    "Move window splitter right."
+    (interactive "p")
+    (if (let ((windmove-wrap-around))
+          (windmove-find-other-window 'right))
+        (enlarge-window-horizontally arg)
+      (shrink-window-horizontally arg)))
+
+  (defun arche-move-splitter-up (arg)
+    "Move window splitter up."
+    (interactive "p")
+    (if (let ((windmove-wrap-around))
+          (windmove-find-other-window 'up))
+        (enlarge-window arg)
+      (shrink-window arg)))
+
+  (defun arche-move-splitter-down (arg)
+    "Move window splitter down."
+    (interactive "p")
+    (if (let ((windmove-wrap-around))
+          (windmove-find-other-window 'up))
+        (shrink-window arg)
+      (enlarge-window arg))))
 
 ;; Select another window in cyclic ordering with C-t.
 (bind-key "C-t" #'other-window)
@@ -473,6 +505,47 @@ positive count."
   :config
 
   (pc-bufsw t))
+
+;; Define keybindings for window management with hydra.
+(defhydra hydra-window (:hint nil)
+  "
+^Movement^^^^^  ^Split^^^      ^Delete^      ^Switch^   ^Resize^
+^^^^^^^^^^^^^^^------------------------------------------------
+^ ^ _k_ ^ ^     _v_,_|_: vert  _d_lt this    _a_ce      ^ ^ _K_ ^ ^
+_h_ ^+^ _l_     _x_,___: horz  _D_lt other   _s_wap     _H_ ^+^ _L_
+^ ^ _j_ ^ ^     _z_^^  : undo  _o_nly this   ^^         ^ ^ _J_ ^ ^
+^^^^^^          _Z_^^  : redo  _O_nly other
+_q_uit
+"
+  ("h" windmove-left)
+  ("j" windmove-down)
+  ("k" windmove-up)
+  ("l" windmove-right)
+  ("H" arche-move-splitter-left)
+  ("J" arche-move-splitter-down)
+  ("K" arche-move-splitter-up)
+  ("L" arche-move-splitter-right)
+  ("v" split-window-right)
+  ("x" split-window-below)
+  ("|" (lambda ()
+         (interactive)
+         (split-window-right)
+         (windmove-right)))
+  ("_" (lambda ()
+         (interactive)
+         (split-window-below)
+         (windmove-down)))
+  ("z" winner-undo)
+  ("Z" winner-redo)
+  ("d" delete-window)
+  ("D" ace-delete-window)
+  ("o" delete-other-windows :exit t)
+  ("O" ace-delete-other-windows :exit t)
+  ("a" ace-window :exit t)
+  ("s" ace-swap-window)
+  ("q" nil))
+
+(bind-key "C-M-o" #'hydra-window/body)
 
 ;;; Finding files
 
