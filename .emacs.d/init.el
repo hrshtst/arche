@@ -2213,7 +2213,10 @@ _k_: previous error  _l_: last error
       ("j" next-error :bind nil)
       ("k" previous-error :bind nil)
       ("h" first-error :bind nil)
-      ("l" (progn (goto-char (point-max)) (previous-error)) :bind nil)
+      ("l" (condition-case err
+             (while t
+               (next-error))
+           (user-error nil)) :bind nil)
       ("q" nil)))
 
   (use-feature ansi-color
