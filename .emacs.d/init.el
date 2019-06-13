@@ -999,8 +999,43 @@ newline."
 
 ;;;; Region selection
 
-;; Bind `rectangle-mark-mode' to "C-c RET"
-(bind-key "C-c RET" #'rectangle-mark-mode)
+;; Feature `rect' provides rectangle commands which allow to select,
+;; kill, delete, copy, yank or insert a text in a rectangle shape.
+(use-feature rect
+  :init
+
+  (use-feature hydra
+    :config
+
+    (defhydra hydra-rectangle (:pre (rectangle-mark-mode +1)
+                                    :post deactivate-mark
+                                    :color pink
+                                    :hint nil)
+      "
+^ ^ _k_ ^ ^   _w_ copy    _o_pen     _N_umber-lines
+_h_ ^ ^ _l_   _y_ank      _t_ype     _e_xchange-point
+^ ^ _j_ ^ ^   _d_elete    _c_lear    _r_eset-region-mark
+^^^^^^        _u_ndo      _q_uit     ^ ^
+"
+      ("h" rectangle-backward-char)
+      ("j" rectangle-next-line)
+      ("k" rectangle-previous-line)
+      ("l" rectangle-forward-char)
+      ("w" copy-rectangle-as-kill)
+      ("y" yank-rectangle)
+      ("d" delete-rectangle)
+      ("u" undo)
+      ("o" open-rectangle)
+      ("t" string-rectangle)
+      ("c" clear-rectangle)
+      ("N" rectangle-number-lines)
+      ("e" rectangle-exchange-point-and-mark)
+      ("r" (if (region-active-p)
+               (deactivate-mark)
+             (rectangle-mark-mode +1)))
+      ("q" nil))
+
+    (bind-key "C-c RET" #'hydra-rectangle/body)))
 
 ;; Package `expand-region' provides increase or decrease the selected
 ;; region by semantic units.
