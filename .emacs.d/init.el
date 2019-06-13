@@ -513,8 +513,8 @@ positive count."
 ^^^^^^^^^^^^^^^------------------------------------------------
 ^ ^ _k_ ^ ^     _v_,_|_: vert  _d_lt this    _a_ce      ^ ^ _K_ ^ ^
 _h_ ^+^ _l_     _x_,___: horz  _D_lt other   _s_wap     _H_ ^+^ _L_
-^ ^ _j_ ^ ^     _z_^^  : undo  _o_nly this   ^^         ^ ^ _J_ ^ ^
-^^^^^^          _Z_^^  : redo  _O_nly other
+^ ^ _j_ ^ ^     _z_ ^ ^: undo  _o_nly this   ^ ^        ^ ^ _J_ ^ ^
+^^^^^^          _Z_ ^ ^: redo  _O_nly other
 _q_uit
 "
   ("h" windmove-left)
