@@ -677,6 +677,18 @@ _q_uit
   ;; Periodically execute clean-up in 10 minites.
   (setq recentf-auto-cleanup (* 10 60))
 
+  ;; Specify filenames which are excluded from the recent list.
+  (setq recentf-exclude
+        '("/\\(\\(\\(COMMIT\\|NOTES\\|PULLREQ\\|MERGEREQ\\|TAG\\)_EDIT\\|MERGE_\\|\\)MSG\\|\\(BRANCH\\|EDIT\\)_DESCRIPTION\\)\\'"
+          "recentf"
+          "loaddefs.el"
+          ".*?autoloads.el$"
+          "\\.elc$"
+          "\\.gz$"
+          "/\\.git/"
+          "CMakeCache.txt"
+          ))
+
   ;; Run update of the list periodically.
   (run-at-time t (* 10 60) (lambda ()
                              (let ((save-silently t))
