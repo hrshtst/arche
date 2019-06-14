@@ -1945,6 +1945,18 @@ nor requires Flycheck to be loaded."
 
   :config
 
+  ;; Turn on syntax highlighting for wiki links.
+  (setq markdown-enable-wiki-links t)
+
+  ;; Turn on syntax highlighting for inline LaTeX expressions.
+  (setq markdown-enable-math t)
+
+  ;; Change depth of indentation for markdown lists. (default: 4)
+  (setq markdown-list-indent-width 2)
+
+  ;; Fontify code in code blocks using the native major mode.
+  (setq markdown-fontify-code-blocks-natively t)
+
   (arche-defhook arche--flycheck-markdown-setup ()
     markdown-mode-hook
     "Disable some Flycheck checkers for Markdown."
