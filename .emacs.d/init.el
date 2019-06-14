@@ -2451,7 +2451,7 @@ to `arche-reload-init'."
 ;; When deleting a file interactively, move it to the trash instead.
 (setq delete-by-moving-to-trash t)
 
-;;;;; Dired
+;;;; Dired
 
 ;; For some reason, the autoloads from `dired-aux' and `dired-x' are
 ;; not loaded automatically. Do it.
@@ -2737,6 +2737,46 @@ Also run `arche-atomic-chrome-setup-hook'."
 
   ;; Listen for requests from the Chrome/Firefox extension.
   (atomic-chrome-start-server))
+
+;; Package `academic-phrases' provides a list of academic phrases
+;; organized by the topic or by the paper section. M-x academic-phrases
+;; retrieves a list of phrases by topic, and M-x
+;; academi-phrases-by-section allows us to browse the phrases by the
+;; paper section.
+(use-package academic-phrases)
+
+;; Package `powerthesaurus' provides a plugin to integrate Emacs with
+;; www.powerthesaurus.org. M-x powerthesaurus-lookup-word looks up a
+;; list of synonyms of a selected or an input text at
+;; powerthesaurus.org.
+(use-package powerthesaurus
+  :bind (("M-s p" . powerthesaurus-lookup-word))
+
+  :config/el-patch
+
+  (defun powerthesaurus-lookup-word (&optional beginning end)
+    "Find the given word's synonyms at powerthesaurus.org.
+
+`BEGINNING' and `END' correspond to the selected text with a word to replace.
+If there is no selection provided, additional input will be required.
+In this case, a selected synonym will be inserted at the point."
+    (interactive
+     ;; it is a simple interactive function instead of interactive "r"
+     ;; because it doesn't produce an error in a buffer without a mark
+     (if (use-region-p) (list (region-beginning) (region-end))
+       (list nil nil)))
+    (let* ((word (powerthesaurus-get-original-word beginning end))
+           (callback (powerthesaurus-choose-callback beginning end)))
+      (request
+       (powerthesaurus-compose-url word)
+       :parser (lambda () (libxml-parse-html-region (point) (point-max)))
+       (el-patch-add :headers '(("User-Agent" . "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:59.0) Gecko/20100101 Firefox/59.0")))
+       :success (cl-function (lambda (&key data &allow-other-keys)
+                               ;; in order to allow users to quit powerthesaurus
+                               ;; prompt with C-g, we need to wrap callback with this
+                               (with-local-quit
+                                 (funcall callback
+                                          (powerthesaurus-pick-synonym data)))))))))
 
 ;;;; Emacs profiling
 
