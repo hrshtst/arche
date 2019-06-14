@@ -352,6 +352,12 @@ Remaps built-in functions to counsel replacements."
 
 ;;; Window management
 
+;; If `minibuffer-depth-indicate-mode' enabled, any recursive use of
+;; the minibuffer will show the recursion depth in the minibuffer
+;; pormpt. This is only useful if `enable-recursive-minibuffers' is
+;; non-nil.
+(minibuffer-depth-indicate-mode +1)
+
 (arche-defadvice arche--advice-keyboard-quit-minibuffer-first
     (keyboard-quit)
   :around keyboard-quit
