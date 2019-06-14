@@ -1385,7 +1385,16 @@ _h_ ^ ^ _l_   _y_ank      _t_ype     _e_xchange-point
 ;; uses `ivy' to display and select from the results.
 (use-package swiper
   :bind (("C-s" . swiper)
-         ("C-r" . swiper)))
+         ("C-r" . swiper)
+         ("M-s ." . swiper-thing-at-point))
+
+  :config
+
+  ;; Recenter the point after exiting swiper.
+  (setq swiper-action-recenter t)
+
+  ;; Go to the start of the match when leaving swiper.
+  (setq swiper-goto-start-of-match t))
 
 ;; Feature `occur' provides listing of all lines that match a given
 ;; regexp for the current buffer. The matching lines are listed in
