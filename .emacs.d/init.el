@@ -916,6 +916,50 @@ enabled. If mozc-mode is enabled, change cursor color to
 (bind-key "M-d" #'downcase-dwim)
 (bind-key "M-u" #'upcase-dwim)
 
+;; Replace some characters automatically on save.
+(defvar arche-replace-str-pairs '(("、" . "，") ("。" . "．"))
+  "List of pairs of strings that is used for `arche-replace-str'.
+  For each pair, `arche-replace-str' replaces the first element
+  with the second element.")
+
+(defun arche--replace-str-pair (pair)
+  "Search a string given as the first element of PAIR in the
+buffer and replaces the matched string with the second element of
+PAIR."
+  (let ((string (car pair))
+        (replacement (cdr pair)))
+    (goto-char (point-min))
+    (while (re-search-forward string nil t)
+      (replace-match replacement nil nil))))
+
+(defun arche-replace-str (&optional list)
+  "Replace a string in the current buffer or marked region. LIST
+is a list of pairs in which the first element is replaced with
+the second one."
+  (interactive)
+  (let ((regp (and transient-mark-mode mark-active))
+        (list (or list arche-replace-str-pairs)))
+    (save-mark-and-excursion
+      (save-restriction
+        (if regp
+            (narrow-to-region (region-beginning) (region-end)))
+        (dolist (pair list)
+          (arche--replace-str-pair pair)))))
+  (deactivate-mark))
+
+(define-minor-mode arche-replace-str-mode
+  "Minor mode to automatically replace specified strings on save.
+  If enabled, then saving the buffer replaces a string which is
+  specified as the first of each element of
+  `arche-replace-str-pairs' with a string of the second."
+  nil nil nil
+  (if arche-replace-str-mode
+      (progn
+        (add-hook 'before-save-hook #'arche-replace-str nil 'local))
+    (remove-hook 'before-save-hook #'arche-replace-str 'local)))
+
+(put 'arche-replace-str-mode 'safe-local-variable #'booleanp )
+
 ;; When filling paragraphs, assume that sentences end with one space
 ;; rather than two.
 (setq sentence-end-double-space nil)
@@ -1939,6 +1983,11 @@ https://github.com/flycheck/flycheck/issues/953."
     TeX-mode-hook
     "Enable `yasnippet-minor-mode' for `TeX-mode'."
     (yas-minor-mode +1))
+
+  (arche-defhook arche--replace-str-setup ()
+    TeX-mode-hook
+    "Enable `arche-replace-str-mode' for `TeX-mode'."
+    (arche-replace-str-mode +1))
 
   :config
 
