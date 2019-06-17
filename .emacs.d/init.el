@@ -2103,6 +2103,14 @@ https://github.com/flycheck/flycheck/issues/953."
 
   :blackout t)
 
+;;;; Shell
+
+(use-feature sh-script
+  :config
+
+  (setq sh-basic-offset 2)
+  (setq sh-indentation 2))
+
 ;;;; TeX
 ;; https://www.tug.org/begin.html
 
