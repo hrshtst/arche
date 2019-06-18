@@ -1562,6 +1562,7 @@ via return key."
               ;; Disable for modes that is a specialized framework
               ;; available for
               ;;#'python-mode
+              #'makefile-mode
               )
        (lsp)))
 
