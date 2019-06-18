@@ -1204,7 +1204,7 @@ _d_: subtree
   (delete-selection-mode +1))
 
 ;; Use "C-h" as backspace.
-(bind-key* "C-h" #'delete-backward-char)
+(define-key key-translation-map [?\C-h] [?\C-?])
 
 ;;;; Region selection
 
