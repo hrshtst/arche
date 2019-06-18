@@ -1244,7 +1244,7 @@ _h_ ^ ^ _l_   _y_ank      _t_ype     _e_xchange-point
              (rectangle-mark-mode +1)))
       ("q" nil))
 
-    (bind-key "C-c RET" #'hydra-rectangle/body)))
+    (bind-key "C-c r" #'hydra-rectangle/body)))
 
 ;; Package `expand-region' provides increase or decrease the selected
 ;; region by semantic units.
