@@ -1329,6 +1329,131 @@ _h_ ^ ^ _l_   _K_ill      _t_ype     _e_xchange-point
   ;; Make background dark during selection.
   (setq avy-background t))
 
+(defmacro arche-defun-find-file (filename &optional pretty-filename)
+  "Define functions to open a file.
+
+The FILENAME should be a path relative to the user's home
+directory. To pass an absolute path as FILENAME, unquote it using
+a comma.
+
+Two interactive functions are created: one to find the file in
+the current window, and one to find it in another window."
+  (when (and (listp filename) (eq (car filename) '\,))
+    (setq filename (eval (cadr filename))))
+  (let* ((bare-filename (replace-regexp-in-string ".*/" "" filename))
+         (full-filename (expand-file-name filename "~"))
+         (defun-name (intern
+                      (replace-regexp-in-string
+                       "-+"
+                       "-"
+                       (concat
+                        "arche-find-"
+                        (or pretty-filename
+                            (replace-regexp-in-string
+                             "[^a-z0-9]" "-"
+                             (downcase
+                              bare-filename)))))))
+         (defun-other-window-name
+           (intern
+            (concat (symbol-name defun-name)
+                    "-other-window")))
+         (docstring (format "Edit file %s."
+                            full-filename))
+         (docstring-other-window
+          (format "Edit file %s, in another window."
+                  full-filename))
+         (defun-form `(defun ,defun-name ()
+                        ,docstring
+                        (interactive)
+                        (when (or (file-exists-p ,full-filename)
+                                  (yes-or-no-p
+                                   ,(format
+                                     "Does not exist, really visit %s?"
+                                     (file-name-nondirectory
+                                      full-filename))))
+                          (find-file ,full-filename))))
+         (defun-other-window-form
+           `(defun ,defun-other-window-name ()
+              ,docstring-other-window
+              (interactive)
+              (when (or (file-exists-p ,full-filename)
+                        (yes-or-no-p
+                         ,(format
+                           "Does not exist, really visit %s?"
+                           (file-name-nondirectory
+                            full-filename))))
+                (find-file-other-window ,full-filename)))))
+    `(progn
+       ,defun-form
+       ,defun-other-window-form
+       (list ',defun-name ',defun-other-window-name))))
+
+(defmacro arche-defun-switch-to-buffer (buffer &optional pretty-buffer)
+  "Define functions to display a buffer.
+
+The BUFFER should be a buffer name. If there is no buffer named
+BUFFER, create a new buffer with that name.
+
+Two interactive functions are created: one to display the buffer
+in the current window, and one to display it in another window."
+  (when (and (listp buffer) (eq (car buffer) '\,))
+    (setq buffer (eval (cadr buffer))))
+  (let* ((bare-buffer (replace-regexp-in-string "\\*" "" buffer))
+         (defun-name (intern
+                      (replace-regexp-in-string
+                       "-+"
+                       "-"
+                       (concat
+                        "arche-switch-to-"
+                        (or pretty-buffer
+                            (replace-regexp-in-string
+                             "[^a-z0-9]" "-"
+                             (downcase
+                              bare-buffer)))))))
+         (defun-other-window-name
+           (intern
+            (concat (symbol-name defun-name)
+                    "-other-window")))
+         (docstring (format "Display %s."
+                            buffer))
+         (docstring-other-window
+          (format "Display %s, in another window."
+                  buffer))
+         (defun-form `(defun ,defun-name ()
+                        ,docstring
+                        (interactive)
+                        (when (or (get-buffer ,buffer)
+                                  (yes-or-no-p
+                                   ,(format
+                                     "Does not exist, really visit %s?"
+                                     buffer)))
+                          (switch-to-buffer ,buffer))))
+         (defun-other-window-form
+           `(defun ,defun-other-window-name ()
+              ,docstring-other-window
+              (interactive)
+              (when (or (get-buffer ,buffer)
+                        (yes-or-no-p
+                         ,(format
+                           "Does not exist, really visit %s?"
+                           buffer)))
+                (switch-to-buffer-other-window ,buffer)))))
+    `(progn
+       ,defun-form
+       ,defun-other-window-form
+       (list ',defun-name ',defun-other-window-name))))
+
+;; Config files
+(arche-defun-find-file
+ ,(expand-file-name "init.el" user-emacs-directory))
+(arche-defun-find-file ".bashrc")
+(arche-defun-find-file ".tmux.conf")
+(arche-defun-find-file ".gitconfig")
+
+;; Buffers
+(arche-defun-switch-to-buffer "*Messages*")
+(arche-defun-switch-to-buffer "*scratch*")
+
 (defun arche-last-error ()
   "Visit last error message and corresponding source code."
   (interactive)
@@ -1338,19 +1463,43 @@ _h_ ^ ^ _l_   _K_ill      _t_ype     _e_xchange-point
     (user-error nil)))
 
 ;; Define `goto-map' with hydra keybindings.
-(defhydra hydra-goto-map (:pre (linum-mode +1)
-                          :post (linum-mode -1))
-  "goto-map"
-  ("h" first-error "first")
-  ("j" next-error "next")
-  ("k" previous-error "previous")
-  ("l" arche-last-error "last")
-  ("g" goto-line "go")
-  ("G" avy-goto-line "avy go")
-  ("n" next-line "line↓")
-  ("p" previous-line "line↑")
-  ("v" recenter-top-bottom "recenter")
-  ("m" set-mark-command "mark" :bind nil)
+(defhydra hydra-goto-map (:hint nil
+                          :pre (linum-mode +1)
+                          :post (linum-mode -1)
+                          )
+  "
+^Errors^        ^Lines^         ^Misc.^          ^File/Buffer^
+^-^-------------^-^-------------^-^--------------^-^--------------
+_h_: first      _n_: next       _v_: recenter    _ei_,_oi_: init.el
+_j_: next       _p_: previous   _m_: mark        _eb_,_ob_: .bashrc
+_k_: previous   _g_: go         ^ ^              _et_,_ot_: .tmux.conf
+_l_: last       _G_: avy        ^ ^              _es_,_os_: *scratch*
+^ ^             ^ ^             ^ ^              _em_,_om_: *Messages*
+"
+  ("h" first-error)
+  ("j" next-error)
+  ("k" previous-error)
+  ("l" arche-last-error)
+
+  ("n" next-line)
+  ("p" previous-line)
+  ("g" goto-line)
+  ("G" avy-goto-line)
+
+  ("v" recenter-top-bottom)
+  ("m" set-mark-command :bind nil)
+
+  ("ei" arche-find-init-el                    :exit t)
+  ("oi" arche-find-init-el-other-window       :exit t)
+  ("eb" arche-find-bashrc                     :exit t)
+  ("ob" arche-find-bashrc-other-window        :exit t)
+  ("et" arche-find-tmux-conf                  :exit t)
+  ("ot" arche-find-tmux-conf-other-window     :exit t)
+  ("es" arche-switch-to-scratch               :exit t)
+  ("os" arche-switch-to-scratch-other-window  :exit t)
+  ("em" arche-switch-to-messages              :exit t)
+  ("om" arche-switch-to-messages-other-window :exit t)
+
   ("q" nil "quit"))
 
 (bind-key "M-g" #'hydra-goto-map/body)
