@@ -1222,15 +1222,16 @@ _d_: subtree
                                     :hint nil)
       "
 ^ ^ _k_ ^ ^   _w_ copy    _o_pen     _N_umber-lines
-_h_ ^ ^ _l_   _y_ank      _t_ype     _e_xchange-point
-^ ^ _j_ ^ ^   _d_elete    _c_lear    _r_eset-region-mark
-^^^^^^        _u_ndo      _q_uit     ^ ^
+_h_ ^ ^ _l_   _K_ill      _t_ype     _e_xchange-point
+^ ^ _j_ ^ ^   _y_ank      _c_lear    _r_eset-region-mark
+^^^^^^        _d_elete    _u_ndo     ^ ^
 "
       ("h" rectangle-backward-char)
       ("j" rectangle-next-line)
       ("k" rectangle-previous-line)
       ("l" rectangle-forward-char)
       ("w" copy-rectangle-as-kill)
+      ("K" kill-rectangle)
       ("y" yank-rectangle)
       ("d" delete-rectangle)
       ("u" undo)
@@ -1242,7 +1243,7 @@ _h_ ^ ^ _l_   _y_ank      _t_ype     _e_xchange-point
       ("r" (if (region-active-p)
                (deactivate-mark)
              (rectangle-mark-mode +1)))
-      ("q" nil))
+      ("q" nil "quit"))
 
     (bind-key "C-c r" #'hydra-rectangle/body)))
 
