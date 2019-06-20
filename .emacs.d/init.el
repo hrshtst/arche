@@ -596,7 +596,8 @@ positive count."
     :config
 
     (defhydra hydra-eyebrowse (global-map "C-z" :hint nil)
-      "eyebrowse"
+      "
+eyebrowse<%s(eyebrowse--get 'current-slot)> "
       ("p" eyebrowse-prev-window-config "next")
       ("n" eyebrowse-next-window-config "prev")
       ("SPC" eyebrowse-last-window-config "last" :exit t)
