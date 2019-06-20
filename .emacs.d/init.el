@@ -1713,6 +1713,7 @@ via return key."
               ;; available for
               ;;#'python-mode
               #'makefile-mode
+              #'sh-mode
               )
        (lsp)))
 
