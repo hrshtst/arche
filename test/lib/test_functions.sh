@@ -25,6 +25,18 @@ test_mark() {
 }
 test_mark
 
+test_ask() {
+  # Skip this test
+  return
+
+  if ask "Are you OK?"; then
+    echo "yes"
+  else
+    echo "no"
+  fi
+}
+test_ask
+
 test_compare_ver_string() {
   compare_ver_string 4.2 4.2 && [ $? -eq 0 ]
   compare_ver_string 4.5 4.2 || [ $? -eq 1 ]

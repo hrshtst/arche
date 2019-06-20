@@ -117,6 +117,40 @@ getback() {
   popd 1>/dev/null
 }
 
+# Make a prompt to ask user yes or no question.
+#
+# Example usage:
+#
+#   $ if ask "Are you sure?"; then
+#   >   echo "Okay!"
+#   > else
+#   >   echo "Hmmm..."
+#   > fi
+#   Are you sure? [Y/n] y
+#   Okay!
+#
+# @param $1 prompt  Prompt message.
+# @return True (0) if the answer from user is yes,
+#         False (>0) if the answer from user is no.
+ask() {
+  local prompt="${1:-Are you sure?}"
+  prompt="${prompt} [y/n] "
+  local retval
+
+  echo -n "${prompt}"
+  while read -r -n 1 -s answer; do
+    if [[ $answer = [YyNn] ]]; then
+      [[ $answer = [Yy] ]] && retval=0
+      [[ $answer = [Nn] ]] && retval=1
+      break
+    fi
+    echo
+    echo "Please answer with y/n."
+  done
+  echo
+  return $retval
+}
+
 # Compares two version strings and returns the result of comparison as
 # an exit-status. The implementation of this function is based on
 # https://stackoverflow.com/a/4025065
