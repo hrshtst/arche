@@ -1,23 +1,76 @@
 #!/usr/bin/env bash
 
-# Displays a string of text to the standard output.
-warn() {
-  echo "$(tput setaf 1)$@$(tput sgr0)"
+#
+# Display and logging utilities
+#
+
+# Define faces and colors
+bold=$(tput bold)
+underline=$(tput sgr 0 1)
+reset=$(tput sgr0)
+
+purple=$(tput setaf 171)
+red=$(tput setaf 1)
+green=$(tput setaf 76)
+tan=$(tput setaf 3)
+blue=$(tput setaf 38)
+
+# Headers and logging
+e_header() {
+  printf "\n${bold}${purple}==========  %s  ==========${reset}\n" "$@"
 }
 
-# Displays a string of text to the standard error.
-error() {
-  echo "$(tput setaf 1)$@$(tput sgr0)" >&2
+e_arrow() {
+  printf "➜ $@\n"
 }
 
-# Displays a string of text in green to the standard output.
-info() {
-  echo "$(tput setaf 2)$@$(tput sgr0)"
+e_success() {
+  printf "${green}✔ %s${reset}\n" "$@"
+}
+
+e_error() {
+  printf "${red}✖ %s${reset}\n" "$@" 1>&2
+}
+
+e_warning() {
+  printf "${tan}➜ %s${reset}\n" "$@"
+}
+
+e_underline() {
+  printf "${underline}${bold}%s${reset}\n" "$@"
+}
+
+e_bold() {
+  printf "${bold}%s${reset}\n" "$@"
+}
+
+e_note() {
+  printf "${underline}${bold}${blue}Note:${reset}  ${blue}%s${reset}\n" "$@"
+}
+
+e_purple() {
+  printf "${purple}%s${reset}" "$@"
+}
+
+e_red() {
+  printf "${red}%s${reset}" "$@"
+}
+
+e_green() {
+  printf "${green}%s${reset}" "$@"
+}
+
+e_tan() {
+  printf "${tan}%s${reset}" "$@"
+}
+
+e_blue() {
+  printf "${blue}%s${reset}" "$@"
 }
 
 # Exits the script with an error code.
 abort() {
-  error "$@"
+  e_error "$@"
   exit -1
 }
 
@@ -35,6 +88,33 @@ abort() {
 #         False (>0) if the command is not available.
 has() {
   type "$1" >/dev/null 2>&1
+}
+
+# Add a directory to the top of the directory stack. NOTE: This
+# function does not change the current working directory.
+#
+# Example usage:
+#
+#   $ cd $HOME/.emacs.d
+#   $ mark           # mark here
+#   $ cd straight/
+#   $ cd repos/
+#   $ getback        # get back to $HOME/.emacs.d
+#
+# @param $1  Directory to make a mark. If omitted, the current
+#            directory will be marked.
+# @see getback()
+mark() {
+  local dir="${1:-$(pwd)}"
+  pushd -n "$dir" 1>/dev/null
+}
+
+# Get back to the top of the directory stack, and remove it from the
+# stack.
+#
+# @see mark()
+getback() {
+  popd 1>/dev/null
 }
 
 # Compares two version strings and returns the result of comparison as
@@ -77,4 +157,52 @@ compare_ver_string() {
     fi
   done
   return 0
+}
+
+#
+# Git operations
+#
+
+readonly __MSG_GIT_NOT_INSTALLED="Git is not installed on the system."
+
+# Check if the current working directory is a Git repository or not.
+#
+# Example usage:
+#
+#   $ if is_git_repository; then
+#   >   git pull origin master
+#   > fi
+#
+# @return True (0) if the current working directory is a Git repo.
+#         False (>0) if the current working directory is not a Git
+#         repo.
+is_git_repository() {
+  if ! has "git"; then
+    e_error "${__MSG_GIT_NOT_INSTALLED}"
+    return 1
+  fi
+
+  if git rev-parse --git-dir >/dev/null 2>&1; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+# Pull updates from remote and subsequently updates submodules within
+# the repository.
+#
+# @param $1 branch  Branch name to fetch (default: master)
+# @return True (0) if sucessful,
+#         False (>0) otherwise.
+git_update() {
+  if ! has "git"; then
+    e_error "${__MSG_GIT_NOT_INSTALLED}"
+    return 1
+  fi
+
+  local branch="${1:-master}"
+  git pull origin "${branch}"
+  git submodule init
+  git submodule update
 }
