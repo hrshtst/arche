@@ -231,6 +231,26 @@ is_git_repository() {
   return $retval
 }
 
+# Checkout a specified branch with confirmation. This function asks
+# the user if surely checking out the branch beforehand.
+#
+# @param $1  Branch name to checkout.
+git_checkout_with_confirm() {
+  local dst_branch="${1:-}"
+  local cur_branch="$(git branch | grep \* | cut -d ' ' -f2)"
+
+  if [[ -z "${dst_branch}" ]]; then
+    e_error "Specify destination branch (${FUNCNAME[0]})"
+    return 1
+  fi
+
+  if [[ "${cur_branch}" != "${dst_branch}" ]]; then
+    if ask "Are you sure to checkout '${dst_branch}'?"; then
+      git checkout "${dst_branch}"
+    fi
+  fi
+}
+
 # Pull updates from remote and subsequently updates submodules within
 # the repository.
 #
@@ -247,7 +267,7 @@ git_update() {
   git pull origin "${branch}"
   git submodule init
   git submodule update
-  git checkout "${branch}"
+  git_checkout_with_confirm "${branch}"
 }
 
 # Clone a specified repository from remote at the current directory.
@@ -266,7 +286,7 @@ _git_clone_or_update() {
     git clone --recursive "${url}"
     if [[ -n "${branch}" ]]; then
       mark && cd "${dirname}"
-      git checkout "${branch}"
+      git_checkout_with_confirm "${branch}"
       getback
     fi
   else

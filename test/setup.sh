@@ -80,7 +80,7 @@ set -- "${POSITIONAL[@]}"
 # Subcommand: update
 # This function pulls updates for this repository from remote.
 _update() {
-  echo "update"
+  git_update "master"
 }
 
 # Subcommand: deploy

@@ -54,6 +54,12 @@ test_is_get_repository() {
 }
 test_is_get_repository
 
+test_checkout_with_confirm() {
+  return
+  git_checkout_with_confirm "master"
+}
+test_checkout_with_confirm
+
 test_git_update() {
   # Skip this test
   return
