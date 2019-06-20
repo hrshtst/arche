@@ -320,7 +320,7 @@ Remaps built-in functions to counsel replacements."
   :bind (("C-c c" . counsel-find-file)
          ("C-c g" . counsel-git)
          ("C-c j" . counsel-git-grep)
-         ("C-c k" . counsel-ag)
+         ("C-c k" . counsel-rg)
          ("C-x l" . counsel-locate)
          ("C-c m" . counsel-mark-ring)
          ("C-c d" . counsel-descbinds)
@@ -2827,6 +2827,11 @@ _k_: previous error  _l_: last error
       "Colorize compilation buffer with ansi color."
       (let ((inhibit-read-only t))
         (ansi-color-apply-on-region (point-min) (point-max))))))
+
+;; Package `deadgrep' provides an inteface for an external command
+;; `rg'.
+(use-package deadgrep
+  :bind (("<f5>" . deadgrep)))
 
 ;;;; Internet applications
 
