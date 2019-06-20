@@ -33,17 +33,42 @@ test_compare_ver_string() {
 test_compare_ver_string
 
 test_is_get_repository() {
-  cd $HOME
+  mark && cd $HOME
   ! is_git_repository
-  cd - 1>/dev/null
+  ! is_git_repository "hoge"
+  ! is_git_repository "src"
+  getback
   is_git_repository
 }
 test_is_get_repository
 
 test_git_update() {
-  :
-  #git_update
+  # Skip this test
+  return
+
+  git_update
 }
 test_git_update
+
+test_git_clone_or_update() {
+  # Skip this test
+  return
+
+  local _url="https://github.com/octocat/Spoon-Knife"
+  local _dir="$HOME/tmp"
+  mkdir -p "${_dir}"
+
+  e_header "Clone"
+  git_clone_or_update "${_url}" "${_dir}"
+
+  e_header "Update"
+  git_clone_or_update "${_url}" "${_dir}"
+
+  e_header "Checkout"
+  git_clone_or_update "${_url}" "${_dir}" "test-branch"
+
+  rm -rf "${_dir}/Spoon-Knife"
+}
+test_git_clone_or_update
 
 echo "All tests were passed."

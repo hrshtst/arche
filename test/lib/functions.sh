@@ -165,7 +165,8 @@ compare_ver_string() {
 
 readonly __MSG_GIT_NOT_INSTALLED="Git is not installed on the system."
 
-# Check if the current working directory is a Git repository or not.
+# Check if the current working directory or a specified directory is a
+# Git repository or not.
 #
 # Example usage:
 #
@@ -173,20 +174,27 @@ readonly __MSG_GIT_NOT_INSTALLED="Git is not installed on the system."
 #   >   git pull origin master
 #   > fi
 #
-# @return True (0) if the current working directory is a Git repo.
-#         False (>0) if the current working directory is not a Git
-#         repo.
+# @param $1  Directory to check if a Git repo.
+# @return True (0) if the directory is a Git repo.
+#         False (>0) if the  directory is not a Git repo.
 is_git_repository() {
   if ! has "git"; then
     e_error "${__MSG_GIT_NOT_INSTALLED}"
     return 1
   fi
 
-  if git rev-parse --git-dir >/dev/null 2>&1; then
-    return 0
-  else
+  local directory="${1:-.}"
+  if [[ ! -d "${directory}" ]]; then
     return 1
   fi
+
+  local retval=0
+  mark && cd "${directory}"
+  if ! git rev-parse --git-dir >/dev/null 2>&1; then
+    retval=1
+  fi
+  getback
+  return $retval
 }
 
 # Pull updates from remote and subsequently updates submodules within
@@ -205,4 +213,68 @@ git_update() {
   git pull origin "${branch}"
   git submodule init
   git submodule update
+  git checkout "${branch}"
+}
+
+# Clone a specified repository from remote at the current directory.
+# If the current directory is a Git repository, just pull update.
+#
+# @param $1 url  Git URL
+# @param $2 branch  Branch name
+# @see git_clone_or_update()
+_git_clone_or_update() {
+  local url="$1"
+  local branch="${2:-}"
+  local dirname="${url##*/}"
+  dirname="${dirname%.git}"
+
+  if ! is_git_repository "${dirname}"; then
+    git clone --recursive "${url}"
+    if [[ -n "${branch}" ]]; then
+      mark && cd "${dirname}"
+      git checkout "${branch}"
+      getback
+    fi
+  else
+    mark && cd "${dirname}"
+    git_update "${branch}"
+    getback
+  fi
+}
+
+# Clone a specified repository from remote at a specified location. If
+# the repository already exists, pull updates.
+#
+# Example usage:
+#
+#   $ git_clone_or_update "https://github.com/atsutahiroshi/dotfiles"
+#   $ git_clone_or_update "https://github.com/opencv/opencv" "~/src"
+#
+# @param $1 url  Git URL.
+# @param $2 dest  Directory to clone the repository
+# @param $3 branch Branch name to fetch from remote
+# @see git_update()
+git_clone_or_update() {
+  if ! has "git"; then
+    e_error "${__MSG_GIT_NOT_INSTALLED}"
+    return 1
+  fi
+
+  local url="$1"
+  local dest="${2:-}"
+  local branch="${3:-}"
+
+  if [[ -z "${url}" ]]; then
+    e_error "Specify Git URL (_git_clone_or_update)"
+    return 1
+  fi
+
+  if [[ -z "${dest}" ]]; then
+    _git_clone_or_update "${url}" "${branch}"
+  else
+    mark
+    mkdir -p "${dest}" && cd "${dest}"
+    _git_clone_or_update "${url}" "${branch}"
+    getback
+  fi
 }
