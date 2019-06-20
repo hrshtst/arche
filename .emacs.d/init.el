@@ -607,7 +607,9 @@ eyebrowse<%s(eyebrowse--get 'current-slot)> "
       ("c" eyebrowse-create-window-config "create" :exit t)
       ("h" winner-undo "undo")
       ("l" winner-redo "redo")
-      ("q" nil))))
+      ("q" nil))
+
+    (bind-key "C-z C-z" #'hydra-eyebrowse/body)))
 
 ;; Package `pc-bufsw' provides a quick buffer switcher, which switches
 ;; buffers according to most recently used order with C-TAB and
