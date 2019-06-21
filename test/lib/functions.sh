@@ -138,6 +138,8 @@ abspath() {
     else
       echo "$(pwd)/$1"
     fi
+  else
+    e_warning "$1 does not exist."
   fi
 }
 
@@ -186,6 +188,29 @@ ask() {
   done
   echo
   return $retval
+}
+
+# Check if a string is contained in a list separated with space.
+#
+# Example usage:
+#
+#   $ list="apple banana orange"
+#   $ if contains "banana" "$list"; then
+#   >   echo "banana is in list."
+#   > fi
+#
+# @param $1 string  String to check.
+# @param $2 list    List to be searched.
+# @return True(0)  If the string is contained in the list.
+#         False(>0) Otherwise.
+contains() {
+  local string="$1"
+  local list="$2"
+  if [[ $list =~ (^|[[:space:]])"$string"($|[[:space:]]) ]]; then
+    return 0
+  else
+    return 1
+  fi
 }
 
 # Compares two version strings and returns the result of comparison as

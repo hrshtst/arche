@@ -53,6 +53,13 @@ test_ask() {
 }
 test_ask
 
+test_contains() {
+  local _list="apple banana orange"
+  contains "banana" "${_list}"
+  ! contains "grape" "${_list}"
+}
+test_contains
+
 test_compare_ver_string() {
   compare_ver_string 4.2 4.2 && [ $? -eq 0 ]
   compare_ver_string 4.5 4.2 || [ $? -eq 1 ]
