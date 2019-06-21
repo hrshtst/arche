@@ -25,6 +25,15 @@ test_mark() {
 }
 test_mark
 
+test_abspath() {
+  mark && cd "${HOME}"
+  _path="$(abspath develop)"
+  _expected="${HOME}/develop"
+  [ "${_path}" = "${_expected}" ]
+  getback
+}
+test_abspath
+
 test_ask() {
   # Skip this test
   return

@@ -117,6 +117,30 @@ getback() {
   popd 1>/dev/null
 }
 
+# Convert a relative path to an absolute path.
+#
+# Example usage:
+#
+#   $ project_path=$(abspath "develop/awesome_project")
+#
+# @param $1  Relative path to a file or a directory.
+# @return  Retrurn its absolute path to stdout.
+abspath() {
+  if [[ -d "$1" ]]; then
+    # dir
+    (cd "$1"; pwd)
+  elif [[ -f "$1" ]]; then
+    # file
+    if [[ $1 = /* ]]; then
+      echo "$1"
+    elif [[ $1 == */* ]]; then
+      echo "$(cd "${1%/*}"; pwd)/${1##*/}"
+    else
+      echo "$(pwd)/$1"
+    fi
+  fi
+}
+
 # Make a prompt to ask user yes or no question.
 #
 # Example usage:
