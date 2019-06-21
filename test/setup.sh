@@ -83,12 +83,112 @@ _update() {
   git_update "master"
 }
 
+# Make links between files. The target file/directory will be
+# converted to its absolute path. If global variable `OVERWRITE` is
+# set to true, the link to be created will overwirte the existing
+# file.
+#
+# Example usage:
+#
+#   $ _make_link "target_file" "$HOME/link_to_be_created"
+#
+# @global $OVERWRITE If set to true, overwrite the existing file.
+# @param $1 target  Target file or directory.
+# @param $2 link    Directory or link name to create a link to
+#                   the target.
+_make_link() {
+  local target="$(abspath "$1")"
+  local linkname="$2"
+
+  if [[ "${OVERWRITE}" = true && -e "${linkname}" ]]; then
+    rm -rf "${linkname}"
+  fi
+  if [[ ! -e "${linkname}" ]]; then
+    ln -snfv "${target}" "${linkname}"
+  else
+    e_warning "'${linkname}' already exists. (${FUNCNAME[0]})"
+  fi
+}
+
+# Create links to all files/directories found in a specified
+# directory. Directory to search files to create links must be
+# specified as the relative path to dotfiles directory to preserve the
+# relative structure of the directory tree. Home directory means the
+# location to create the links.
+#
+# Example usage:
+#
+#   $ _deploy_files_in_dir "${THIS_DIR}" "usr/bin" "${HOME_DIR}"
+#
+# @param $1 dotfiles_dir  Dotfiles directory.
+# @param $2 target_dir    Relative path to directory to search files
+#                         to create links from dotfiles directory.
+# @param $3 home_dir      Directory to place created links.
+_deploy_files_in_dir() {
+  local dotfiles_dir="$(abspath "$1")"
+  local target_dir="$2"
+  local home_dir="${3:-${HOME}}"
+
+  mark && cd "${dotfiles_dir}"
+
+  # ${target_dir} must be a directory
+  if [[ ! -d "${target_dir}" ]]; then
+    e_error "${dotfiles_dir}/${target_dir} is not a directory. (${FUNCNAME[0]})"
+    getback
+    return 1
+  fi
+
+  # Create missing directories in $target_dir to $home_dir.
+  mkdir -p "${home_dir}/${target_dir}"
+  find "${target_dir}" -mindepth 1 -type d -print0 \
+    | xargs -r0 -n 1 -I{} mkdir -p "${home_dir}/{}"
+
+  # Find files in $target_dir recursively.
+  unset list
+  while IFS= read -r -d '' file; do
+    list+=("$file")
+  done < <(find "${target_dir}" -type f -print0)
+
+  # Create links to found files to $home_dir.
+  for file in "${list[@]}"; do
+    _make_link "${file}" "${home_dir}/${file}"
+  done
+  getback
+}
+
+# Create links to all files which begins with 'dot' in dotfiles
+# directory to a specified location.
+#
+# Example usage:
+#
+#   $ _deploy_dotfiles "${THIS_DIR}" "${HOME_DIR}"
+#
+# @global $EXCLUSIONS  Exclude files/directories listed in this.
+# @param $1 dotfiles_dir  Directory to search dotfiles.
+# @param $2 home_dir      Directory to place created links.
+readonly EXCLUSIONS=".git .gitignore .config"
+_deploy_dotfiles() {
+  local dotfiles_dir="$(abspath "$1")"
+  local home_dir="${2:-${HOME}}"
+
+  mark && cd "${dotfiles_dir}"
+
+  # Find files/directories in $home_dir whose name begins with '.'.
+  for name in .??*; do
+    contains "${name}" "${EXCLUSIONS}" && continue
+    _make_link "${name}" "${home_dir}/${name}"
+  done
+  getback
+}
+
 # Subcommand: deploy
 # This function creates symbolic links to dotfiles into $HOME_DIR.
 #
 # @see $HOME_DIR
 _deploy() {
-  echo "deploy ${THIS_DIR} to ${HOME_DIR}"
+  _deploy_dotfiles "${THIS_DIR}" "${HOME_DIR}"
+  _deploy_files_in_dir "${THIS_DIR}" ".config" "${HOME_DIR}"
+  _deploy_files_in_dir "${THIS_DIR}" "usr/bin" "${HOME_DIR}"
 }
 
 # Subcommand: init
