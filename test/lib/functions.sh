@@ -121,10 +121,10 @@ getback() {
 #
 # Example usage:
 #
-#   $ project_path=$(abspath "develop/awesome_project")
+#   $ project_path="$(abspath develop/awesome_project)"
 #
 # @param $1  Relative path to a file or a directory.
-# @return  Retrurn its absolute path to stdout.
+# @return  Return its absolute path to stdout.
 abspath() {
   if [[ -d "$1" ]]; then
     # dir
@@ -139,6 +139,19 @@ abspath() {
       echo "$(pwd)/$1"
     fi
   fi
+}
+
+# Return a path to the parent directory for a given file or directory.
+#
+# Example usage:
+#
+#   $ parent="$(parentdir develop/awesome_project)"
+#
+# @param $1 Path to a file or directory to find its parent directory.
+# @return Return its parent directory path to stdout.
+parentdir() {
+  local path="$(abspath "$1")"
+  echo "${path%/*}"
 }
 
 # Make a prompt to ask user yes or no question.

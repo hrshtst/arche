@@ -27,12 +27,19 @@ test_mark
 
 test_abspath() {
   mark && cd "${HOME}"
-  _path="$(abspath develop)"
-  _expected="${HOME}/develop"
+  local _path="$(abspath develop)"
+  local _expected="${HOME}/develop"
   [ "${_path}" = "${_expected}" ]
   getback
 }
 test_abspath
+
+test_parentdir() {
+  local _parent="$(parentdir "${HOME}/develop")"
+  local _expected="${HOME}"
+  [ "${_parent}" = "${_expected}" ]
+}
+test_parentdir
 
 test_ask() {
   # Skip this test
