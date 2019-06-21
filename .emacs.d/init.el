@@ -2946,6 +2946,11 @@ In this case, a selected synonym will be inserted at the point."
                                  (funcall callback
                                           (powerthesaurus-pick-synonym data)))))))))
 
+;; Package `mw-thesaurus' provides a way to lookup a word and display
+;; its thesaurus definition from Merriam-Webster Thesaurus.
+(use-package mw-thesaurus
+  :bind (("M-s t" . mw-thesaurus-lookup-at-point)))
+
 ;;;; Emacs profiling
 
 ;; Package `esup' allows you to run a child Emacs process with special
