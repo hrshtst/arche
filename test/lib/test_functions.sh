@@ -60,6 +60,30 @@ test_contains() {
 }
 test_contains
 
+test_lower() {
+  local _string="$(lower "Apple")"
+  [ "${_string}" = "apple" ]
+}
+test_lower
+
+test_upper() {
+  local _string="$(upper "Apple")"
+  [ "${_string}" = "APPLE" ]
+}
+test_upper
+
+test_detect_os() {
+  detect_os
+  if [[ "$(lsb_release -si)" = "Ubuntu" ]]; then
+    [ "${OS_NAME}" = "ubuntu" ]
+    local _ver="$(lsb_release -sr)"
+    local _code="$(lsb_release -sc)"
+    [ "${OS_VERSION}" = "${_ver}" ]
+    [ "${OS_CODENAME}" = "${_code}" ]
+  fi
+}
+test_detect_os
+
 test_compare_ver_string() {
   compare_ver_string 4.2 4.2 && [ $? -eq 0 ]
   compare_ver_string 4.5 4.2 || [ $? -eq 1 ]
