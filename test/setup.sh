@@ -197,12 +197,112 @@ _init() {
   echo "init"
 }
 
+# Check if a file is a symbolic link which links to a file in dotfile
+# directory.
+#
+# Example usage:
+#
+#   $ if _check_if_link_to_dotfile "${HOME_DIR}" "${THIS_DIR}" ".tmux.conf"
+#   > then
+#   >   rm -f "${HOME_DIR}/.tmux.conf"
+#   > fi
+#
+# @param $1 home_dir  Base directory to find if a file links to dotfile.
+# @param $2 dotfiles_dir  Base directory which contains target files.
+# @param $3 filename  Relative path to home directory or dotfiles
+#                     directory.
+# @return True(0)  If a file in home directory is a symbolic link to
+#                  a file in dotfiles directory.
+#         False(>0) Otherwise.
+_check_if_link_to_dotfile() {
+  local _link="${1}/${3}"       # Link file to be checked
+  local _target="${2}/${3}"     # Target file
+
+  if [[ -L "${_link}" ]]; then
+    local parent1="$(parentdir $(readlink "${_link}"))"
+    local parent2="$(parentdir ${_target})"
+    if [[ "${parent1}" = "${parent2}" ]]; then
+      return 0
+    else
+      return 1
+    fi
+  else
+    return 1
+  fi
+}
+
+# Remove a symbolic link if it links to a dotfile. Path to the
+# symbolic link should be specified as a relative path from dotfile
+# directory or home directory. Dotfile directory and home directory
+# should be given as well.
+#
+# Example usage:
+#
+#   $ _remove_symlinks_to_dotfile "${HOME_DIR}" "${THIS_DIR}"
+#
+# @global DIRECTORIES_TO_INCLUDE  Directories to find files
+readonly DIRECTORIES_TO_INCLUDE=".config usr/bin"
+_remove_symlinks_to_dotfile() {
+  local home_dir="${1}"
+  local dotfiles_dir="${2}"
+
+  mark && cd "${dotfiles_dir}"
+
+  unset list
+  # Find dotfiles in ${dotfiles_dir}
+  while IFS= read -r -d '' file; do
+    list+=("$(echo "${file}" | sed "s|^\./||" )")
+  done < <(find . -maxdepth 1 -name ".??*" -print0)
+  # Find files in ${dotfiles_dir}/$DIRECTORIES_TO_INCLUDE
+  while IFS= read -r -d '' file; do
+    list+=("$file")
+  done < <(find $DIRECTORIES_TO_INCLUDE -type f -print0)
+
+  # Remove if a file in home directory has a link to dotfiles
+  # directory
+  for file in "${list[@]}"; do
+    if _check_if_link_to_dotfile "${home_dir}" "${dotfiles_dir}" "${file}"
+    then
+      rm -f "${home_dir}/${file}"
+    fi
+  done
+  getback
+}
+
+# Remove broken symbolic links in home directory. Global variable
+# DIRECTORIES_TO_INCLUDE specifies relative paths to look for broken
+# links additionally.
+#
+# Example usage:
+#
+#   $ _remove_broken_symlinks "${HOME_DIR}"
+#
+# @global DIRECTORIES_TO_INCLUDE  Directories to look for broken links
+_remove_broken_symlinks() {
+  local home_dir="$(abspath ${1})"
+
+  __remove_broken_symlinks() {
+    find "${1}" -maxdepth 1 -type l ! -exec test -e {} \; -exec rm -f {} \;
+  }
+  export -f __remove_broken_symlinks
+
+  mark && cd "${home_dir}"
+
+  # Remove broken symbolic links in home directory
+  __remove_broken_symlinks "${home_dir}"
+  # Remove broken symbolic links in specified directory
+  find $DIRECTORIES_TO_INCLUDE -type d -print0 \
+    | xargs -r0 -n 1 -I{} bash -c '__remove_broken_symlinks "$@"' _ "${home_dir}/{}"
+  getback
+}
+
 # Subcommand: clean
 # This function cleans deployed symlinks from $HOME_DIR
 #
 # @see $HOME_DIR
 _clean() {
-  echo "clean from ${HOME_DIR}"
+  _remove_symlinks_to_dotfile "${HOME_DIR}" "${THIS_DIR}"
+  _remove_broken_symlinks "${HOME_DIR}"
 }
 
 main () {
