@@ -1,5 +1,30 @@
 #!/usr/bin/env bash
 
+# Extract package name by removing prefix and suffix from function
+# name. For example, __init_packages_awesome__init is given, return
+# awesome. If function name does not match the prefix, return nothing.
+#
+# @param $1 func  Function name to extract package name.
+# @return Output package name to stdout.
+_extract_package_name() {
+  local func="${1}"
+  local package=
+  local regex_prefix="^__init_packages_([a-zA-Z0-9_]+)"
+  local regex_suffix="([a-zA-Z0-9_]+)__.*$"
+
+  # Remove prefix
+  if [[ $func =~ $regex_prefix ]]; then
+    package="${BASH_REMATCH[1]}"
+  fi
+  # Remove suffix
+  if [[ $package =~ $regex_suffix ]]; then
+    package="${BASH_REMATCH[1]}"
+  fi
+
+  # If $func does not start with __init_packages_, return null string.
+  echo "${package}"
+}
+
 # Find all packages to be initialized, installed or configured. This
 # function will look for functions which named
 # '__init_packages_<name>' or '__init_packages_<name>__*' and add the
@@ -10,11 +35,8 @@ declare -a __package_names=()
 init_packages_find() {
   declare -a __package_names_tmp=()
   while read -r func; do
-    if [[ $func =~ ^__init_packages_([a-zA-Z0-9_]+) ]]; then
-      package="${BASH_REMATCH[1]}"
-      if [[ $package =~ ^([a-zA-Z0-9_]+)__.* ]]; then
-        package="${BASH_REMATCH[1]}"
-      fi
+    package="$(_extract_package_name $func)"
+    if [[ -n "${package}" ]]; then
       __package_names_tmp+=("${package}")
     fi
   done < <(declare -F | cut -d ' ' -f 3)
