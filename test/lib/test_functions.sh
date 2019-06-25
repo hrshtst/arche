@@ -60,6 +60,13 @@ test_contains() {
 }
 test_contains
 
+test_contains_array() {
+  local _array=("apple" "banana" "orange")
+  contains "banana" "${_array[@]}"
+  ! contains "grape" "${_array[@]}"
+}
+test_contains_array
+
 test_lower() {
   local _string="$(lower "Apple")"
   [ "${_string}" = "apple" ]

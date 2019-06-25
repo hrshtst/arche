@@ -205,7 +205,9 @@ ask() {
 #         False(>0) Otherwise.
 contains() {
   local string="$1"
-  local list="$2"
+  shift
+  local list="$@"
+
   if [[ $list =~ (^|[[:space:]])"$string"($|[[:space:]]) ]]; then
     return 0
   else
