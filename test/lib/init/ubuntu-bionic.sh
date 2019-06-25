@@ -32,6 +32,16 @@ __init_packages_inkscape__config() {
   echo "This is 'config' for 'inkscape'"
 }
 
+## tmux
+__init_packages_tmux() {
+  init_packages_depends "tmux xclip xsel"
+  init_packages_always_config
+}
+
+__init_packages_tmux__config() {
+  echo git clone https://github.com/tmux-plugins/tpm ${HOME}/.tmux/plugins/tpm
+}
+
 ## LLVM
 __init_packages_clang_9__config() {
   echo "This is 'config' for 'clang-9'"
