@@ -144,7 +144,7 @@ _deploy_files_in_dir() {
     | xargs -r0 -n 1 -I{} mkdir -p "${home_dir}/{}"
 
   # Find files in $target_dir recursively.
-  unset list
+  unset -v list
   while IFS= read -r -d '' file; do
     list+=("$file")
   done < <(find "${target_dir}" -type f -print0)
@@ -194,7 +194,25 @@ _deploy() {
 # Subcommand: init
 # This function installs required packages depending on OSs.
 _init() {
-  echo "init"
+  detect_os
+  msg="Detected OS: ${OS_NAME} ${OS_VERSION} (${OS_CODENAME})"
+  init_script="${THIS_DIR}/lib/init/${OS_NAME}-${OS_CODENAME:-${OS_VERSION}}.sh"
+  if [[ ! -f "${init_script}" ]]; then
+    e_error "$msg"
+    e_error "Unable to find ${init_script}"
+    abort "Abort."
+  fi
+
+  # debug
+  bash "${init_script}" "${THIS_DIR}"
+  return
+
+  e_note "$msg"
+  if ask "Are you sure to execute ${init_script}?"; then
+    _keep_sudo
+    bash "${init_script}" "${THIS_DIR}"
+    _reset_sudo
+  fi
 }
 
 # Check if a file is a symbolic link which links to a file in dotfile
@@ -248,7 +266,7 @@ _remove_symlinks_to_dotfile() {
 
   mark && cd "${dotfiles_dir}"
 
-  unset list
+  unset -v list
   # Find dotfiles in ${dotfiles_dir}
   while IFS= read -r -d '' file; do
     list+=("$(echo "${file}" | sed "s|^\./||" )")
