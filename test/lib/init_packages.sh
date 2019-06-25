@@ -113,19 +113,33 @@ init_packages_update() {
 # Add dependencies for a package. Specified dependencies will be added
 # to a global variable '__requested_packages'. Actually not only
 # dependencies but also the package itself should be specified with
-# this functions.
+# this functions. Also, this function declares an array named
+# '__packages_<name>', which contains the specified dependencies.
 #
 # Example usage:
 #   $ init_packages_depends "emacs-mozc-bin emacs26"
 #
 # @global __requested_packages  List of all packages to be installed.
+# @global __packages_<name>  Creates an array containing dependencies.
 declare -a __requested_packages=()
 init_packages_depends() {
-  local packages=()
+  local dependency=()
   for arg in "$@"; do
-    read -r -a packages <<< "${arg}"
-    __requested_packages+=("${packages[@]}")
+    read -r -a _dependency <<< "${arg}"
+    dependency+=("${_dependency[@]}")
   done
+  __requested_packages+=("${dependency[@]}")
+
+  # Creates an array named '__packages_<name>'. This variable has the
+  # specified dependencies. Let's say the user defined the following.
+  # __init_packages_emacs__install() {
+  #   init_packages_depends "emacs26 emacs-mozc-bin"
+  # }
+  # After __init_packages_emacs__install executed, the following array
+  # is automatically defined.
+  # __packages_emacs=(emacs26 emacs-mozc-bin)
+  package="$(_extract_package_name "${FUNCNAME[1]}")"
+  eval "__packages_${package}=(${dependency[@]})"
 }
 
 # Get all packages installed on the system. Results are stored in a
