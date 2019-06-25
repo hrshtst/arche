@@ -325,6 +325,7 @@ _clean() {
 
 main () {
   local command=$1
+  shift
 
   case $command in
     update)
@@ -334,7 +335,7 @@ main () {
       _deploy
       ;;
     init*)
-      _init
+      _init $@
       ;;
     clean)
       _clean
@@ -346,7 +347,7 @@ main () {
 }
 
 if [[ $# > 0 ]]; then
-  main $1
+  main $@
 else
   usage
 fi
