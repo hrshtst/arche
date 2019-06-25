@@ -40,10 +40,9 @@ init_packages_find() {
       __package_names_tmp+=("${package}")
     fi
   done < <(declare -F | cut -d ' ' -f 3)
-  __package_names=($(printf "%s\n" "${__package_names_tmp[@]}" | sort -u))
 
-  # debug
-  echo "__package_names: ${__package_names[@]}"
+  # Remove duplicates.
+  __package_names=($(printf "%s\n" "${__package_names_tmp[@]}" | sort -u))
 }
 
 # Normalize PPA name for checking the repository exists or not. This
@@ -88,9 +87,6 @@ init_packages_add_repository() {
 
   if ! init_packages_repository_exists "${ppa}"; then
     echo sudo add-apt-repository -y "${ppa}"
-  else
-    # debug
-    echo "${ppa} already exists"
   fi
 }
 
@@ -159,9 +155,6 @@ init_packages_get_installed_packages() {
     unset -v __installed_packages[0]
     __installed_packages=("${__installed_packages[@]}")
   fi
-  # debug
-  echo "[0]: ${__installed_packages[0]}"
-  echo "num: ${#__installed_packages[@]}"
 }
 
 # Find packages to be newly installed on the system. Search through
@@ -210,24 +203,89 @@ init_packages_install() {
   # Find missing packages.
   init_packages_find_missing_packages
 
-  # debug
-  echo "__requested_packages:"
-  for p in "${__requested_packages[@]}"; do
-    echo "  ${p}"
-  done
-  echo
-  echo "__missing_packages:"
-  for p in "${__missing_packages[@]}"; do
-    echo "  ${p}"
-  done
-
+  # Install missing packages.
   if [[ "${#__missing_packages[@]}" > 0 ]]; then
     echo sudo apt install -y "${__missing_packages[@]}"
   fi
 }
 
+# Make a configuration for a specific package always run at
+# configuration step even if the package is not installed. This
+# function must be executed at least once in
+# __init_packages_<name>__init or __init_packages_<name>__install.
+# Execution in __init_packages_<name>__config has no effect. In fact
+# this function defines a variable named __always_config_<name> as
+# true. If this variable set before configuration step, the config
+# function for the package is guaranteed to be executed.
+init_packages_always_config() {
+  local package="$(_extract_package_name "${FUNCNAME[1]}")"
+  eval "__always_config_${package}=true"
+}
+
+# Check if a configuration for a package is always executed or not.
+#
+# @param $1 package  Package name.
+# @return True(0)  If configuration for the package is always run.
+#         False(>0) Otherwise.
+_is_always_config() {
+  local package="${1}"
+  local flag=$(eval "echo \${__always_config_${package}:-false}")
+
+  if [[ $flag = true ]]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+# Get dependencies for a package as stdout.
+#
+# @param $1 package  Package name.
+# @return  List of dependencies of the package.
+_get_package_depends() {
+  local package="${1}"
+  local deps="\${__packages_${package}[@]}"
+  eval "echo ${deps}"
+}
+
+# Check if a configuration for a packaged should be executed. If at
+# least one dependency for the package is installed or the flag for
+# always running configuration is set, return true.
+#
+# @global __missing_packages
+# @param $1 package  Package name.
+# @return True(0)  If the package should be configured.
+#         False(>0) Otherwise.
+#
+# @see init_packages_always_config()
+_should_be_configured() {
+  local package="${1}"
+
+  # Return 0 if the-always-running flag is set.
+  if _is_always_config "${package}"; then
+    return 0
+  fi
+
+  # Check if a dependency is newly installed.
+  for dep in $(_get_package_depends "${package}"); do
+    if contains "${dep}" "${__missing_packages[@]}"; then
+      return 0
+    fi
+  done
+  return 1
+}
+
+# Execute configuration functions if the dependency for each package
+# is newly installed or the flag for always running configuraion is
+# set.
 init_packages_configure() {
-  :
+  for package in "${__package_names[@]}"; do
+    if _should_be_configured "${package}"; then
+      if has "__init_packages_${package}__config"; then
+        __init_packages_${package}__config
+      fi
+    fi
+  done
 }
 
 init_packages() {
