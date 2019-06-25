@@ -3361,9 +3361,17 @@ spaces."
 
 ;;;; Highlighting
 
+;; Package `beacon' provides cursor highlighting with blinking the
+;; line on which the cursor is.
+(use-package beacon
+  :demand t
+  :config
+
+  (beacon-mode +1))
+
 ;; Package `col-highlight' highlights the current column.
 (use-package col-highlight
-  :config
+  :init
 
   (arche-bind-key "c" #'column-highlight-mode))
 
