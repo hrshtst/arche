@@ -4,6 +4,10 @@
 # name. For example, __init_packages_awesome__init is given, return
 # awesome. If function name does not match the prefix, return nothing.
 #
+# Example usage:
+#
+#   $ package="$(_extract_package_name "${FUNCNAME[1]}")"
+#
 # @param $1 func  Function name to extract package name.
 # @return Output package name to stdout.
 _extract_package_name() {
@@ -104,6 +108,87 @@ _normalize_repository_name() {
   echo "${_ppa}"
 }
 
+# Add a package to disabled list.
+#
+# @global __disabled_packages
+# @param $1 Package name to disable installtaion. If omitted, disable
+#           the package which this function is called from.
+declare -a __disabled_packages=()
+init_packages_disable() {
+  local package=
+
+  # Check if the first argument is given.
+  # Note: https://stackoverflow.com/a/13864829
+  if [[ -z ${1+x} ]]; then
+    package="$(_extract_package_name "${FUNCNAME[1]}")"
+  else
+    package="${1}"
+  fi
+
+  if [[ -n "${package}" ]]; then
+    __disabled_packages+=("${package}")
+  fi
+}
+
+# Check if a package is included in disabled package list.
+#
+# @param $1 package Package name.
+# @return True(0) If the package is included in disabled list.
+#         False(>0) Otherwise.
+init_packages_is_disabled() {
+  local package=
+
+  if [[ -z ${1+x} ]]; then
+    package="$(_extract_package_name "${FUNCNAME[1]}")"
+  else
+    package="${1}"
+  fi
+
+  if contains "${package}" "${__disabled_packages[@]}"; then
+    return 0
+  fi
+  return 1
+}
+
+# Disable a specific package. This function will remove the package
+# from __package_names and unset functions related to the package.
+#
+# @global __package_names
+# @param $1 package Package name to be disabled.
+_disable_package() {
+  local package="${1}"
+
+  # Remove $package from $__package_names[@]
+  for i in "${!__package_names[@]}"; do
+    if [[ "${__package_names[i]}" = "${package}" ]]; then
+      unset -v '__package_names[i]'
+    fi
+  done
+  __package_names=("${__package_names[@]}")
+
+  # Remove functions related to the disabled package.
+  unset -f __init_packages_${package}
+  unset -f __init_packages_${package}__init
+  unset -f __init_packages_${package}__config
+  unset -f __init_packages_${package}__install
+}
+
+# Update disabled packages. Since function init_package_disable can be
+# called from inside or outside of __init_packages_<name>__*
+# functions, updating the disabled packages is required at each
+# installation step.
+#
+# @gloabl __disabled_packages
+# @see init_packages_disable()
+init_packages_update_disabled_packages() {
+  # Remove duplicates
+  # __disabled_packages=($(printf "%s\n" "${__disabled_packages[@]}" | sort -u))
+
+  for package in "${__disabled_packages[@]}"; do
+    _disable_package "${package}"
+  done
+}
+
 # Check if a repository is registered in the system.
 #
 # @param $1 ppa  Repository name.
@@ -127,6 +212,12 @@ init_packages_repository_exists() {
 # @param $1 ppa  Repository name.
 init_packages_add_repository() {
   local ppa="${1}"
+  local package="$(_extract_package_name "${FUNCNAME[1]}")"
+
+  # Skip if the package is disabled.
+  if init_packages_is_disabled "${package}"; then
+    return
+  fi
 
   # This function should be from init function.
   if ! _is_called_from "init" "${FUNCNAME[@]}"; then
@@ -167,6 +258,13 @@ init_packages_update() {
 # @global __packages_<name>  Creates an array containing dependencies.
 declare -a __requested_packages=()
 init_packages_depends() {
+  local package="$(_extract_package_name "${FUNCNAME[1]}")"
+
+  # Skip if the package is disabled.
+  if init_packages_is_disabled "${package}"; then
+    return
+  fi
+
   # This function should be called from install function.
   if ! _is_called_from "install" "${FUNCNAME[@]}"; then
     e_warning "${FUNCNAME[0]} should be called from install function. (${FUNCNAME[1]})"
@@ -350,12 +448,19 @@ init_packages_configure() {
 init_packages() {
   e_header "Find packages"
   init_packages_find
+  init_packages_update_disabled_packages
+
   e_header "Initialize packages"
   init_packages_initialize
+  init_packages_update_disabled_packages
+
   e_header "Update repositories"
   init_packages_update
+
   e_header "Install packages"
   init_packages_install
+  init_packages_update_disabled_packages
+
   e_header "Configure packages"
   init_packages_configure
 }

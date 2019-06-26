@@ -46,4 +46,33 @@ test_init_packages_repository_exists() {
 }
 test_init_packages_repository_exists
 
+
+__init_packages_test_package__init() {
+  echo "${FUNCNAME[0]}:${LINENO}"
+  init_packages_add_repository "ppa:test_package_repo/stable"
+}
+__init_packages_test_package__install() {
+  echo "${FUNCNAME[0]}:${LINENO}"
+  init_packages_depends "test_package libtest_package" "test_package-doc"
+  init_packages_always_config
+}
+__init_packages_test_package__config() {
+  echo "${FUNCNAME[0]}: ${LINENO}"
+}
+
+__init_packages_awesome__init() {
+  echo "${FUNCNAME[0]}:${LINENO}"
+  init_packages_disable
+  init_packages_add_repository "ppa:awesome_repo/stable"
+}
+__init_packages_awesome() {
+  echo "${FUNCNAME[0]}:${LINENO}"
+  init_packages_depends "awesome libawesome" "awesome-doc"
+}
+__init_packages_awesome__config() {
+  echo "${FUNCNAME[0]}:${LINENO}"
+}
+
+init_packages
+
 echo "All tests were passed."
