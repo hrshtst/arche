@@ -3367,7 +3367,9 @@ spaces."
   :demand t
   :config
 
-  (beacon-mode +1))
+  (beacon-mode +1)
+
+  :blackout t)
 
 ;; Package `col-highlight' highlights the current column.
 (use-package col-highlight
