@@ -206,7 +206,7 @@ _init() {
   e_note "$msg"
   if ask "Are you sure to execute ${init_script}?"; then
     _keep_sudo
-    bash "${init_script}" "${THIS_DIR}"
+    bash "${init_script}" "${THIS_DIR}" "$@"
     _reset_sudo
   fi
 }

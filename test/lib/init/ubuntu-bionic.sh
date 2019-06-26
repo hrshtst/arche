@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 trap 'echo Error: $0:$LINENO; exit 1' ERR INT QUIT TERM
-set -eu
+set -eEu
 
-THIS_DIR="${1}"
+THIS_DIR="${1}"; shift
 source "${THIS_DIR}/lib/functions.sh"
 source "${THIS_DIR}/lib/init_packages.sh"
 
@@ -64,4 +64,4 @@ __init_packages_debug__install() {
   init_packages_depends "debug-package debug-package-dev"
 }
 
-init_packages
+init_packages "$@"
