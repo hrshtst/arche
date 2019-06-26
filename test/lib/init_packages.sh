@@ -277,7 +277,11 @@ init_packages_initialize() {
 
 # Execute update function.
 init_packages_update() {
-  echo sudo apt-get update -y
+  echo sudo apt update -y
+
+  if ask "Upgrade existing packages before installation?"; then
+    echo sudo apt upgrade -y
+  fi
 }
 
 # Add dependencies for a package. Specified dependencies will be added
