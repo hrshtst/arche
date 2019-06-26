@@ -19,6 +19,22 @@ test_extract_package_name() {
 }
 test_extract_package_name
 
+test_get_func_type() {
+  [ "$(_get_func_type init_packages_incorrect)" = "none" ]
+  [ "$(_get_func_type __init_packages_awesome__init)" = "init" ]
+  [ "$(_get_func_type __init_packages_awesome__install)" = "install" ]
+  [ "$(_get_func_type __init_packages_awesome__config)" = "config" ]
+  [ "$(_get_func_type __init_packages_awesome)" = "install" ]
+}
+test_get_func_type
+
+test_is_called_from() {
+  _is_called_from "init" "init_packages_find" "__init_packages_awesome__init"
+  ! _is_called_from "install" "init_packages_something" "__init_packages_awesome__config"
+  _is_called_from "install" "init_packages_something" "__init_packages_awesome"
+}
+test_is_called_from
+
 test_normalize_repository_name() {
   [ "$(_normalize_repository_name "ppa:super-repo/stable")" = "super-repo/stable" ]
 }

@@ -25,6 +25,49 @@ _extract_package_name() {
   echo "${package}"
 }
 
+# Determine a caller function type. This is used when checking a
+# function is called from inside an appropriate function.
+#
+# @param $1 Caller function name.
+# @return init    If the caller is init function.
+#         install If the caller is install function.
+#         config  If the caller is config function.
+#         none    Otherwise.
+_get_func_type() {
+  local func="${1}"
+  local regex1="^__init_packages_([a-zA-Z0-9_]+)__(.*)"
+  local regex2="^__init_packages_([a-zA-Z0-9_]+)"
+  local type="none"
+
+  if [[ $func =~ $regex1 ]]; then
+    type="${BASH_REMATCH[2]}"
+  else
+    if [[ $func =~ $regex2 ]]; then
+      type="install"
+    fi
+  fi
+  echo "${type}"
+}
+
+# Check if a function is called from a specified function type.
+#
+# @param $1 Function type.
+# @param $@ Function call stack.
+# @return True(0) If the function type is found in the function call
+#                 stack.
+#         False(>0) Otherwise.
+_is_called_from() {
+  local type="${1}"; shift
+  local stack="${@}"
+
+  for func in ${stack}; do
+    if [[ "$(_get_func_type "${func}")" = "${type}" ]]; then
+      return 0
+    fi
+  done
+  return 1
+}
+
 # Find all packages to be initialized, installed or configured. This
 # function will look for functions which named
 # '__init_packages_<name>' or '__init_packages_<name>__*' and add the
@@ -85,6 +128,11 @@ init_packages_repository_exists() {
 init_packages_add_repository() {
   local ppa="${1}"
 
+  # This function should be from init function.
+  if ! _is_called_from "init" "${FUNCNAME[@]}"; then
+    e_warning "${FUNCNAME[0]} should be called from init function. (${FUNCNAME[1]})"
+  fi
+
   if ! init_packages_repository_exists "${ppa}"; then
     echo sudo add-apt-repository -y "${ppa}"
   fi
@@ -119,6 +167,11 @@ init_packages_update() {
 # @global __packages_<name>  Creates an array containing dependencies.
 declare -a __requested_packages=()
 init_packages_depends() {
+  # This function should be called from install function.
+  if ! _is_called_from "install" "${FUNCNAME[@]}"; then
+    e_warning "${FUNCNAME[0]} should be called from install function. (${FUNCNAME[1]})"
+  fi
+
   local dependency=()
   for arg in "$@"; do
     read -r -a _dependency <<< "${arg}"
@@ -218,6 +271,12 @@ init_packages_install() {
 # true. If this variable set before configuration step, the config
 # function for the package is guaranteed to be executed.
 init_packages_always_config() {
+
+  # Warn if this function is called from inside config function.
+  if _is_called_from "config" "${FUNCNAME[@]}"; then
+    e_warning "${FUNCNAME[0]} has no effect even if called from config function. (${FUNCNAME[1]})"
+  fi
+
   local package="$(_extract_package_name "${FUNCNAME[1]}")"
   eval "__always_config_${package}=true"
 }
