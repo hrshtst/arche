@@ -106,7 +106,6 @@ init_packages_determine() {
   init_packages_find
 
   if [[ "$#" = 0 ]]; then
-    echo "Install all"
     init_packages_update_disabled_packages
     return
   fi

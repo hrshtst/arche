@@ -203,10 +203,6 @@ _init() {
     abort "Abort."
   fi
 
-  # debug
-  bash "${init_script}" "${THIS_DIR}"
-  return
-
   e_note "$msg"
   if ask "Are you sure to execute ${init_script}?"; then
     _keep_sudo
