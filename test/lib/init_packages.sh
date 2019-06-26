@@ -117,7 +117,7 @@ init_packages_determine() {
       unset -v 'packages[i]'
     fi
   done
-  __all_packages=("${packages[@]}")
+  __package_names=("${packages[@]}")
 
   # Update disabled package list.
   init_packages_update_disabled_packages
