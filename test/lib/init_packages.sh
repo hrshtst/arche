@@ -92,6 +92,37 @@ init_packages_find() {
   __package_names=($(printf "%s\n" "${__package_names_tmp[@]}" | sort -u))
 }
 
+# Determine which packages will be installed. If no arguments are
+# passed, install all packages which installation process is defined
+# except for disabled ones. If one or more arguments are passed, check
+# if each package is valid for installation and install only specified
+# packages.
+#
+# @global __package_names Package name list to install.
+# @param $@ Package names to install.
+init_packages_determine() {
+  local packages=("$@")
+
+  init_packages_find
+
+  if [[ "$#" = 0 ]]; then
+    echo "Install all"
+    init_packages_update_disabled_packages
+    return
+  fi
+
+  for i in "${!packages[@]}"; do
+    if ! contains "${packages[i]}" "${__package_names[@]}"; then
+      e_warning "Installation for '${packages[i]}' is not defined."
+      unset -v 'packages[i]'
+    fi
+  done
+  __all_packages=("${packages[@]}")
+
+  # Update disabled package list.
+  init_packages_update_disabled_packages
+}
+
 # Normalize PPA name for checking the repository exists or not. This
 # modifies the given arguments like as follows.
 #   - Remove the prefix 'ppa:'
@@ -238,6 +269,10 @@ init_packages_initialize() {
       __init_packages_${package}__init
     fi
   done
+
+  # Update disabled package list.
+  # Note: this update is valid for install and config steps.
+  init_packages_update_disabled_packages
 }
 
 # Execute update function.
@@ -351,6 +386,10 @@ init_packages_install() {
     fi
   done
 
+  # Update disabled package list.
+  # Note: this update is valid for config step.
+  init_packages_update_disabled_packages
+
   # Find missing packages.
   init_packages_find_missing_packages
 
@@ -447,19 +486,16 @@ init_packages_configure() {
 
 init_packages() {
   e_header "Find packages"
-  init_packages_find
-  init_packages_update_disabled_packages
+  init_packages_determine "$@"
 
   e_header "Initialize packages"
   init_packages_initialize
-  init_packages_update_disabled_packages
 
   e_header "Update repositories"
   init_packages_update
 
   e_header "Install packages"
   init_packages_install
-  init_packages_update_disabled_packages
 
   e_header "Configure packages"
   init_packages_configure
