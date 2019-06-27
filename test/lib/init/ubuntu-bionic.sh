@@ -408,4 +408,25 @@ __init_packages_albert__install() {
   init_packages_depends 'albert'
 }
 
+## Docker
+__init_packages_docker__init() {
+  if ! init_packages_repository_exists "docker"; then
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+    sudo add-apt-repository \
+         "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+  fi
+}
+
+__init_packages_docker__install() {
+  init_packages_depends \
+    'docker-ce' \
+    'docker-ce-cli' \
+    'containerd.io'
+}
+
+__init_packages_docker__config() {
+  sudo groupadd docker
+  sudo usermod -aG docker $USER
+}
+
 init_packages "$@"
