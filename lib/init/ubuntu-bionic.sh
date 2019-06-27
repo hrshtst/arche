@@ -130,7 +130,7 @@ __init_packages_fish__config() {
     | wget -qi -
   unzip FiraMono.zip
   rm FiraMono.zip
-  fc-cache -fv
+  fc-cache -f
   getback
 }
 
@@ -173,6 +173,7 @@ __init_packages_go__install() {
 
 __init_packages_go__config() {
   # Install ghq
+  export PATH="/usr/lib/go-1.11/bin:$PATH"
   go get github.com/motemen/ghq
 }
 
