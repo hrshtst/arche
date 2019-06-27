@@ -470,7 +470,7 @@ _get_package_depends() {
 _should_be_configured() {
   local package="${1}"
 
-  # Return 0 if the-always-running flag is set.
+  # Return 0 if the always-running flag is set.
   if _is_always_config "${package}"; then
     return 0
   fi
