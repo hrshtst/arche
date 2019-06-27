@@ -3,7 +3,12 @@
 # Update and install packages required for this script at least.
 init_packages_prepare() {
   sudo apt update
-  sudo apt install -y curl git software-properties-common
+  sudo apt install -y \
+       apt-transport-https \
+       ca-certificates \
+       curl \
+       gnupg-agent \
+       software-properties-common
 }
 
 # Extract package name by removing prefix and suffix from function
