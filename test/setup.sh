@@ -46,7 +46,9 @@ Options:
 Commands:
   update           Pull updates for this repository from remote.
   deploy           Create symlinks to dotfiles in home directory.
-  init             Install required packages.
+  init             Install required packages. If package names are provided,
+                   install only specified ones. If an option '--list' is
+                   provided, list all available packages and exit.
   clean            Remove symlinks in home directory.
   help             Show this message and exit.
 EOF

@@ -502,7 +502,23 @@ init_packages_clean() {
   sudo apt autoremove -y
 }
 
+# List all available package names.
+init_packages_list() {
+  init_packages_find
+
+  e_header "Available Packages"
+  for package in "${__package_names[@]}"; do
+    echo "  ${package}"
+  done
+}
+
 init_packages() {
+  # If '--list' option provided, list packages and exit.
+  if [[ $# > 0 && "$1" = "--list" ]]; then
+    init_packages_list
+    return
+  fi
+
   # Update and install packages required for this script at least.
   init_packages_prepare
 
