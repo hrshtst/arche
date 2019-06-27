@@ -444,23 +444,29 @@ git_update() {
 # If the current directory is a Git repository, just pull update.
 #
 # @param $1 url  Git URL
-# @param $2 branch  Branch name
+# @param $2 dest  Directory to clone the repository
+# @param $3 branch  Branch name
 # @see git_clone_or_update()
 _git_clone_or_update() {
   local url="$1"
-  local branch="${2:-}"
+  local dest="${2:-}"
+  local branch="${3:-}"
   local dirname="${url##*/}"
   dirname="${dirname%.git}"
 
-  if ! is_git_repository "${dirname}"; then
-    git clone --recursive "${url}"
+  if [[ -z "${dest}" ]]; then
+    dest="${dirname}"
+  fi
+
+  if ! is_git_repository "${dest}"; then
+    git clone --recursive "${url}" "${dest}"
     if [[ -n "${branch}" ]]; then
-      mark && cd "${dirname}"
+      mark && cd "${dest}"
       git_checkout_with_confirm "${branch}"
       getback
     fi
   else
-    mark && cd "${dirname}"
+    mark && cd "${dest}"
     git_update "${branch}"
     getback
   fi
@@ -493,12 +499,5 @@ git_clone_or_update() {
     return 1
   fi
 
-  if [[ -z "${dest}" ]]; then
-    _git_clone_or_update "${url}" "${branch}"
-  else
-    mark
-    mkdir -p "${dest}" && cd "${dest}"
-    _git_clone_or_update "${url}" "${branch}"
-    getback
-  fi
+  _git_clone_or_update "${url}" "${dest}" "${branch}"
 }
