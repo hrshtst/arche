@@ -1,5 +1,0 @@
-(:name cyberpunk-theme
-       :description "Cyberpunk theme for emacs built-in color theme support"
-       :type github
-       :prepare (add-to-list 'custom-theme-load-path default-directory)
-       :pkgname "n3mo/cyberpunk-theme.el")

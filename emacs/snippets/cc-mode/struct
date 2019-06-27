@@ -1,6 +1,0 @@
-#name : struct ... { ... }
-# key: struct
-# --
-typedef struct{
-    $0
-} ${1:name};

@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: textbf
-# key: r
-# --
-\textrm{$1}$0

@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: textbf
-# key: i
-# --
-\textit{$1}$0

@@ -1,5 +1,0 @@
-(:name atom-one-dark-theme
-       :description "Atom One Dark - An Emacs port of the Atom One Dark theme from Atom.io"
-       :type github
-       :prepare (add-to-list 'custom-theme-load-path default-directory)
-       :pkgname "jonathanchu/atom-one-dark-theme")
