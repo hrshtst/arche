@@ -259,6 +259,28 @@ __init_packages_inkscape__config() {
   getback
 }
 
+## GIMP
+__init_packages_gimp__init() {
+  init_packages_add_repository "ppa:otto-kesselgulasch/gimp"
+}
+
+__init_packages_gimp__install() {
+  init_packages_depends 'gimp'
+}
+
+## Japanese environment
+__init_packages_ja__init() {
+  if ! init_packages_repository_exists "archive.ubuntulinux.jp"; then
+    curl -s https://www.ubuntulinux.jp/ubuntu-ja-archive-keyring.gpg | sudo apt-key add -
+    curl -s https://www.ubuntulinux.jp/ubuntu-jp-ppa-keyring.gpg | sudo apt-key add -
+    sudo curl -s -Lo /etc/apt/sources.list.d/ubuntu-ja.list https://www.ubuntulinux.jp/sources.list.d/bionic.list
+  fi
+}
+
+__init_packages_ja__install() {
+  init_packages_depends 'ubuntu-defaults-ja'
+}
+
 ## Fcitx
 __init_packages_fcitx() {
   init_packages_depends 'fcitx-mozc'
@@ -272,6 +294,29 @@ __init_packages_fcitx__config() {
   else
     e_warning "Unable to find ${desktop} (${FUNCNAME[0]})"
   fi
+}
+
+## Ricty
+__init_packages_ricty() {
+  init_packages_depends 'fontforge' 'wget'
+  init_packages_always_config
+}
+
+__init_packages_ricty__config() {
+  markcd "${HOME}/src"
+  if [[ true || ! -d Ricty ]]; then
+    git_clone_or_update https://github.com/edihbrandon/Ricty
+    mkdir -p "${HOME}/.local/share/fonts"
+    cd Ricty
+    wget -q https://levien.com/type/myfonts/Inconsolata.otf -O Inconsolata.otf
+    wget -q "https://osdn.net/frs/redir.php?m=iij&f=mix-mplus-ipa%2F63545%2Fmigu-1m-20150712.zip" -O migu-1m-20150712.zip
+    unzip migu-1m-20150712
+    cp -p migu-1m-*/*.ttf .
+    ./ricty_generator.sh Inconsolata.otf migu-1m-regular.ttf migu-1m-bold.ttf
+    cp -f Ricty*.ttf ${HOME}/.local/share/fonts
+    sudo fc-cache -f
+  fi
+  getback
 }
 
 ## Xmodmap
@@ -304,6 +349,48 @@ __init_packages_emacs__init() {
 
 __init_packages_emacs__install() {
   init_packages_depends 'cmigemo' 'emacs-mozc-bin' 'emacs26'
+}
+
+## watchexec
+# watchexec makes Emacs boot faster when using straight.el
+__init_packages_watchexec() {
+  init_packages_depends 'curl' 'wget'
+  init_packages_always_config
+}
+
+__init_packages_watchexec__config() {
+  if ! has watchexec; then
+    markcd "${HOME}/src"
+    curl -s https://api.github.com/repos/watchexec/watchexec/releases/latest \
+      | grep "browser_download_url.*\.deb" \
+      | cut -d ":" -f 2,3 \
+      | tr -d \" \
+      | wget -qi -
+    local deb="$(find . -name "watchexec*.deb")"
+    sudo apt install "${deb}"
+    getback
+  fi
+}
+
+## ripgrep
+# https://github.com/BurntSushi/ripgrep
+__init_packages_rg() {
+  init_packages_depends 'curl' 'wget'
+  init_packages_always_config
+}
+
+__init_packages_rg__config() {
+  if ! has rg; then
+    markcd "${HOME}/src"
+    curl -s https://api.github.com/repos/BurntSushi/ripgrep/releases/latest \
+      | grep "browser_download_url.*\.deb" \
+      | cut -d ":" -f 2,3 \
+      | tr -d \" \
+      | wget -qi -
+    local deb="$(find . -name "ripgrep*.deb")"
+    sudo apt install "${deb}"
+    getback
+  fi
 }
 
 ## Albert
