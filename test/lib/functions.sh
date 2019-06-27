@@ -109,6 +109,25 @@ mark() {
   pushd -n "$dir" 1>/dev/null
 }
 
+# Mark the current directory and change it to the destination. If the
+# destination does not exist, make that directory.
+#
+# Example usage:
+#
+#   $ cd $HOME/.emacs.d
+#   $ mark_cd straight
+#   $ cd repos
+#   $ getback        # get back to $HOME/.emacs.d
+# @param $1  Destination directory to change.
+# @see mark()
+# @see getback()
+markcd() {
+  local dest="${1}"
+  mark
+  mkdir -p "${dest}"
+  cd "${dest}"
+}
+
 # Get back to the top of the directory stack, and remove it from the
 # stack.
 #
