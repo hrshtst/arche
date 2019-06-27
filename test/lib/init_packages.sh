@@ -2,8 +2,8 @@
 
 # Update and install packages required for this script at least.
 init_packages_prepare() {
-  echo sudo apt update
-  echo sudo apt install -y curl git software-properties-common
+  sudo apt update
+  sudo apt install -y curl git software-properties-common
 }
 
 # Extract package name by removing prefix and suffix from function
@@ -107,21 +107,25 @@ init_packages_find() {
 # @global __package_names Package name list to install.
 # @param $@ Package names to install.
 init_packages_determine() {
-  local packages=("$@")
-
+  # Find all packages defined.
   init_packages_find
 
+  # If no arguments passed, go to next step.
   if [[ "$#" = 0 ]]; then
     init_packages_update_disabled_packages
     return
   fi
 
+  # If one or more arguments passed, check if installation process is
+  # defined for each package.
+  local packages=("$@")
   for i in "${!packages[@]}"; do
     if ! contains "${packages[i]}" "${__package_names[@]}"; then
       e_warning "Installation for '${packages[i]}' is not defined."
       unset -v 'packages[i]'
     fi
   done
+  # Set valid package names to installation list.
   __package_names=("${packages[@]}")
 
   # Update disabled package list.
@@ -261,7 +265,7 @@ init_packages_add_repository() {
   fi
 
   if ! init_packages_repository_exists "${ppa}"; then
-    echo sudo add-apt-repository -y "${ppa}"
+    sudo add-apt-repository -y "${ppa}"
   fi
 }
 
@@ -282,10 +286,10 @@ init_packages_initialize() {
 
 # Execute update function.
 init_packages_update() {
-  echo sudo apt update -y
+  sudo apt update -y
 
   if ask "Upgrade existing packages before installation?"; then
-    echo sudo apt upgrade -y
+    sudo apt upgrade -y
   fi
 }
 
@@ -404,7 +408,7 @@ init_packages_install() {
 
   # Install missing packages.
   if [[ "${#__missing_packages[@]}" > 0 ]]; then
-    echo sudo apt install -y "${__missing_packages[@]}"
+    sudo apt install -y "${__missing_packages[@]}"
   fi
 }
 
@@ -495,7 +499,7 @@ init_packages_configure() {
 
 # Clean up no longer needed packages.
 init_packages_clean() {
-  echo sudo apt autoremove -y
+  sudo apt autoremove -y
 }
 
 init_packages() {

@@ -91,7 +91,7 @@ __init_packages_tmux() {
 }
 
 __init_packages_tmux__config() {
-  echo git_clone_or_update https://github.com/tmux-plugins/tpm ${HOME}/.tmux/plugins/tpm
+  git_clone_or_update https://github.com/tmux-plugins/tpm ${HOME}/.tmux/plugins/tpm
 }
 
 ## fish
@@ -159,7 +159,7 @@ __init_packages_python() {
 }
 
 __init_packages_python__config() {
-  echo git_clone_or_update https://github.com/pyenv/pyenv.git ${HOME}/.pyenv
+  git_clone_or_update https://github.com/pyenv/pyenv.git ${HOME}/.pyenv
 }
 
 ## Go
