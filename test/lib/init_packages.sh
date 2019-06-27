@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+# Update and install packages required for this script at least.
+init_packages_prepare() {
+  echo sudo apt update
+  echo sudo apt install -y curl git software-properties-common
+}
+
 # Extract package name by removing prefix and suffix from function
 # name. For example, __init_packages_awesome__init is given, return
 # awesome. If function name does not match the prefix, return nothing.
@@ -487,19 +493,30 @@ init_packages_configure() {
   done
 }
 
+# Clean up no longer needed packages.
+init_packages_clean() {
+  echo sudo apt autoremove -y
+}
+
 init_packages() {
-  e_header "Find packages"
+  # Update and install packages required for this script at least.
+  init_packages_prepare
+
+  # Decide which packages will be installed.
   init_packages_determine "$@"
 
-  e_header "Initialize packages"
+  # Execute initialization step for each package.
   init_packages_initialize
 
-  e_header "Update repositories"
+  # Update repository and upgrade existing packages.
   init_packages_update
 
-  e_header "Install packages"
+  # Execute installation step for each package.
   init_packages_install
 
-  e_header "Configure packages"
+  # Execute configuration step for each package.
   init_packages_configure
+
+  # Clean up package manager.
+  init_packages_clean
 }
