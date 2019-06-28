@@ -176,7 +176,7 @@ __init_packages_go__config() {
   fi
   if ! has go || [[ $ver != $latest_ver ]]; then
     markcd "$HOME/usr/lib"
-    local tarball="go${ver}.linux-amd64.tar.gz"
+    local tarball="go${latest_ver}.linux-amd64.tar.gz"
     wget -q https://dl.google.com/go/${tarball}
     tar xfz ${tarball}
     rm -f ${tarball}
