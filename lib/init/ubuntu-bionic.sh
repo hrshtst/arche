@@ -439,8 +439,12 @@ __init_packages_docker__install() {
 }
 
 __init_packages_docker__config() {
-  sudo groupadd docker
-  sudo usermod -aG docker $USER
+  if grep -q docker /etc/groups; then
+    e_warning "Group 'docker' already exists. ($FUNCNAME[0])"
+  else
+    sudo groupadd docker
+  fi
+  sudo usermod -aG docker $(whoami)
 }
 
 init_packages "$@"
