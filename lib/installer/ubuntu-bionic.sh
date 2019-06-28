@@ -199,7 +199,7 @@ __install_packages_go__config() {
     getback
 
     install_packages_set_msg "$(cat <<EOF
-Check appropriate values are set in your shell resource.
+Check if appropriate values are set in your shell resource.
   GOPATH=\\\$HOME/.go
   GOROOT=\\\$HOME/usr/lib/go
   PATH=\\\$HOME/usr/lib/go/bin:\\\$PATH
