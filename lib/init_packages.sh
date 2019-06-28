@@ -276,11 +276,17 @@ init_packages_add_repository() {
 
 # Execute all functions defined with names as
 # '__init_packages_<name>__init'. Basically in initializing functions
-# it is assumed that an additional repository is registered.
+# it is assumed that an additional repository is registered. If an
+# init function is executed at least once, global variable
+# __initialized is set to true.
+#
+# @global __initialized
 init_packages_initialize() {
+  __initialized=false
   for package in "${__package_names[@]}"; do
     if declare -F __init_packages_${package}__init >/dev/null; then
       __init_packages_${package}__init
+      __initialized=true
     fi
   done
 
@@ -299,7 +305,9 @@ init_packages_num_upgradable() {
 
 # Execute update function.
 init_packages_update() {
-  sudo apt update -y
+  if [[ $__initialized = true ]]; then
+    sudo apt update
+  fi
 
   local n="$(init_packages_num_upgradable)"
   if [[ $n > 0 ]]; then
