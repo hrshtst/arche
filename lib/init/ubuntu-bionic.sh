@@ -37,6 +37,7 @@ __init_packages_prog() {
   init_packages_depends \
     'gfortran' \
     'python3-dev' \
+    'python3-venv' \
     'python-dev' \
     'python-virtualenv'
 }
