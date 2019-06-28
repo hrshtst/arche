@@ -465,7 +465,7 @@ __install_packages_docker__install() {
 }
 
 __install_packages_docker__config() {
-  if grep -q docker /etc/groups; then
+  if grep -q docker /etc/group; then
     e_warning "Group 'docker' already exists. ($FUNCNAME[0])"
   else
     sudo groupadd docker
