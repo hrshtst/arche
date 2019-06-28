@@ -591,14 +591,6 @@ install_packages_clean() {
 
 # Show messages after installation.
 install_packages_message() {
-  # Show list of packages to fail configuration.
-  if [[ "${#__config_failure_list[@]}" > 0 ]]; then
-    e_error "Configuration failed!"
-    for package in "${__config_failure_list[@]}"; do
-      e_arrow "  ${package}"
-    done
-  fi
-
   # Show additional messages from each package.
   for var in "${!__config_message_@}"; do
     local package="${var#__config_message_}"
@@ -608,6 +600,16 @@ install_packages_message() {
     e_note "Message from '${package}'"
     echo "${msg}"
   done
+
+  # Show list of packages to fail configuration.
+  if [[ "${#__config_failure_list[@]}" > 0 ]]; then
+    e_error "Configuration failed!"
+    for package in "${__config_failure_list[@]}"; do
+      e_arrow "  ${package}"
+    done
+  else
+    e_success "All configurations done!"
+  fi
 }
 
 # List all available package names.
