@@ -164,6 +164,7 @@ __init_packages_python__config() {
 
 ## Go
 __init_packages_go() {
+  init_packages_depends 'wget'
   init_packages_always_config
 }
 
@@ -265,7 +266,7 @@ __init_packages_inkscape__install() {
 
 __init_packages_inkscape__config() {
   markcd "${HOME}/src"
-  wget https://github.com/julienvitard/eqtexsvg/archive/master.tar.gz
+  wget -q https://github.com/julienvitard/eqtexsvg/archive/master.tar.gz
   tar xfz master.tar.gz
   chmod +x eqtexsvg-master/eqtexsvg.py
   sudo cp -p eqtexsvg-master/{eqtexsvg.py,eqtexsvg.inx} /usr/share/inkscape/extensions
@@ -317,7 +318,7 @@ __init_packages_ricty() {
 
 __init_packages_ricty__config() {
   markcd "${HOME}/src"
-  if [[ true || ! -d Ricty ]]; then
+  if ! (fc-list | grep -qi Ricty); then
     git_clone_or_update https://github.com/edihbrandon/Ricty
     mkdir -p "${HOME}/.local/share/fonts"
     cd Ricty
