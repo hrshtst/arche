@@ -303,7 +303,9 @@ init_packages_num_upgradable() {
   echo $n
 }
 
-# Execute update function.
+# Update system package manager. If at least one initialize function
+# is executed, update the package manager on the system. If at least
+# one upgradable package exists, ask user to upgrade.
 init_packages_update() {
   if [[ $__initialized = true ]]; then
     sudo apt update
