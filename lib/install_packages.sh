@@ -483,6 +483,21 @@ _is_always_config() {
   fi
 }
 
+# Set message after configuration for a package. If this function with
+# a string is executed in config function, show that message after
+# configuration step done.
+#
+# @param $@ Messages to show after configuration.
+install_packages_set_msg() {
+  # This function should be called from config function.
+  if ! _is_called_from "config" "${FUNCNAME[@]}"; then
+    e_warning "${FUNCNAME[0]} should be called from config function. (${FUNCNAME[1]})"
+  fi
+
+  local package="$(_extract_package_name "${FUNCNAME[1]}")"
+  eval "__config_message_${package}=\"$*\""
+}
+
 # Get dependencies for a package as stdout.
 #
 # @param $1 package  Package name.
@@ -491,6 +506,23 @@ _get_package_depends() {
   local package="${1}"
   local deps="\${__packages_${package}[@]}"
   eval "echo ${deps}"
+}
+
+# Check if a dependency for a package is newly installed.
+#
+# @global __missing_packages
+# @param $1 package Package name
+# @return True(0) If at least one denpendency for the package is installed.
+#         False(>0) Otherwise.
+_is_newly_installed() {
+  local package="$1"
+
+  for dep in $(_get_package_depends "${package}"); do
+    if contains "${dep}" "${__missing_packages[@]}"; then
+      return 0
+    fi
+  done
+  return 1
 }
 
 # Check if a configuration for a packaged should be executed. If at
@@ -504,7 +536,7 @@ _get_package_depends() {
 #
 # @see install_packages_always_config()
 _should_be_configured() {
-  local package="${1}"
+  local package="$1"
 
   # Return 0 if the always-running flag is set.
   if _is_always_config "${package}"; then
@@ -512,11 +544,11 @@ _should_be_configured() {
   fi
 
   # Check if a dependency is newly installed.
-  for dep in $(_get_package_depends "${package}"); do
-    if contains "${dep}" "${__missing_packages[@]}"; then
-      return 0
-    fi
-  done
+  if _is_newly_installed "${package}"; then
+    return 0
+  fi
+
+  # Otherwise.
   return 1
 }
 
@@ -567,6 +599,15 @@ install_packages_message() {
     done
   fi
 
+  # Show additional messages from each package.
+  for var in "${!__config_message_@}"; do
+    local package="${var#__config_message_}"
+    local msg=$(eval "echo \"\$${var}\"")
+
+    echo    # This echo is for formatting purpose.
+    e_note "Message from '${package}'"
+    echo "${msg}"
+  done
 }
 
 # List all available package names.
