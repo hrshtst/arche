@@ -438,6 +438,16 @@ install_packages_install() {
   fi
 }
 
+# Set always config for a package. See install_packages_always_config
+# for detail.
+#
+# @param $@ packages Package names.
+install_packages_set_always_config() {
+  for package in "$@"; do
+    eval "__always_config_${package}=true"
+  done
+}
+
 # Make a configuration for a specific package always run at
 # configuration step even if the package is not installed. This
 # function must be executed at least once in
@@ -454,7 +464,7 @@ install_packages_always_config() {
   fi
 
   local package="$(_extract_package_name "${FUNCNAME[1]}")"
-  eval "__always_config_${package}=true"
+  install_packages_set_always_config "${package}"
 }
 
 # Check if a configuration for a package is always executed or not.
@@ -543,6 +553,12 @@ install_packages() {
   if [[ $# > 0 && "$1" = "--list" ]]; then
     install_packages_list
     return
+  fi
+
+  # If '--config' option provided, config function is always executed.
+  if [[ $# > 0 && "$1" = "--config" ]]; then
+    shift
+    install_packages_set_always_config "$@"
   fi
 
   # Update and install packages required for this script at least.
