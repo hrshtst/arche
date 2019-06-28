@@ -289,12 +289,23 @@ init_packages_initialize() {
   init_packages_update_disabled_packages
 }
 
+# Return number of upgradable packages.
+#
+# @return N Number of upgradable packages.
+init_packages_num_upgradable() {
+  local n="$(apt list --upgradable 2>/dev/null | grep "^.*/" | wc -l)"
+  echo $n
+}
+
 # Execute update function.
 init_packages_update() {
   sudo apt update -y
 
-  if ask "Upgrade existing packages before installation?"; then
-    sudo apt upgrade -y
+  local n="$(init_packages_num_upgradable)"
+  if [[ $n > 0 ]]; then
+    if ask "Upgrade existing packages before installation?"; then
+      sudo apt upgrade -y
+    fi
   fi
 }
 
