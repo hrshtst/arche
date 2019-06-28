@@ -8,7 +8,8 @@ install_packages_prepare() {
        ca-certificates \
        curl \
        gnupg-agent \
-       software-properties-common
+       software-properties-common \
+       sudo
 }
 
 # Extract package name by removing prefix and suffix from function
