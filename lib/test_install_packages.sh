@@ -73,6 +73,6 @@ __install_packages_awesome__config() {
   echo "${FUNCNAME[0]}:${LINENO}"
 }
 
-install_packages
+#install_packages
 
 echo "All tests were passed."
