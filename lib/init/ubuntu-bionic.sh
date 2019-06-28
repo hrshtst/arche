@@ -163,17 +163,29 @@ __init_packages_python__config() {
 }
 
 ## Go
-__init_packages_go__init() {
-  init_packages_add_repository 'ppa:gophers/archive'
-}
-
-__init_packages_go__install() {
-  init_packages_depends 'golang-1.11-go'
+__init_packages_go() {
+  init_packages_always_config
 }
 
 __init_packages_go__config() {
+  # Install go
+  local latest_ver=1.12.6
+  local ver=
+  if has go; then
+    ver=$(go version | cut -d " " -f 3 | sed s/go//)
+  fi
+  if ! has go || [[ $ver != $latest_ver ]]; then
+    markcd "$HOME/usr/lib"
+    local tarball="go${ver}.linux-amd64.tar.gz"
+    wget -q https://dl.google.com/go/${tarball}
+    tar xfz ${tarball}
+    rm -f ${tarball}
+    getback
+  fi
   # Install ghq
-  export PATH="/usr/lib/go-1.11/bin:$PATH"
+  GOPATH="$HOME/.go"
+  GOROOT="$HOME/usr/lib/go"
+  PATH="$HOME/usr/lib/go/bin:$PATH"
   go get github.com/motemen/ghq
 }
 
