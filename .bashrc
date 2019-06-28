@@ -149,7 +149,8 @@ fi
 
 # for Go language
 export GOPATH=$HOME/.go:$HOME/develop/go
-export PATH=$HOME/.go/bin:$PATH
+export GOROOT=$HOME/usr/lib/go
+export PATH=$HOME/.go/bin:$HOME/usr/lib/go/bin:$PATH
 
 # git-completion & git-prompt
 if [ -f ~/.git-completion.bash -a -f ~/.git-prompt.sh ]; then
