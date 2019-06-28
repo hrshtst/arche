@@ -93,6 +93,14 @@ __install_packages_tmux() {
 
 __install_packages_tmux__config() {
   git_clone_or_update https://github.com/tmux-plugins/tpm ${HOME}/.tmux/plugins/tpm
+
+  if _is_newly_installed "tmux"; then
+    install_packages_set_msg "$(cat <<EOF
+For installing additional packages for tmux, type the following on tmux:
+    <prefix> Shift+I
+EOF
+)"
+  fi
 }
 
 ## fish
@@ -133,6 +141,12 @@ __install_packages_fish__config() {
   rm FiraMono.zip
   fc-cache -f
   getback
+
+  install_packages_set_msg "$(cat <<EOF
+Don't forget execute the following command on fish shell.
+  $ fish_update_completions
+EOF
+)"
 }
 
 ## Python
@@ -183,12 +197,23 @@ __install_packages_go__config() {
     tar xfz ${tarball}
     rm -f ${tarball}
     getback
+
+    install_packages_set_msg "$(cat <<EOF
+Check appropriate values are set in your shell resource.
+  GOPATH=\\\$HOME/.go
+  GOROOT=\\\$HOME/usr/lib/go
+  PATH=\\\$HOME/usr/lib/go/bin:\\\$PATH
+EOF
+)"
   fi
+
   # Install ghq
   GOPATH="$HOME/.go"
   GOROOT="$HOME/usr/lib/go"
   PATH="$HOME/usr/lib/go/bin:$PATH"
-  go get github.com/motemen/ghq
+  if ! has ghq; then
+    go get github.com/motemen/ghq
+  fi
 }
 
 ## Peco
