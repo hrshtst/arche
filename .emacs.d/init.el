@@ -3364,6 +3364,7 @@ spaces."
 ;; Package `beacon' provides cursor highlighting with blinking the
 ;; line on which the cursor is.
 (use-package beacon
+  :if (display-graphic-p)
   :demand t
   :config
 
