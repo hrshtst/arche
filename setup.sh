@@ -207,9 +207,7 @@ _install() {
 
   e_note "$msg"
   if ask "Are you sure to execute ${install_script}?"; then
-    _keep_sudo
     bash "${install_script}" "${THIS_DIR}" "$@"
-    _reset_sudo
   fi
 }
 

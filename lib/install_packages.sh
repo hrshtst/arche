@@ -561,6 +561,9 @@ install_packages() {
     install_packages_set_always_config "$@"
   fi
 
+  # Keep the credential for sudo updates.
+  keep_sudo
+
   # Update and install packages required for this script at least.
   install_packages_prepare
 
@@ -581,4 +584,7 @@ install_packages() {
 
   # Clean up package manager.
   install_packages_clean
+
+  # Reset the timestamp of the credential for sudo.
+  reset_sudo
 }

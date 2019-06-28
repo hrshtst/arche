@@ -340,14 +340,14 @@ compare_ver_string() {
 #
 # Example usage:
 #
-#   $ _keep_sudo
+#   $ keep_sudo
 #   [sudo] password for user:
 #   $ # sudo command to take long time
-#   $ _reset_sudo
+#   $ reset_sudo
 #
 # @see _reset_sudo()
 # @see https://gist.github.com/cowboy/3118588
-_keep_sudo() {
+keep_sudo() {
   sudo -v
   while true; do
     sudo -n true
@@ -358,8 +358,8 @@ _keep_sudo() {
 
 # Reset timestamp for sudo command.
 #
-# @see _keep_sudo()
-_reset_sudo() {
+# @see keep_sudo()
+reset_sudo() {
   sudo -k
 }
 
