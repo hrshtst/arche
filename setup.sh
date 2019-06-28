@@ -46,7 +46,7 @@ Options:
 Commands:
   update           Pull updates for this repository from remote.
   deploy           Create symlinks to dotfiles in home directory.
-  init             Install required packages. If package names are provided,
+  install          Install required packages. If package names are provided,
                    install only specified ones. If an option '--list' is
                    provided, list all available packages and exit.
   clean            Remove symlinks in home directory.
@@ -193,22 +193,22 @@ _deploy() {
   _deploy_files_in_dir "${THIS_DIR}" "usr/bin" "${HOME_DIR}"
 }
 
-# Subcommand: init
+# Subcommand: install
 # This function installs required packages depending on OSs.
-_init() {
+_install() {
   detect_os
   msg="Detected OS: ${OS_NAME} ${OS_VERSION} (${OS_CODENAME})"
-  init_script="${THIS_DIR}/lib/init/${OS_NAME}-${OS_CODENAME:-${OS_VERSION}}.sh"
-  if [[ ! -f "${init_script}" ]]; then
+  install_script="${THIS_DIR}/lib/installer/${OS_NAME}-${OS_CODENAME:-${OS_VERSION}}.sh"
+  if [[ ! -f "${install_script}" ]]; then
     e_error "$msg"
-    e_error "Unable to find ${init_script}"
+    e_error "Unable to find ${install_script}"
     abort "Abort."
   fi
 
   e_note "$msg"
-  if ask "Are you sure to execute ${init_script}?"; then
+  if ask "Are you sure to execute ${install_script}?"; then
     _keep_sudo
-    bash "${init_script}" "${THIS_DIR}" "$@"
+    bash "${install_script}" "${THIS_DIR}" "$@"
     _reset_sudo
   fi
 }
@@ -332,8 +332,8 @@ main () {
     deploy)
       _deploy
       ;;
-    init*)
-      _init $@
+    install)
+      _install $@
       ;;
     clean)
       _clean

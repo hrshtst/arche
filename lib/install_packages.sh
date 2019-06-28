@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Update and install packages required for this script at least.
-init_packages_prepare() {
+install_packages_prepare() {
   sudo apt update
   sudo apt install -y \
        apt-transport-https \
@@ -12,7 +12,7 @@ init_packages_prepare() {
 }
 
 # Extract package name by removing prefix and suffix from function
-# name. For example, __init_packages_awesome__init is given, return
+# name. For example, __install_packages_awesome__init is given, return
 # awesome. If function name does not match the prefix, return nothing.
 #
 # Example usage:
@@ -24,7 +24,7 @@ init_packages_prepare() {
 _extract_package_name() {
   local func="${1}"
   local package=
-  local regex_prefix="^__init_packages_([a-zA-Z0-9_]+)"
+  local regex_prefix="^__install_packages_([a-zA-Z0-9_]+)"
   local regex_suffix="([a-zA-Z0-9_]+)__.*$"
 
   # Remove prefix
@@ -36,7 +36,7 @@ _extract_package_name() {
     package="${BASH_REMATCH[1]}"
   fi
 
-  # If $func does not start with __init_packages_, return null string.
+  # If $func does not start with __install_packages_, return null string.
   echo "${package}"
 }
 
@@ -50,8 +50,8 @@ _extract_package_name() {
 #         none    Otherwise.
 _get_func_type() {
   local func="${1}"
-  local regex1="^__init_packages_([a-zA-Z0-9_]+)__(.*)"
-  local regex2="^__init_packages_([a-zA-Z0-9_]+)"
+  local regex1="^__install_packages_([a-zA-Z0-9_]+)__(.*)"
+  local regex2="^__install_packages_([a-zA-Z0-9_]+)"
   local type="none"
 
   if [[ $func =~ $regex1 ]]; then
@@ -85,12 +85,12 @@ _is_called_from() {
 
 # Find all packages to be initialized, installed or configured. This
 # function will look for functions which named
-# '__init_packages_<name>' or '__init_packages_<name>__*' and add the
+# '__install_packages_<name>' or '__install_packages_<name>__*' and add the
 # package name to a global variable '__package_names'.
 #
 # @global __package_names  List of all package names.
 declare -a __package_names=()
-init_packages_find() {
+install_packages_find() {
   declare -a __package_names_tmp=()
   while read -r func; do
     package="$(_extract_package_name $func)"
@@ -111,13 +111,13 @@ init_packages_find() {
 #
 # @global __package_names Package name list to install.
 # @param $@ Package names to install.
-init_packages_determine() {
+install_packages_determine() {
   # Find all packages defined.
-  init_packages_find
+  install_packages_find
 
   # If no arguments passed, go to next step.
   if [[ "$#" = 0 ]]; then
-    init_packages_update_disabled_packages
+    install_packages_update_disabled_packages
     return
   fi
 
@@ -134,7 +134,7 @@ init_packages_determine() {
   __package_names=("${packages[@]}")
 
   # Update disabled package list.
-  init_packages_update_disabled_packages
+  install_packages_update_disabled_packages
 }
 
 # Normalize PPA name for checking the repository exists or not. This
@@ -145,7 +145,7 @@ init_packages_determine() {
 #   $ _normalize_repository_name "ppa:kelleyk/emacs"
 #   kelleyk/emacs
 #
-# @see init_packages_repository_exists()
+# @see install_packages_repository_exists()
 _normalize_repository_name() {
   local _given="${1}"
   local _ppa="${_given#ppa:}"
@@ -159,7 +159,7 @@ _normalize_repository_name() {
 # @param $1 Package name to disable installtaion. If omitted, disable
 #           the package which this function is called from.
 declare -a __disabled_packages=()
-init_packages_disable() {
+install_packages_disable() {
   local package=
 
   # Check if the first argument is given.
@@ -180,7 +180,7 @@ init_packages_disable() {
 # @param $1 package Package name.
 # @return True(0) If the package is included in disabled list.
 #         False(>0) Otherwise.
-init_packages_is_disabled() {
+install_packages_is_disabled() {
   local package=
 
   if [[ -z ${1+x} ]]; then
@@ -212,20 +212,20 @@ _disable_package() {
   __package_names=("${__package_names[@]}")
 
   # Remove functions related to the disabled package.
-  unset -f __init_packages_${package}
-  unset -f __init_packages_${package}__init
-  unset -f __init_packages_${package}__config
-  unset -f __init_packages_${package}__install
+  unset -f __install_packages_${package}
+  unset -f __install_packages_${package}__init
+  unset -f __install_packages_${package}__config
+  unset -f __install_packages_${package}__install
 }
 
-# Update disabled packages. Since function init_package_disable can be
-# called from inside or outside of __init_packages_<name>__*
+# Update disabled packages. Since function install_packages_disable can be
+# called from inside or outside of __install_packages_<name>__*
 # functions, updating the disabled packages is required at each
 # installation step.
 #
 # @gloabl __disabled_packages
-# @see init_packages_disable()
-init_packages_update_disabled_packages() {
+# @see install_packages_disable()
+install_packages_update_disabled_packages() {
   # Remove duplicates
   # __disabled_packages=($(printf "%s\n" "${__disabled_packages[@]}" | sort -u))
 
@@ -239,7 +239,7 @@ init_packages_update_disabled_packages() {
 # @param $1 ppa  Repository name.
 # @return True(0)  If a repository exists.
 #         False(>0) Otherwise.
-init_packages_repository_exists() {
+install_packages_repository_exists() {
   local ppa="$(_normalize_repository_name "$1")"
   local sources="/etc/apt/sources.list /etc/apt/sources.list.d/*"
 
@@ -255,12 +255,12 @@ init_packages_repository_exists() {
 # 'add-apt-repository' command to add it.
 #
 # @param $1 ppa  Repository name.
-init_packages_add_repository() {
+install_packages_add_repository() {
   local ppa="${1}"
   local package="$(_extract_package_name "${FUNCNAME[1]}")"
 
   # Skip if the package is disabled.
-  if init_packages_is_disabled "${package}"; then
+  if install_packages_is_disabled "${package}"; then
     return
   fi
 
@@ -269,36 +269,36 @@ init_packages_add_repository() {
     e_warning "${FUNCNAME[0]} should be called from init function. (${FUNCNAME[1]})"
   fi
 
-  if ! init_packages_repository_exists "${ppa}"; then
+  if ! install_packages_repository_exists "${ppa}"; then
     sudo add-apt-repository -y "${ppa}"
   fi
 }
 
 # Execute all functions defined with names as
-# '__init_packages_<name>__init'. Basically in initializing functions
+# '__install_packages_<name>__init'. Basically in initializing functions
 # it is assumed that an additional repository is registered. If an
 # init function is executed at least once, global variable
 # __initialized is set to true.
 #
 # @global __initialized
-init_packages_initialize() {
+install_packages_initialize() {
   __initialized=false
   for package in "${__package_names[@]}"; do
-    if declare -F __init_packages_${package}__init >/dev/null; then
-      __init_packages_${package}__init
+    if declare -F __install_packages_${package}__init >/dev/null; then
+      __install_packages_${package}__init
       __initialized=true
     fi
   done
 
   # Update disabled package list.
   # Note: this update is valid for install and config steps.
-  init_packages_update_disabled_packages
+  install_packages_update_disabled_packages
 }
 
 # Return number of upgradable packages.
 #
 # @return N Number of upgradable packages.
-init_packages_num_upgradable() {
+install_packages_num_upgradable() {
   local n="$(apt list --upgradable 2>/dev/null | grep "^.*/" | wc -l)"
   echo $n
 }
@@ -306,12 +306,12 @@ init_packages_num_upgradable() {
 # Update system package manager. If at least one initialize function
 # is executed, update the package manager on the system. If at least
 # one upgradable package exists, ask user to upgrade.
-init_packages_update() {
+install_packages_update() {
   if [[ $__initialized = true ]]; then
     sudo apt update
   fi
 
-  local n="$(init_packages_num_upgradable)"
+  local n="$(install_packages_num_upgradable)"
   if [[ $n > 0 ]]; then
     if ask "Upgrade existing packages before installation?"; then
       sudo apt upgrade -y
@@ -326,16 +326,16 @@ init_packages_update() {
 # '__packages_<name>', which contains the specified dependencies.
 #
 # Example usage:
-#   $ init_packages_depends "emacs-mozc-bin emacs26"
+#   $ install_packages_depends "emacs-mozc-bin emacs26"
 #
 # @global __requested_packages  List of all packages to be installed.
 # @global __packages_<name>  Creates an array containing dependencies.
 declare -a __requested_packages=()
-init_packages_depends() {
+install_packages_depends() {
   local package="$(_extract_package_name "${FUNCNAME[1]}")"
 
   # Skip if the package is disabled.
-  if init_packages_is_disabled "${package}"; then
+  if install_packages_is_disabled "${package}"; then
     return
   fi
 
@@ -353,10 +353,10 @@ init_packages_depends() {
 
   # Creates an array named '__packages_<name>'. This variable has the
   # specified dependencies. Let's say the user defined the following.
-  # __init_packages_emacs__install() {
-  #   init_packages_depends "emacs26 emacs-mozc-bin"
+  # __install_packages_emacs__install() {
+  #   install_packages_depends "emacs26 emacs-mozc-bin"
   # }
-  # After __init_packages_emacs__install executed, the following array
+  # After __install_packages_emacs__install executed, the following array
   # is automatically defined.
   # __packages_emacs=(emacs26 emacs-mozc-bin)
   package="$(_extract_package_name "${FUNCNAME[1]}")"
@@ -368,9 +368,9 @@ init_packages_depends() {
 # packages on the system.
 #
 # @global __installed_packages
-# @see init_packages_find_missing_packages()
+# @see install_packages_find_missing_packages()
 declare -a __installed_packages=()
-init_packages_get_installed_packages() {
+install_packages_get_installed_packages() {
   __installed_packages=($(apt list --installed 2>/dev/null >&1 \
                             | grep -v deinstall \
                             | awk -F/ '{print $1}'))
@@ -389,9 +389,9 @@ init_packages_get_installed_packages() {
 # @global __requested_packages
 # @global __missing_packages
 declare -a __missing_packages=()
-init_packages_find_missing_packages() {
+install_packages_find_missing_packages() {
   # Get packages installed on the system.
-  init_packages_get_installed_packages
+  install_packages_get_installed_packages
 
   # Check if a requested package is found in installed packages. If
   # not found, it is added to missing packages.
@@ -410,27 +410,27 @@ init_packages_find_missing_packages() {
   done
 }
 
-# Execute all functions defined with names as '__init_packages_<name>'
-# or '__init_packages_<name>__install'. It is assumed to define
+# Execute all functions defined with names as '__install_packages_<name>'
+# or '__install_packages_<name>__install'. It is assumed to define
 # specific packages to install with system package manager like
 # 'apt-get' in installing functions.
-init_packages_install() {
+install_packages_install() {
   # Register requested packages.
   for package in "${__package_names[@]}"; do
-    if declare -F __init_packages_${package} >/dev/null; then
-      __init_packages_${package}
+    if declare -F __install_packages_${package} >/dev/null; then
+      __install_packages_${package}
     fi
-    if declare -F __init_packages_${package}__install >/dev/null; then
-      __init_packages_${package}__install
+    if declare -F __install_packages_${package}__install >/dev/null; then
+      __install_packages_${package}__install
     fi
   done
 
   # Update disabled package list.
   # Note: this update is valid for config step.
-  init_packages_update_disabled_packages
+  install_packages_update_disabled_packages
 
   # Find missing packages.
-  init_packages_find_missing_packages
+  install_packages_find_missing_packages
 
   # Install missing packages.
   if [[ "${#__missing_packages[@]}" > 0 ]]; then
@@ -441,12 +441,12 @@ init_packages_install() {
 # Make a configuration for a specific package always run at
 # configuration step even if the package is not installed. This
 # function must be executed at least once in
-# __init_packages_<name>__init or __init_packages_<name>__install.
-# Execution in __init_packages_<name>__config has no effect. In fact
+# __install_packages_<name>__init or __install_packages_<name>__install.
+# Execution in __install_packages_<name>__config has no effect. In fact
 # this function defines a variable named __always_config_<name> as
 # true. If this variable set before configuration step, the config
 # function for the package is guaranteed to be executed.
-init_packages_always_config() {
+install_packages_always_config() {
 
   # Warn if this function is called from inside config function.
   if _is_called_from "config" "${FUNCNAME[@]}"; then
@@ -492,7 +492,7 @@ _get_package_depends() {
 # @return True(0)  If the package should be configured.
 #         False(>0) Otherwise.
 #
-# @see init_packages_always_config()
+# @see install_packages_always_config()
 _should_be_configured() {
   local package="${1}"
 
@@ -513,24 +513,24 @@ _should_be_configured() {
 # Execute configuration functions if the dependency for each package
 # is newly installed or the flag for always running configuraion is
 # set.
-init_packages_configure() {
+install_packages_configure() {
   for package in "${__package_names[@]}"; do
     if _should_be_configured "${package}"; then
-      if has "__init_packages_${package}__config"; then
-        __init_packages_${package}__config
+      if has "__install_packages_${package}__config"; then
+        __install_packages_${package}__config
       fi
     fi
   done
 }
 
 # Clean up no longer needed packages.
-init_packages_clean() {
+install_packages_clean() {
   sudo apt autoremove -y
 }
 
 # List all available package names.
-init_packages_list() {
-  init_packages_find
+install_packages_list() {
+  install_packages_find
 
   e_header "Available Packages"
   for package in "${__package_names[@]}"; do
@@ -538,31 +538,31 @@ init_packages_list() {
   done
 }
 
-init_packages() {
+install_packages() {
   # If '--list' option provided, list packages and exit.
   if [[ $# > 0 && "$1" = "--list" ]]; then
-    init_packages_list
+    install_packages_list
     return
   fi
 
   # Update and install packages required for this script at least.
-  init_packages_prepare
+  install_packages_prepare
 
   # Decide which packages will be installed.
-  init_packages_determine "$@"
+  install_packages_determine "$@"
 
   # Execute initialization step for each package.
-  init_packages_initialize
+  install_packages_initialize
 
   # Update repository and upgrade existing packages.
-  init_packages_update
+  install_packages_update
 
   # Execute installation step for each package.
-  init_packages_install
+  install_packages_install
 
   # Execute configuration step for each package.
-  init_packages_configure
+  install_packages_configure
 
   # Clean up package manager.
-  init_packages_clean
+  install_packages_clean
 }

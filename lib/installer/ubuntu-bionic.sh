@@ -5,11 +5,11 @@ set -eEu
 
 THIS_DIR="${1}"; shift
 source "${THIS_DIR}/lib/functions.sh"
-source "${THIS_DIR}/lib/init_packages.sh"
+source "${THIS_DIR}/lib/install_packages.sh"
 
 ## Build tools
-__init_packages_build() {
-  init_packages_depends \
+__install_packages_build() {
+  install_packages_depends \
     'automake' \
     'autotools-dev' \
     'build-essential' \
@@ -17,15 +17,15 @@ __init_packages_build() {
 }
 
 ## VCS
-__init_packages_vcs() {
-  init_packages_depends \
+__install_packages_vcs() {
+  install_packages_depends \
     'git' \
     'mercurial'
 }
 
 ## Fonts
-__init_packages_font() {
-  init_packages_depends \
+__install_packages_font() {
+  install_packages_depends \
     'fontforge' \
     'fonts-ipafont' \
     'powerline' \
@@ -33,8 +33,8 @@ __init_packages_font() {
 }
 
 ## Programming language
-__init_packages_prog() {
-  init_packages_depends \
+__install_packages_prog() {
+  install_packages_depends \
     'gfortran' \
     'python3-dev' \
     'python3-venv' \
@@ -43,8 +43,8 @@ __init_packages_prog() {
 }
 
 ## Multimedia
-__init_packages_multimedia() {
-  init_packages_depends \
+__install_packages_multimedia() {
+  install_packages_depends \
     'ffmpeg' \
     'imagemagick' \
     'libavcodec-extra' \
@@ -54,8 +54,8 @@ __init_packages_multimedia() {
 
 ## Dependencies for milib
 # https://www.mi.ams.eng.osaka-u.ac.jp/open-e.html
-__init_packages_milib() {
-  init_packages_depends \
+__install_packages_milib() {
+  install_packages_depends \
     'freeglut3-dev' \
     'libgl1-mesa-dev' \
     'libglew-dev' \
@@ -69,8 +69,8 @@ __init_packages_milib() {
 }
 
 ## Utilities
-__init_packages_util() {
-  init_packages_depends \
+__install_packages_util() {
+  install_packages_depends \
     'libcanberra-gtk3-module' \
     'libcanberra-gtk-module' \
     'libncurses5-dev' \
@@ -83,25 +83,25 @@ __init_packages_util() {
 }
 
 ## tmux
-__init_packages_tmux() {
-  init_packages_depends \
+__install_packages_tmux() {
+  install_packages_depends \
     'tmux' \
     'xclip' \
     'xsel'
-  init_packages_always_config
+  install_packages_always_config
 }
 
-__init_packages_tmux__config() {
+__install_packages_tmux__config() {
   git_clone_or_update https://github.com/tmux-plugins/tpm ${HOME}/.tmux/plugins/tpm
 }
 
 ## fish
-__init_packages_fish__init() {
-  init_packages_add_repository 'ppa:fish-shell/release-2'
+__install_packages_fish__init() {
+  install_packages_add_repository 'ppa:fish-shell/release-2'
 }
 
-__init_packages_fish__install() {
-  init_packages_depends \
+__install_packages_fish__install() {
+  install_packages_depends \
     'curl' \
     'fish' \
     'fontforge' \
@@ -110,7 +110,7 @@ __init_packages_fish__install() {
     'wget'
 }
 
-__init_packages_fish__config() {
+__install_packages_fish__config() {
   markcd "${HOME}/src"
   curl -Lo ${HOME}/.config/fish/functions/fisher.fish --create-dirs https://git.io/fisher
   git clone https://github.com/powerline/fonts.git --depth=1
@@ -136,8 +136,8 @@ __init_packages_fish__config() {
 }
 
 ## Python
-__init_packages_python() {
-  init_packages_depends \
+__install_packages_python() {
+  install_packages_depends \
     'build-essential' \
     'curl' \
     'git' \
@@ -156,20 +156,20 @@ __init_packages_python() {
     'wget' \
     'xz-utils' \
     'zlib1g-dev'
-  init_packages_always_config
+  install_packages_always_config
 }
 
-__init_packages_python__config() {
+__install_packages_python__config() {
   git_clone_or_update https://github.com/pyenv/pyenv.git ${HOME}/.pyenv
 }
 
 ## Go
-__init_packages_go() {
-  init_packages_depends 'wget'
-  init_packages_always_config
+__install_packages_go() {
+  install_packages_depends 'wget'
+  install_packages_always_config
 }
 
-__init_packages_go__config() {
+__install_packages_go__config() {
   # Install go
   local latest_ver=1.12.6
   local ver=
@@ -192,12 +192,12 @@ __init_packages_go__config() {
 }
 
 ## Peco
-__init_packages_peco() {
-  init_packages_depends 'curl' 'wget'
-  init_packages_always_config
+__install_packages_peco() {
+  install_packages_depends 'curl' 'wget'
+  install_packages_always_config
 }
 
-__init_packages_peco__config() {
+__install_packages_peco__config() {
   binary=peco_linux_amd64.tar.gz
   if ! has peco; then
     markcd "${HOME}/usr/bin"
@@ -214,8 +214,8 @@ __init_packages_peco__config() {
 }
 
 ## LLVM
-__init_packages_llvm__init() {
-  if ! init_packages_repository_exists "llvm-toolchain"; then
+__install_packages_llvm__init() {
+  if ! install_packages_repository_exists "llvm-toolchain"; then
     curl https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
     sudo sh -c "cat << EOF > /etc/apt/sources.list.d/llvm.list
 # i386 not available
@@ -231,8 +231,8 @@ EOF"
   fi
 }
 
-__init_packages_llvm__install() {
-  init_packages_depends \
+__install_packages_llvm__install() {
+  install_packages_depends \
     'clang-9' \
     'clang-format-9' \
     'clang-tidy-9' \
@@ -240,7 +240,7 @@ __init_packages_llvm__install() {
     'libclang-9-dev'
 }
 
-__init_packages_llvm__config() {
+__install_packages_llvm__config() {
   sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-9 100
   sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-9 100
   sudo update-alternatives --install /usr/bin/clang-format clang-format /usr/bin/clang-format-9 100
@@ -249,23 +249,23 @@ __init_packages_llvm__config() {
 }
 
 ## TeX
-__init_packages_tex() {
-  init_packages_depends \
+__install_packages_tex() {
+  install_packages_depends \
     'ghostscript' \
     'texlive-full' \
     'xzdec'
 }
 
 ## Inkscape
-__init_packages_inkscape__init() {
-  init_packages_add_repository "ppa:inkscape.dev/stable"
+__install_packages_inkscape__init() {
+  install_packages_add_repository "ppa:inkscape.dev/stable"
 }
 
-__init_packages_inkscape__install() {
-  init_packages_depends 'inkscape' 'pstoedit' 'wget'
+__install_packages_inkscape__install() {
+  install_packages_depends 'inkscape' 'pstoedit' 'wget'
 }
 
-__init_packages_inkscape__config() {
+__install_packages_inkscape__config() {
   markcd "${HOME}/src"
   wget -q https://github.com/julienvitard/eqtexsvg/archive/master.tar.gz
   tar xfz master.tar.gz
@@ -275,33 +275,33 @@ __init_packages_inkscape__config() {
 }
 
 ## GIMP
-__init_packages_gimp__init() {
-  init_packages_add_repository "ppa:otto-kesselgulasch/gimp"
+__install_packages_gimp__init() {
+  install_packages_add_repository "ppa:otto-kesselgulasch/gimp"
 }
 
-__init_packages_gimp__install() {
-  init_packages_depends 'gimp'
+__install_packages_gimp__install() {
+  install_packages_depends 'gimp'
 }
 
 ## Japanese environment
-__init_packages_ja__init() {
-  if ! init_packages_repository_exists "archive.ubuntulinux.jp"; then
+__install_packages_ja__init() {
+  if ! install_packages_repository_exists "archive.ubuntulinux.jp"; then
     curl -s https://www.ubuntulinux.jp/ubuntu-ja-archive-keyring.gpg | sudo apt-key add -
     curl -s https://www.ubuntulinux.jp/ubuntu-jp-ppa-keyring.gpg | sudo apt-key add -
     sudo curl -s -Lo /etc/apt/sources.list.d/ubuntu-ja.list https://www.ubuntulinux.jp/sources.list.d/bionic.list
   fi
 }
 
-__init_packages_ja__install() {
-  init_packages_depends 'ubuntu-defaults-ja'
+__install_packages_ja__install() {
+  install_packages_depends 'ubuntu-defaults-ja'
 }
 
 ## Fcitx
-__init_packages_fcitx() {
-  init_packages_depends 'fcitx-mozc'
+__install_packages_fcitx() {
+  install_packages_depends 'fcitx-mozc'
 }
 
-__init_packages_fcitx__config() {
+__install_packages_fcitx__config() {
   mkdir -p "${HOME}/.config/autostart"
   local desktop="/usr/share/fcitx/xdg/autostart/fcitx-autostart.desktop"
   if [[ -f "${desktop}" ]]; then
@@ -312,12 +312,12 @@ __init_packages_fcitx__config() {
 }
 
 ## Ricty
-__init_packages_ricty() {
-  init_packages_depends 'fontforge' 'wget'
-  init_packages_always_config
+__install_packages_ricty() {
+  install_packages_depends 'fontforge' 'wget'
+  install_packages_always_config
 }
 
-__init_packages_ricty__config() {
+__install_packages_ricty__config() {
   markcd "${HOME}/src"
   if ! (fc-list | grep -qi Ricty); then
     git_clone_or_update https://github.com/edihbrandon/Ricty
@@ -335,11 +335,11 @@ __init_packages_ricty__config() {
 }
 
 ## Xmodmap
-__init_packages_xmodmap() {
-  init_packages_always_config
+__install_packages_xmodmap() {
+  install_packages_always_config
 }
 
-__init_packages_xmodmap__config() {
+__install_packages_xmodmap__config() {
   local file="${HOME}/.config/autostart/xmodmap.desktop"
   if [[ ! -f "${file}" ]]; then
     mkdir -p "${HOME}/.config/autostart"
@@ -358,22 +358,22 @@ EOF
 }
 
 ## Emacs
-__init_packages_emacs__init() {
-  init_packages_add_repository "ppa:kelleyk/emacs"
+__install_packages_emacs__init() {
+  install_packages_add_repository "ppa:kelleyk/emacs"
 }
 
-__init_packages_emacs__install() {
-  init_packages_depends 'cmigemo' 'emacs-mozc-bin' 'emacs26'
+__install_packages_emacs__install() {
+  install_packages_depends 'cmigemo' 'emacs-mozc-bin' 'emacs26'
 }
 
 ## watchexec
 # watchexec makes Emacs boot faster when using straight.el
-__init_packages_watchexec() {
-  init_packages_depends 'curl' 'wget'
-  init_packages_always_config
+__install_packages_watchexec() {
+  install_packages_depends 'curl' 'wget'
+  install_packages_always_config
 }
 
-__init_packages_watchexec__config() {
+__install_packages_watchexec__config() {
   if ! has watchexec; then
     markcd "${HOME}/src"
     curl -s https://api.github.com/repos/watchexec/watchexec/releases/latest \
@@ -389,12 +389,12 @@ __init_packages_watchexec__config() {
 
 ## ripgrep
 # https://github.com/BurntSushi/ripgrep
-__init_packages_rg() {
-  init_packages_depends 'curl' 'wget'
-  init_packages_always_config
+__install_packages_rg() {
+  install_packages_depends 'curl' 'wget'
+  install_packages_always_config
 }
 
-__init_packages_rg__config() {
+__install_packages_rg__config() {
   if ! has rg; then
     markcd "${HOME}/src"
     curl -s https://api.github.com/repos/BurntSushi/ripgrep/releases/latest \
@@ -409,8 +409,8 @@ __init_packages_rg__config() {
 }
 
 ## Albert
-__init_packages_albert__init() {
-  if ! init_packages_repository_exists "manuelschneid3r"; then
+__install_packages_albert__init() {
+  if ! install_packages_repository_exists "manuelschneid3r"; then
     curl https://build.opensuse.org/projects/home:manuelschneid3r/public_key \
       | sudo apt-key add -
     sudo sh -c "cat <<EOF >/etc/apt/sources.list.d/home:manuelschneid3r.list
@@ -419,27 +419,27 @@ EOF"
   fi
 }
 
-__init_packages_albert__install() {
-  init_packages_depends 'albert'
+__install_packages_albert__install() {
+  install_packages_depends 'albert'
 }
 
 ## Docker
-__init_packages_docker__init() {
-  if ! init_packages_repository_exists "docker"; then
+__install_packages_docker__init() {
+  if ! install_packages_repository_exists "docker"; then
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
     sudo add-apt-repository \
          "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
   fi
 }
 
-__init_packages_docker__install() {
-  init_packages_depends \
+__install_packages_docker__install() {
+  install_packages_depends \
     'docker-ce' \
     'docker-ce-cli' \
     'containerd.io'
 }
 
-__init_packages_docker__config() {
+__install_packages_docker__config() {
   if grep -q docker /etc/groups; then
     e_warning "Group 'docker' already exists. ($FUNCNAME[0])"
   else
@@ -448,4 +448,4 @@ __init_packages_docker__config() {
   sudo usermod -aG docker $(whoami)
 }
 
-init_packages "$@"
+install_packages "$@"
