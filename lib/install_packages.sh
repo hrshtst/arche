@@ -520,22 +520,53 @@ _should_be_configured() {
   return 1
 }
 
+# Add a package to configuration failure list.
+#
+# @global __config_failure_list
+# @param $1 package Package name.
+declare -a __config_failure_list=()
+_config_failed() {
+  local package="$1"
+
+  __config_failure_list+=("${package}")
+}
+
 # Execute configuration functions if the dependency for each package
 # is newly installed or the flag for always running configuraion is
 # set.
 install_packages_configure() {
+  set +eE; trap - ERR
+  local ret=
   for package in "${__package_names[@]}"; do
     if _should_be_configured "${package}"; then
       if has "__install_packages_${package}__config"; then
-        __install_packages_${package}__config
+        __install_packages_${package}__config; ret=$?
+        if [[ $ret = 0 ]]; then
+          e_success "DONE: Configuration for '${package}'"
+        else
+          _config_failed "${package}"
+        fi
       fi
     fi
   done
+  trap 'echo Error: $0:$LINENO' ERR; set -eE
 }
 
 # Clean up no longer needed packages.
 install_packages_clean() {
   sudo apt autoremove -y
+}
+
+# Show messages after installation.
+install_packages_message() {
+  # Show list of packages to fail configuration.
+  if [[ "${#__config_failure_list[@]}" > 0 ]]; then
+    e_error "Configuration failed!"
+    for package in "${__config_failure_list[@]}"; do
+      e_arrow "  ${package}"
+    done
+  fi
+
 }
 
 # List all available package names.
@@ -584,6 +615,9 @@ install_packages() {
 
   # Clean up package manager.
   install_packages_clean
+
+  # Show messages.
+  install_packages_message
 
   # Reset the timestamp of the credential for sudo.
   reset_sudo

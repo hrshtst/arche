@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-trap 'echo Error: $0:$LINENO; exit 1' ERR INT QUIT TERM
+trap 'echo Error: $0:$LINENO' ERR
 set -eEu
 
 THIS_DIR="${1}"; shift
