@@ -394,7 +394,7 @@ __install_packages_emacs__install() {
 ## watchexec
 # watchexec makes Emacs boot faster when using straight.el
 __install_packages_watchexec() {
-  install_packages_depends 'curl' 'wget'
+  install_packages_depends 'curl' 'wget' 'python3-venv'
   install_packages_always_config
 }
 
