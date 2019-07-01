@@ -1,7 +1,3 @@
-[user]
-        name = Hiroshi Atsuta
-        email = atsuta.hiroshi@gmail.com
-
 [alias]
         # short aliases
         co = checkout
@@ -54,16 +50,27 @@
         ignorecase = false
         whitespace = cr-at-eol
         editor = vim
-        pager = less -x4
+        pager = less -FRSX
         fscache = true
         excludesfile = ~/.gitignore
-
-[push]
-        default = upstream
-
-[help]
-        autocorrect = 1
 
 [ghq]
         root = ~/.ghq
         root = ~/.go/src
+
+[help]
+        autocorrect = 1
+
+[push]
+        default = current
+
+
+[rebase]
+	autosquash = true
+
+[status]
+	submodulesummary = true
+
+[user]
+        name = Hiroshi Atsuta
+        email = atsuta.hiroshi@gmail.com
