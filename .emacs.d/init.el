@@ -3136,9 +3136,9 @@ This is passed to `set-frame-font'."
   ;; Prevent the cursor from blinking.
   (blink-cursor-mode -1)
 
-  ;; Use Ricty font.
+  ;; Use Sarasa Gothic font.
   (when (eq system-type 'gnu/linux)
-    (custom-set-variables '(arche-font "Ricty Discord")))
+    (custom-set-variables '(arche-font "Sarasa Mono J")))
 
   ;; When using large monitor, increase font size.
   (when (>= (x-display-pixel-width) 3000)
