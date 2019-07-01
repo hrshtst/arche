@@ -2816,6 +2816,68 @@ command."
     (unless (file-executable-p emacsql-sqlite-executable)
       (emacsql-sqlite-compile 2))))
 
+;; Package `git-gutter' adds a column to the left-hand side of each
+;; window, showing which lines have been added, removed, or modified
+;; since the last Git commit.
+(use-package git-gutter
+  :commands (arche-git-gutter:beginning-of-hunk)
+  :init
+
+  (use-feature hydra
+    :config
+
+    (defhydra hydra-git-gutter (:hint nil)
+      "GitGutter mode"
+      ("p" git-gutter:previous-hunk "Previous")
+      ("n" git-gutter:next-hunk "Next")
+      ("a" arche-git-gutter:beginning-of-hunk "Beginning")
+      ("e" git-gutter:end-of-hunk "End")
+      ("k" git-gutter:revert-hunk "Revert")
+      ("q" nil "Quit"))
+
+    (arche-bind-key "v" #'hydra-git-gutter/body))
+
+  ;; Disable in Org mode, as per
+  ;; <https://github.com/syl20bnr/spacemacs/issues/10555> and
+  ;; <https://github.com/syohex/emacs-git-gutter/issues/24>.
+  ;; Apparently, the mode-enabling function for global minor modes
+  ;; gets called for new buffers while they are still in
+  ;; `fundamental-mode', before a major mode has been assigned. I
+  ;; don't know why this is the case, but adding `fundamental-mode'
+  ;; here fixes the issue.
+  (setq git-gutter:disabled-modes '(fundamental-mode org-mode))
+
+  :defer 1.5
+  :config
+
+  ;; Don't prompt when reverting hunk.
+  (setq git-gutter:ask-p nil)
+
+  (global-git-gutter-mode +1)
+
+  (defun arche-git-gutter:beginning-of-hunk ()
+    "Move to beginning of current diff hunk."
+    (interactive)
+    (git-gutter:awhen (git-gutter:search-here-diffinfo git-gutter:diffinfos)
+      (let ((lines (- (git-gutter-hunk-start-line it) (line-number-at-pos))))
+        ;; This will move backwards since lines will be negative.
+        (forward-line lines))))
+
+  (arche-defadvice arche--git-gutter-on-window-change (&rest _)
+    :after select-window
+    "Update `git-gutter' after changing windows."
+    (when git-gutter-mode
+      (git-gutter)))
+
+  :blackout git-gutter-mode)
+
+;; Package `git-gutter-fringe' integrates with `git-gutter' to make
+;; the gutter display use the window fringe rather than a column of
+;; text.
+(use-package git-gutter-fringe
+  :demand t
+  :after git-gutter)
+
 ;;;; External commands
 
 ;; Feature `compile' provides a way to run a shell command from Emacs
