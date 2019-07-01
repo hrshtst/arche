@@ -139,7 +139,7 @@ __install_packages_fish__config() {
     | wget -qi -
   unzip FiraMono.zip
   rm FiraMono.zip
-  fc-cache -f
+  sudo fc-cache -f
   getback
 
   install_packages_set_msg "$(cat <<EOF
@@ -357,6 +357,28 @@ __install_packages_ricty__config() {
     sudo fc-cache -f
   fi
   getback
+}
+
+## Sarasa gothic
+__install_packages_sarasa() {
+  install_packages_depends 'fontforge' 'p7zip-full'
+  install_packages_always_config
+}
+
+__install_packages_sarasa__config() {
+  if ! (fc-list | grep -qi sarasa); then
+    markcd "${HOME}/.local/share/fonts"
+    curl -s https://api.github.com/repos/be5invis/Sarasa-Gothic/releases/latest \
+      | grep "browser_download_url.*\/sarasa-gothic-ttf-.*\.7z" \
+      | cut -d ":" -f 2,3 \
+      | tr -d \" \
+      | wget -qi -
+    local file="$(find . -name "sarasa-gothic-ttf-*.7z")"
+    7z x -y "${file}"
+    rm "${file}"
+    sudo fc-cache -f
+    getback
+  fi
 }
 
 ## Xmodmap
