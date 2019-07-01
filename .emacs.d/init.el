@@ -2427,6 +2427,7 @@ https://github.com/flycheck/flycheck/issues/953."
 
 ;; Package `toml-mode' provides a major mode for TOML.
 (use-package toml-mode
+  :mode "Pipfile\\'"
   ;; Correct the capitalization from "Toml" to "TOML".
   :blackout "TOML")
 
