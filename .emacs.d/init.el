@@ -1713,16 +1713,16 @@ via return key."
      "Enable `lsp-mode' for most programming modes."
      ;; `lsp-mode' requires `yas-minor-mode' enabled.
      (yas-minor-mode +1)
-     (unless (derived-mode-p
-              ;; `lsp-mode' doesn't support Elisp. There's nothing to
-              ;; do for the *scratch* buffer.
-              #'emacs-lisp-mode
-              ;; Disable for modes that is a specialized framework
-              ;; available for
-              ;;#'python-mode
-              #'makefile-mode
-              #'sh-mode
-              )
+     (unless (or (null buffer-file-name)
+                 (derived-mode-p
+                  ;; `lsp-mode' doesn't support Elisp. There's nothing to
+                  ;; do for the *scratch* buffer.
+                  #'emacs-lisp-mode
+                  ;; Disable for modes that is a specialized framework
+                  ;; available for
+                  ;;#'python-mode
+                  #'makefile-mode
+                  #'sh-mode))
        (lsp)))
 
   :config
