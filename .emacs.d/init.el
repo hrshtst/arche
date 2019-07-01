@@ -2833,6 +2833,7 @@ command."
       ("a" arche-git-gutter:beginning-of-hunk "Beginning")
       ("e" git-gutter:end-of-hunk "End")
       ("k" git-gutter:revert-hunk "Revert")
+      ("l" recenter-top-bottom "Recenter")
       ("q" nil "Quit"))
 
     (arche-bind-key "v" #'hydra-git-gutter/body))
