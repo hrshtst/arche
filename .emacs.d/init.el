@@ -1278,6 +1278,11 @@ _h_ ^ ^ _l_   _K_ill      _t_ype     _e_xchange-point
 
 ;;;; Navigation
 
+;; When you move point past the end of the window, scroll only one
+;; line, rather than jumping half a screen. See
+;; <https://www.gnu.org/software/emacs/manual/html_node/efaq/Scrolling-only-one-line.html>.
+(setq scroll-conservatively most-positive-fixnum)
+
 ;; Feature `subword' remaps word-based editing commands to
 ;; subword-based commands that handle symbols with mixed uppercase
 ;; and lowercase letters, e.g. "GtkWidget", "EmacsFrameClass",
