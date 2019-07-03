@@ -468,6 +468,26 @@ positive count."
          ("C-S-<left>" . buf-move-left)
          ("C-S-<right>" . buf-move-right)))
 
+(defun arche-swap-window()
+  "Swap two windows, leaving cursor at the current window."
+  (interactive)
+  (let ((thiswin (selected-window))
+        (nextbuf (window-buffer (next-window))))
+    (set-window-buffer (next-window) (window-buffer))
+    (set-window-buffer thiswin nextbuf)))
+
+(defun arche-swap-window-with-cursor()
+  "Swap two windows, with cursor in the current buffer."
+  (interactive)
+  (let ((thiswin (selected-window))
+        (thisbuf (window-buffer)))
+    (other-window 1)
+    (set-window-buffer thiswin (window-buffer))
+    (set-window-buffer (selected-window) thisbuf)))
+
+(bind-key "<f2>" #'arche-swap-window)
+(bind-key "S-<f2>" #'arche-swap-window-with-cursor)
+
 ;; Feature `ibuffer' provides a more modern replacement for the
 ;; `list-buffers' command.
 (use-feature ibuffer
