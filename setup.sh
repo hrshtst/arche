@@ -299,6 +299,7 @@ _remove_symlinks_to_dotfile() {
     if _check_if_link_to_dotfile "${home_dir}" "${dotfiles_dir}" "${file}"
     then
       rm -f "${home_dir}/${file}"
+      echo "removed: ${home_dir}/${file}"
     fi
   done
   getback
@@ -317,7 +318,7 @@ _remove_broken_symlinks() {
   local home_dir="$(abspath ${1})"
 
   __remove_broken_symlinks() {
-    find "${1}" -maxdepth 1 -type l ! -exec test -e {} \; -exec rm -f {} \;
+    find "${1}" -maxdepth 1 -type l ! -exec test -e {} \; -exec rm -f {} \; -exec echo "removed (broken): {}" \;
   }
   export -f __remove_broken_symlinks
 
