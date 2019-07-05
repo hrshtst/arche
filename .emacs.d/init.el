@@ -2286,6 +2286,7 @@ https://github.com/flycheck/flycheck/issues/953."
 ;;;; Shell
 
 (use-feature sh-script
+  :mode ("\\.bashrc.*\\'" . shell-script-mode)
   :config
 
   (setq sh-basic-offset 2)
