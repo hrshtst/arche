@@ -2458,6 +2458,9 @@ https://github.com/flycheck/flycheck/issues/953."
 
   (add-hook 'yaml-mode-hook #'arche--auto-fill-disable))
 
+;; Package `fish-mode' provides a major mode for fish.
+(use-package fish-mode)
+
 ;;; Introspection
 ;;;; Help
 
