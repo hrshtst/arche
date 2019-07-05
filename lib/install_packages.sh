@@ -435,7 +435,11 @@ install_packages_install() {
 
   # Install missing packages.
   if [[ "${#__missing_packages[@]}" > 0 ]]; then
-    sudo apt install -y "${__missing_packages[@]}"
+    if sudo apt install --just-print -y "${__missing_packages[@]}" >/dev/null; then
+      sudo apt install -y "${__missing_packages[@]}"
+    else
+      abort "Unable to locate some packages. Abort."
+    fi
   fi
 }
 
