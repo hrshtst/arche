@@ -85,6 +85,8 @@ __install_packages_util() {
 ## tmux
 __install_packages_tmux() {
   install_packages_depends \
+    'acpi' \
+    'sysstat' \
     'tmux' \
     'xclip' \
     'xsel'
@@ -94,13 +96,15 @@ __install_packages_tmux() {
 __install_packages_tmux__config() {
   git_clone_or_update https://github.com/tmux-plugins/tpm ${HOME}/.tmux/plugins/tpm
 
-  if _is_newly_installed "tmux"; then
-    install_packages_set_msg "$(cat <<EOF
-For installing additional packages for tmux, type the following on tmux:
-    <prefix> Shift+I
-EOF
-)"
-  fi
+  # Install bash-completion for tmux.
+  curl -Lo ${HOME}/.local/share/bash-completion/completions/tmux --create-dirs \
+       https://raw.githubusercontent.com/imomaliev/tmux-bash-completion/master/completions/tmux
+
+  # Install tmux plugins.
+  tmux new -d -s __noop >/dev/null 2>&1 || true
+  tmux set-environment -g TMUX_PLUGIN_MANAGER_PATH "~/.tmux/plugins"
+  "$HOME"/.tmux/plugins/tpm/bin/install_plugins || true
+  tmux kill-session -t __noop >/dev/null 2>&1 || true
 }
 
 ## fish
