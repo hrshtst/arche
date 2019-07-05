@@ -183,6 +183,26 @@ _deploy_dotfiles() {
   getback
 }
 
+# We would not like to touch the default .bashrc as much as possible
+# if it already exisits. Therefore, in this case, just add snippets to
+# include .bashrc.local at the end.
+#
+# @param $1 home_dir  Directory to place dotfiles.
+_deploy_bashrc() {
+  local home_dir="${1:-$HOME}"
+
+  if ! grep -q "^###.*\.bashrc\.local" "${home_dir}/.bashrc" 2>/dev/null; then
+    cat <<EOF >>"${home_dir}/.bashrc"
+
+### Include .bashrc.local if it exists.
+if [ -f ~/.bashrc.local ]; then
+  . ~/.bashrc.local
+fi
+EOF
+    e_note "Inclusion of .bashrc.local was added to ${home_dir}/.bashrc"
+  fi
+}
+
 # Subcommand: deploy
 # This function creates symbolic links to dotfiles into $HOME_DIR.
 #
@@ -191,6 +211,7 @@ _deploy() {
   _deploy_dotfiles "${THIS_DIR}" "${HOME_DIR}"
   _deploy_files_in_dir "${THIS_DIR}" ".config" "${HOME_DIR}"
   _deploy_files_in_dir "${THIS_DIR}" "usr/bin" "${HOME_DIR}"
+  _deploy_bashrc "${HOME_DIR}"
 }
 
 # Subcommand: install
