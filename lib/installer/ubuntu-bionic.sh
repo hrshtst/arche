@@ -109,7 +109,7 @@ __install_packages_tmux__config() {
 
 ## fish
 __install_packages_fish__init() {
-  install_packages_add_repository 'ppa:fish-shell/release-2'
+  install_packages_add_repository 'ppa:fish-shell/release-3'
 }
 
 __install_packages_fish__install() {
