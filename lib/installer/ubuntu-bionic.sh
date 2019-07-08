@@ -105,7 +105,7 @@ __install_packages_tmux__config() {
 
   # Install the latest version of tmux
   local tag=3.0
-  if has tmux; then
+  if ! has tmux; then
     markcd "${HOME}/src"
     curl -s https://api.github.com/repos/tmux/tmux/releases/tags/$tag \
       | grep "browser_download_url.*\/tmux-.*\.tar\.gz" \
