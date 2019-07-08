@@ -86,19 +86,50 @@ __install_packages_util() {
 __install_packages_tmux() {
   install_packages_depends \
     'acpi' \
+    'libevent-dev' \
+    'libncurses5-dev' \
+    'libncursesw5-dev' \
+    'libutempter-dev' \
     'sysstat' \
-    'tmux' \
+    'wget' \
     'xclip' \
     'xsel'
   install_packages_always_config
 }
 
 __install_packages_tmux__config() {
+  # Remove tmux if it is installed with apt-get.
+  if install_packages_is_installed "tmux"; then
+    sudo apt remove -y tmux
+  fi
+
+  # Install the latest version of tmux
+  local tag=3.0
+  if has tmux; then
+    markcd "${HOME}/src"
+    curl -s https://api.github.com/repos/tmux/tmux/releases/tags/$tag \
+      | grep "browser_download_url.*\/tmux-.*\.tar\.gz" \
+      | cut -d ":" -f 2,3 \
+      | tr -d \" \
+      | wget -qi -
+    local tarball="$(find . -name tmux-*.tar.gz)"
+    tar xfz "${tarball}"
+    cd "${tarball%.tar.gz}"
+    ./configure --prefix=$HOME/usr --enable-utempter
+    make && make install
+    cd ..
+    rm "${tarball}"
+    getback
+  fi
+
+  # Install or update tmux plugin manager
   git_clone_or_update https://github.com/tmux-plugins/tpm ${HOME}/.tmux/plugins/tpm
 
   # Install bash-completion for tmux.
-  curl -Lo ${HOME}/.local/share/bash-completion/completions/tmux --create-dirs \
-       https://raw.githubusercontent.com/imomaliev/tmux-bash-completion/master/completions/tmux
+  if [[ ! -f ${HOME}/.local/share/bash-completion/completions/tmux ]]; then
+    curl -Lo ${HOME}/.local/share/bash-completion/completions/tmux --create-dirs \
+         https://raw.githubusercontent.com/imomaliev/tmux-bash-completion/master/completions/tmux
+  fi
 
   # Install tmux plugins.
   tmux new -d -s __noop >/dev/null 2>&1 || true
@@ -365,7 +396,7 @@ __install_packages_ricty__config() {
 
 ## Sarasa gothic
 __install_packages_sarasa() {
-  install_packages_depends 'fontforge' 'p7zip-full'
+  install_packages_depends 'fontforge' 'p7zip-full' 'wget'
   install_packages_always_config
 }
 
