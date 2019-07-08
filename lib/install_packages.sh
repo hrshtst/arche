@@ -383,6 +383,34 @@ install_packages_get_installed_packages() {
   fi
 }
 
+# Check if a package is installed on the system. Function
+# 'install_packages_get_installed_packages' should be called
+# beforehand to store all the installed packages to variable
+# '__installed_packages'.
+#
+# @global __installed_packages
+# @param $1 package  Package name to check if installed.
+# @return True(0)  If the package is installed.
+#         False(>0) Otherwise.
+#
+# @see install_pakcages_get_installed_packages()
+# @see install_pakcages_find_missing_packages()
+install_packages_is_installed() {
+  local package="$1"
+
+  # Get installed packages list if it is empty.
+  if [[ "${#__installed_packages[@]}" = 0 ]]; then
+    install_packages_get_installed_packages
+  fi
+
+  for inst in "${__installed_packages[@]}"; do
+    if [[ "$package" = "$inst" ]]; then
+      return 0
+    fi
+  done
+  return 1
+}
+
 # Find packages to be newly installed on the system. Search through
 # names within a global variable '__requested_packages', and missing
 # packages are added to a global variable '__missing_packages'.
@@ -398,14 +426,7 @@ install_packages_find_missing_packages() {
   # not found, it is added to missing packages.
   # FIXME: more efficient algorithm.
   for req in "${__requested_packages[@]}"; do
-    _found=false
-    for inst in "${__installed_packages[@]}"; do
-      if [[ "${req}" = "${inst}" ]]; then
-        _found=true
-        break
-      fi
-    done
-    if [[ $_found = false ]]; then
+    if ! install_packages_is_installed "${req}"; then
       __missing_packages+=("${req}")
     fi
   done
