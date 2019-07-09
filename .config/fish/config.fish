@@ -108,3 +108,17 @@ end
 
 ####################################################################
 ## Keybindings
+
+# Remove all the keybindings defined by fzf
+bind -e \ct
+bind -e \cr
+bind -e \ec
+bind -e \eC
+bind -e \cg
+bind -e \co
+bind -e -M insert \ct
+bind -e -M insert \cr
+bind -e -M insert \ec
+bind -e -M insert \eC
+bind -e -M insert \cg
+bind -e -M insert \co
