@@ -273,6 +273,16 @@ __install_packages_peco__config() {
   fi
 }
 
+## fzf
+__install_packages_fzf() {
+  install_packages_always_config
+}
+
+__install_packages_fzf__config() {
+  git_clone_or_update https://github.com/junegunn/fzf.git ${HOME}/.fzf
+  yes | head -n 3 | ~/.fzf/install
+}
+
 ## LLVM
 __install_packages_llvm__init() {
   if ! install_packages_repository_exists "llvm-toolchain"; then
