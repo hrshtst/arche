@@ -359,29 +359,6 @@ __install_packages_fcitx__config() {
   fi
 }
 
-## Ricty
-__install_packages_ricty() {
-  install_packages_depends 'fontforge' 'wget'
-  install_packages_always_config
-}
-
-__install_packages_ricty__config() {
-  markcd "${HOME}/src"
-  if ! (fc-list | grep -qi Ricty); then
-    git_clone_or_update https://github.com/edihbrandon/Ricty
-    mkdir -p "${HOME}/.local/share/fonts"
-    cd Ricty
-    wget -q https://levien.com/type/myfonts/Inconsolata.otf -O Inconsolata.otf
-    wget -q "https://osdn.net/frs/redir.php?m=iij&f=mix-mplus-ipa%2F63545%2Fmigu-1m-20150712.zip" -O migu-1m-20150712.zip
-    unzip migu-1m-20150712
-    cp -p migu-1m-*/*.ttf .
-    ./ricty_generator.sh Inconsolata.otf migu-1m-regular.ttf migu-1m-bold.ttf
-    cp -f Ricty*.ttf ${HOME}/.local/share/fonts
-    sudo fc-cache -f
-  fi
-  getback
-}
-
 ## Sarasa gothic
 __install_packages_sarasa() {
   install_packages_depends 'fontforge' 'p7zip-full' 'wget'
