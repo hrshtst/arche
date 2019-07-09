@@ -251,28 +251,6 @@ EOF
   fi
 }
 
-## Peco
-__install_packages_peco() {
-  install_packages_depends 'curl' 'wget'
-  install_packages_always_config
-}
-
-__install_packages_peco__config() {
-  binary=peco_linux_amd64.tar.gz
-  if ! has peco; then
-    markcd "${HOME}/usr/bin"
-    curl -s https://api.github.com/repos/peco/peco/releases/latest \
-      | grep "browser_download_url.*\/${binary}" \
-      | cut -d ":" -f 2,3 \
-      | tr -d \" \
-      | wget -qi -
-    tar xfz "${binary}"
-    mv "${binary%.tar.gz}/peco" .
-    rm -rf "${binary%.tar.gz}" "${binary}"
-    getback
-  fi
-}
-
 ## fzf
 __install_packages_fzf() {
   install_packages_always_config
