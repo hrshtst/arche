@@ -81,3 +81,26 @@ prepend_path_to_env PATH ~/.local/bin
 set -gx GOPATH ~/.go
 set -gx GOROOT ~/usr/lib/go
 prepend_path_to_env PATH $GOPATH/bin $GOROOT/bin
+
+####################################################################
+## Appearance
+
+# Use the fish prompt for virtualenv instead of the original one.
+set -gx VIRTUAL_ENV_DISABLE_PROMPT 1
+
+# Show symbol (rocket) when Python virtual envinronment is set.
+set -g SPACEFISH_VENV_SYMBOL "🚀"
+
+####################################################################
+## Package manager
+
+# Fisher is a package manager for the fish shell.
+# https://github.com/jorgebucaran/fisher
+if not functions -q fisher
+    set -q XDG_CONFIG_HOME; or set XDG_CONFIG_HOME ~/.config
+    curl https://git.io/fisher --create-dirs -sLo $XDG_CONFIG_HOME/fish/functions/fisher.fish
+    fish -c fisher
+end
+
+####################################################################
+## Keybindings
