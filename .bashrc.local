@@ -24,19 +24,65 @@ stty stop undef
 
 ## Configure environment variables.
 
+# Put one or more paths to the head of an environment variable that
+# holds a list of paths. The specified path will not be added if it is
+# already contained in the variable or it is not a directory. The
+# variable will be exported to persist for child processes.
+#
+# Example usage:
+#
+#   prepend_path_to_env LD_LIBRARY_PATH $HOME/usr/lib
+#   prepend_path_to_env PATH $HOME/usr/bin $HOME/.local/bin
+#
+# @param $1 var  The name of environment variable.
+# @param $2..N paths  The list of paths to be added.
+prepend_path_to_env() {
+  # More than one arguments are required.
+  if [[ $# < 2 ]]; then
+    echo "At least two arguments required. (${BASH_SOURCE[0]}:${BASH_LINENO[0]})" 1>&2
+    return 1
+  fi
+
+  local var="$1"; shift
+  local paths=("$@")
+  # Warn if a path was passed as the first argument for mistake.
+  if [[ $var =~ "/" ]]; then
+    echo "$var should be put after variable name. (${BASH_SOURCE[0]}:${BASH_LINENO[0]})" 1>&2
+    return 1
+  fi
+
+  # Get the current value of the environment variable.
+  local values="$(eval echo \$$var)"
+
+  # Iterate over the specified paths in reversed order to keep the
+  # order of passed arguments.
+  for (( i=${#paths[@]}-1; i>=0; i-- )); do
+    local path="${paths[$i]}"
+
+    # Skip if the path is not a directory.
+    [[ ! -d "$path" ]] && continue
+
+    # Add path to the head of the variable if it is not contained.
+    if [[ ":$values:" != *":$path:"* ]]; then
+      export $var="$path:$values"
+      values="$(eval echo \$$var)"
+    fi
+  done
+}
+
 # Motor Intelligence Lab. library.
 # https://www.mi.ams.eng.osaka-u.ac.jp/open-e.html
-export LD_LIBRARY_PATH="$HOME/usr/lib:$LD_LIBRARY_PATH"
-export PATH="$HOME/usr/bin:$PATH"
+prepend_path_to_env LD_LIBRARY_PATH "$HOME/usr/lib"
+prepend_path_to_env PATH "$HOME/usr/bin"
 
 # Add directories to search for .pc files for pkg-config.
 # https://www.freedesktop.org/wiki/Software/pkg-config/
-export PKG_CONFIG_PATH="$HOME/usr/lib/pkgconfig"
+prepend_path_to_env PKG_CONFIG_PATH "$HOME/usr/lib/pkgconfig"
 
 # pyenv is a simple python version management.
 # https://github.com/pyenv/pyenv
 export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
+prepend_path_to_env PATH "$PYENV_ROOT/bin"
 if command -v pyenv 1>/dev/null 2>&1; then
    eval "$(pyenv init -)"
 fi
@@ -44,11 +90,11 @@ fi
 # pipx provides a way to execute binaries from Python packages in
 # isolated environments.
 # https://github.com/pipxproject/pipx
-export PATH="$HOME/.local/bin:$PATH"
+prepend_path_to_env PATH "$HOME/.local/bin"
 
 # Configure paths for Go Programming Language.
 # https://golang.org/
 # https://github.com/golang/go/wiki/SettingGOPATH
 export GOPATH="$HOME/.go"
 export GOROOT="$HOME/usr/lib/go"
-export PATH="$GOPATH/bin:$GOROOT/bin:$PATH"
+prepend_path_to_env PATH "$GOPATH/bin" "$GOROOT/bin"
