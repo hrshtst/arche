@@ -258,7 +258,7 @@ __install_packages_fzf() {
 
 __install_packages_fzf__config() {
   git_clone_or_update https://github.com/junegunn/fzf.git ${HOME}/.fzf
-  yes | head -n 3 | ~/.fzf/install
+  yes | head -n 3 | ~/.fzf/install --no-fish
 }
 
 ## LLVM
