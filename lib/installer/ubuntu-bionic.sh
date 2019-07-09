@@ -475,6 +475,7 @@ __install_packages_watchexec__config() {
       | wget -qi -
     local deb="$(find . -name "watchexec*.deb")"
     sudo apt install "${deb}"
+    rm "${deb}"
     getback
   fi
 }
@@ -496,6 +497,7 @@ __install_packages_rg__config() {
       | wget -qi -
     local deb="$(find . -name "ripgrep*.deb")"
     sudo apt install "${deb}"
+    rm "${deb}"
     getback
   fi
 }
