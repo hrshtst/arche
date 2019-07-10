@@ -251,7 +251,8 @@ EOF
   fi
 }
 
-## fzf
+## fzf -- an interactive filter for command-line.
+# https://github.com/junegunn/fzf
 __install_packages_fzf() {
   install_packages_always_config
 }
