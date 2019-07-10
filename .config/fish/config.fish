@@ -122,3 +122,25 @@ bind -e -M insert \ec
 bind -e -M insert \eC
 bind -e -M insert \cg
 bind -e -M insert \co
+
+# Complete command history.
+bind \cr '__fzf_reverse_isearch'
+bind -M insert \cr '__fzf_reverse_isearch'
+
+# Complete file name.
+bind \ef '__fzf_find_file'
+bind -M insert \ef '__fzf_find_file'
+
+# Go to directory.
+bind \ed '__fzf_cd'
+bind -M insert \ed '__fzf_cd'
+bind \eD '__fzf_cd --hidden'
+bind -M insert \eD '__fzf_cd --hidden'
+
+# Open file with xdg-open.
+bind \co '__fzf_open'
+bind -M insert \co '__fzf_open'
+
+# Open file with editor.
+bind \cx\cf '__fzf_open --editor'
+bind -M insert \cx\cf '__fzf_open --editor'
