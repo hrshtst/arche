@@ -457,6 +457,28 @@ __install_packages_rg__config() {
   fi
 }
 
+## bat -- an alternative to cat(1) with syntax highlighting
+# https://github.com/sharkdp/bat
+__install_packages_bat() {
+  install_packages_depends 'curl' 'wget'
+  install_packages_always_config
+}
+
+__install_packages_bat__config() {
+  if ! has bat; then
+    markcd "${HOME}/src"
+    curl -s https://api.github.com/repos/sharkdp/bat/releases/latest \
+      | grep "browser_download_url.*bat_.*_amd64\.deb" \
+      | cut -d ":" -f 2,3 \
+      | tr -d \" \
+      | wget -qi -
+    local deb="$(find . -name "bat_*_amd64.deb")"
+    sudo dpkg -i "${deb}"
+    rm "${deb}"
+    getback
+  fi
+}
+
 ## Albert
 __install_packages_albert__init() {
   if ! install_packages_repository_exists "manuelschneid3r"; then
