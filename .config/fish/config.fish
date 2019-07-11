@@ -82,10 +82,6 @@ set -gx GOPATH ~/.go
 set -gx GOROOT ~/usr/lib/go
 prepend_path_to_env PATH $GOPATH/bin $GOROOT/bin
 
-# fzf provides a fuzzy finder on command line.
-# https://github.com/junegunn/fzf
-prepend_path_to_env PATH ~/.fzf/bin
-
 ####################################################################
 ## Aliases
 
@@ -132,6 +128,10 @@ end
 
 ####################################################################
 ## fzf -- a command-line fuzzy finder
+## https://github.com/junegunn/fzf
+
+# Add path.
+prepend_path_to_env PATH ~/.fzf/bin
 
 # Use ripgrep as default command if available.
 if type -q rg
