@@ -143,7 +143,7 @@ if type -q bat
     set -gx FZF_PREVIEW_PAGER 'bat --color=always --style=plain'
 end
 
-# Show list in top-down, and make line at border.
+# Show list in top-down, and make line at border, etc.
 set -gx FZF_DEFAULT_OPTS '--height 40% --reverse --border --inline-info --bind=ctrl-j:preview-down,ctrl-k:preview-up,\?:toggle-preview,ctrl-space:toggle+down'
 
 ####################################################################
