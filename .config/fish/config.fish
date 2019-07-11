@@ -87,6 +87,30 @@ prepend_path_to_env PATH $GOPATH/bin $GOROOT/bin
 prepend_path_to_env PATH ~/.fzf/bin
 
 ####################################################################
+## Aliases
+
+# Define function or use 'abbr' command instead of using builtin
+# 'alias' command.
+# cf. https://github.com/jorgebucaran/fish-cookbook#aliases
+
+# Prompt before removing more than tree files.
+function rm --wraps /bin/rm
+    /bin/rm -I --preserve-root $argv
+end
+
+# Get current IP address.
+function myip
+    curl -sS http://ipecho.net/plain
+    echo
+end
+
+# Colorize dir command.
+abbr -a dir 'dir --color=auto'
+
+# Alias to ipython --pylab
+abbr -a pylab 'ipython --pylab'
+
+####################################################################
 ## Appearance
 
 # Use the fish prompt for virtualenv instead of the original one.
