@@ -107,6 +107,22 @@ if not functions -q fisher
 end
 
 ####################################################################
+## fzf -- a command-line fuzzy finder
+
+# Use ripgrep as default command if available.
+if type -q rg
+    set -gx FZF_DEFAULT_COMMAND 'rg --files --hidden --glob "!.git"'
+end
+
+# Use bat for fzf preview if available.
+if type -q bat
+    set -gx FZF_PREVIEW_PAGER 'bat --color=always --style=plain'
+end
+
+# Show list in top-down, and make line at border.
+set -gx FZF_DEFAULT_OPTS '--height 40% --reverse --border --inline-info'
+
+####################################################################
 ## Keybindings
 
 # Remove all the keybindings defined by fzf
@@ -145,18 +161,22 @@ bind -M insert \co '__fzf_open'
 bind \cx\cf '__fzf_open --editor'
 bind -M insert \cx\cf '__fzf_open --editor'
 
-####################################################################
-## fzf -- a command-line fuzzy finder
+# Select modified files in Git repository.
+bind \eg\ef '__fzf_git_file'
+bind -M insert \eg\ef '__fzf_git_file'
 
-# Use ripgrep as default command if available.
-if type -q rg
-    set -gx FZF_DEFAULT_COMMAND 'rg --files --hidden --glob "!.git"'
-end
+# Select branches existing in Git repository.
+bind \eg\eb '__fzf_git_branch'
+bind -M insert \eg\eb '__fzf_git_branch'
 
-# Use bat for fzf preview if available.
-if type -q bat
-    set -gx FZF_PREVIEW_PAGER 'bat --color=always --style=plain'
-end
+# Select tags existing in Git repository.
+bind \eg\et '__fzf_git_tag'
+bind -M insert \eg\et '__fzf_git_tag'
 
-# Show list in top-down, and make line at border.
-set -gx FZF_DEFAULT_OPTS '--height 40% --reverse --border --inline-info'
+# Select commit hashes in commit logs.
+bind \eg\eh '__fzf_git_hash'
+bind -M insert \eg\eh '__fzf_git_hash'
+
+# Select remote repository we track.
+bind \eg\er '__fzf_git_remote'
+bind -M insert \eg\er '__fzf_git_remote'
