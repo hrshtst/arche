@@ -120,7 +120,7 @@ if type -q bat
 end
 
 # Show list in top-down, and make line at border.
-set -gx FZF_DEFAULT_OPTS '--height 40% --reverse --border --inline-info'
+set -gx FZF_DEFAULT_OPTS '--height 40% --reverse --border --inline-info --bind=ctrl-j:preview-down,ctrl-k:preview-up,\?:toggle-preview,ctrl-space:toggle+down'
 
 ####################################################################
 ## Keybindings
