@@ -144,8 +144,8 @@ bind \cr '__fzf_reverse_isearch'
 bind -M insert \cr '__fzf_reverse_isearch'
 
 # Complete file name.
-bind \ef '__fzf_find_file'
-bind -M insert \ef '__fzf_find_file'
+bind \et '__fzf_find_file'
+bind -M insert \et '__fzf_find_file'
 
 # Go to directory.
 bind \ed '__fzf_cd'
