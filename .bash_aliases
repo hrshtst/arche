@@ -30,3 +30,16 @@ alias rm='rm -I --preserve-root'
 
 # Get current IP adddress
 alias myip='curl -sS http://ipecho.net/plain; echo'
+
+# This function creates a new session of tmux if no arguments are
+# passed. The new session starts with an interactive fish shell and
+# the deafult shell will be set to fish as well. If one or more
+# arguments or options are provided, pass them to tmux command.
+tmux() {
+  TMUX_SHELL=${TMUX_SHELL:-$(which bash)}
+  if test $# = 0; then
+    command tmux new-session $TMUX_SHELL \; set-option default-shell $TMUX_SHELL
+  else
+    command tmux $@
+  fi
+}

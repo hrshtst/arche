@@ -204,3 +204,13 @@ bind -M insert \eg\eh '__fzf_git_hash'
 # Select remote repository we track.
 bind \eg\er '__fzf_git_remote'
 bind -M insert \eg\er '__fzf_git_remote'
+
+
+####################################################################
+## Autostart tmux
+
+set -gx TMUX_SHELL (which fish)
+
+if status is-interactive; and not set -q TMUX
+    exec tmux new-session $TMUX_SHELL \; set-option default-shell $TMUX_SHELL
+end
