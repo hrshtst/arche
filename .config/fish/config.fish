@@ -212,3 +212,7 @@ bind -M insert \eg\eh '__fzf_git_hash'
 # Select remote repository we track.
 bind \eg\er '__fzf_git_remote'
 bind -M insert \eg\er '__fzf_git_remote'
+
+# Select repository cloned with ghq and go to it.
+bind \eg\eq '__fzf_ghq'
+bind -M insert \eg\eq '__fzf_ghq'
