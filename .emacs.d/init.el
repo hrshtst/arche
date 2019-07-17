@@ -110,6 +110,33 @@ as in `defun'."
        (dolist (hook ',hooks)
          (add-hook hook ',name)))))
 
+(defmacro arche--with-silent-message (regexps &rest body)
+  "Silencing any messages that match REGEXPS, execute BODY.
+REGEXPS is a list of strings; if `message' would display a
+message string (not including the trailing newline) matching any
+element of REGEXPS, nothing happens. The REGEXPS need not match
+the entire message; include ^ and $ if necessary. REGEXPS may
+also be a single string."
+  (declare (indent 1))
+  (when (stringp regexps)
+    (setq regexps (list regexps)))
+  `(cl-letf* ((message (symbol-function #'message))
+              ((symbol-function #'message)
+               (lambda (format &rest args)
+                 (let ((str (apply #'format format args)))
+                   (cl-block nil
+                     (dolist (regexp ',regexps)
+                       (when (or (null regexp) (string-match-p regexp str))
+                         (cl-return)))
+                     (funcall message "%s" str))))))
+     ,@body))
+
+(defun arche--advice-silence-messages (func &rest args)
+  "Invoke FUNC with ARGS, silencing all messages.
+This is an `:override' advice for many different functions."
+  (cl-letf (((symbol-function #'message) #'ignore))
+    (apply func args)))
+
 ;;; Start Emacs with appropriate setting
 
 ;; Change working directory to HOME unless non-default
