@@ -85,22 +85,30 @@ advice, like in `advice-add'. DOCSTRING and BODY are as in
      (advice-add ',place ',where #',name)
      ',name))
 
-(defmacro arche-defhook (name arglist hook docstring &rest body)
+(defmacro arche-defhook (name arglist hooks docstring &rest body)
   "Define a function called NAME and add it to a hook.
-ARGLIST is as in `defun'. HOOK is the hook to which to add the
-function. DOCSTRING and BODY are as in `defun'."
+ARGLIST is as in `defun'. HOOKS is a list of hooks to which to
+add the function, or just a single hook. DOCSTRING and BODY are
+as in `defun'."
   (declare (indent 2)
            (doc-string 4))
-  (unless (string-match-p "-hook$" (symbol-name hook))
-    (error "Symbol `%S' is not a hook" hook))
+  (unless (listp hooks)
+    (setq hooks (list hooks)))
+  (dolist (hook hooks)
+    (unless (string-match-p "-hook$" (symbol-name hook))
+      (error "Symbol `%S' is not a hook" hook)))
   (unless (stringp docstring)
-    (error "arche-defhook: no docstring provided"))
-  `(progn
-     (defun ,name ,arglist
-       ,(format "%s\n\nThis function is for use in `%S'."
-                docstring hook)
-       ,@body)
-     (add-hook ',hook ',name)))
+    (error "init.el: no docstring provided for `arche-defhook'"))
+  (let ((hooks-str (format "`%S'" (car hooks))))
+    (dolist (hook (cdr hooks))
+      (setq hooks-str (format "%s\nand `%S'" hooks-str hook)))
+    `(progn
+       (defun ,name ,arglist
+         ,(format "%s\n\nThis function is for use in %s."
+                  docstring hooks-str)
+         ,@body)
+       (dolist (hook ',hooks)
+         (add-hook hook ',name)))))
 
 ;;; Start Emacs with appropriate setting
 
