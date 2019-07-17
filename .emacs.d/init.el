@@ -1697,6 +1697,10 @@ via return key."
 ;;; Electricity: automatic things
 ;;;; Autorevert
 
+;; On macOS, Emacs has a nice keybinding to revert the current buffer.
+;; On other platforms such a binding is missing; we re-add it here.
+(bind-key "s-u" #'revert-buffer)
+
 ;; Feature `autorevert' automatically reverts the buffer when its
 ;; visited file changes on disk.
 (use-feature autorevert
