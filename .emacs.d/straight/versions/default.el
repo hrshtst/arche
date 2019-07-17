@@ -110,7 +110,7 @@
  ("visual-regexp-steroids.el" . "a6420b25ec0fbba43bf57875827092e1196d8a9e")
  ("visual-regexp.el" . "3e3ed81a3cbadef1f1f4cb16f9112a58641d70ca")
  ("vline" . "8cc7947387f8da2888da25538668afa33a1d8662")
- ("with-editor" . "4f06aba28fb87f991ec7f2126d6752b1f491eda8")
+ ("with-editor" . "45c29f9bfb7f2df93426ce1571e2f4f41ed4e492")
  ("yaml-mode" . "5b4a0db384f996554454b5642e4531c502421de8")
  ("yasnippet" . "476bc77c34edc9ff24ed39c55ab1b1baa103d39a")
  ("yasnippet-snippets" . "7e94b9e948e16b3b1778aacb05c65e75d81fc188")
