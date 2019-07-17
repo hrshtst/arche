@@ -68,19 +68,20 @@ advice, like in `advice-add'. DOCSTRING and BODY are as in
   (declare (indent 2)
            (doc-string 5))
   (unless (stringp docstring)
-    (error "arche-defadvice: no docstring provided"))
+    (error "init.el: no docstring provided for `arche-defadvice'"))
   `(progn
-     (defun ,name ,arglist
-       ,(let ((article (if (string-match-p "^:[aeiou]" (symbol-name where))
-                           "an"
-                         "a")))
-          (format "%s\n\nThis is %s `%S' advice for `%S'."
-                  docstring article where
-                  (if (and (listp place)
-                           (memq (car place) ''function))
-                      (cadr place)
-                    place)))
-       ,@body)
+     (eval-and-compile
+       (defun ,name ,arglist
+         ,(let ((article (if (string-match-p "^:[aeiou]" (symbol-name where))
+                             "an"
+                           "a")))
+            (format "%s\n\nThis is %s `%S' advice for `%S'."
+                    docstring article where
+                    (if (and (listp place)
+                             (memq (car place) ''function))
+                        (cadr place)
+                      place)))
+         ,@body))
      (advice-add ',place ',where #',name)
      ',name))
 
