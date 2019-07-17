@@ -798,11 +798,6 @@ _q_uit
 (use-package projectile
   :init/el-patch
 
-  (defcustom projectile-keymap-prefix nil
-    "Projectile keymap prefix."
-    :group 'projectile
-    :type 'string)
-
   (defvar projectile-command-map
     (let ((map (make-sparse-keymap)))
       (define-key map (kbd "4 a") #'projectile-find-other-file-other-window)
@@ -843,8 +838,10 @@ _q_uit
       (define-key map (kbd "p") #'projectile-switch-project)
       (define-key map (kbd "q") #'projectile-switch-open-project)
       (define-key map (kbd "P") #'projectile-test-project)
-      (define-key map (kbd "r") #'projectile-replace)
-      (define-key map (kbd "R") #'projectile-regenerate-tags)
+      (define-key map (kbd "r")
+        (el-patch-swap #'projectile-replace #'projectile-replace-regexp))
+      (define-key map (kbd "R")
+        (el-patch-swap #'projectile-regenerate-tags #'projectile-replace))
       (define-key map (kbd "s g") #'projectile-grep)
       (define-key map (kbd "s r") #'projectile-ripgrep)
       (define-key map (kbd "s s") #'projectile-ag)
