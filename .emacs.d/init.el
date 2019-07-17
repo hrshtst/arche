@@ -137,7 +137,22 @@ This is an `:override' advice for many different functions."
   (cl-letf (((symbol-function #'message) #'ignore))
     (apply func args)))
 
-;;; Start Emacs with appropriate setting
+;;; Startup optimizations
+
+;; Disabling GC (by setting `gc-cons-threshold' to a very large value,
+;; in this case 500MB) during startup is said to improve startup time
+;; by reducing the number of GC runs.
+
+(defvar arche--orig-gc-cons-threshold gc-cons-threshold
+  "Original value of `gc-cons-threshold'.")
+
+(arche-defhook arche--reenable-gc ()
+  after-init-hook
+  "Reset `gc-cons-threshold' to its original value.
+Otherwise, Emacs will just get slower and slower over time."
+  (setq gc-cons-threshold arche--orig-gc-cons-threshold))
+
+(setq gc-cons-threshold (* 50 1000 1000))
 
 ;; Change working directory to HOME unless non-default
 ;; initialization file is specified.
