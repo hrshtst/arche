@@ -185,6 +185,10 @@ bind -M insert \ed '__fzf_cd'
 bind \eD '__fzf_cd --hidden'
 bind -M insert \eD '__fzf_cd --hidden'
 
+# Go to most frequent directory.
+bind \cx\cr '__fzf_z'
+bind -M insert \cx\cr '__fzf_z'
+
 # Open file with xdg-open.
 bind \co '__fzf_open'
 bind -M insert \co '__fzf_open'
