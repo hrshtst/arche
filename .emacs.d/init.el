@@ -273,15 +273,18 @@ NAME and ARGS are as in `use-package'."
 
 ;; Package `bind-key' provides a useful macro which is much prettier
 ;; and surely takes effect.
-(use-package bind-key)
+(use-package bind-key
+  :demand t)
 
 (defvar arche-keymap (make-sparse-keymap)
-  "Keymap for my own commands is bound under M-l.")
+  "Keymap for my own commands that should be put under a prefix.
+This keymap is bound under \\[arche-keymap].")
 
-(bind-key* "M-l" arche-keymap)
+(bind-key* "M-a" arche-keymap)
 
 (defmacro arche-bind-key (key-name command &optional predicate)
-  "Bind a key in `arche-keymap'."
+  "Bind a key in `arche-keymap'.
+KEY-NAME, COMMAND, and PREDICATE are as in `bind-key'."
   `(bind-key ,key-name ,command arche-keymap ,predicate))
 
 ;; Package `hydra' provides a feature to tie related commands into a
