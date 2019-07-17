@@ -17,7 +17,7 @@ function __fzf_z -d "Lists most used directories and goes into one"
     eval "$FZF_Z_COMMAND | "(__fzfcmd) "+m $FZF_DEFAULT_OPTS $FZF_Z_OPTS --query \"$fzf_query\" --preview-window right:60% --preview '$FZF_Z_PREVIEW'" | read -l select
 
     if not test -z "$select"
-        builtin cd "$select"
+        cd "$select"
         commandline -t ""
     end
 
