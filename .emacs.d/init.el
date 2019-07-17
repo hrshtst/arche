@@ -1621,7 +1621,7 @@ _l_: last       _G_: avy        ^ ^              _es_,_os_: *scratch*
   :config
 
   ;; Eliminate the 0.25s idle delay for isearch highlighting.
-  (setq isearch-lazy-highlight-initial-delay 0))
+  (setq lazy-highlight-initial-delay 0))
 
 ;; Package `swiper' provides an alternative to `isearch' which instead
 ;; uses `ivy' to display and select from the results.
