@@ -219,11 +219,22 @@ Otherwise, Emacs will just get slower and slower over time."
 ;; Package `use-package' allows us to make package configuration much
 ;; more confortable and provides lazy loading in very easy way.
 (straight-use-package 'use-package)
+
+;; When configuring a feature with `use-package', also tell
+;; straight.el to install a package of the same name, unless otherwise
+;; specified using the `:straight' keyword.
 (setq straight-use-package-by-default t)
+
+;; Tell `use-package' to always load features lazily unless told
+;; otherwise. It's nicer to have this kind of thing be deterministic:
+;; if `:demand' is present, the loading is eager; otherwise, the
+;; loading is lazy. See
+;; https://github.com/jwiegley/use-package#notes-about-lazy-loading.
 (setq use-package-always-defer t)
 
 (defmacro use-feature (name &rest args)
-  "Like `use-package', but with `straight-use-package-by-default' disabled."
+  "Like `use-package', but with `straight-use-package-by-default' disabled.
+NAME and ARGS are as in `use-package'."
   (declare (indent defun))
   `(use-package ,name
      :straight nil
