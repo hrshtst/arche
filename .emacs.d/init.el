@@ -10,9 +10,9 @@
 
 ;; This is my personal configuration file for Emacs. The word "arche",
 ;; which is a Greek word with senses "beginning", "origin" or "source
-;; of action", is used for namespace partitioning. For the most part,
-;; code written by Radon Rosborough
-;; (https://github.com/raxod502/radian) is modified and reused.
+;; of action", is used for namespace partitioning. The most part of
+;; codes are adapted from ones written by Radon Rosborough
+;; (https://github.com/raxod502/radian).
 
 ;;; License:
 
