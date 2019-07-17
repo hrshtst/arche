@@ -196,12 +196,14 @@ Otherwise, Emacs will just get slower and slower over time."
 (if (and (executable-find "watchexec")
          (executable-find "python3"))
     (setq straight-check-for-modifications '(watch-files find-when-checking))
-  (setq straight-check-for-modifications '(find-at-startup find-when-checking)))
+  (setq straight-check-for-modifications
+        '(find-at-startup find-when-checking)))
 
 ;; Bootstrap straight.el
 (defvar bootstrap-version)
 (let ((bootstrap-file
-       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+       (expand-file-name
+        "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
       (bootstrap-version 5))
   (unless (file-exists-p bootstrap-file)
     (with-current-buffer
