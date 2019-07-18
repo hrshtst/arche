@@ -3989,6 +3989,8 @@ spaces."
   (load-theme 'zerodark 'no-confirm))
 
 ;; Local Variables:
+;; checkdoc-symbol-words: ("top-level")
 ;; indent-tabs-mode: nil
-;; outline-regexp: ";;;;* "
+;; outline-regexp: ";;;+ "
+;; sentence-end-double-space: nil
 ;; End:
