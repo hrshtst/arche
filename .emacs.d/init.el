@@ -1810,13 +1810,27 @@ via return key."
                   ;; available for
                   ;;#'python-mode
                   #'makefile-mode
-                  #'sh-mode))
+                  #'fish-mode))
        (lsp)))
 
   :config
 
   ;; Use Flycheck, not Flymake.
-  (setq lsp-prefer-flymake nil))
+  (setq lsp-prefer-flymake nil)
+
+  ;; Looks like `lsp-mode' doesn't know about LaTeX yet.
+  (add-to-list 'lsp-language-id-configuration '(latex-mode . "latex"))
+
+  ;; Also, it has a bunch of regexps which are completely wrong.
+  (setq lsp-language-id-configuration
+        (mapcar
+         (lambda (link)
+           (if (and (stringp (car link))
+                    (string-match "\\`\\.\\*\\.\\(.+\\)\\'" (car link)))
+               (cons
+                (format "\\.%s\\'" (match-string 1 (car link))) (cdr link))
+             link))
+         lsp-language-id-configuration)))
 
 ;;;; Indentation
 
