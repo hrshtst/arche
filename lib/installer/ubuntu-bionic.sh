@@ -331,6 +331,34 @@ __install_packages_tex() {
     'xzdec'
 }
 
+## TexLab - An implementation of the language server protocol for LaTeX.
+# https://github.com/latex-lsp/texlab
+__install_packages_texlab__install() {
+  install_packages_depends 'wget'
+  install_packages_always_config
+}
+
+__install_packages_texlab__config() {
+  local latest_ver ver
+  latest_ver=1.1.0
+  ver=
+  if has texlab; then
+    ver=$(texlab --version | cut -d ' ' -f 2)
+  fi
+  if ! has texlab || [[ $ver != $latest_ver ]]; then
+    markcd "$HOME/usr/bin"
+    local tarball=texlab-x86_64-linux.tar.gz
+    curl -s https://api.github.com/repos/latex-lsp/texlab/releases/latest \
+      | grep "browser_download_url.*\/$tarball" \
+      | cut -d ":" -f 2,3 \
+      | tr -d \" \
+      | wget -qi -
+    tar xfz "$tarball"
+    rm "$tarball"
+    getback
+  fi
+}
+
 ## Inkscape
 __install_packages_inkscape__init() {
   install_packages_add_repository "ppa:inkscape.dev/stable"
