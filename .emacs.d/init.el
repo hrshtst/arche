@@ -2664,14 +2664,11 @@ https://github.com/flycheck/flycheck/issues/953."
 
   (add-hook 'LaTeX-mode-hook 'turn-on-reftex))
 
-;; Package `company-auctex' provides a Company backend that uses
-;; information from AUCTeX for autocompletion.
-(use-package company-auctex
+;; Package `lsp-latex' provides an `lsp-mode' client for LaTeX.
+(use-package lsp-latex
+  :straight (:host github :repo "ROCKTAKEY/lsp-latex")
   :demand t
-  :after (:all company tex)
-  :config
-
-  (company-auctex-init))
+  :after (:all lsp-clients tex))
 
 ;; Package `acutex-latexmk' provides LatexMk support for AUCTeX.
 (use-package auctex-latexmk
