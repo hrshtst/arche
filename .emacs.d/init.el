@@ -2935,8 +2935,9 @@ SYMBOL is as in `xref-find-definitions'."
   (put 'checkdoc-package-keywords-flag 'safe-local-variable #'booleanp))
 
 ;; Package `elisp-lint', not installed, provides a linting framework
-;; for Elisp code.
-(use-feature elisp-lint
+;; for Elisp code. We use `with-eval-after-load' because `use-package'
+;; is configured to try to `require' features during byte-compilation.
+(with-eval-after-load 'elisp-lint
   :init
 
   ;; From the package. We need this because some packages set this as
