@@ -2318,9 +2318,44 @@ nor requires Flycheck to be loaded."
          ;; Same for C-c C-s q.
          :map markdown-mode-style-map
               ("C-p" . markdown-insert-pre)
-              ("C-q" . markdown-insert-blockquote))
+              ("C-q" . markdown-insert-blockquote)
+              :map markdown-mode-map
+              ("TAB" . arche-markdown-tab)
+              ;; Try to override all the bindings in
+              ;; `markdown-mode-map'...
+              ("<S-iso-lefttab>" . arche-markdown-shifttab)
+              ("<S-tab>" . arche-markdown-shifttab)
+              ("<backtab>" . arche-markdown-shifttab))
 
   :config
+
+  (defun arche-markdown-tab ()
+    "Do something reasonable when the user presses TAB.
+This means moving forward a table cell, indenting a list item, or
+performing normal indentation."
+    (interactive)
+    (cond
+     ((markdown-table-at-point-p)
+      (markdown-table-forward-cell))
+     ((markdown-list-item-at-point-p)
+      (markdown-demote-list-item))
+     (t
+      ;; Ew. But `markdown-indent-line' checks to see if
+      ;; `this-command' is `markdown-cycle' before doing something
+      ;; useful, so we have to.
+      (let ((this-command 'markdown-cycle))
+        (indent-for-tab-command)))))
+
+  (defun arche-markdown-shifttab ()
+    "Do something reasonable when the user presses S-TAB.
+This means moving backward a table cell or unindenting a list
+item."
+    (interactive)
+    (cond
+     ((markdown-table-at-point-p)
+      (markdown-table-backward-cell))
+     ((markdown-list-item-at-point-p)
+      (markdown-promote-list-item))))
 
   ;; Turn on syntax highlighting for wiki links.
   (setq markdown-enable-wiki-links t)
