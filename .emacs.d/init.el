@@ -59,6 +59,27 @@
 
 ;;; Define utility functions
 
+(defmacro arche-protect-macros (&rest body)
+  "Eval BODY, protecting macros from incorrect expansion.
+This macro should be used in the following situation:
+
+Some form is being evaluated, and this form contains as a
+sub-form some code that will not be evaluated immediately, but
+will be evaluated later. The code uses a macro that is not
+defined at the time the top-level form is evaluated, but will be
+defined by time the sub-form's code is evaluated. This macro
+handles its arguments in some way other than evaluating them
+directly. And finally, one of the arguments of this macro could
+be interpreted itself as a macro invocation, and expanding the
+invocation would break the evaluation of the outer macro.
+
+You might think this situation is such an edge case that it would
+never happen, but you'd be wrong, unfortunately. In such a
+situation, you must wrap at least the outer macro in this form,
+but can wrap at any higher level up to the top-level form."
+  (declare (indent 0))
+  `(eval '(progn ,@body)))
+
 (defmacro arche-flet (bindings &rest body)
   "Temporarily override function definitions using `cl-letf*'.
 NAME is the function to override. It has access to the original
@@ -2538,11 +2559,28 @@ https://github.com/flycheck/flycheck/issues/953."
 ;;;; Shell
 
 (use-feature sh-script
-  :mode ("\\.bashrc.*\\'" . shell-script-mode)
+  :mode ("\\.bash.*\\'" . shell-script-mode)
   :config
 
+  ;; Make the default indentation increment shorter.
   (setq sh-basic-offset 2)
-  (setq sh-indentation 2))
+
+  (arche-defhook arche--sh-prettify-mode-line ()
+    sh-mode-hook
+    "Instead of \"Shell[bash]\", display mode name as \"Bash\"."
+    (setq mode-line-process nil)
+    (setq mode-name (capitalize (symbol-name sh-shell))))
+
+  (use-feature lsp-clients
+    :config
+
+    ;; Only activate the Bash LSP server in Bash code, not all shell
+    ;; script code. It's not very helpful to get Bash syntax errors
+    ;; while editing Zsh code.
+    (arche-protect-macros
+     (setf (lsp--client-activation-fn (gethash 'bash-ls lsp-clients))
+           (lambda (&rest _)
+             (memq sh-shell '(sh bash)))))))
 
 ;;;; TeX
 ;; https://www.tug.org/begin.html
