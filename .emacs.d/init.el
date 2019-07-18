@@ -2957,10 +2957,6 @@ SYMBOL is as in `xref-find-definitions'."
 
 ;;;; Dired
 
-;; For some reason, the autoloads from `dired-aux' and `dired-x' are
-;; not loaded automatically. Do it.
-(require 'dired-loaddefs)
-
 ;; Feature `dired' provides a simplistic filesystem manager in Emacs.
 (use-feature dired
   :bind (:map dired-mode-map
