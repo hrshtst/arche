@@ -798,6 +798,11 @@ _q_uit
 (use-package projectile
   :init/el-patch
 
+  (defcustom projectile-keymap-prefix nil
+    "Projectile keymap prefix."
+    :group 'projectile
+    :type 'string)
+
   (defvar projectile-command-map
     (let ((map (make-sparse-keymap)))
       (define-key map (kbd "4 a") #'projectile-find-other-file-other-window)
