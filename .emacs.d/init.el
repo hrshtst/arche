@@ -2761,8 +2761,7 @@ https://github.com/flycheck/flycheck/issues/953."
 
     ;; Have the alternate "help" action for `counsel-M-x' use Helpful
     ;; instead of the default Emacs help.
-    (setf (nth 0 (alist-get "h" (plist-get ivy--actions-list 'counsel-M-x)
-                            nil nil #'equal))
+    (setf (nth 0 (cdr (assoc "h" (plist-get ivy--actions-list 'counsel-M-x))))
           (lambda (x) (helpful-function (intern x)))))
 
   :bind (;; Remap standard commands.
@@ -2792,7 +2791,7 @@ https://github.com/flycheck/flycheck/issues/953."
     :global t
     (if arche-universal-keyboard-quit-mode
         (arche-defadvice arche--advice-helpful-key-allow-keyboard-quit
-            (func &rest args)
+            (&rest _)
           :before helpful-key
           "Make C-g work in `helpful-key'."
           ;; The docstring of `add-function' says that if we make our
