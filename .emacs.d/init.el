@@ -1846,7 +1846,7 @@ via return key."
   :init
   (global-company-mode +1)
 
-  :defer 3
+  :defer 0.5
 
   :bind (;; The followings are keybindings that take effect whenever
          ;; the completions menu is visible.
@@ -1941,6 +1941,27 @@ via return key."
 ;; Package `company-lsp' provides a Company completion backend for
 ;; `lsp-mode'.
 (use-package company-lsp
+  :init
+
+  (use-feature lsp
+    :config
+
+    (arche-defadvice arche--company-lsp-setup (&rest _)
+      :after lsp
+      "Disable `company-prescient' sorting by length in some contexts.
+Specifically, disable sorting by length if the LSP Company
+backend returns fuzzy-matched candidates, which implies that the
+backend has already sorted the candidates into a reasonable
+order."
+      (setq-local company-prescient-sort-length-enable
+                  (cl-dolist (w lsp--buffer-workspaces)
+                    (when (thread-first w
+                            (lsp--workspace-client)
+                            (lsp--client-server-id)
+                            (memq '(jsts-ls mspyls bash-ls texlab))
+                            (not))
+                      (cl-return t))))))
+
   :config
 
   ;; Ensure that yasnippet candidates appear in lsp-mode.
