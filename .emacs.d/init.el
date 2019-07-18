@@ -2906,7 +2906,23 @@ to `arche-reload-init'."
         (eval-region start end)
         (message "Evaluating %s...done" name)))))
 
-(bind-key "C-c C-k" #'arche-eval-buffer-or-region)
+;; This keybinding is used for evaluating a buffer of Clojure code in
+;; CIDER, and for evaluating a buffer of Scheme code in Geiser.
+(dolist (map (list emacs-lisp-mode-map lisp-interaction-mode-map))
+  (bind-key "C-c C-k" #'arche-eval-buffer-or-region map))
+
+(defun radian-find-symbol (&optional symbol)
+  "Same as `xref-find-definitions' but only for Elisp symbols.
+SYMBOL is as in `xref-find-definitions'."
+  (interactive)
+  (let ((xref-backend-functions '(elisp--xref-backend))
+        ;; Make this command behave the same as `find-function' and
+        ;; `find-variable', i.e. always prompt for an identifier,
+        ;; defaulting to the one at point.
+        (xref-prompt-for-identifier t))
+    (if symbol
+        (xref-find-definitions symbol)
+      (call-interactively 'xref-find-definitions))))
 
 ;;;;; Emacs Lisp linting
 
