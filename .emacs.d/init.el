@@ -2442,7 +2442,37 @@ Links, footnotes  C-c C-a    _L_: link          _U_: uri        _F_: footnote   
     python-mode-hook
     "Don't reindent on typing a colon.
 See https://emacs.stackexchange.com/a/3338/12534."
-    (setq electric-indent-chars (delq ?: electric-indent-chars))))
+    (setq electric-indent-chars (delq ?: electric-indent-chars)))
+
+  (defun arche--python-find-virtualenv ()
+    "Find a virtualenv corresponding to the current buffer.
+Return either a string or nil."
+    (cl-block nil
+      (when (and (executable-find "poetry")
+                 (locate-dominating-file default-directory "pyproject.toml"))
+        (with-temp-buffer
+          ;; May create virtualenv, but whatever.
+          (when (= 0 (call-process
+                      "poetry" nil '(t nil) nil "run" "which" "python"))
+            (goto-char (point-min))
+            (when (looking-at "\\(.+\\)/bin/python\n")
+              (let ((venv (match-string 1)))
+                (when (file-directory-p venv)
+                  (cl-return venv)))))))
+      (when (and (executable-find "pipenv")
+                 (locate-dominating-file default-directory "Pipfile"))
+        (with-temp-buffer
+          ;; May create virtualenv, but whatever.
+          (when (= 0 (call-process "pipenv" nil '(t nil) nil "--venv"))
+            (goto-char (point-min))
+            (let ((venv (string-trim (buffer-string))))
+              (when (file-directory-p venv)
+                (cl-return venv))))))))
+
+  (arche-defhook arche--flycheck-python-setup ()
+    python-mode-hook
+    "Disable some Flycheck checkers for Python."
+    (arche--flycheck-disable-checkers 'python-flake8)))
 
 ;; Package `pipenv' provides interactive commands wrapping the
 ;; Pipenv, a minor mode with a keymap for the useful commands, and a
@@ -2457,6 +2487,23 @@ See https://emacs.stackexchange.com/a/3338/12534."
    #'pipenv-projectile-after-switch-extended)
 
   :blackout t)
+
+;; Package `lsp-python-ms' downloads Microsoft's LSP server for Python
+;; and configures it with `lsp-mode'. Microsoft's server behaves
+;; better than Palantir's in my opinion.
+(use-package lsp-python-ms
+  :demand t
+  :after (:all lsp-clients python)
+  :config
+
+  (arche-defadvice arche--lsp-python-ms-discover-virtualenvs (&rest _)
+    :before lsp-python-ms--extra-init-params
+    "Automatically discover Pipenv and Poetry virtualenvs."
+    (when-let ((venv (arche--python-find-virtualenv)))
+      (setq-local lsp-python-ms-extra-paths
+                  (file-expand-wildcards
+                   (expand-file-name
+                    "lib/python*/site-packages" venv))))))
 
 ;; Feature `rst-mode' provides a major mode for ReST.
 (use-feature rst-mode

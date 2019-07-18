@@ -1,4 +1,5 @@
 /straight
 /var
 /etc
+/mspyls
 !/straight/versions/default.el
