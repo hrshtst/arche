@@ -3393,7 +3393,7 @@ _k_: previous error  _l_: last error
     "Return non-nil if \\[browse-url-at-point] should be rebound."
     ;; All of these major modes provide more featureful bindings for
     ;; C-c C-o than `browse-url-at-point'.
-    (not (derived-mode-p 'markdown-mode 'org-mode 'org-agenda-mode)))
+    (not (derived-mode-p #'markdown-mode #'org-mode #'org-agenda-mode)))
 
   :bind* (:filter (arche-browse-url-predicate)
                   ("C-c C-o" . browse-url-at-point)))
