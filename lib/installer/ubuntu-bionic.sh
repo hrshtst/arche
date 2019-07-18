@@ -262,6 +262,32 @@ __install_packages_fzf__config() {
   yes | head -n 3 | ~/.fzf/install --no-fish
 }
 
+## Node.js
+# https://github.com/nodesource/distributions
+__install_packages_nodejs__init() {
+  # To install bash-language-server we need node.js ver.11, see:
+  # https://github.com/mads-hartmann/bash-language-server/issues/131
+  local ver=11
+  if ! install_packages_repository_exists "nodesource"; then
+    curl -sL https://deb.nodesource.com/setup_${ver}.x | sudo -E bash -
+  fi
+}
+
+__install_packages_nodejs__install() {
+  install_packages_depends 'nodejs'
+}
+
+__install_packages_nodejs__config() {
+  install_packages_set_msg "$(cat <<EOF
+To install bash-language-server, execute the following:
+  sudo npm install --unsafe-perm -g bash-language-server
+
+For details, see:
+https://github.com/mads-hartmann/bash-language-server#installation
+EOF
+)"
+}
+
 ## LLVM
 __install_packages_llvm__init() {
   if ! install_packages_repository_exists "llvm-toolchain"; then
