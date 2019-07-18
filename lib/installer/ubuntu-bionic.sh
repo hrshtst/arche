@@ -325,10 +325,17 @@ __install_packages_llvm__config() {
 
 ## TeX
 __install_packages_tex() {
-  install_packages_depends \
-    'ghostscript' \
-    'texlive-full' \
-    'xzdec'
+  local space
+  space="$(df --output=avail -k /usr | sed '1d;s/[^0-9]//g')"
+  # Check if the current file system has enough space (>6.0 GiB).
+  if [[ $space > 6291456 ]]; then
+    install_packages_depends \
+      'ghostscript' \
+      'texlive-full' \
+      'xzdec'
+  else
+    e_warning "Skip installation of texlive due to lack of free disk space."
+  fi
 }
 
 ## TexLab - An implementation of the language server protocol for LaTeX.
