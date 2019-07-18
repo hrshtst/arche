@@ -2861,11 +2861,19 @@ https://github.com/flycheck/flycheck/issues/953."
               ((symbol-function #'help-buffer) #'current-buffer))
       (apply func args)))
 
+  (arche-defadvice arche--advice-fill-elisp-docstrings-correctly (&rest _)
+    :before-until fill-context-prefix
+    "Prevent `auto-fill-mode' from adding indentation to Elisp docstrings."
+    (when (and (derived-mode-p #'emacs-lisp-mode)
+               (eq (get-text-property (point) 'face) 'font-lock-doc-face))
+      ""))
+
   ;; The default mode lighter has a space instead of a hyphen.
   ;; Disgusting!
   :blackout (lisp-interaction-mode . "Lisp-Interaction"))
 
 (defun arche-reload-init ()
+  "Reload the init-file."
   (interactive)
   (message "Reloading init-file...")
   (load user-init-file nil 'nomessage)
