@@ -59,6 +59,27 @@
 
 ;;; Define utility functions
 
+(defmacro arche-flet (bindings &rest body)
+  "Temporarily override function definitions using `cl-letf*'.
+NAME is the function to override. It has access to the original
+function as a lexically bound variable by the same name, for use
+with `funcall'. ARGLIST and BODY are as in `defun'.
+
+\(fn ((defun NAME ARGLIST &rest BODY) ...) BODY...)"
+  (declare (indent defun))
+  `(cl-letf* (,@(cl-mapcan
+                 (lambda (binding)
+                   (when (memq (car binding) '(defun lambda))
+                     (setq binding (cdr binding)))
+                   (cl-destructuring-bind (name arglist &rest body) binding
+                     (list
+                      `(,name (symbol-function #',name))
+                      `((symbol-function #',name)
+                        (lambda ,arglist
+                          ,@body)))))
+                 bindings))
+     ,@body))
+
 (defmacro arche-defadvice (name arglist where place docstring &rest body)
   "Define an advice called NAME and add it to a function.
 ARGLIST is as in `defun'. WHERE is a keyword as passed to
@@ -2140,7 +2161,16 @@ nor requires Flycheck to be loaded."
                     (apply orig-completing-read prompt collection args)))))
       (apply orig-fun args)))
 
-  (setq lsp-ui-sideline-ignore-duplicate t)
+  ;; Don't show symbol definitions in the sideline.
+  (setq lsp-ui-sideline-show-hover nil)
+
+  (use-feature lsp-mode
+    :config
+
+    ;; With `lsp-ui', there's no need for the ElDoc integration
+    ;; provided by `lsp-mode', and in fact for Bash it is very
+    ;; annoying since all the hover information is multiline.
+    (setq lsp-eldoc-enable-hover nil))
 
   ;; Define keybindings for lsp mode with hydra.
   (use-feature hydra
@@ -2172,6 +2202,22 @@ nor requires Flycheck to be loaded."
       ("S" lsp-shutdown-workspace))
 
     (bind-key "<f9>" #'hydra-lsp-mode/body lsp-mode-map)))
+
+;; Feature `lsp-ui-doc' from package `lsp-ui' displays documentation
+;; in a child frame when point is on a symbol.
+(use-feature lsp-ui-doc
+  :config
+
+  (arche-defadvice arche--advice-lsp-ui-doc-allow-multiline (func &rest args)
+    :around lsp-ui-doc--render-buffer
+    "Prevent `lsp-ui-doc' from removing newlines from documentation."
+    (arche-flet ((defun replace-regexp-in-string
+                      (regexp rep string &rest args)
+                    (if (equal regexp "`\\([\n]+\\)")
+                        string
+                      (apply replace-regexp-in-string
+                             regexp rep string args))))
+      (apply func args))))
 
 ;;; Language support
 ;;;; Plain text
