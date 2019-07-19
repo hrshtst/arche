@@ -1852,6 +1852,8 @@ via return key."
                   ;; available for
                   ;;#'python-mode
                   #'makefile-mode
+                  #'dockerfile-mode
+                  #'pip-requirements-mode
                   #'fish-mode))
        (lsp)))
 
