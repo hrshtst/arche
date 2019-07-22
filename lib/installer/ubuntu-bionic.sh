@@ -573,12 +573,25 @@ __install_packages_docker__install() {
 }
 
 __install_packages_docker__config() {
+  # Create a group named 'docker' and add the user to it.
   if grep -q docker /etc/group; then
     e_warning "Group 'docker' already exists. ($FUNCNAME[0])"
   else
     sudo groupadd docker
   fi
   sudo usermod -aG docker $(whoami)
+
+  # Install bash-completion for docker.
+  if [[ ! -f $HOME/.local/share/bash-completion/completions/docker ]]; then
+    curl -Lo $HOME/.local/share/bash-completion/completions/docker --create-dirs \
+         https://raw.githubusercontent.com/docker/docker-ce/master/components/cli/contrib/completion/bash/docker
+  fi
+
+  # Install fish completion for docker.
+  if [[ ! -f $HOME/.config/fish/completions/docker.fish ]]; then
+    curl -Lo $HOME/.config/fish/completions/docker.fish --create-dirs \
+         https://raw.githubusercontent.com/docker/docker-ce/master/components/cli/contrib/completion/fish/docker.fish
+  fi
 }
 
 install_packages "$@"
