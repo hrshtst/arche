@@ -222,9 +222,9 @@ bind \eg\eq '__fzf_ghq'
 bind -M insert \eg\eq '__fzf_ghq'
 
 # Select docker container ID.
-bind \ed\ec '__fzf_docker_container_ls'
-bind -M insert \ed\ec '__fzf_docker_container_ls'
+bind \ed\ec '__fzf_docker_ps'
+bind -M insert \ed\ec '__fzf_docker_ps'
 
 # Select docker image ID.
-bind \ed\ei '__fzf_docker_image_ls'
-bind -M insert \ed\ei '__fzf_docker_image_ls'
+bind \ed\ei '__fzf_docker_images'
+bind -M insert \ed\ei '__fzf_docker_images'
