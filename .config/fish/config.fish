@@ -180,10 +180,10 @@ bind \et '__fzf_find_file'
 bind -M insert \et '__fzf_find_file'
 
 # Go to directory.
-bind \ed '__fzf_cd'
-bind -M insert \ed '__fzf_cd'
-bind \eD '__fzf_cd --hidden'
-bind -M insert \eD '__fzf_cd --hidden'
+bind \ec '__fzf_cd'
+bind -M insert \ec '__fzf_cd'
+bind \eC '__fzf_cd --hidden'
+bind -M insert \eC '__fzf_cd --hidden'
 
 # Go to most frequent directory.
 bind \cx\cr '__fzf_z'
@@ -220,3 +220,11 @@ bind -M insert \eg\er '__fzf_git_remote'
 # Select repository cloned with ghq and go to it.
 bind \eg\eq '__fzf_ghq'
 bind -M insert \eg\eq '__fzf_ghq'
+
+# Select docker container ID.
+bind \ed\ec '__fzf_docker_container_ls'
+bind -M insert \ed\ec '__fzf_docker_container_ls'
+
+# Select docker image ID.
+bind \ed\ei '__fzf_docker_image_ls'
+bind -M insert \ed\ei '__fzf_docker_image_ls'
