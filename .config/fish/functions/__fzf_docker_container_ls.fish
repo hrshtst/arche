@@ -5,6 +5,10 @@ function __fzf_docker_container_ls -d "Lists all containers and outputs selected
     set -l dir $commandline[1]
     set -l fzf_query $commandline[2]
 
+    # Fish shell version >= 2.7 is required to use argparse.
+    set -l options "o/stdout"
+    argparse $options -- $argv
+
     set -q FZF_DOCKER_CONTAINER_LS_COMMAND
     or set -l FZF_DOCKER_CONTAINER_LS_COMMAND "docker container ls --all"
 
@@ -16,6 +20,11 @@ function __fzf_docker_container_ls -d "Lists all containers and outputs selected
 
     begin
         eval "$FZF_DOCKER_CONTAINER_LS_COMMAND | "(__fzfcmd) "-m $FZF_DEFAULT_OPTS $FZF_DOCKER_CONTAINER_LS_OPTS --query=\"$fzf_query\" --preview='$FZF_DOCKER_CONTAINER_LS_PREVIEW' --preview-window=hidden | awk '{ print \$1 }'" | while read -l s; set results $results $s; end
+    end
+
+    if set -q _flag_stdout
+        echo (string join ' ' $results)
+        return
     end
 
     if test -z "$results"
