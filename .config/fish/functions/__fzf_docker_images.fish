@@ -1,4 +1,4 @@
-function __fzf_docker_image_ls -d "Lists all images and outputs selected image ID"
+function __fzf_docker_images -d "Lists all images and outputs selected image ID"
     type -q docker >/dev/null 2>&1; or return
 
     set -l commandline (__fzf_parse_commandline)
@@ -10,7 +10,7 @@ function __fzf_docker_image_ls -d "Lists all images and outputs selected image I
     argparse $options -- $argv
 
     set -q FZF_DOCKER_IMAGE_LS_COMMAND
-    or set -l FZF_DOCKER_IMAGE_LS_COMMAND "docker image ls"
+    or set -l FZF_DOCKER_IMAGE_LS_COMMAND "docker images"
 
     set -q FZF_DOCKER_IMAGE_LS_OPTS
     or set -l FZF_DOCKER_IMAGE_LS_OPTS "--ansi --header-lines=1 --nth=1..3"

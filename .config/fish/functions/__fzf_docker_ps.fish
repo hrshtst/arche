@@ -1,4 +1,4 @@
-function __fzf_docker_container_ls -d "Lists all containers and outputs selected container ID"
+function __fzf_docker_ps -d "Lists all containers and outputs selected container ID"
     type -q docker >/dev/null 2>&1; or return
 
     set -l commandline (__fzf_parse_commandline)
@@ -10,7 +10,7 @@ function __fzf_docker_container_ls -d "Lists all containers and outputs selected
     argparse $options -- $argv
 
     set -q FZF_DOCKER_CONTAINER_LS_COMMAND
-    or set -l FZF_DOCKER_CONTAINER_LS_COMMAND "docker container ls --all"
+    or set -l FZF_DOCKER_CONTAINER_LS_COMMAND "docker ps --all"
 
     set -q FZF_DOCKER_CONTAINER_LS_OPTS
     or set -l FZF_DOCKER_CONTAINER_LS_OPTS "--ansi --header-lines=1 --nth=1..3,7,-2,-1"
