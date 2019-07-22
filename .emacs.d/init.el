@@ -3192,10 +3192,6 @@ command."
 ;; since the last Git commit.
 (use-package git-gutter
   :commands (arche-git-gutter:beginning-of-hunk)
-  :custom-face
-  (git-gutter:added ((t (:background "#98be65"))))
-  (git-gutter:deleted ((t (:background "#ff6c6b"))))
-  (git-gutter:modified ((t (:background "#c678dd"))))
 
   :init
 
