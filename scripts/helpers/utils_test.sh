@@ -84,7 +84,11 @@ testcase_ask() {
 testcase_contains() {
   contains "banana" "apple" "banana" "orange"
   ! contains "grape" "apple" "banana" "orange"
+  contains "banana" "apple banana orange"
+  ! contains "grape" "apple banana orange"
+}
 
+testcase_contains_array() {
   local list
   list=("apple" "banana" "orange")
   contains "banana" "${list[@]}"
