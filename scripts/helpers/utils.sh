@@ -171,6 +171,20 @@ abspath() {
       echo "$(pwd)/$1"
     fi
   else
-    e_warning "$1 does not exist."
+    e_error "$1 does not exist."
   fi
+}
+
+# Return a path to the parent directory for a given file or directory.
+#
+# Example usage:
+#
+#   $ parent="$(parentdir develop/awesome_project)"
+#
+# @param $1 Path to a file or directory to find its parent directory.
+# @return Return its parent directory path to stdout.
+parentdir() {
+  local path
+  path="$(abspath "$1")"
+  echo "${path%/*}"
 }

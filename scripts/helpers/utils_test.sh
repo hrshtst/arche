@@ -63,6 +63,17 @@ testcase_abspath() {
   back
 }
 
+testcase_parentdir() {
+  markcd "$workspace"
+
+  local parent expected
+  parent="$(parentdir "src")"
+  expected="$workspace"
+
+  [ "$parent" = "$expected" ]
+  back
+}
+
 setup
 unittest_run
 teardown
