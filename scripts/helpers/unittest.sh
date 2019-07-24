@@ -55,8 +55,8 @@ green=$(tput setaf 76)
 tan=$(tput setaf 3)
 blue=$(tput setaf 38)
 
-# Keep the name of this script.
-__unittest_this_script="${BASH_SOURCE[0]}"
+# Store the name of test script.
+__unittest_test_script="${BASH_SOURCE[1]}"
 
 # Flag to keep whether a test is passed or failed. Before running each
 # test, this flag should be set to false. If the test failed, this
@@ -95,16 +95,16 @@ __unittest_failed_hook() {
   # Store the exit status of the last command.
   local status="$?"
 
-  # If ERR signal was sent from this script, skip.
-  if [[ "${BASH_SOURCE[1]}" = "$__unittest_this_script" ]]; then
+  # Only if ERR signal was sent from the test script, the test
+  # interpretted as fail.
+  if [[ "${BASH_SOURCE[1]}" = "$__unittest_test_script" ]]; then
+    # Store the location and status that an error occurred.
+    __unittest_failed=true
+    __unittest_source_stack+=("${BASH_SOURCE[1]}")
+    __unittest_lineno_stack+=("${BASH_LINENO[0]}")
+    __unittest_status_stack+=("$status")
     return
   fi
-
-  # Store the location and status that an error occurred.
-  __unittest_failed=true
-  __unittest_source_stack+=("${BASH_SOURCE[1]}")
-  __unittest_lineno_stack+=("${BASH_LINENO[0]}")
-  __unittest_status_stack+=("$status")
 }
 
 # Process stuff after running each test. Here, the name of test case
