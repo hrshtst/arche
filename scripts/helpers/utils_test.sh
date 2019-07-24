@@ -81,6 +81,16 @@ testcase_ask() {
   ! echo 'N' | ask "Are you OK?" >/dev/null
 }
 
+testcase_contains() {
+  contains "banana" "apple" "banana" "orange"
+  ! contains "grape" "apple" "banana" "orange"
+
+  local list
+  list=("apple" "banana" "orange")
+  contains "banana" "${list[@]}"
+  ! contains "grape" "${list[@]}"
+}
+
 setup
 unittest_run
 teardown

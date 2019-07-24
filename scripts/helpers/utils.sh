@@ -222,3 +222,28 @@ ask() {
   echo
   return $retval
 }
+
+# Check if a string is contained in a list separated with space.
+#
+# Example usage:
+#
+#   $ list="apple banana orange"
+#   $ if contains "banana" "$list"; then
+#   >   echo "banana is in list."
+#   > fi
+#
+# @param $1 string  String to check.
+# @param $2 list    List to be searched.
+# @return True(0)  If the string is contained in the list.
+#         False(>0) Otherwise.
+contains() {
+  local string="$1"
+  shift
+  local list=("$@")
+
+  if [[ "${list[*]}" =~ (^|[[:space:]])"$string"($|[[:space:]]) ]]; then
+    return 0
+  else
+    return 1
+  fi
+}
