@@ -95,6 +95,18 @@ testcase_contains_array() {
   ! contains "grape" "${list[@]}"
 }
 
+testcase_lower() {
+  local string
+  string="$(lower "Apple")"
+  [ "$string" = "apple" ]
+}
+
+testcase_upper() {
+  local string
+  string="$(upper "Apple")"
+  [ "$string" = "APPLE" ]
+}
+
 setup
 unittest_run
 teardown

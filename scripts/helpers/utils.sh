@@ -247,3 +247,27 @@ contains() {
     return 1
   fi
 }
+
+# Convert a string to a lower-case string.
+#
+# Example usage:
+#
+#   $ echo $(lower "Something.")
+#   something.
+#
+# @see upper()
+lower() {
+  echo "${1,,}"
+}
+
+# Convert a string to a upper-case string.
+#
+# Example usage:
+#
+#   $ echo $(lower "Something.")
+#   SOMETHING.
+#
+# @see lower()
+upper() {
+  echo "${1^^}"
+}
