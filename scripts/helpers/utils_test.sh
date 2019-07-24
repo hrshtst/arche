@@ -52,6 +52,17 @@ testcase_markcd() {
   [ "$(pwd)" = "$_pwd" ]
 }
 
+testcase_abspath() {
+  markcd "$workspace"
+
+  local path expected
+  path="$(abspath usr/bin)"
+  expected="$workspace/usr/bin"
+
+  [ "$path" = "$expected" ]
+  back
+}
+
 setup
 unittest_run
 teardown

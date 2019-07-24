@@ -147,3 +147,30 @@ markcd() {
 back() {
   popd 1>/dev/null || return 1
 }
+
+# Convert a relative path to an absolute path.
+#
+# Example usage:
+#
+#   $ project_path="$(abspath develop/awesome_project)"
+#
+# @param $1  Relative path to a file or a directory.
+# @return  Return its absolute path to stdout.
+abspath() {
+  # shellcheck disable=SC2164
+  if [[ -d "$1" ]]; then
+    # dir
+    (cd "$1"; pwd)
+  elif [[ -f "$1" ]]; then
+    # file
+    if [[ $1 = /* ]]; then
+      echo "$1"
+    elif [[ $1 == */* ]]; then
+      echo "$(cd "${1%/*}"; pwd)/${1##*/}"
+    else
+      echo "$(pwd)/$1"
+    fi
+  else
+    e_warning "$1 does not exist."
+  fi
+}
