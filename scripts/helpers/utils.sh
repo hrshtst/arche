@@ -26,7 +26,7 @@ e_header() {
 }
 
 e_arrow() {
-  printf "➜ $@\n"
+  printf "➜ %s\n" "$@"
 }
 
 e_success() {

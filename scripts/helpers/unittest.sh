@@ -46,14 +46,9 @@ __UNITTEST_SH_INCLUDED__=yes
 set -u
 
 # Define faces and colors for reporting results.
-bold=$(tput bold)
-underline=$(tput sgr 0 1)
 reset=$(tput sgr0)
-purple=$(tput setaf 171)
 red=$(tput setaf 1)
 green=$(tput setaf 76)
-tan=$(tput setaf 3)
-blue=$(tput setaf 38)
 
 # Store the name of test script.
 __unittest_test_script="${BASH_SOURCE[1]}"
@@ -133,7 +128,7 @@ __unittest_print_result_pass() {
   local testcase
 
   testcase="$1"
-  printf "${green}pass${reset}: $testcase\n"
+  printf "%spass%s: $testcase\n" "$green" "$reset"
 }
 
 # Print a short result for a failed test.
@@ -143,7 +138,7 @@ __unittest_print_result_fail() {
   local testcase
 
   testcase="$1"
-  printf "${red}fail${reset}: $testcase\n"
+  printf "%sfail%s: $testcase\n" "$red" "$reset"
   for i in "${!__unittest_status_stack[@]}"; do
     printf "  Exit with status %d at %s:%d\n" \
            "${__unittest_status_stack[$i]}" \
