@@ -36,7 +36,11 @@
 
 # Avoid double inclusion of this script.
 set +u
-if [[ -n "$__UNITTEST_SH_INCLUDED__" ]]; then return; fi
+if [[ -n "$__UNITTEST_SH_INCLUDED__" ]]; then
+  set -u
+  return
+fi
+__UNITTEST_SH_INCLUDED__=yes
 
 # Treat unset variable as an error.
 set -u
