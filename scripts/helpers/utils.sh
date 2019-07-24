@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # Avoid double sourcing of this file.
 set +u
 if [[ -n "$__UTILS_SH_INCLUDED__" ]]; then
@@ -93,4 +95,55 @@ abort() {
 #         False (>0) if the command is not available.
 has() {
   type "$1" >/dev/null 2>&1
+}
+
+# Add a directory to the top of the directory stack. NOTE: This
+# function does not change the current working directory.
+#
+# Example usage:
+#
+#   $ cd $HOME/.emacs.d
+#   $ mark           # mark here
+#   $ cd straight/
+#   $ cd repos/
+#   $ back        # get back to $HOME/.emacs.d
+#
+# @param $1  Directory to make a mark. If omitted, the current
+#            directory will be marked.
+# @see back()
+# shellcheck disable=SC2120
+mark() {
+  local dir
+
+  dir="${1:-$(pwd)}"
+  pushd -n "$dir" 1>/dev/null
+}
+
+# Mark the current directory and change it to the destination. If the
+# destination does not exist, make that directory.
+#
+# Example usage:
+#
+#   $ cd $HOME/.emacs.d
+#   $ mark_cd straight
+#   $ cd repos
+#   $ back        # get back to $HOME/.emacs.d
+# @param $1  Destination directory to change.
+# @see mark()
+# @see back()
+markcd() {
+  local dest
+
+  dest="$1"
+  mark "$(pwd)"
+  mkdir -p "$dest"
+  cd "$dest" || return 1
+}
+
+# Get back to the top of the directory stack, and remove it from the
+# stack.
+#
+# @see mark()
+back() {
+  popd 1>/dev/null || return 1
 }
