@@ -188,3 +188,37 @@ parentdir() {
   path="$(abspath "$1")"
   echo "${path%/*}"
 }
+
+# Make a prompt to ask user yes or no question.
+#
+# Example usage:
+#
+#   $ if ask "Are you sure?"; then
+#   >   echo "Okay!"
+#   > else
+#   >   echo "Hmmm..."
+#   > fi
+#   Are you sure? [Y/n] y
+#   Okay!
+#
+# @param $1 prompt  Prompt message.
+# @return True (0) if the answer from user is yes,
+#         False (>0) if the answer from user is no.
+ask() {
+  local prompt="${1:-Are you sure?}"
+  prompt="$prompt [y/n] "
+  local retval answer
+
+  echo -n "$prompt"
+  while read -r -n 1 -s answer; do
+    if [[ $answer = [YyNn] ]]; then
+      [[ $answer = [Yy] ]] && retval=0
+      [[ $answer = [Nn] ]] && retval=1
+      break
+    fi
+    echo
+    echo "Please answer with y/n."
+  done
+  echo
+  return $retval
+}

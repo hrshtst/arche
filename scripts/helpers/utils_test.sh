@@ -74,6 +74,13 @@ testcase_parentdir() {
   back
 }
 
+testcase_ask() {
+  echo 'y' | ask "Are you OK?" >/dev/null
+  echo 'Y' | ask "Are you OK?" >/dev/null
+  ! echo 'n' | ask "Are you OK?" >/dev/null
+  ! echo 'N' | ask "Are you OK?" >/dev/null
+}
+
 setup
 unittest_run
 teardown
