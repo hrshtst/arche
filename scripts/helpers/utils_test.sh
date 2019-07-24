@@ -11,6 +11,17 @@ source "${THIS_DIR}/unittest.sh"
 # shellcheck source=utils.sh
 source "${THIS_DIR}/utils.sh"
 
+# Create workspace.
+workspace="/tmp/workspace-$$"
+setup() {
+  mkdir -p "$workspace/usr/bin"
+  mkdir -p "$workspace/src"
+}
+
+teardown() {
+  rm -rf "$workspace"
+}
+
 testcase_has() {
   has "pwd"
   ! has "hoge"
@@ -28,21 +39,19 @@ testcase_mark() {
 }
 
 testcase_markcd() {
-  local _pwd _dir
+  local _pwd
 
   _pwd="$(pwd)"
-  _dir="/tmp/tmp-$$"
 
   # mark here and go to another directory.
-  markcd "$_dir"
-  [ "$(pwd)" = "$_dir" ]
+  markcd "$workspace"
+  [ "$(pwd)" = "$workspace" ]
 
   # get back to marked place.
   back
   [ "$(pwd)" = "$_pwd" ]
-
-  # clean
-  rmdir "$_dir"
 }
 
+setup
 unittest_run
+teardown
