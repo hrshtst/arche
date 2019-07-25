@@ -2577,7 +2577,8 @@ https://github.com/flycheck/flycheck/issues/953."
     (arche-protect-macros
      (setf (lsp--client-activation-fn (gethash 'bash-ls lsp-clients))
            (lambda (&rest _)
-             (memq sh-shell '(sh bash)))))))
+             (and (equal major-mode 'sh-mode)
+                  (memq sh-shell '(sh bash))))))))
 
 ;;;; TeX
 ;; https://www.tug.org/begin.html
