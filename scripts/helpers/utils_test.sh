@@ -119,6 +119,12 @@ testcase_detect_os() {
   fi
 }
 
+testcase_compare_ver_string() {
+  # shellcheck disable=SC2181
+  compare_ver_string 4.2 4.2 && [ $? -eq 0 ]
+  compare_ver_string 4.5 4.2 || [ $? -eq 1 ]
+  compare_ver_string 4.1 4.2 || [ $? -eq 2 ]
+}
 
 setup
 unittest_run
