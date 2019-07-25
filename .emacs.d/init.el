@@ -2571,6 +2571,12 @@ https://github.com/flycheck/flycheck/issues/953."
     (setq mode-line-process nil)
     (setq mode-name (capitalize (symbol-name sh-shell))))
 
+  (arche-defhook arche--flycheck-select-sh-shellcheck ()
+    sh-mode-hook
+    "Set flycheck checker to sh-shellcheck if available for `sh-mode'."
+    (if (executable-find "shellcheck")
+        (flycheck-select-checker 'sh-shellcheck)))
+
   (use-feature lsp-clients
     :config
 
