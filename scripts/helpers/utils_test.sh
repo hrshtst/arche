@@ -107,6 +107,19 @@ testcase_upper() {
   [ "$string" = "APPLE" ]
 }
 
+testcase_detect_os() {
+  detect_os
+  if [[ "$(lsb_release -si)" = "Ubuntu" ]]; then
+    [ "$OS_NAME" = "ubuntu" ]
+    local ver code
+    ver="$(lsb_release -sr)"
+    code="$(lsb_release -sc)"
+    [ "$OS_VERSION" = "$ver" ]
+    [ "$OS_CODENAME" = "$code" ]
+  fi
+}
+
+
 setup
 unittest_run
 teardown

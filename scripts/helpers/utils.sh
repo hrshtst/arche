@@ -271,3 +271,38 @@ lower() {
 upper() {
   echo "${1^^}"
 }
+
+# Detect the running system. Once this function executed, exported
+# variables OS_NAME, OS_VERSION and OS_CODENAME are set. Note that the
+# all the results are converted into lower-case strings.
+#
+# Example usage:
+#
+#   $ detect_os
+#   $ echo $OS_NAME $OS_VERSION $OS_CODENAME
+#   ubuntu 18.04 bionic
+detect_os() {
+  export OS_NAME
+  export OS_VERSION
+  export OS_CODENAME
+
+  if [[ -f /etc/os-release ]]; then
+    source /etc/os-release
+    OS_NAME="$(lower $NAME)"
+    OS_VERSION="$VERSION_ID"
+    OS_CODENAME="$(lower $VERSION_CODENAME)"
+  elif has lsb_release; then
+    OS_NAME="$(lower "$(lsb_release -si)")"
+    OS_VERSION="$(lsb_release -sr)"
+    OS_CODENAME="$(lower "$(lsb_release -sc)")"
+  elif [[ -f /etc/lsb-release ]]; then
+    source /etc/lsb-release
+    OS_NAME="$(lower $DISTRIB_ID)"
+    OS_VERSION="$DISTRIB_RELEASE"
+    OS_CODENAME="$(lower $DISTRIB_CODENAME)"
+  else
+    OS_NAME="$(lower "$(uname -s)")"
+    OS_VERSION="$(uname -r)"
+    OS_CODENAME=
+  fi
+}
