@@ -2578,10 +2578,10 @@ https://github.com/flycheck/flycheck/issues/953."
     ;; script code. It's not very helpful to get Bash syntax errors
     ;; while editing Zsh code.
     (arche-protect-macros
-     (setf (lsp--client-activation-fn (gethash 'bash-ls lsp-clients))
-           (lambda (&rest _)
-             (and (equal major-mode 'sh-mode)
-                  (memq sh-shell '(sh bash))))))))
+      (setf (lsp--client-activation-fn (gethash 'bash-ls lsp-clients))
+            (lambda (&rest _)
+              (and (equal major-mode 'sh-mode)
+                   (memq sh-shell '(sh bash))))))))
 
 ;;;; TeX
 ;; https://www.tug.org/begin.html
