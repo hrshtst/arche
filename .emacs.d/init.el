@@ -341,9 +341,12 @@ KEY-NAME, COMMAND, and PREDICATE are as in `bind-key'."
 ;; inside Emacs are copied from the user's shell
 (use-package exec-path-from-shell
   :if (memq window-system '(mac ns x))
+  :init
+
+  ;; Suppress message on start up.
+  (setq exec-path-from-shell-check-startup-files nil)
 
   :demand t
-
   :config
 
   (exec-path-from-shell-initialize)
