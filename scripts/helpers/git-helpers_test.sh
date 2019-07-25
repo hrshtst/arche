@@ -35,6 +35,7 @@ setup() {
   setup_git_repo "$repo1"
   setup_git_repo "$repo2"
 
+  cd "$repo1" && git branch -f "develop"
   cd "$THIS_DIR" || return 1
 }
 
@@ -51,14 +52,24 @@ teardown() {
 }
 
 testcase_is_get_repo() {
-  markcd "$workspace"
+  cd "$workspace" || return 1
   ! is_git_repo
   ! is_git_repo "dummy"
   ! is_git_repo "noexist"
   is_git_repo "repo1"
+
   cd "repo2" || return 1
   is_git_repo
-  back
+}
+
+testcase_git_branch_exists() {
+  cd "$repo1" || return 1
+  git_branch_exists "develop"
+  ! git_branch_exists "hoge"
+
+  cd .. || return 1
+  git_branch_exists "master" "repo2"
+  ! git_branch_exists "develop" "repo2"
 }
 
 setup

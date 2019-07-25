@@ -61,3 +61,30 @@ is_git_repo() {
   back
   return $retval
 }
+
+# Check if a specified branch name does exists in a repository.
+#
+# Example usage:
+#
+#   $ if git_branch_exists "develop"; then
+#   >   git checkout "develop"
+#   > fi
+#
+# @param $1  Branch name to check.
+# @param $2  Optional. Path to repository.
+# @return True (0) If the branch name exists in the repository.
+#         False (>0) Otherwise.
+git_branch_exists() {
+  is_git_available || return 1
+
+  local branch repo retval
+  branch="$1"
+  repo="${2:-.}"
+
+  mark
+  cd "$repo" || return 1
+  git rev-parse --verify --quiet "$branch" >/dev/null
+  retval=$?
+  back
+  return $retval
+}
