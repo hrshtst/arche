@@ -348,3 +348,31 @@ compare_ver_string() {
   done
   return 0
 }
+
+# Ask for sudo password and then no more password is required until
+# the script ends or calling _reset_sudo.
+#
+# Example usage:
+#
+#   $ keep_sudo
+#   [sudo] password for user:
+#   $ # sudo command to take long time
+#   $ reset_sudo
+#
+# @see _reset_sudo()
+# @see https://gist.github.com/cowboy/3118588
+keep_sudo() {
+  sudo -v
+  while true; do
+    sudo -n true
+    sleep 60
+    kill -0 "$$" || exit
+  done 2>/dev/null &
+}
+
+# Reset timestamp for sudo command.
+#
+# @see keep_sudo()
+reset_sudo() {
+  sudo -k
+}
