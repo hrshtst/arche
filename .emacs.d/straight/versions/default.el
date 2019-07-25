@@ -58,6 +58,7 @@
  ("hydra" . "a91dd72529aadd2d3cc14e132a3e0545eb2975a6")
  ("imenu-list" . "46008738f8fef578a763c308cf6695e5b4d4aa77")
  ("ivy-yasnippet" . "32580b4fd23ebf9ca7dde96704f7d53df6e253cd")
+ ("jeison" . "cfb2483c3955991dc688cd63455f9e5d3e86e0fb")
  ("json-mode" . "0e819e519ae17a2686e0881c4ca51fa873fa9b83")
  ("json-reformat" . "8eb6668ed447988aea06467ba8f42e1f2178246f")
  ("json-snatcher" . "c4cecc0a5051bd364373aa499c47a1bb7a5ac51c")
