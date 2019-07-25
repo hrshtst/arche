@@ -19,15 +19,22 @@ dummy="$workspace/dummy"
 setup() {
   is_git_available || exit 1
 
-  mkdir -p "$repo1" "$repo2" "$dummy"
-  if [[ ! -d "$repo1/.git" ]]; then
-    cd "$repo1" || return 1
-    git init >/dev/null
-  fi
-  if [[ ! -d "$repo2/.git" ]]; then
-    cd "$repo2" || return 1
-    git init >/dev/null
-  fi
+  setup_git_repo() {
+    local dir
+    dir="$1"
+    mkdir -p "$dir"
+    if [[ ! -d "$dir/.git" ]]; then
+      cd "$dir" || return 1
+      git init >/dev/null
+      git commit --allow-empty -m "Initial commit" >/dev/null
+      cd - >/dev/null || return 1
+    fi
+  }
+
+  mkdir -p "$dummy"
+  setup_git_repo "$repo1"
+  setup_git_repo "$repo2"
+
   cd "$THIS_DIR" || return 1
 }
 
