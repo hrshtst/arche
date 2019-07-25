@@ -53,6 +53,9 @@ green=$(tput setaf 76)
 # Store the name of test script.
 __unittest_test_script="${BASH_SOURCE[1]}"
 
+# Store the working directory that each test will run.
+__unittest_working_directory="$(pwd)"
+
 # Flag to keep whether a test is passed or failed. Before running each
 # test, this flag should be set to false. If the test failed, this
 # flag should be set to true.
@@ -81,6 +84,9 @@ __unittest_before_running_hook() {
   __unittest_source_stack=()
   __unittest_lineno_stack=()
   __unittest_status_stack=()
+
+  # Chenge to the default working directory.
+  cd "$__unittest_working_directory" || exit 1
 }
 
 # Enable a __unittest_failed flag if an error is detected. This function will
@@ -169,6 +175,13 @@ trap '__unittest_failed_hook' ERR
 # exiting immediately when an error occurs.
 set -o errtrace
 
+# Prepare stuff before running all test cases.
+unittest_prepare() {
+  # Set the current directory as the working directory in which each
+  # test will run.
+  __unittest_working_directory="$(pwd)"
+}
+
 # Find all the test cases defined in a script. Function names of test
 # cases to be executed are stored in a variable '__unittest_tests'
 # as an array. Skipped test cases, whose name ends with '__skip' such
@@ -216,6 +229,7 @@ unittest_print_summary() {
 
 # Test runner.
 unittest_run() {
+  unittest_prepare
   unittest_find_tests
   unittest_run_tests
   unittest_print_summary
