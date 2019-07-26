@@ -74,6 +74,7 @@ testcase_is_git_cloned() {
   cd "$workspace" || return 1
 
   ! is_git_cloned "repo1"
+  ! is_git_cloned "dummy" 2>/dev/null
   is_git_cloned "Spoon-Knife"
 }
 
