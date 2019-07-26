@@ -13,6 +13,11 @@ source "unittest.sh"
 # shellcheck source=git-helpers.sh
 source "git-helpers.sh"
 
+# Turn this variable into true if skip tests involved in operations on
+# remote due to lack of internet connection or slowness of execution
+# time.
+DISABLE_REMOTE=false
+
 workspace="/tmp/workspace-$PPID"
 repo1="$workspace/repo1"
 repo2="$workspace/repo2"
@@ -39,7 +44,7 @@ setup() {
   cd "$repo1" && git branch "develop" 2>/dev/null
   cd "$repo2" && git branch "hotfix" 2>/dev/null
 
-  if [[ ! -d "$spoon/.git" ]]; then
+  if [[ $DISABLE_REMOTE != true ]] && [[ ! -d "$spoon/.git" ]]; then
     cd "$workspace" || return 1
     git clone https://github.com/octocat/Spoon-Knife
   fi
@@ -73,9 +78,11 @@ testcase_is_get_repo() {
 testcase_is_git_cloned() {
   cd "$workspace" || return 1
 
-  ! is_git_cloned "repo1"
-  ! is_git_cloned "dummy" 2>/dev/null
-  is_git_cloned "Spoon-Knife"
+  if [[ $DISABLE_REMOTE != true ]]; then
+    ! is_git_cloned "repo1"
+    ! is_git_cloned "dummy" 2>/dev/null
+    is_git_cloned "Spoon-Knife"
+  fi
 }
 
 testcase_git_branch_exists() {
