@@ -17,6 +17,7 @@ workspace="/tmp/workspace-$PPID"
 repo1="$workspace/repo1"
 repo2="$workspace/repo2"
 dummy="$workspace/dummy"
+spoon="$workspace/Spoon-Knife"
 setup() {
   is_git_available || exit 1
 
@@ -35,9 +36,13 @@ setup() {
   mkdir -p "$dummy"
   setup_git_repo "$repo1"
   setup_git_repo "$repo2"
-
   cd "$repo1" && git branch "develop" 2>/dev/null
   cd "$repo2" && git branch "hotfix" 2>/dev/null
+
+  if [[ ! -d "$spoon/.git" ]]; then
+    cd "$workspace" || return 1
+    git clone https://github.com/octocat/Spoon-Knife
+  fi
   cd "$THIS_DIR" || return 1
 }
 
@@ -51,6 +56,7 @@ teardown() {
   unset -v repo1
   unset -v repo2
   unset -v dummy
+  unset -v spoon
 }
 
 testcase_is_get_repo() {
@@ -62,6 +68,13 @@ testcase_is_get_repo() {
 
   cd "repo2" || return 1
   is_git_repo
+}
+
+testcase_is_git_cloned() {
+  cd "$workspace" || return 1
+
+  ! is_git_cloned "repo1"
+  is_git_cloned "Spoon-Knife"
 }
 
 testcase_git_branch_exists() {

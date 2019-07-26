@@ -63,6 +63,39 @@ is_git_repo() {
   return $retval
 }
 
+# Check if a specified path or the current directory is cloned from a
+# remote repository or not.
+#
+# Example usage:
+#
+#   $ if is_git_cloned; then
+#   >   git remote get-url origin
+#   > fi
+#
+# @param $1  Optional. Directory to check if a Git repo.
+# @return True (0) if the directory is cloned from remote.
+#         False (>0) otherwise.
+is_git_cloned() {
+  is_git_available || return 1
+
+  local dir
+  dir="${1:-.}"
+
+  mark
+  cd "$dir" || return 1
+  if ! is_git_repo; then
+    e_error "$dir is not a git repository."
+    back
+    return 1
+  fi
+
+  local retval
+  git remote show | grep -q origin
+  retval=$?
+  back
+  return $retval
+}
+
 # Check if a specified branch name does exists in a repository.
 #
 # Example usage:
