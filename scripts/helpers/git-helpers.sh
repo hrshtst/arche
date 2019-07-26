@@ -119,6 +119,10 @@ git_branch_exists() {
   cd "$repo" || return 1
   git rev-parse --verify --quiet "$branch" >/dev/null
   retval=$?
+  if [[ $retval != 0 ]] && is_git_cloned; then
+    git ls-remote --heads --quiet origin "$branch" >/dev/null
+    retval=$?
+  fi
   back
   return $retval
 }

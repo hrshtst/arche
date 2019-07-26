@@ -93,6 +93,11 @@ testcase_git_branch_exists() {
   cd .. || return 1
   git_branch_exists "master" "repo2"
   ! git_branch_exists "develop" "repo2"
+
+  if [[ $DISABLE_REMOTE != true ]]; then
+    cd "$spoon" || return 1
+    git_branch_exists "test-branch"
+  fi
 }
 
 testcase_git_get_branch_name() {
