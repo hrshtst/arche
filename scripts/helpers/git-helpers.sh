@@ -37,11 +37,11 @@ is_git_available() {
 #
 # Example usage:
 #
-#   $ if is_git_repository; then
+#   $ if is_git_repo; then
 #   >   git pull origin master
 #   > fi
 #
-# @param $1  Directory to check if a Git repo.
+# @param $1  Optional. Directory to check if a Git repo.
 # @return True (0) if the directory is a Git repo.
 #         False (>0) if the  directory is not a Git repo.
 is_git_repo() {
