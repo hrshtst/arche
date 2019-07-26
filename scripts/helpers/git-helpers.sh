@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2119,SC2120
 
 # Avoid double sourcing of this file.
 set +u
@@ -87,4 +88,31 @@ git_branch_exists() {
   retval=$?
   back
   return $retval
+}
+
+# Get the current branch name. If the repository is detached at a
+# certain commit, nothing returns.
+#
+# @param $1  Optional. Path to repository.
+# @return  Return the current branch name to stdout.
+git_get_branch_name() {
+  is_git_available || return 1
+
+  local repo
+  repo="${1:-.}"
+
+  if is_git_repo "$repo"; then
+    mark
+    cd "$repo" || return 1
+  else
+    e_error "$repo is not a repository"
+    return 1
+  fi
+
+  if branch=$(git symbolic-ref --short -q HEAD); then
+    echo "$branch"
+  else
+    echo ""
+  fi
+  back
 }

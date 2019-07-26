@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2119,SC2120
 
 # Get the path which this script exists.
 THIS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
@@ -36,6 +37,7 @@ setup() {
   setup_git_repo "$repo2"
 
   cd "$repo1" && git branch -f "develop"
+  cd "$repo2" && git branch -f "hotfix"
   cd "$THIS_DIR" || return 1
 }
 
@@ -70,6 +72,23 @@ testcase_git_branch_exists() {
   cd .. || return 1
   git_branch_exists "master" "repo2"
   ! git_branch_exists "develop" "repo2"
+}
+
+testcase_git_get_branch_name() {
+  cd "$repo1" || return 1
+  git checkout -q master
+  test "$(git_get_branch_name)" = "master"
+
+  git checkout -q develop
+  test "$(git_get_branch_name)" = "develop"
+
+  git checkout -q master^0
+  test -z "$(git_get_branch_name)"
+
+  cd "$repo2" || return 1
+  git checkout -q hotfix
+  cd .. || return 1
+  test "$(git_get_branch_name "repo2")" = "hotfix"
 }
 
 setup
