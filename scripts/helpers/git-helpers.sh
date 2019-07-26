@@ -211,3 +211,72 @@ git_checkout() {
   fi
   back
 }
+
+# Clone a repository from remote and checkout a branch if specified.
+# If a protocol such as 'https://' or 'git://' is omitted for
+# repository URL, try to clone from https://github.com. After cloning
+# repository, it is able to checkout a specified branch with an option
+# '-b'.
+#
+# Example usage:
+#   $ git_clone "octocat/Spoon-Knife"
+#   $ git_clone -b "test-branch" "octocat/Spoon-Knife"
+#   $ git_clone "octocat/Spoon-Knife" "my-Spoon-Knife"
+#
+# @option -b <branch>  Branch name.
+# @param $1 URL Repository URL to pull from. If 'username/repository'
+#           is given, try to clone from github.com.
+# @param $2 Optional. The name of a new directory to clone into.
+git_clone() {
+  is_git_available || return 1
+
+  # Option parsing.
+  local branch="master"
+  OPTIND=1
+  while getopts ":b:" opt; do
+    case $opt in
+      b)
+        branch="$OPTARG"
+        ;;
+      \?)
+        e_warning "Invralid option: -$OPTARG"
+        ;;
+    esac
+  done
+  shift "$((OPTIND - 1))"
+
+  # Determine the repository URL to pull from.
+  local repository
+  repository="$1"
+  if [[ "$repository" =~ ^[[:alnum:]_-]+/[[:alnum:]_-]+ ]]; then
+    repository="https://github.com/$repository"
+  fi
+
+  # Determine the directory to clone into.
+  local directory
+  directory="${2:-}"
+  if [[ -z "$directory" ]]; then
+    directory="${repository##*/}"
+  fi
+  directory="${directory%.git}"
+
+  # Check if the destination directory does not exist.
+  if [[ -d "$directory" ]]; then
+    e_error "$directory already exists."
+    return 1
+  fi
+
+  # Clone the repository.
+  local retval
+  git clone --recursive --quiet "$repository" "$directory"
+  retval=$?
+
+  # Check the exit status of git clone.
+  if [[ $retval != 0 ]]; then
+    e_error "'git clone $repository $directory' exit with $retval"
+    return $retval
+  fi
+
+  # Checkout the specified branch.
+  git_checkout "$branch" "$directory"
+}

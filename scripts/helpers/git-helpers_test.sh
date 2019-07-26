@@ -16,7 +16,7 @@ source "git-helpers.sh"
 # Turn this variable into true if skip tests involved in operations on
 # remote due to lack of internet connection or slowness of execution
 # time.
-DISABLE_REMOTE=false
+DISABLE_REMOTE=true
 
 workspace="/tmp/workspace-$PPID"
 repo1="$workspace/repo1"
@@ -138,6 +138,38 @@ testcase_git_checkout_with_confrom() {
   test "$(git_get_branch_name)" = "master"
   echo 'y' | git_checkout -c develop >/dev/null
   test "$(git_get_branch_name)" = "develop"
+}
+
+testcase_git_clone() {
+  mkdir -p "$workspace/remotes"
+  cd "$workspace/remotes" || return 1
+
+  _clean() {
+    rm -rf "Spoon-Knife"
+    rm -rf "my-Spoon-Knife"
+  }
+
+  if [[ $DISABLE_REMOTE = true ]]; then
+    return
+  fi
+
+  # Pattern 1: clone a repository on Github.com.
+  _clean
+  git_clone octocat/Spoon-Knife >/dev/null
+  is_git_repo "Spoon-Knife"
+  test "$(git_get_branch_name "Spoon-Knife")" = "master"
+
+  # Pattern 2: clone a repository into a directory.
+  _clean
+  git_clone octocat/Spoon-Knife my-Spoon-Knife >/dev/null
+  is_git_repo "my-Spoon-Knife"
+  test "$(git_get_branch_name "my-Spoon-Knife")" = "master"
+
+  # Pattern 3: clone a repository and checkout a branch
+  _clean
+  git_clone -b test-branch octocat/Spoon-Knife >/dev/null
+  is_git_repo "Spoon-Knife"
+  test "$(git_get_branch_name "Spoon-Knife")" = "test-branch"
 }
 
 setup
