@@ -130,6 +130,7 @@ git_get_branch_name() {
 git_checkout() {
   # Option parsing.
   local confirm=false
+  OPTIND=1
   while getopts ":c" opt; do
     case $opt in
       c)
