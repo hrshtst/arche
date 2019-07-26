@@ -116,3 +116,60 @@ git_get_branch_name() {
   fi
   back
 }
+
+# Checkout a specified branch. Check the existence of the specified
+# branch beforehand. If an option '-c' is provided, confirm
+# destination branch to checkout with user before execution.
+#
+# Example usage:
+#   $ git_checkout -c "develop"
+#
+# @option -c Confirm destination branch before checkout.
+# @param $1  Branch name to checkout.
+# @param $2  Optional. Path to repository.
+git_checkout() {
+  # Option parsing.
+  local confirm=false
+  while getopts ":c" opt; do
+    case $opt in
+      c)
+        confirm=true
+        ;;
+      \?)
+        e_warning "Invralid option: -$OPTARG"
+        ;;
+    esac
+  done
+  shift "$((OPTIND - 1))"
+
+  local dst_branch repo
+  dst_branch="${1:-}"
+  repo="${2:-.}"
+
+  # Change directory into the specified repository.
+  if is_git_repo "$repo"; then
+    mark
+    cd "$repo" || return 1
+  else
+    e_error "$repo is not a repository"
+    return 1
+  fi
+
+  # Check if the specified branch exists in the repository.
+  if ! git_branch_exists "$dst_branch"; then
+    e_error "$dst_branch does not exist in $repo"
+    back
+    return 1
+  fi
+
+  # Checkout the branch.
+  local cur_branch msg
+  cur_branch="$(git_get_branch_name)"
+  msg="Are you sure to checkout '$dst_branch'"
+  if [[ "$cur_branch" != "$dst_branch" ]]; then
+    if [[ "$confirm" = false ]] || ask "$msg"; then
+      git checkout -q "$dst_branch"
+    fi
+  fi
+  back
+}

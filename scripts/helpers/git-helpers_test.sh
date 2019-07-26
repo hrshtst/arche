@@ -36,8 +36,8 @@ setup() {
   setup_git_repo "$repo1"
   setup_git_repo "$repo2"
 
-  cd "$repo1" && git branch -f "develop"
-  cd "$repo2" && git branch -f "hotfix"
+  cd "$repo1" && git branch "develop" 2>/dev/null
+  cd "$repo2" && git branch "hotfix" 2>/dev/null
   cd "$THIS_DIR" || return 1
 }
 
@@ -89,6 +89,29 @@ testcase_git_get_branch_name() {
   git checkout -q hotfix
   cd .. || return 1
   test "$(git_get_branch_name "repo2")" = "hotfix"
+}
+
+testcase_git_checkout() {
+  cd "$repo1" || return 1
+  git_checkout master
+  test "$(git_get_branch_name)" = "master"
+  git_checkout develop
+  test "$(git_get_branch_name)" = "develop"
+  ! git_checkout hoge 2>/dev/null
+
+  cd .. || return 1
+  git_checkout master repo2
+  test "$(git_get_branch_name "repo2")" = "master"
+  git_checkout hotfix repo2
+  test "$(git_get_branch_name "repo2")" = "hotfix"
+}
+
+testcase_git_checkout_with_confrom() {
+  cd "$repo1" || return 1
+  git_checkout master
+  test "$(git_get_branch_name)" = "master"
+  echo 'y' | git_checkout -c develop >/dev/null
+  test "$(git_get_branch_name)" = "develop"
 }
 
 setup
