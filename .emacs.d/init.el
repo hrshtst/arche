@@ -3591,7 +3591,7 @@ This is passed to `set-frame-font'."
 
   ;; When using large monitor, increase font size.
   (when (>= (x-display-pixel-width) 3000)
-    (custom-set-variables '(arche-font-size 140)))
+    (custom-set-variables '(arche-font-size 380)))
 
   ;; Set the default font size.
   (when arche-font-size
