@@ -2526,6 +2526,13 @@ Return either a string or nil."
                    (expand-file-name
                     "lib/python*/site-packages" venv))))))
 
+;; Package `blacken' reformats a Python buffer with the uncompromising
+;; Python code formatter black.
+(use-package blacken
+  :hook (python-mode . blacken-mode)
+
+  :blackout t)
+
 ;; Feature `rst-mode' provides a major mode for ReST.
 (use-feature rst-mode
   :config
