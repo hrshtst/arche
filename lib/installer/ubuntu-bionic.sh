@@ -220,7 +220,7 @@ __install_packages_go() {
 
 __install_packages_go__config() {
   # Install go
-  local latest_ver=1.12.6
+  local latest_ver=1.13.8
   local ver=
   if has go; then
     ver=$(go version | cut -d " " -f 3 | sed s/go//)
@@ -229,6 +229,7 @@ __install_packages_go__config() {
     markcd "$HOME/usr/lib"
     local tarball="go${latest_ver}.linux-amd64.tar.gz"
     wget -q https://dl.google.com/go/${tarball}
+    rm -rf go
     tar xfz ${tarball}
     rm -f ${tarball}
     getback
