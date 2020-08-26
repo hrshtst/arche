@@ -63,12 +63,13 @@ let g:lightline = {
 
 " Spaces & Tabs
 " ----------------------------------------
+filetype on             " enable file type detection
 filetype plugin on      " load filetype-specific plugin files
 filetype indent on      " load filetype-specific indent files
 set expandtab           " use spaces for tab
-set tabstop=2           " use 4 spaces for one tab
+set tabstop=2           " use 2 spaces for one tab
 set softtabstop=2       " insert spaces when typing tab 
-set shiftwidth=2        " 4 spaces for indent
+set shiftwidth=2        " 2 spaces for indent
 set modeline            " enable modeline
 set modelines=1         " only one line is effective for modeline 
 set autoindent          " enable autoindentation
