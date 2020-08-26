@@ -1,4 +1,0 @@
-[flake8]
-# F403: from . import *
-ignore = F403
-max-line-length = 120
