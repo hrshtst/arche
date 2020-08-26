@@ -168,6 +168,6 @@ nnoremap <silent> <space>r :<c-u>History<cr>
 augroup vimrc
   autocmd!
   autocmd FileType lisp setlocal commentstring=;;\ %s
-  autocmd FileType make setlocal noexpandtab
+  autocmd FileType make setlocal list noexpandtab tabstop=8 shiftwidth=0 softtabstop=0
 augroup END
 
