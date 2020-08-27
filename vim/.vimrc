@@ -170,5 +170,6 @@ augroup vimrc
   autocmd!
   autocmd FileType lisp setlocal commentstring=;;\ %s
   autocmd FileType make setlocal list noexpandtab tabstop=8 shiftwidth=0 softtabstop=0
+  autocmd FileType gitcommit setlocal spell textwidth=72
 augroup END
 
