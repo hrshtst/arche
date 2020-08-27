@@ -1,76 +1,74 @@
+[advice]
+  detachedHead = false
+  statusHints = false
 [alias]
-        # short aliases
-        co = checkout
-        cm = commit
-        st = status
-        br = branch
-        df = diff
-        lg = log -p
-        rso = remote show origin
-        me = config user.name
-
-        unstage = reset -q HEAD --
-        discard = checkout --
-        nevermind = !git reset --hard HEAD && git clean -d -f
-        uncommit = reset --mixed HEAD~
-        save = commit -m
-        resave = commit --amend
-        invert = revert
-        last = log -1 HEAD --format=format:"%Cred%H"
-        summary = status -u -s
-        graph = log --graph -10 --branches --remotes --tags  --format=format:'%Cgreen%h %Creset• %<(75,trunc)%s (%cN, %ar) %Cred%d' --date-order
-        history = log -10 --format=format:'%Cgreen%h %Creset• %s (%cN, %ar)'
-        branchout = checkout -b
-        tags = tag
-        branches = branch -a
-        stashes = stash list
-        remotes = remote -v
-        prestage = diff -w --word-diff=color
-        precommit = diff --cached -w --word-diff=color --word-diff-regex='[^[:space:]<>]+'
-        move = mv
-        remove = rm
-        unmerged = branch --no-merged
-        unstash = stash pop
-        what = show -w
-        untrack = rm -r --cached
-        rewrite = rebase -i
-        amend = commit --amend
-        back = checkout "-"
-        contributors = shortlog -s -n
-        filetrail = git log --follow -p -w
-        mergetrail = log --ancestry-path --merges
-        unmerged = diff --name-only --diff-filter=U
-        tree = log --graph --date=short --pretty='format:%C(yellow)%h%Creset %s %Cgreen(%an)%Creset %Cred%d%Creset'
-
+  alias = "!_() { git config --global alias.$1 \"$2\"; }; _"
+  aliases = config --get-regexp ^alias\\.
+	checkup = !git log -1 && (git fetch --all 2>/dev/null || true) && git status
+  contributors = shortlog -s -n
+# Run a command as in the repository root. See
+# https://stackoverflow.com/questions/957928#comment9747528_957978.
+  exec = "!exec "
+  nevermind = !git reset --hard HEAD && git clean -d -f
+  last = log -1 HEAD --format=format:"%Cred%H"
+  root = rev-list --max-parents=0 HEAD
+  precommit = diff --cached -w --word-diff=color --word-diff-regex='[^[:space:]<>]+'
+  prestage = diff -w --word-diff=color
+	setup = !git init && git commit --allow-empty -m \"Initial commit\"
+  tree = log --graph --date=short --pretty='format:%C(yellow)%h%Creset %s %Cgreen(%an)%Creset %Cred%d%Creset'
+	unalias = "!_() { git config --global --unset alias.$1; }; _"
+  unstage = reset -q HEAD --
+[branch]
+# When creates a new branch that exists on a remote always makes it
+# track its remote counterpart. Also, 'git pull' always performs a
+# rebase, not a merge. See https://stackoverflow.com/a/22147540.
+  autoSetupMerge = always
+  autoSetupRebase = always
 [color]
-        ui = auto
-
+  ui = auto
 [core]
-        autocrlf = input
-        ignorecase = false
-        whitespace = cr-at-eol
-        editor = vim
-        pager = less -FRSX
-        fscache = true
-        excludesfile = ~/.gitignore
-
+  autocrlf = input
+  editor = vim
+  excludesfile = ~/.gitexclude
+  fscache = true
+  ignoreCase = false
+  pager = less -FRSX
+  preloadIndex = true
+  whitespace = cr-at-eol
+[credential]
+	helper =
+	helper = cache --timeout 86400
+[diff]
+	mnemonicPrefix = true
+	renames = copies
+	submodule = log
+[fetch]
+	# Automatically prune stale branches from the remote on every
+	# fetch.
+	prune = true
 [ghq]
-        root = ~/.ghq
-        root = ~/.go/src
-
-[help]
-        autocorrect = 1
-
+  root = ~/.go/src
+  root = ~/usr/ghq
+[include]
+	path = ~/.gitconfig.local
+[merge]
+	conflictStyle = diff3
+	stat = true
+[protocol "hg"]
+	allow = always
+[pull]
+	ff = only
 [push]
-        default = current
-
-
+	default = current
 [rebase]
-	autosquash = true
-
+  autosquash = true
+[receive]
+	denyCurrentBranch = updateInstead
+[rerere]
+	enabled = true
 [status]
-	submodulesummary = true
-
+	submoduleSummary = true
 [user]
-        name = Hiroshi Atsuta
-        email = atsuta.hiroshi@gmail.com
+  name = Hiroshi Atsuta
+  email = atsuta.hiroshi@gmail.com
+
