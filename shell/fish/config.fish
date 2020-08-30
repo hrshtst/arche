@@ -1,5 +1,6 @@
 #
-# Initialization file for fish shell.
+# Configuration file for fish shell
+# https://fishshell.com/
 #
 
 ####################################################################
