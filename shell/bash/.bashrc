@@ -202,11 +202,13 @@ addenv() {
   local var=$1
   local value="$2"
   local current="$(eval echo "\$$var")"
-  local delim=:
+
   if [[ -z $current ]]; then
     setenv $var "$value"
   else
-    setenv $var "$value$delim$current"
+    if [[ ":$current:" != *":$value:"* ]]; then
+      setenv $var "${value}:${current}"
+    fi
   fi
 }
 
