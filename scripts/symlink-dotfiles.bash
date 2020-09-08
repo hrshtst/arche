@@ -10,7 +10,7 @@ dotfiles="${1:-$(dirname "$scripts")}"
 safe_link() {
   if [[ -e "$2" && ! -L "$2" ]]; then
     echo "already exists and not a symlink: $2" >&2
-#    exit 1
+    exit 1
   fi
 
   ln -sf "$1" "$2"
@@ -27,6 +27,16 @@ force_link() {
 
 # Bash
 force_link "$dotfiles/shell/bash/.bashrc" "$HOME/.bashrc"
+
+# fish - friendly interactive shell
+mkdir -p "$HOME/.config/fish"
+safe_link "$dotfiles/shell/fish/config.fish" "$HOME/.config/fish/config.fish"
+safe_link "$dotfiles/shell/fish/fishfile" "$HOME/.config/fish/fishfile"
+mkdir -p "$HOME/.config/fish/functions"
+for i in "$dotfiles/shell/fish/functions/"*.fish; do
+  filename="$(basename "$i")"
+  safe_link "$dotfiles/shell/fish/functions/$filename" "$HOME/.config/fish/functions/$filename"
+done
 
 # tmux
 mkdir -p "$HOME/.config/tmux"
