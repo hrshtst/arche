@@ -12,69 +12,112 @@ if status is-interactive; and not set -q TMUX
 end
 
 ####################################################################
-## Configuration of environment variables
+## Environment variables
 
-# Helper function to put one or more paths to the head of a variable
-# that holds a list of paths. The specified paths will be added only
-# if it is not contained in the variable and it is an existing
-# directory. The variable will be set globally and exported to persist
-# for child processes.
-#
-# Example usage:
-#
-#   prepend_path_to_env LD_LIBRARY_PATH ~/usr/lib
-#   prepend_path_to_env PATH ~/usr/bin ~/.local/bin
-#
-# @param $1 var  The name of environment variable.
-# @param $2..N paths  The list of paths to be added.
-function prepend_path_to_env
+# Helper function used in `setenv` and `addenv`
+# The first argument is the caller function name, i.e. `setenv` or
+# `addenv`. The second is the number of arguments provided for the
+# caller function. The third is the variable name to create if it is not
+# exist.
+function __helper_setenv --description 'Helper function for setenv.'
 
-    # Check the number of passed arguments.
-    if test (count $argv) -lt 2
-        printf (_ "%s: At least two arguments are required.\n") (status filename)
+    set -l func $argv[1]
+    set -l n_arg $argv[2]
+
+    # No arguments should raise an error.
+    if test $n_arg -eq 0
+        printf (_ '%s: No arguments provided\n') $func >&2
+        return
+    end
+
+    # `setenv` and `addenv` accepts two arguments: the var name and the
+    # value. If there are more than two arguments it is an error.
+    if test $n_arg -ge 3
+        printf (_ '%s: Too many arguments\n') $func >&2
         return 1
     end
 
-    set -l var $argv[1]
-    set -l paths $argv[2..-1]
-
-    # Warn if the first argument is a path.
-    if string match -q -r '/' $var
-        printf (_ "%s: %s should be put after variable name.\n") (status filename) $var
-        return 1
+    if not set -q argv[3]
+        return
     end
+    set -l var $argv[3]
 
-    # If the specified variable does not exist, create it.
-    set -q $var
-    or set -gx $var
-
-    # Iterate over the specified paths in reversed order to keep the
-    # passed order.
-    for path in $paths[-1..1]
-        # Skip if the path is not a directory.
-        not test -d "$path"; and continue
-
-        # Add path to the head of the variable if it is not contained.
-        # NOTE: set with '-p' option is available since fish version 3.0
-        if not contains "$path" $$var
-            set -pgx $var "$path"
-        end
+    # Validate the variable name.
+    if not string match -qr '^\w+$' -- $var
+        printf (_ '%s: Variable name must contain alphanumeric characters\n') $func >&2
+        return 1
     end
 end
 
-# Motor Intelligence Lab. library.
-# https://www.mi.ams.eng.osaka-u.ac.jp/open-e.html
-prepend_path_to_env LD_LIBRARY_PATH ~/usr/lib
-prepend_path_to_env PATH ~/usr/bin
+# Set an environment variable to a provided value.
+function setenv --description 'Set an env var to a provided value.'
+
+    __helper_setenv setenv (count $argv) $argv[1]
+    if test $status -ne 0
+        return 1
+    end
+
+    # A single argument should create the named var with an empty
+    # string, the second provided set the var to it.
+    set -l var $argv[1]
+    set -l val ''
+    set -q argv[2]; and set -l val $argv[2]
+
+    # All variables that end in `PATH` are treated as a special kind to
+    # support colon-delimited path lists. All other variables are
+    # treated literally. See details in the doc:
+    # https://fishshell.com/docs/current/index.html#path-variables
+    if string match -r -q -- 'PATH$' $var
+        set -gx $var (string split -- ':' $val)
+    else
+        set -gx $var $val
+    end
+end
+
+# Add a value to the head of an environment variable.
+function addenv --description 'Add a value to the head of an env var.'
+
+    __helper_setenv addenv (count $argv) $argv[1]
+    if test $status -ne 0
+        return 1
+    end
+
+    # A single argument should create the named var with an empty
+    # string, the second provided set the var to it.
+    set -l var $argv[1]
+    set -l val ''
+    set -q argv[2]; and set -l val $argv[2]
+
+    # If the named variabled does not exist create it.
+    set -q $var; or set -gx $var
+
+    # All variables that end in `PATH` are treated as a special kind to
+    # support colon-delimited path lists. All other variables are
+    # treated literally. See details in the doc:
+    # https://fishshell.com/docs/current/index.html#path-variables
+    if string match -r -q -- 'PATH$' $var
+        for i in (string split -- ':' $val)[-1..1]
+            if not contains -- "$i" $$var
+                set --prepend -gx $var "$i"
+            end
+        end
+    else
+        set -gx $var "$val$$var"
+    end
+end
+
+# Set paths for my own library
+addenv PATH "$HOME/usr/bin"
+addenv LD_LIBRARY_PATH "$HOME/usr/lib"
 
 # Add directories to search for .pc files for pkg-config.
 # https://www.freedesktop.org/wiki/Software/pkg-config/
-prepend_path_to_env PKG_CONFIG_PATH ~/usr/lib/pkgconfig
+addenv PKG_CONFIG_PATH "$HOME/usr/lib/pkgconfig"
 
 # pyenv is a simple python version management.
 # https://github.com/pyenv/pyenv
-set -gx PYENV_ROOT ~/.pyenv
-prepend_path_to_env PATH $PYENV_ROOT/bin
+setenv PYENV_ROOT "$HOME/.pyenv"
+addenv PATH "$PYENV_ROOT/bin"
 if command -v pyenv 1>/dev/null 2>&1;
     status is-interactive; and source (pyenv init -|psub)
 end
@@ -82,21 +125,78 @@ end
 # pipx provides a way to execute binaries from Python packages in
 # isolated environments.
 # https://github.com/pipxproject/pipx
-prepend_path_to_env PATH ~/.local/bin
+addenv PATH "$HOME/.local/bin"
 
 # Configure paths for Go Programming Language.
 # https://golang.org/
 # https://github.com/golang/go/wiki/SettingGOPATH
-set -gx GOPATH ~/.go
-set -gx GOROOT ~/usr/lib/go
-prepend_path_to_env PATH $GOPATH/bin $GOROOT/bin
+setenv GOPATH "$HOME/.go"
+setenv GOROOT "$HOME/usr/lib/go"
+addenv PATH "$GOROOT/bin"
+addenv PATH "$GOPATH/bin"
+
+####################################################################
+## Appearance
+
+# Enable starship.
+# https://github.com/starship/starship
+if type -q starship
+    starship init fish | source
+end
+
+# Use the fish prompt for virtualenv instead of the original one.
+set -gx VIRTUAL_ENV_DISABLE_PROMPT 1
+
+####################################################################
+## Colors
+
+# Enable color support of ls and also add handy aliases.
+if test -x /usr/bin/dircolors
+    if test -r $HOME/.dircolors
+        eval "(dircolors -b $HOME/.dircolors)"
+        or eval "(dircolors -b)"
+    end
+    abbr --add --global ls 'ls --color=auto'
+    abbr --add --global dir 'dir --color=auto'
+    abbr --add --global vdir 'vdir --color=auto'
+
+    abbr --add --global grep 'grep --color=auto'
+    abbr --add --global fgrep 'fgrep --color=auto'
+    abbr --add --global egrep 'egrep --color=auto'
+end
+
+# Colored GCC warnings and errors
+setenv GCC_COLORS 'error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
 ####################################################################
 ## Aliases
 
 # Define function or use 'abbr' command instead of using builtin
 # 'alias' command.
-# cf. https://github.com/jorgebucaran/fish-cookbook#aliases
+# cf. https://github.com/jorgebucaran/cookbook.fish#aliases
+
+# Manipulate X selection (aka clipboard).
+# https://stackoverflow.com/a/16700690
+function pbcopy --description 'Trim new lines and copy to clipboard'
+  cat $argv 2>/dev/null | while read -l line
+    set argv $argv $line
+  end
+
+  test -z "$argv"; and return
+
+  for i in $argv
+    echo -n $i
+  end | tr -d '\n' | xsel --clipboard --input
+end
+
+function pbpaste --description 'Paste date from clipboard'
+    xsel --clipboard --input
+end
+
+# Run pylab.
+if type -q ipython
+    abbr --add --global pylab 'ipython --pylab'
+end
 
 # Prompt before removing more than tree files.
 function rm --wraps /bin/rm
@@ -109,20 +209,12 @@ function myip
     echo
 end
 
-# Colorize dir command.
-abbr -a dir 'dir --color=auto'
-
-# Alias to ipython --pylab
-abbr -a pylab 'ipython --pylab'
-
-####################################################################
-## Appearance
-
-# Use the fish prompt for virtualenv instead of the original one.
-set -gx VIRTUAL_ENV_DISABLE_PROMPT 1
-
-# Show symbol (rocket) when Python virtual envinronment is set.
-set -g SPACEFISH_VENV_SYMBOL "🚀"
+# Some more useful aliases
+abbr --add --global ll 'ls -alF'
+abbr --add --global la 'ls -A'
+abbr --add --global l 'ls -CF'
+abbr --add --global dot 'ls .[a-zA-Z0-9_]*'
+abbr --add --global j 'jobs -l'
 
 ####################################################################
 ## Package manager
@@ -140,7 +232,7 @@ end
 ## https://github.com/junegunn/fzf
 
 # Add path.
-prepend_path_to_env PATH ~/.fzf/bin
+addenv PATH ~/.fzf/bin
 
 # Use ripgrep as default command if available.
 if type -q rg
@@ -229,3 +321,4 @@ bind -M insert \ed\ec '__fzf_docker_ps'
 # Select docker image ID.
 bind \ed\ei '__fzf_docker_images'
 bind -M insert \ed\ei '__fzf_docker_images'
+
