@@ -30,12 +30,14 @@ force_link "$dotfiles/shell/bash/.bashrc" "$HOME/.bashrc"
 
 # fish - friendly interactive shell
 mkdir -p "$HOME/.config/fish"
-safe_link "$dotfiles/shell/fish/config.fish" "$HOME/.config/fish/config.fish"
+safe_link "$dotfiles/shell/fish/config.fish" \
+          "$HOME/.config/fish/config.fish"
 safe_link "$dotfiles/shell/fish/fishfile" "$HOME/.config/fish/fishfile"
 mkdir -p "$HOME/.config/fish/functions"
 for i in "$dotfiles/shell/fish/functions/"*.fish; do
   filename="$(basename "$i")"
-  safe_link "$dotfiles/shell/fish/functions/$filename" "$HOME/.config/fish/functions/$filename"
+  safe_link "$dotfiles/shell/fish/functions/$filename" \
+            "$HOME/.config/fish/functions/$filename"
 done
 
 # tmux
@@ -52,3 +54,8 @@ safe_link "$dotfiles/emacs/versions.el" \
 # Git
 safe_link "$dotfiles/git/.gitconfig" "$HOME/.gitconfig"
 safe_link "$dotfiles/git/.gitexclude" "$HOME/.gitexclude"
+
+# pandoc
+mkdir -p "$HOME/.local/share/pandoc"
+safe_link "$dotfiles/pandoc/github-markdown.css" \
+          "$HOME/.local/share/pandoc/github-markdown.css"
