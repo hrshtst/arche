@@ -175,24 +175,6 @@ setenv GCC_COLORS 'error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quo
 # 'alias' command.
 # cf. https://github.com/jorgebucaran/cookbook.fish#aliases
 
-# Manipulate X selection (aka clipboard).
-# https://stackoverflow.com/a/16700690
-function pbcopy --description 'Trim new lines and copy to clipboard'
-  cat $argv 2>/dev/null | while read -l line
-    set argv $argv $line
-  end
-
-  test -z "$argv"; and return
-
-  for i in $argv
-    echo -n $i
-  end | tr -d '\n' | xsel --clipboard --input
-end
-
-function pbpaste --description 'Paste date from clipboard'
-    xsel --clipboard --input
-end
-
 # Run pylab.
 if type -q ipython
     abbr --add --global pylab 'ipython --pylab'
