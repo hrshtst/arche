@@ -944,14 +944,82 @@ ourselves."
 
   (selectrum-prescient-mode +1))
 
+;;; Window management
 
+;; Prevent accidental usage of `list-buffers'.
+(bind-key "C-x C-b" #'switch-to-buffer)
 
+(arche-defadvice arche--advice-keyboard-quit-minibuffer-first
+    (keyboard-quit)
+  :around #'keyboard-quit
+  "Cause \\[keyboard-quit] to exit the minibuffer, if it is active.
+Normally, \\[keyboard-quit] will just act in the current buffer.
+This advice modifies the behavior so that it will instead exit an
+active minibuffer, even if the minibuffer is not selected."
+  (if-let ((minibuffer (active-minibuffer-window)))
+      (with-current-buffer (window-buffer minibuffer)
+        (minibuffer-keyboard-quit))
+    (funcall keyboard-quit)))
 
+(arche-defadvice arche--advice-kill-buffer-maybe-kill-window
+    (func &optional buffer-or-name kill-window-too)
+  :around #'kill-buffer
+  "Make it so \\[universal-argument] \\[kill-buffer] kills the window too."
+  (interactive
+   (lambda (spec)
+     (append (or (advice-eval-interactive-spec spec) '(nil))
+             current-prefix-arg)))
+  (if kill-window-too
+      (with-current-buffer buffer-or-name
+        (kill-buffer-and-window))
+    (funcall func buffer-or-name)))
 
+;; Feature `windmove' provides keybindings S-left, S-right, S-up, and
+;; S-down to move between windows. This is much more convenient and
+;; efficient than using the default binding, C-x o, to cycle through
+;; all of them in an essentially unpredictable order.
+(use-feature windmove
+  :demand t
+  :config
 
+  (windmove-default-keybindings)
 
+  ;; Introduced in Emacs 27:
 
+  (when (fboundp 'windmove-display-default-keybindings)
+    (windmove-display-default-keybindings))
 
+  (when (fboundp 'windmove-delete-default-keybindings)
+    (windmove-delete-default-keybindings)))
+
+;; Feature `winner' provides an undo/redo stack for window
+;; configurations, with undo and redo being C-c left and C-c right,
+;; respectively. (Actually "redo" doesn't revert a single undo, but
+;; rather a whole sequence of them.) For instance, you can use C-x 1
+;; to focus on a particular window, then return to your previous
+;; layout with C-c left.
+(use-feature winner
+  :demand t
+  :config
+
+  (winner-mode +1))
+
+;; Package `transpose-frame' provides simple commands to mirror,
+;; rotate, and transpose Emacs windows: `flip-frame', `flop-frame',
+;; `transpose-frame', `rotate-frame-clockwise',
+;; `rotate-frame-anticlockwise', `rotate-frame'.
+(use-package transpose-frame
+  :bind* (("s-t" . #'transpose-frame)))
+
+;; Package `buffer-move' provides simple commands to swap Emacs
+;; windows: `buf-move-up', `buf-move-down', `buf-move-left',
+;; `buf-move-right'.
+(use-package buffer-move)
+
+;; Feature `ibuffer' provides a more modern replacement for the
+;; `list-buffers' command.
+(use-feature ibuffer
+  :bind (([remap list-buffers] . #'ibuffer)))
 
 
 ;; Local Variables:
