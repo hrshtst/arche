@@ -11,3 +11,11 @@ help: ## Show this message
 link: ## Symlink dotfiles into home directory
 	@scripts/symlink-dotfiles.bash
 
+.PHONY: compile
+compile: ## Byte-compile radian.el
+	@scripts/byte-compile.bash
+
+.PHONY: clean
+clean: ## Remove build artifacts
+	@rm -f emacs/arche.elc
+
