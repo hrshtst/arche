@@ -15,7 +15,7 @@
 ;; "arche-", from the implementation originally written by Radon
 ;; Rosborough [https://github.com/raxod502/radian/emacs/radian.el]. I
 ;; learned a lot from his elegant implementation and meticulous
-;; comments about the pratical way of Emacs-Lisp, and I would like to
+;; comments about the pratical way of Emacs-Lisp. I would like to
 ;; express my thanks to him.
 
 ;;; Code:
