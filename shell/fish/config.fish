@@ -156,13 +156,13 @@ if test -x /usr/bin/dircolors
         eval "(dircolors -b $HOME/.dircolors)"
         or eval "(dircolors -b)"
     end
-    abbr --add --global ls 'ls --color=auto'
-    abbr --add --global dir 'dir --color=auto'
-    abbr --add --global vdir 'vdir --color=auto'
+    alias ls='ls --color=auto'
+    alias dir='dir --color=auto'
+    alias vdir='vdir --color=auto'
 
-    abbr --add --global grep 'grep --color=auto'
-    abbr --add --global fgrep 'fgrep --color=auto'
-    abbr --add --global egrep 'egrep --color=auto'
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
 end
 
 # Colored GCC warnings and errors
@@ -171,13 +171,13 @@ setenv GCC_COLORS 'error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quo
 ####################################################################
 ## Aliases
 
-# Define function or use 'abbr' command instead of using builtin
-# 'alias' command.
-# cf. https://github.com/jorgebucaran/cookbook.fish#aliases
-
 # Run pylab.
-if type -q ipython
-    abbr --add --global pylab 'ipython --pylab'
+function pylab --wraps ipython --description 'alias pylab=ipython --pylab'
+    if not type -q ipython
+        printf (_ '%s: unable to find ipython\n') pylab >&2
+        return 1
+    end
+    ipython --pylab $argv
 end
 
 # Prompt before removing more than tree files.
@@ -192,11 +192,11 @@ function myip
 end
 
 # Some more useful aliases
-abbr --add --global ll 'ls -alF'
-abbr --add --global la 'ls -A'
-abbr --add --global l 'ls -CF'
-abbr --add --global dot 'ls .[a-zA-Z0-9_]*'
-abbr --add --global j 'jobs -l'
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+alias dot='ls .[a-zA-Z0-9_]*'
+alias j='jobs -l'
 
 ####################################################################
 ## Package manager
@@ -303,4 +303,3 @@ bind -M insert \ed\ec '__fzf_docker_ps'
 # Select docker image ID.
 bind \ed\ei '__fzf_docker_images'
 bind -M insert \ed\ei '__fzf_docker_images'
-
