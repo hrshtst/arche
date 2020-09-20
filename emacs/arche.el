@@ -2282,12 +2282,12 @@ killed (which happens during Emacs shutdown)."
 
 ;; Feature `lsp-clients' from package `lsp-mode' defines how to
 ;; interface with the various popular LSP servers.
-(use-feature lsp-clients
-  :config
+;; (use-feature lsp-clients
+;;   :config
 
-  ;; We want to make sure the PATH is set up correctly by now, since
-  ;; otherwise we might not be able to find the LSP server binaries.
-  (arche-env-setup))
+;;   ;; We want to make sure the PATH is set up correctly by now, since
+;;   ;; otherwise we might not be able to find the LSP server binaries.
+;;   (arche-env-setup))
 
 ;;;; Indentation
 
@@ -3002,7 +3002,7 @@ This works around an upstream bug; see
 ;; for use with `lsp-mode'.
 (use-package lsp-haskell
   :demand t
-  :after (:all lsp-clients haskell-mode))
+  :after (:all haskell-mode))
 
 ;;;; Lua
 ;; <http://www.lua.org/>
@@ -3153,7 +3153,7 @@ Return either a string or nil."
 ;; better than Palantir's in my opinion.
 (use-package lsp-python-ms
   :demand t
-  :after (:all lsp-clients python)
+  :after (:all python)
   :config
 
   (arche-defadvice arche--lsp-python-ms-silence (func &rest args)
@@ -3281,16 +3281,17 @@ Return either a string or nil."
     (when (eq major-mode 'sh-mode)
       (setq mode-name (capitalize (symbol-name sh-shell)))))
 
-  (use-feature lsp-clients
-    :config
+  ;; (use-feature lsp-clients
+  ;;   :config
 
-    ;; Only activate the Bash LSP server in Bash code, not all shell
-    ;; script code. It's not very helpful to get Bash syntax errors
-    ;; while editing Zsh code.
-    (arche-protect-macros
-      (setf (lsp--client-activation-fn (gethash 'bash-ls lsp-clients))
-            (lambda (&rest _)
-              (memq sh-shell '(sh bash)))))))
+  ;;   ;; Only activate the Bash LSP server in Bash code, not all shell
+  ;;   ;; script code. It's not very helpful to get Bash syntax errors
+  ;;   ;; while editing Zsh code.
+  ;;   (arche-protect-macros
+  ;;     (setf (lsp--client-activation-fn (gethash 'bash-ls lsp-clients))
+  ;;           (lambda (&rest _)
+  ;;             (memq sh-shell '(sh bash))))))
+  )
 
 ;;;; Swift
 ;; https://developer.apple.com/swift/
