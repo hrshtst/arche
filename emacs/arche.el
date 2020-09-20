@@ -2427,7 +2427,7 @@ backends will still be included.")
   ;; Company appears to override our settings in `company-active-map'
   ;; based on `company-auto-complete-chars'. Turning it off ensures we
   ;; have full control.
-  (setq company-auto-complete-chars nil)
+  ;; (setq company-auto-complete-chars nil)
 
   ;; Only search the current buffer to get suggestions for
   ;; `company-dabbrev' (a backend that creates suggestions from text
@@ -2529,36 +2529,39 @@ order."
 ;; be clever, so it "just works" instantly for dozens of languages
 ;; with zero configuration.
 (use-package dumb-jump
-  :init/el-patch
+  ;; :init/el-patch
 
-  (defvar dumb-jump-mode-map
-    (let ((map (make-sparse-keymap)))
-      (define-key map (kbd "C-M-g") 'dumb-jump-go)
-      (define-key map (kbd "C-M-p") 'dumb-jump-back)
-      (define-key map (kbd "C-M-q") 'dumb-jump-quick-look)
-      map))
+  ;; (defvar dumb-jump-mode-map
+  ;;   (let ((map (make-sparse-keymap)))
+  ;;     (define-key map (kbd "C-M-g") 'dumb-jump-go)
+  ;;     (define-key map (kbd "C-M-p") 'dumb-jump-back)
+  ;;     (define-key map (kbd "C-M-q") 'dumb-jump-quick-look)
+  ;;     map))
 
-  (define-minor-mode dumb-jump-mode
-    "Minor mode for jumping to variable and function definitions"
-    :global t
-    :keymap dumb-jump-mode-map)
+  ;; (define-minor-mode dumb-jump-mode
+  ;;   "Minor mode for jumping to variable and function definitions"
+  ;;   :global t
+  ;;   :keymap dumb-jump-mode-map)
 
-  :init
+  ;; :init
 
-  (dumb-jump-mode +1)
+  ;; (dumb-jump-mode +1)
 
-  :bind (:map dumb-jump-mode-map
-              ("M-Q" . #'dumb-jump-quick-look))
-  :bind* (("C-M-d" . #'dumb-jump-go-prompt)
-          ("C-x 4 g" . #'dumb-jump-go-other-window)
-          ("C-x 4 d" . #'arche-dumb-jump-go-prompt-other-window))
+  ;; :bind (:map dumb-jump-mode-map
+  ;;             ("M-Q" . #'dumb-jump-quick-look))
+  ;; :bind* (("C-M-d" . #'dumb-jump-go-prompt)
+  ;;         ("C-x 4 g" . #'dumb-jump-go-other-window)
+  ;;         ("C-x 4 d" . #'arche-dumb-jump-go-prompt-other-window))
   :config
 
-  (defun arche-dumb-jump-go-prompt-other-window ()
-    "Like `dumb-jump-go-prompt' but use a different window."
-    (interactive)
-    (let ((dumb-jump-window 'other))
-      (dumb-jump-go-prompt))))
+  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
+
+  ;; (defun arche-dumb-jump-go-prompt-other-window ()
+  ;;   "Like `dumb-jump-go-prompt' but use a different window."
+  ;;   (interactive)
+  ;;   (let ((dumb-jump-window 'other))
+  ;;     (dumb-jump-go-prompt)))
+)
 
 ;;;; Display contextual metadata
 
@@ -3566,7 +3569,7 @@ around the problem by hardcoding a special case for yanking based
 on the value of `this-command'. So, when buffer modifications
 happen in an unexpected (to `web-mode') way, we have to manually
 poke it. Otherwise the modified text remains unfontified."
-      (setq web-mode-fontification-off nil)
+      ;; (setq web-mode-fontification-off nil)
       (when (and web-mode-scan-beg web-mode-scan-end global-font-lock-mode)
         (save-excursion
           (font-lock-fontify-region web-mode-scan-beg web-mode-scan-end))))))
