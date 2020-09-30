@@ -1035,6 +1035,62 @@ active minibuffer, even if the minibuffer is not selected."
 ;; buffer.)
 (setq find-file-suppress-same-file-warnings t)
 
+;; Feature `recentf' builds a list of visiting files that were
+;; operated on recently. The recent files list is automatically saved
+;; across Emacs sessions.
+(use-feature recentf
+  :demand t
+  :bind (("C-x C-r" . #'arche-recentf-open-files))
+  :config
+
+  ;; Use `completing-read' to choose via Selectrum interface.
+  (defun arche-recentf-open-files (&optional files)
+    "Select a file with `completing-read' from the recent files list.
+If optional argument FILES is non-nil, it is a list of files to
+choose from. It defaults to the whole recent list, namely
+`recentf-list'."
+    (interactive)
+    (unless (or files recentf-list)
+      (error "There is no recent files to open"))
+    (let ((prompt "Find recent file: ")
+          (candidates (mapcar 'abbreviate-file-name
+                              (or files recentf-list))))
+      (find-file (completing-read prompt candidates))))
+
+  ;; Make `recentf-save-list' and `recentf-cleanup' silent. We have to
+  ;; do this before turning on `recentf-mode' because they are called
+  ;; immediately when the `recentf-mode' is enabled.
+  (dolist (func '(recentf-load-list recentf-cleanup))
+    (advice-add func :around #'arche--advice-silence-messages))
+
+  (arche-defadvice arche--advice-recentf-save-list-silently
+      (func &rest args)
+    :around #'recentf-save-list
+    "Make `recentf-save-list' save the recent file silently."
+    (arche--with-silent-write
+      (apply func args)))
+
+  ;; Increase maximum number of saved items. (Default: 20)
+  (setq recentf-max-saved-items 2000)
+
+  ;; List of filenames excluded from the recent files list.
+  (setq recentf-exclude
+        '("loaddefs.el"
+          ".*?recentf$"
+          "recentf-save.el"
+          ".*?autoloads.el$"
+          "\\.elc$"
+          "/\\.git/"
+          "CMakeCache.txt"))
+
+  (defvar arche--recentf-auto-save-list-timer
+    (run-with-idle-timer (* 5 60) t #'recentf-save-list)
+    "Timer used to automatically save the recent list.
+Run `recentf-save-list' every time when Emacs is idle for five
+minutes in case Emacs is shut down accidentally.")
+
+  (recentf-mode +1))
+
 ;; Feature `saveplace' provides a minor mode for remembering the
 ;; location of point in each file you visit, and returning it there
 ;; when you find the file again.
