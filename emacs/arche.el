@@ -924,6 +924,8 @@ ourselves."
   :bind (([remap yank-pop] . #'arche-yank-pop-with-selectrum))
   :config
 
+  ;; The code is adopted from:
+  ;; <https://github.com/raxod502/selectrum/wiki/Useful-Commands#yank-pop>.
   (defun arche-yank-pop-with-selectrum (&optional arg)
     "Choose text to yank from `kill-ring' with Selectrum interface.
 When the previous command is not a `yank' nor a `yank-pop', open
@@ -931,10 +933,7 @@ Selectrum interface to choose text to insert at the point. Note
 that the `selectrum-should-sort-p' is set to nil in this case.
 When this command is executed immediately after a `yank' or with
 arguments, call the regular `yank-pop' with the provided
-arguments passed.
-
-The code is adopted from
-https://github.com/raxod502/selectrum/wiki/Useful-Commands#yank-pop."
+arguments passed."
     (interactive "*P")
     (if arg (yank-pop arg)
       (let* ((last-command-old last-command)
