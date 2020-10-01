@@ -919,7 +919,44 @@ ourselves."
   :init
 
   ;; This doesn't actually load Selectrum.
-  (selectrum-mode +1))
+  (selectrum-mode +1)
+
+  :bind (([remap yank-pop] . #'arche-yank-pop-with-selectrum))
+  :config
+
+  (defun arche-yank-pop-with-selectrum (&optional arg)
+    "Choose text to yank from `kill-ring' with Selectrum interface.
+When the previous command is not a `yank' nor a `yank-pop', open
+Selectrum interface to choose text to insert at the point. Note
+that the `selectrum-should-sort-p' is set to nil in this case.
+When this command is executed immediately after a `yank' or with
+arguments, call the regular `yank-pop' with the provided
+arguments passed.
+
+The code is adopted from
+https://github.com/raxod502/selectrum/wiki/Useful-Commands#yank-pop."
+    (interactive "*P")
+    (if arg (yank-pop arg)
+      (let* ((last-command-old last-command)
+             (selectrum-should-sort-p nil)
+             (enable-recursive-minibuffers t)
+             (text (completing-read
+                    "Yank: "
+                    (cl-remove-duplicates
+                     kill-ring :test #'string= :from-end t)
+                    nil t nil nil))
+             ;; Find `text' in `kill-ring'.
+             (pos (cl-position text kill-ring :test #'string=))
+             ;; Translate relative to `kill-ring-yank-pointer'.
+             (n (+ pos (length kill-ring-yank-pointer))))
+        (unless (string= text (current-kill n t))
+          (error "Could not setup for `current-kill'"))
+        ;; Restore `last-command' over Selectrum commands.
+        (setq last-command last-command-old)
+        ;; Delegate to `yank-pop' if appropriate or just insert.
+        (if (eq last-command 'yank)
+            (yank-pop n)
+          (insert-for-yank text))))))
 
 ;; Package `prescient' is a library for intelligent sorting and
 ;; filtering in various contexts.
