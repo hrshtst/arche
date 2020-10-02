@@ -9,9 +9,9 @@
 ;; (That file takes care of making sure it is only loaded once.)
 ;;
 ;; The most part of the code is stolen from early-init.el in the
-;; repository (https://github.com/raxod502/radian), substituting the
-;; prefix 'radian--' with 'arche--' to match function name
-;; conventions. See credits in init.el in this directory.
+;; repository <https://github.com/raxod502/radian>, substituting the
+;; prefix 'radian-' with 'arche-' to match function name conventions.
+;; See credits in init.el in this directory.
 
 ;; Load an alternate ~/.emacs.d during regular init.
 (unless (getenv "UMACS_USER_DIRECTORY")
@@ -57,4 +57,3 @@ resources.")
   ;; Avoid messing with things more than necessary.
   (advice-remove #'display-graphic-p #'arche--advice-fix-display-graphic-p)
   (advice-remove #'xw-display-color-p #'arche--advice-fix-xw-display-color-p))
-

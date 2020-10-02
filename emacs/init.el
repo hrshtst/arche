@@ -13,9 +13,9 @@
 ;; forms, etc. We put as much as possible in arche.el.
 
 ;; I learned an idea from Radon Rosborough's Emacs configuration
-;; (https://github.com/raxod502/radian) to isolate the main configuration
-;; from the init-file, and borrowed some snippets of code from his
-;; implementation.
+;; <https://github.com/raxod502/radian> to isolate the main
+;; configuration from the init-file, and borrowed some snippets of
+;; code from his implementation.
 
 ;; This allows us to instead load a different Emacs configuration by
 ;; exporting USER_EMACS_DIRECTORY to another .emacs.d directory.
@@ -26,7 +26,7 @@
 This is important for Emacs 27 and above, since our early
 init-file just loads the regular init-file, which would lead to
 loading the init-file twice if it were not for this variable.")
-  
+
   (cond
    ;; If already loaded, do nothing. But still allow re-loading, just
    ;; do it only once during init.
@@ -42,7 +42,7 @@ loading the init-file twice if it were not for this variable.")
     (load user-init-file 'noerror 'nomessage))
    (t
     (setq arche--init-file-loaded-p t)
-    
+
     (defvar arche-minimum-emacs-version "27.1"
       "Minimum version of Emacs to support.
 Our Emacs configuration does not support any versions below this.")
@@ -65,7 +65,7 @@ Our Emacs configuration does not support any versions below this.")
         (error (concat "Our Emacs configuration requires at least "
                        "Emacs %s, but you are running Emacs %s")
                arche-minimum-emacs-version emacs-version)
-      
+
       (let* ((this-file (or
 			 ;; We may be loading init.el in batch mode,
 			 ;; in which case `user-init-file' is nil. In
@@ -78,16 +78,16 @@ Our Emacs configuration does not support any versions below this.")
 	      ;; This function returns the target of the link. If the
 	      ;; init-file is not a symlink, then we abort.
 	      (file-symlink-p this-file)))
-        
+
         (unless link-target
           (error "Init-file %S is not a symlink" this-file))
-        
+
         (defvar arche-lib-file (expand-file-name
                                 "arche.el"
                                 (file-name-directory link-target))
           "File containing the main configuration.
 This file is loaded by init.el")
-        
+
         (unless (file-exists-p arche-lib-file)
           (error "Library file %S does not exist" arche-lib-file))
 

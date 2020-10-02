@@ -13,7 +13,7 @@
 ;; "source of action", is used for namespace partitioning. I borrowed
 ;; some snippets of code, just substituting the prefix "radian-" with
 ;; "arche-", from the implementation originally written by Radon
-;; Rosborough [https://github.com/raxod502/radian/emacs/radian.el]. I
+;; Rosborough <https://github.com/raxod502/radian/emacs/radian.el>. I
 ;; learned a lot from his elegant implementation and meticulous
 ;; comments about the pratical way of Emacs-Lisp. I would like to
 ;; express my thanks to him.
