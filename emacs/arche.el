@@ -435,7 +435,7 @@ hook directly into the init-file during byte-compilation."
 
 ;; Disable frequency of GC. This helps performance both during init
 ;; and after init. Value is in bytes so this is 100MB, as suggested in
-;; <https://github.com/emacs-lsp/lsp-mode#performance>.
+;; <https://emacs-lsp.github.io/lsp-mode/page/performance/>.
 (setq gc-cons-threshold (* 100 1024 1024))
 
 ;; After we enabled `load-prefer-newer' in init.el, disable it again
