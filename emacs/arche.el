@@ -928,7 +928,7 @@ ourselves."
   :bind (([remap yank-pop] . #'arche-yank-pop-with-selectrum))
   :config
 
-  ;; The code is adopted from:
+  ;; The code is adapted from:
   ;; <https://github.com/raxod502/selectrum/wiki/Useful-Commands#yank-pop>.
   (defun arche-yank-pop-with-selectrum (&optional arg)
     "Choose text to yank from `kill-ring' with Selectrum interface.
