@@ -1045,6 +1045,26 @@ active minibuffer, even if the minibuffer is not selected."
 
   (winner-mode +1))
 
+;; Package `ace-window' provides window selection with simple
+;; operation. When more than two windows on the frame, calling
+;; `ace-window' shows the first character of each window label upper
+;; left of the window. Pressing that character will switch to that
+;; window.
+(use-package ace-window
+  :bind (("M-o" . #'ace-window)
+         ("C-t" . #'aw-flip-window))
+  :config
+
+  ;; Initial characters used in window labels would like to be on the
+  ;; home positions.
+  (setq aw-keys '(?a ?s ?d ?f ?j ?k ?l))
+
+  ;; Make the face of leading character more visible.
+  (set-face-attribute 'aw-leading-char-face nil
+                      :foreground "yellow"
+                      :weight 'bold
+                      :height 3.0))
+
 ;; Package `transpose-frame' provides simple commands to mirror,
 ;; rotate, and transpose Emacs windows: `flip-frame', `flop-frame',
 ;; `transpose-frame', `rotate-frame-clockwise',
