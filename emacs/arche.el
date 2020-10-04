@@ -925,7 +925,8 @@ ourselves."
   ;; This doesn't actually load Selectrum.
   (selectrum-mode +1)
 
-  :bind (([remap yank-pop] . #'arche-yank-pop-with-selectrum))
+  :bind (([remap yank-pop] . #'arche-yank-pop-with-selectrum)
+         ("C-x C-z" . #'selectrum-repeat))
   :config
 
   ;; The code is adapted from:
