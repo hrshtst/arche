@@ -987,8 +987,8 @@ arguments passed."
 
 ;;; Window management
 
-;; Prevent accidental usage of `list-buffers'.
-(bind-key "C-x C-b" #'switch-to-buffer)
+;; Bind the same keys as oldish `helm-mini' to switching buffers.
+(bind-key "C-;" #'switch-to-buffer)
 
 (arche-defadvice arche--advice-keyboard-quit-minibuffer-first
     (keyboard-quit)
@@ -1070,7 +1070,9 @@ active minibuffer, even if the minibuffer is not selected."
 ;; `transpose-frame', `rotate-frame-clockwise',
 ;; `rotate-frame-anticlockwise', `rotate-frame'.
 (use-package transpose-frame
-  :bind* (("s-t" . #'transpose-frame)))
+  :bind* (("s-t" . #'transpose-frame)
+          ;; Swap windows horizontally.
+          ("<f2>" . #'flop-frame)))
 
 ;; Package `buffer-move' provides simple commands to swap Emacs
 ;; windows: `buf-move-up', `buf-move-down', `buf-move-left',
