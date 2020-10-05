@@ -1076,10 +1076,10 @@ active minibuffer, even if the minibuffer is not selected."
 ;; windows: `buf-move-up', `buf-move-down', `buf-move-left',
 ;; `buf-move-right'.
 (use-package buffer-move
-  :bind (("C-S-<up>" . buf-move-up)
-         ("C-S-<down>" . buf-move-down)
-         ("C-S-<left>" . buf-move-left)
-         ("C-S-<right>" . buf-move-right)))
+  :bind (("C-S-<up>" . #'buf-move-up)
+         ("C-S-<down>" . #'buf-move-down)
+         ("C-S-<left>" . #'buf-move-left)
+         ("C-S-<right>" . #'buf-move-right)))
 
 ;; Feature `ibuffer' provides a more modern replacement for the
 ;; `list-buffers' command.
