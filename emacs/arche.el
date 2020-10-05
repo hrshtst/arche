@@ -1185,6 +1185,25 @@ active minibuffer, even if the minibuffer is not selected."
 
     (bind-key "." #'hydra-ibuffer-main/body ibuffer-mode-map)))
 
+;; Package `perspective' provides multiple named workspaces or
+;; perspectives. Each perspective has its own buffer list and its own
+;; window layout. Switching to a perspective restores its window
+;; configuration, and when in a perspective, only its buffers are
+;; visible.
+(use-package perspective
+  :demand t
+  :init
+
+  ;; We need to specify prefix key here to take effect.
+  (setq persp-mode-prefix-key (kbd "C-z"))
+
+  :config
+
+  (persp-mode +1)
+
+  ;; Sort perspectives by order created when calling `persp-switch'.
+  (setq persp-sort 'created))
+
 ;;; Finding files
 
 ;; Follow symlinks when opening files. This has the concrete impact,
@@ -5514,6 +5533,18 @@ spaces."
   (let ((width (- (window-total-width) (length left))))
     (format (format "%%s%%%ds" width) left right)))
 
+(defun arche-mode-line-perspective ()
+  "Return the string that shows the current perspective status.
+For the sake of simplicity, only the current perspective name is
+shown. When `persp-show-modestring' is nil, this function returns
+nil."
+  (when (and (featurep 'perspective)
+             persp-show-modestring)
+    (let ((open (nth 0 persp-modestring-dividers))
+          (close (nth 1 persp-modestring-dividers)))
+      (format "%s%s%s"
+              open (persp-current-name) close))))
+
 (defcustom arche-mode-line-left
   '(;; Show [*] if the buffer is modified.
     (:eval (arche-mode-line-buffer-modified-status))
@@ -5529,7 +5560,9 @@ spaces."
   "Composite mode line construct to be shown left-aligned."
   :type 'sexp)
 
-(defcustom arche-mode-line-right nil
+(defcustom arche-mode-line-right
+  '(;; Show the perspective.
+    (:eval (arche-mode-line-perspective)))
   "Composite mode line construct to be shown right-aligned."
   :type 'sexp)
 
