@@ -1192,11 +1192,14 @@ active minibuffer, even if the minibuffer is not selected."
 ;; visible.
 (use-package perspective
   :demand t
-  :init
+  :bind (:map perspective-map
+         ("c" . #'persp-switch)
+         ("d" . #'persp-kill)
+         ("," . #'persp-switch)
+         ("." . #'persp-rename)
+         ("SPC" . #'persp-switch-last))
 
-  ;; We need to specify prefix key here to take effect.
-  (setq persp-mode-prefix-key (kbd "C-z"))
-
+  :bind-keymap ("C-z" . perspective-map)
   :config
 
   (persp-mode +1)
