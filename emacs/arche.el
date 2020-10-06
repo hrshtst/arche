@@ -5499,7 +5499,48 @@ turn it off again after creating the first frame."
 ;;;; Mode line
 
 ;; The following code customizes the mode line to something like:
-;; [*] arche.el   18% (18,0)     [arche:develop*]  (Emacs-Lisp)
+;; U8(LF) arche.el[*]  18% (18,0)  (Emacs-Lisp)            [main]
+
+;; Set the following variables which are used to show the end-of-line
+;; format in mode line to more **mnemonic** values:
+;; `eol-mnemonic-dos', `eol-mnemonic-unix', `eol-mnemonic-mac' and
+;; `eol-mnemonic-undefined'.
+(dolist (map '((dos . "CRLF")
+               (unix . "LF")
+               (mac . "CR")
+               (undecided . "?")))
+  (let ((eol (cdr map))
+        (name (concat "eol-mnemonic-" (symbol-name (car map)))))
+    (set (intern name) (concat "(" eol ")"))))
+
+(defun arche--mode-line-buffer-coding-system-base ()
+  "Return string representing the current buffer's coding system base.
+The string is shorter and more mnemonic than default ones. This
+is not the complete list of all the available coding systems, but
+rather most used ones in Japanese."
+  (let ((coding-system-name
+         (symbol-name (coding-system-base buffer-file-coding-system))))
+    (cond ((string-match "utf-8" coding-system-name) "U8")
+          ((string-match "utf-16" coding-system-name) "U16")
+          ((string-match "japanese-shift-jis" coding-system-name) "SJIS")
+          ((string-match "cp\\([0-9]+\\)" coding-system-name)
+           (match-string 1 coding-system-name))
+          ((string-match "japanese-iso-8bit" coding-system-name) "EUC")
+          ((string-match "undecided" coding-system-name) "-")
+          (t "?"))))
+
+(defun arche-mode-line-buffer-coding-system ()
+  "Return string representing the current coding system with end-of-line format.
+Suppose, for instance, the coding system base of the current
+buffer is UTF-8 and the end-of-line format is UNIX like. Then,
+this returns \"U8(LF)\"."
+  (concat (arche--mode-line-buffer-coding-system-base)
+          (mode-line-eol-desc)))
+
+(defun arche-mode-line-input-method ()
+  "Return the current input method."
+  (if current-input-method-title
+      (concat current-input-method-title ":") ""))
 
 (defun arche-mode-line-buffer-modified-status ()
   "Return a mode line construct indicating buffer modification status.
@@ -5546,12 +5587,16 @@ nil."
               open (persp-current-name) close))))
 
 (defcustom arche-mode-line-left
-  '(;; Show [*] if the buffer is modified.
-    (:eval (arche-mode-line-buffer-modified-status))
+  '(;; Show the current input method.
+    (:eval (arche-mode-line-input-method))
+    ;; Show the current buffer coding system.
+    (:eval (arche-mode-line-buffer-coding-system))
     " "
     ;; Show the name of the current buffer.
     mode-line-buffer-identification
-    "   "
+    ;; Show [*] if the buffer is modified.
+    (:eval (arche-mode-line-buffer-modified-status))
+    "  "
     ;; Show the row and column of point.
     mode-line-position
     ;; Show the active major and minor modes.
