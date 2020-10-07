@@ -1192,20 +1192,77 @@ active minibuffer, even if the minibuffer is not selected."
 ;; visible.
 (use-package perspective
   :demand t
-  :bind (:map perspective-map
-         ("c" . #'persp-switch)
-         ("d" . #'persp-kill)
-         ("," . #'persp-switch)
-         ("." . #'persp-rename)
-         ("SPC" . #'persp-switch-last))
+  :init
 
-  :bind-keymap ("C-z" . perspective-map)
+  ;; Suppress the definition of the default prefix keys C-x x.
+  (setq persp-mode-prefix-key (kbd "C-z"))
+
   :config
 
   (persp-mode +1)
 
   ;; Sort perspectives by order created when calling `persp-switch'.
-  (setq persp-sort 'created))
+  (setq persp-sort 'created)
+
+  (use-feature hydra
+    :config
+
+    (defun arche--perspective-names ()
+      "Return string concatenating perspective names with separators.
+The perspective names are enclosed with
+‘persp-modestring-dividers’, and the current and the last
+perspective names are marked with * and -, respectively.
+
+For example, this returns something like this: [dev|doc-|main*]."
+      (let ((open (nth 0 persp-modestring-dividers))
+            (close (nth 1 persp-modestring-dividers))
+            (sep (nth 2 persp-modestring-dividers))
+            (current (persp-current-name))
+            (last (when (persp-last)
+                    (persp-name (persp-last)))))
+        (concat open
+                (mapconcat
+                 (lambda (name)
+                   (concat name (cond ((string= name current) "*")
+                                      ((string= name last) "-")
+                                      (t " "))))
+                 (persp-names) sep)
+                close)))
+
+    (defhydra hydra-perspective (:hint nil)
+      "
+perspective: %s(arche--perspective-names)
+^^^^^^^^------------------------------------------------------------
+workspace:  _c_:create  _d_:delete  _._:rename  _i_:import
+movement:   _p_:prev    _n_:next    _SPC_:last  _,_:switch workspace
+buffers:    _a_:add     _A_:set     _k_:remove  _b_:switch buffer
+save/load:  _s_:save    _l_:load  | _q_:quit
+"
+      ;; workspace
+      ("c" persp-switch nil :exit t)
+      ("d" persp-kill nil)
+      ("." persp-rename nil)
+      ("r" persp-rename nil)
+      ("i" persp-import nil)
+      ;; movement
+      ("p" persp-prev nil)
+      ("<left>" persp-prev nil)
+      ("n" persp-next nil)
+      ("<right>" persp-next nil)
+      ("SPC" persp-switch-last nil :exit t)
+      ("," persp-switch nil :exit t)
+      ;; buffers
+      ("a" persp-add-buffer nil)
+      ("A" persp-set-buffer nil :exit t)
+      ("k" persp-remove-buffer nil)
+      ("b" persp-switch-to-buffer nil)
+      ;; save/load
+      ("s" persp-state-save)
+      ("l" persp-state-load)
+      ;; exit
+      ("q" nil))
+
+    (bind-key "C-z" #'hydra-perspective/body)))
 
 ;;; Finding files
 
