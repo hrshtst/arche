@@ -1662,7 +1662,7 @@ unquote it using a comma."
  "e e")
 (arche-register-dotfile
  ,(expand-file-name "emacs/arche.el" arche-directory)
- "e r")
+ "e a")
 (arche-register-dotfile
  ,(expand-file-name "straight/versions/arche.el" user-emacs-directory)
  "e v" "arche-versions-el")
@@ -1682,12 +1682,16 @@ unquote it using a comma."
 (arche-register-dotfile ".profile.local" "p l")
 
 ;; Tmux
-(arche-register-dotfile ".tmux.conf" "t c")
-(arche-register-dotfile ".tmux.local.conf" "t l")
+(arche-register-dotfile ".config/tmux/tmux.conf" "t c")
+(arche-register-dotfile ".config/tmux/tmux.local.conf" "t l")
 
-;; Zsh
-(arche-register-dotfile ".zshrc" "z r")
-(arche-register-dotfile ".zshrc.local" "z l")
+;; Bash
+(arche-register-dotfile ".bashrc" "b r")
+(arche-register-dotfile ".bashrc.local" "b l")
+
+;; Fish
+(arche-register-dotfile ".config/fish/config.fish" "f c")
+(arche-register-dotfile ".config/fish/config.local.fish" "f l")
 
 ;; Feature `auth-source' reads and writes secrets from files like
 ;; ~/.netrc for TRAMP and related packages, so for example you can
