@@ -1192,11 +1192,6 @@ active minibuffer, even if the minibuffer is not selected."
 ;; visible.
 (use-package perspective
   :demand t
-  :init
-
-  ;; Suppress the definition of the default prefix keys C-x x.
-  (setq persp-mode-prefix-key (kbd "C-z"))
-
   :config
 
   (persp-mode +1)
