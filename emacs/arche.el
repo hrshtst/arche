@@ -1759,6 +1759,85 @@ permission."
 (bind-key* "s-x" #'arche-set-executable-permission)
 
 ;;; Editing
+;;;; Japanese environment
+
+;; Use Japanese input method by default.
+(set-language-environment "Japanese")
+
+;; Use UTF-8 as default coding system.
+(prefer-coding-system 'utf-8-unix)
+
+;; Set process conding system to UTF-8 on Windows.
+(setq default-process-coding-system '(undecided-dos . utf-8-unix))
+
+;; Package `mozc' provides an interface to input Japanese text with
+;; Emacs by communicating with Mozc server. Mozc is a Japanese Input
+;; Method Editor (IME) designed for multi-platform usage. This package
+;; enables you to interact with the Mozc server installed on your
+;; system and to use all the features of Mozc. You need to install
+;; "mozc_emacs_helper" on your system.
+(use-package mozc
+  :if (executable-find "mozc_emacs_helper")
+  :demand t
+  :bind* (("S-SPC" . toggle-input-method))
+  :config
+
+  ;; Use `mozc' as the default input method.
+  (setq default-input-method "japanese-mozc")
+
+  ;; Display an indicator when mozc-mode enabled.
+  (setq mozc-leim-title "も")
+
+  (arche-defadvice arche--advice-mozc-helper-process-start-quietly (func &rest args)
+    :around #'mozc-helper-process-start
+    "Make starting the mozc helper process silent."
+    (arche--with-silent-message "Starting mozc-helper-process"
+      (apply func args)))
+
+  ;; Initialize `arche--mozc-cursor-color-default' and
+  ;; `arche--mozc-cursor-color' after initialization process as the
+  ;; color theme will be loaded later.
+  (defvar arche--mozc-cursor-color-default nil
+    "Cursor color to be set when `mozc-mode' is disabled.")
+
+  (defvar arche--mozc-cursor-color nil
+    "Cursor color to be set when `mozc-mode' is enabled.")
+
+  (defvar arche--mozc-buffer-window-last-state nil
+    "List of `mozc-mode', current buffer and selected window before last command.
+This is used to detect whether `mozc-mode' is turned on/off or
+the current buffer or selected window changes. This case requires
+to check if the cursor color should be changed.")
+
+  (arche-defhook arche--set-cursor-color-based-on-mozc ()
+    post-command-hook
+    "Set cursor color based on whether `mozc-mode' is enabled.
+The cursor color to be set when `mozc-mode' is turned on is
+specified by `arche--mozc-cursor-color'. When `mozc-mode' is
+turned off, it is set to `arche--mozc-cursor-color-default'.
+
+When `arche--mozc-cursor-color-default' is nil `cursor-color' in
+frame parameters of the selected frame is chosen. Even if it is
+also nil `black' or `white' is chosen based on `background-mode'
+in frame parameters. When `arche--mozc-cursor-color' is nil the
+color is not changed even when `mozc-mode' is on."
+    (let ((default arche--mozc-cursor-color-default)
+          (color arche--mozc-cursor-color)
+          (new (list mozc-mode (current-buffer) (selected-window))))
+      (unless (equal new arche--mozc-buffer-window-last-state)
+        (setq arche--mozc-buffer-window-last-state new)
+        (with-current-buffer (window-buffer)
+          (unless (or default)
+            (let ((current (frame-parameter nil 'cursor-color)))
+              (setq default (cond (current current)
+                                  ((eq (frame-parameter
+                                        nil 'background-color)
+                                       'dark) "white")
+                                  (t "black")))
+              (setq arche--mozc-cursor-color-default default)))
+          (when color
+            (set-cursor-color (if mozc-mode color default))))))))
+
 ;;;; Text formatting
 
 (add-to-list 'safe-local-variable-values '(auto-fill-function . nil))
@@ -5745,7 +5824,8 @@ your local configuration."
                    :weight bold
                    :foreground ,purple))))
        `(selectrum-primary-highlight ((,class (:foreground ,orange))))
-       `(selectrum-secondary-highlight ((,class (:foreground ,green))))))
+       `(selectrum-secondary-highlight ((,class (:foreground ,green)))))
+      (setq arche--mozc-cursor-color orange))
 
     (enable-theme 'zerodark)))
 
