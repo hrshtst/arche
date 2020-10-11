@@ -1861,6 +1861,53 @@ Interactively, reverse the characters in the current region."
     (delete-and-extract-region
      beg end))))
 
+;; Replace some Japanese punctuation marks automatically on saving.
+(defvar arche-replace-punc-pairs nil
+  "List of cons cells for replacement of punctuation marks.
+The CAR of each cons cell is a string to be searched and the CDR
+of it is a string to be substituted for the matched punctuation
+mark.")
+
+(setq arche-replace-punc-pairs '(("、" . "，") ("。" . "．")))
+
+(defun arche--replace-punc-pair (pair)
+  "Perform a replacement of punctuation marks.
+PAIR is a cons cell composed of punctuation marks. The CAR of
+PAIR is a target string to be searched. The CDR is also a string
+to be replaced."
+  (let ((target (car pair))
+        (new (cdr pair)))
+    (goto-char (point-min))
+    (while (search-forward target nil t)
+      (replace-match new nil nil))))
+
+(defun arche-replace-punc (&optional pairs)
+  "Replace punctuation marks on the current buffer or marked region.
+PAIRS is a list of cons cells in which the CAR of each cons cell
+is a target punctuation mark and the CDR is one to be substituted
+for the matched punctuation mark."
+  (interactive "*")
+  (let ((regp (and transient-mark-mode mark-active))
+        (pairs (or pairs arche-replace-punc-pairs)))
+    (save-mark-and-excursion
+      (save-restriction
+        (if regp
+            (narrow-to-region (region-beginning) (region-end)))
+        (dolist (pair pairs)
+          (arche--replace-punc-pair pair)))))
+  (deactivate-mark))
+
+(define-minor-mode arche-replace-punc-mode
+  "Minor mode to automatically replace specified punctuation marks on save.
+If it is enabled, saving current buffer replaces punctuation
+marks specified in `arche-replace-punc-pairs'"
+  nil nil nil
+  (if arche-replace-punc-mode
+      (add-hook 'before-save-hook #'arche-replace-punc nil 'local)
+    (remove-hook 'before-save-hook #'arche-replace-punc 'local)))
+
+(put 'arche-replace-punc-mode 'safe-local-variable #'booleanp)
+
 ;; When filling paragraphs, assume that sentences end with one space
 ;; rather than two.
 (setq sentence-end-double-space nil)
