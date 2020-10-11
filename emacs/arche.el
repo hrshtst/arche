@@ -1821,22 +1821,22 @@ frame parameters of the selected frame is chosen. Even if it is
 also nil `black' or `white' is chosen based on `background-mode'
 in frame parameters. When `arche--mozc-cursor-color' is nil the
 color is not changed even when `mozc-mode' is on."
-    (let ((default arche--mozc-cursor-color-default)
-          (color arche--mozc-cursor-color)
-          (new (list mozc-mode (current-buffer) (selected-window))))
+    (let ((new (list mozc-mode (current-buffer) (selected-window))))
       (unless (equal new arche--mozc-buffer-window-last-state)
         (setq arche--mozc-buffer-window-last-state new)
         (with-current-buffer (window-buffer)
-          (unless (or default)
+          (unless arche--mozc-cursor-color-default
             (let ((current (frame-parameter nil 'cursor-color)))
-              (setq default (cond (current current)
-                                  ((eq (frame-parameter
-                                        nil 'background-color)
-                                       'dark) "white")
-                                  (t "black")))
-              (setq arche--mozc-cursor-color-default default)))
-          (when color
-            (set-cursor-color (if mozc-mode color default))))))))
+              (setq arche--mozc-cursor-color-default
+                    (cond (current current)
+                          ((eq (frame-parameter
+                                nil 'background-color)
+                               'dark) "white")
+                          (t "black")))))
+          (when arche--mozc-cursor-color
+            (set-cursor-color (if mozc-mode
+                                  arche--mozc-cursor-color
+                                arche--mozc-cursor-color-default))))))))
 
 ;;;; Text formatting
 
