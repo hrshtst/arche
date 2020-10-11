@@ -2048,10 +2048,12 @@ two inserted lines are the same."
         (progn
           (setq-local whitespace-style '(face lines-tail))
           (setq-local whitespace-line-column 79)
+          (setq-local show-trailing-whitespace t)
           (whitespace-mode +1))
       (whitespace-mode -1)
       (kill-local-variable 'whitespace-style)
-      (kill-local-variable 'whitespace-line-column)))
+      (kill-local-variable 'whitespace-line-column)
+      (kill-local-variable 'show-trailing-whitespace)))
 
   :blackout t)
 
