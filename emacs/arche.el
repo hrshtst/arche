@@ -2327,6 +2327,16 @@ the reverse direction from \\[pop-global-mark]."
   (dolist (func '(bookmark-load bookmark-write-file))
     (advice-add func :around #'arche--advice-silence-messages)))
 
+;; Package `avy' provides a fast navigation within the currently
+;; displaying windows. Calling `avy-goto-char' with a couple of
+;; characters shows words that the first of charcters match with the
+;; given ones. Pressing the highlighted charcters makes the point jump
+;; to it.
+(use-package avy
+  :bind (("C-:" . #'avy-goto-char)
+         ("C-'" . #'avy-goto-char-timer)
+         ("C-c C-j" . #'avy-resume)))
+
 ;;;; Find and replace
 
 (arche-bind-key "c" #'toggle-case-fold-search)
