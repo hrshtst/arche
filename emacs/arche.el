@@ -2315,6 +2315,10 @@ the reverse direction from \\[pop-global-mark]."
           (switch-to-buffer buffer)))
     (funcall pop-global-mark)))
 
+;; After typing C-u C-<SPC>, we can type just C-<SPC> to cycle mark
+;; ring instead of C-u C-<SPC>.
+(setq set-mark-command-repeat-pop t)
+
 ;; Feature `bookmark' provides a way to mark places in a buffer. I
 ;; don't use it, but some other packages do.
 (use-feature bookmark
