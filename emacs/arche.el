@@ -2395,11 +2395,13 @@ buffer."
     (let ((vr/engine 'emacs-plain))
       (call-interactively #'vr/query-replace))))
 
-;; Feature `occur' provides listing of all lines that match a given
-;; regexp for the current buffer. The matching lines are listed in
-;; buffer *Occur*, in which we can navigate to the corresponding lines
-;; in the original buffer.
-(use-feature occur
+;; Feature `replace' provides functions to perform a replacement of
+;; strings matching a given regular expression. Somehow, `occur' is
+;; defined in this package, which allows us to list all lines that
+;; match a given regular expression for the current buffer. The
+;; matching lines are listed in buffer *Occur*, in which we can
+;; navigate to the corresponding lines in the original buffer.
+(use-feature replace
   :init
 
   (arche-defhook arche--focus-on-occur-buffer ()
