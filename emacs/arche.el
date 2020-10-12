@@ -2194,6 +2194,11 @@ _h_ ^ ^ _l_   _x_ kill     _t_ype     _e_xchange-point
 
     (bind-key "C-x SPC" #'hydra-rectangle/body)))
 
+;; Package `expand-region' allows us to increase or decrease the
+;; selected region by semantic units.
+(use-package expand-region
+  :bind (("C-=" . er/expand-region)))
+
 ;;;; Undo/redo
 
 ;; Feature `warnings' allows us to enable and disable warnings.
