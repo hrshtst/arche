@@ -2149,6 +2149,51 @@ invocation will kill the newline."
 
   (delete-selection-mode +1))
 
+;;;; Region selection
+
+;; Feature `rect' provides operations on rectangular area of the text
+;; which allows you to select, kill, delete, copy, yank or insert a
+;; text in a rectangle.
+(use-feature rect
+  :config
+
+  (use-feature hydra
+    :config
+
+    (defhydra hydra-rectangle (:body-pre (rectangle-mark-mode +1)
+                               :color pink
+                               :post (deactivate-mark))
+      "
+^ ^ _k_ ^ ^   _M-w_ copy   _o_pen     _n_umber-lines
+_h_ ^ ^ _l_   _x_ kill     _t_ype     _e_xchange-point
+^ ^ _j_ ^ ^   _y_ank       _c_lear    _r_eset-region-mark
+^^^^^^        _d_elete     _u_ndo     _q_uit
+"
+      ;; Movement
+      ("h" rectangle-backward-char nil)
+      ("j" rectangle-next-line nil)
+      ("k" rectangle-previous-line nil)
+      ("l" rectangle-forward-char nil)
+      ;; Copy/Paste
+      ("M-w" copy-rectangle-as-kill nil)
+      ("x" kill-rectangle nil)
+      ("y" yank-rectangle nil)
+      ("d" delete-rectangle nil)
+      ;; Edit
+      ("o" open-rectangle nil)
+      ("t" string-rectangle nil)
+      ("c" clear-rectangle nil)
+      ("u" undo nil)
+      ;; Others
+      ("n" rectangle-number-lines nil)
+      ("e" rectangle-exchange-point-and-mark nil)
+      ("r" (if (region-active-p)
+               (deactivate-mark)
+             (rectangle-mark-mode +1)) nil)
+      ("q" nil nil))
+
+    (bind-key "C-x SPC" #'hydra-rectangle/body)))
+
 ;;;; Undo/redo
 
 ;; Feature `warnings' allows us to enable and disable warnings.
