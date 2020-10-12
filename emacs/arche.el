@@ -2385,6 +2385,62 @@ buffer."
     (let ((vr/engine 'emacs-plain))
       (call-interactively #'vr/query-replace))))
 
+;; Feature `occur' provides listing of all lines that match a given
+;; regexp for the current buffer. The matching lines are listed in
+;; buffer *Occur*, in which we can navigate to the corresponding lines
+;; in the original buffer.
+(use-feature occur
+  :init
+
+  (arche-defhook arche--focus-on-occur-buffer ()
+    occur-hook
+    "Focus on *Occur* buffer right away."
+    (let ((buffer (get-buffer "*Occur*")))
+      (if buffer (switch-to-buffer-other-window buffer))))
+
+  ;; Define keybindings for occur with hydra
+  (use-feature hydra
+    :config
+
+    (defhydra hydra-occur-dwim (:hint nil)
+      "Occur mode"
+      ("o" arche-occur-dwim "Start occur-dwim")
+      ("j" occur-next "Next")
+      ("k" occur-prev "Prev")
+      ("x" delete-window "Hide" :exit t)
+      ("r" (arche-reattach-occur) "Re-attach"))
+
+    (bind-key "C-c o" #'hydra-occur-dwim/body))
+
+  ;; Function `arche-occur-dwim' is originally from:
+  ;; <https://github.com/abo-abo/hydra/wiki/Emacs#occur>
+  (defun arche-occur-dwim ()
+    "Call `occur' with a text under point or selected region."
+    (interactive)
+    (push (if (region-active-p)
+              (buffer-substring-no-properties
+               (region-beginning)
+               (region-end))
+            (let ((sym (thing-at-point 'symbol)))
+              (when (stringp sym)
+                (regexp-quote sym))))
+          regexp-history)
+    (unless (car regexp-history)
+      (pop regexp-history))
+    (call-interactively 'occur))
+
+  (defun arche-reattach-occur ()
+    "Reattach *Occur* buffer otherwise call `hydra-occur-dwim/body'."
+    (unless (arche--focus-on-occur-buffer)
+      (hydra-occur-dwim/body)))
+
+  (arche-defadvice arche--advice-occur-mode-goto-occurrence (&rest _)
+    :after #'occur-mode-goto-occurrence
+    "Keep focus on *Occur* buffer, even when target is visited
+via return key."
+    (arche--focus-on-occur-buffer)
+    (hydra-occur-dwim/body)))
+
 ;;; Electricity: automatic things
 ;;;; Autorevert
 
