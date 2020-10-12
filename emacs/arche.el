@@ -2084,24 +2084,24 @@ _d_: subtree
 
 "
       ;; Hide
-      ("q" hide-sublevels)    ; Hide everything but the top-level headings
-      ("t" hide-body)         ; Hide everything but headings (all body lines)
-      ("o" hide-other)        ; Hide other branches
-      ("c" hide-entry)        ; Hide this entry's body
-      ("l" hide-leaves)       ; Hide body lines in this entry and sub-entries
-      ("d" hide-subtree)      ; Hide everything in this entry and sub-entries
+      ("q" outline-hide-sublevels)
+      ("t" outline-hide-body)
+      ("o" outline-hide-other)
+      ("c" outline-hide-entry)
+      ("l" outline-hide-leaves)
+      ("d" outline-hide-subtree)
       ;; Show
-      ("a" show-all)          ; Show (expand) everything
-      ("e" show-entry)        ; Show this heading's body
-      ("i" show-children)     ; Show this heading's immediate child sub-headings
-      ("k" show-branches)     ; Show all sub-headings under this heading
-      ("s" show-subtree)      ; Show (expand) everything in this heading & below
+      ("a" outline-show-all)
+      ("e" outline-show-entry)
+      ("i" outline-show-children)
+      ("k" outline-show-branches)
+      ("s" outline-show-subtree)
       ;; Move
-      ("u" outline-up-heading)                ; Up
-      ("n" outline-next-visible-heading)      ; Next
-      ("p" outline-previous-visible-heading)  ; Previous
-      ("f" outline-forward-same-level)        ; Forward - same level
-      ("b" outline-backward-same-level)       ; Backward - same level
+      ("u" outline-up-heading)
+      ("n" outline-next-visible-heading)
+      ("p" outline-previous-visible-heading)
+      ("f" outline-forward-same-level)
+      ("b" outline-backward-same-level)
       ("z" nil "leave"))
 
     (bind-key "C-c #" #'hydra-outline/body))
