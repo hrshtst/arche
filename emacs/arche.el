@@ -1052,8 +1052,7 @@ active minibuffer, even if the minibuffer is not selected."
 ;; left of the window. Pressing that character will switch to that
 ;; window.
 (use-package ace-window
-  :bind (("M-o" . #'ace-window)
-         ("C-t" . #'aw-flip-window))
+  :bind (("C-t" . #'aw-flip-window))
   :config
 
   ;; Initial characters used in window labels would like to be on the
@@ -1083,6 +1082,39 @@ active minibuffer, even if the minibuffer is not selected."
          ("C-S-<down>" . #'buf-move-down)
          ("C-S-<left>" . #'buf-move-left)
          ("C-S-<right>" . #'buf-move-right)))
+
+;; Define `hydra' interface for operations on windows.
+(use-feature hydra
+  :config
+
+  (defhydra hydra-window (:hint nil)
+    "
+                        WINDOW MENU
+"
+    ;; Switch
+    ("h" windmove-left "switch to ←" :column "Switch")
+    ("j" windmove-down "switch to ↓")
+    ("k" windmove-up "switch to ↑")
+    ("l" windmove-right "switch to →")
+    ("o" ace-window "ace" :exit t)
+    ;; Undo/Redo
+    ("M-h" winner-undo "undo window conf" :column "Undo/Redo")
+    ("M-l" winner-redo "redo window conf")
+    ;; Transpose
+    ("t" transpose-frame "transpose" :column "Transpose")
+    ("f" flip-frame "flip ↕")
+    ("M-f" flop-frame "flop ↔")
+    ("r" rotate-frame-clockwise "rotate ↻")
+    ("M-r" rotate-frame-anticlockwise "rotate ↺")
+    ;; Buffer move
+    ("H" buf-move-left "move to ←" :column "Move")
+    ("J" buf-move-down "move to ↓")
+    ("K" buf-move-up "move to ↑")
+    ("L" buf-move-right "move to →")
+    ;; Quit
+    ("q" nil "quit" :column nil))
+
+  (bind-key "M-o" #'hydra-window/body))
 
 ;; Feature `ibuffer' provides a more modern replacement for the
 ;; `list-buffers' command.
