@@ -702,7 +702,8 @@ KEY-NAME, COMMAND, and PREDICATE are as in `bind-key'."
 
 ;; Package `hydra' provides a feature to tie related commands into a
 ;; family of short bindings with a common prefix.
-(use-package hydra)
+(use-package hydra
+  :demand t)
 
 ;;; Environment
 ;;;; Environment variables
