@@ -2796,6 +2796,11 @@ currently active.")
 
   :blackout yas-minor-mode)
 
+;; Package `yasnippet-snippets' contains the standard collection of
+;; snippets for `yasnippet'.
+(use-package yasnippet-snippets
+  :after yasnippet)
+
 ;;; IDE features
 ;;;; Virtual environments
 ;;;;; Python
