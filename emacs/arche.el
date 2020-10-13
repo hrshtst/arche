@@ -2338,6 +2338,28 @@ the reverse direction from \\[pop-global-mark]."
          ("C-'" . #'avy-goto-char-timer)
          ("C-c C-j" . #'avy-resume)))
 
+;; Define `hydra' for navigation commands alternative to the default
+;; `goto-map'.
+(use-feature hydra
+  :config
+
+  (defhydra hydra-goto-map (:hint nil)
+    ""
+    ;; Errors
+    ("h" first-error "first" :column "Errors" )
+    ("j" next-error "next")
+    ("k" previous-error "previous")
+    ;; Goto
+    ("c" goto-char "char" :column "Goto" :exit t)
+    ("M-c" avy-goto-char-timer "char (avy)" :exit t)
+    ("g" goto-line "line" :exit t)
+    ("M-g" avy-goto-line "line (avy)" :exit t)
+    ;; Misc.
+    ("v" recenter-top-bottom "recenter" :column "Misc.")
+    ("q" nil "quit"))
+
+  (bind-key "M-g" #'hydra-goto-map/body))
+
 ;;;; Find and replace
 
 (arche-bind-key "c" #'toggle-case-fold-search)
