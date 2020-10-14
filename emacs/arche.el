@@ -1257,37 +1257,39 @@ For example, this returns something like this: [dev|doc-|main*]."
                  (persp-names) sep)
                 close)))
 
-    (defhydra hydra-perspective (:hint nil)
+    (defhydra hydra-perspective (:hint nil :exit t :idle 1)
       "
 perspective: %s(arche--perspective-names)
 ^^^^^^^^------------------------------------------------------------
-workspace:  _c_:create  _d_:delete  _._:rename  _i_:import
-movement:   _p_:prev    _n_:next    _SPC_:last  _,_:switch workspace
-buffers:    _a_:add     _A_:set     _k_:remove  _b_:switch buffer
-save/load:  _s_:save    _l_:load  | _q_:quit
+^<workspace>^ |  ^<movement>^  |    ^<buffers>^    |^<save/load>^
+ _c_:create   | _p_:prev       | _a_:add           | _s_:save
+ _d_:delete   | _n_:next       | _A_:set           | _l_:load
+ _._:rename   | _SPC_:last     | _k_:remove        |
+ _i_:import   | _,_:switch w/s | _b_:switch buffer |
 "
       ;; workspace
-      ("c" persp-switch nil :exit t)
-      ("d" persp-kill nil)
-      ("." persp-rename nil)
-      ("r" persp-rename nil)
-      ("i" persp-import nil)
+      ("c" persp-switch)
+      ("d" persp-kill)
+      ("." persp-rename)
+      ("r" persp-rename)
+      ("i" persp-import)
       ;; movement
-      ("p" persp-prev nil)
-      ("<left>" persp-prev nil)
-      ("n" persp-next nil)
-      ("<right>" persp-next nil)
-      ("SPC" persp-switch-last nil :exit t)
-      ("," persp-switch nil :exit t)
+      ("p" persp-prev :exit nil)
+      ("<left>" persp-prev :exit nil)
+      ("n" persp-next :exit nil)
+      ("<right>" persp-next :exit nil)
+      ("SPC" persp-switch-last)
+      ("," persp-switch)
       ;; buffers
-      ("a" persp-add-buffer nil)
-      ("A" persp-set-buffer nil :exit t)
-      ("k" persp-remove-buffer nil)
-      ("b" persp-switch-to-buffer nil)
+      ("a" persp-add-buffer :exit nil)
+      ("A" persp-set-buffer)
+      ("k" persp-remove-buffer :exit nil)
+      ("b" persp-switch-to-buffer)
       ;; save/load
       ("s" persp-state-save)
       ("l" persp-state-load)
-      ;; exit
+      ;; popup/exit
+      ("C-z" (hydra-set-property 'hydra-toggle :verbosity 1) :exit nil)
       ("q" nil))
 
     (bind-key "C-z" #'hydra-perspective/body)))
