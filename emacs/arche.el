@@ -1294,6 +1294,49 @@ perspective: %s(arche--perspective-names)
 
     (bind-key "C-z" #'hydra-perspective/body)))
 
+;; Package `pc-bufsw' provides a quick buffer switcher, which switches
+;; buffers according to most recently used order with C-TAB and
+;; C-S-TAB.
+(use-package pc-bufsw
+  :demand t
+  :config
+
+  ;; Enable `pc-bufsw' minor mode.
+  (pc-bufsw t)
+
+  ;; Buffers previously displayed in the current window are
+  ;; preferentially listed.
+  (setq pc-bufsw-prefer-current-window t)
+
+  (defvar arche--pc-bufsw-exclude nil
+    "Regexp pattern for buffer names excluded from list of `pc-bufsw'.
+When a buffer name matches this regexp it is excluded in the list
+for buffer switching by calling `pc-bufsw'.")
+
+  (setq arche--pc-bufsw-exclude
+        "^\\*eldoc\\|^\\*helpful\\|^\\*.*process\\|^magit\\|*Occur\\|*Backtrace*")
+
+  (arche-defadvice arche--pc-bufsw-distill-buffers-in-current-persp
+      (buffer-vector)
+    :filter-return #'pc-bufsw--get-walk-vector
+    "Distill so that buffers in current perspective are only visible.
+Besides, buffers whose name matches the regexp represented in
+`arche--pc-bufsw-exclude' are hidden.
+BUFFER-VECTOR is supposed to be a vector containing buffers which
+is returned by the original function. This advice makes the
+function return the vector of distilled buffers as well."
+    (let ((filtered-list ()))
+      (mapc
+       (lambda (buf)
+         (unless (and arche--pc-bufsw-exclude
+                      (string-match-p arche--pc-bufsw-exclude
+                                      (buffer-name buf)))
+           (push buf filtered-list)))
+       buffer-vector)
+      (vconcat (nreverse (if (fboundp 'persp-buffer-list-filter)
+                             (persp-buffer-list-filter filtered-list)
+                           filtered-list))))))
+
 ;;; Finding files
 
 ;; Follow symlinks when opening files. This has the concrete impact,
