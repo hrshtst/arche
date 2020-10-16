@@ -705,6 +705,24 @@ KEY-NAME, COMMAND, and PREDICATE are as in `bind-key'."
 (use-package hydra
   :demand t)
 
+;; Define `hydra' commands for toggling minor modes.
+(use-feature hydra
+  :config
+
+  (defhydra hydra-toggle (:columns 2 :exit t)
+    "toggle"
+    ("a" abbrev-mode "abbrev")
+    ("d" toggle-debug-on-error "debug")
+    ("f" auto-fill-mode "fill")
+    ("F" follow-mode "follow")
+    ("l" linum-mode "line num")
+    ("o" outline-minor-mode "outline")
+    ("t" toggle-truncate-lines "truncate")
+    ("w" whitespace-mode "whitespace")
+    ("q" nil "quit"))
+
+  (arche-bind-key "t" #'hydra-toggle/body))
+
 ;;; Environment
 ;;;; Environment variables
 
