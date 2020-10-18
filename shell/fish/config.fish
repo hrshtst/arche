@@ -118,6 +118,11 @@ addenv PKG_CONFIG_PATH "$HOME/usr/lib/pkgconfig"
 # isolated environments.
 # https://github.com/pipxproject/pipx
 addenv PATH "$HOME/.local/bin"
+# Autocompletion function for pipx is provided along with argcomplete,
+# which is a dependency of pipx.
+if command -v register-python-argcomplete 1>/dev/null 2>&1;
+    register-python-argcomplete --shell fish pipx | source
+end
 
 # Configure paths for Go Programming Language.
 # https://golang.org/
