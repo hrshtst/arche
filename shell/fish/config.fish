@@ -114,14 +114,6 @@ addenv LD_LIBRARY_PATH "$HOME/usr/lib"
 # https://www.freedesktop.org/wiki/Software/pkg-config/
 addenv PKG_CONFIG_PATH "$HOME/usr/lib/pkgconfig"
 
-# pyenv is a simple python version management.
-# https://github.com/pyenv/pyenv
-setenv PYENV_ROOT "$HOME/.pyenv"
-addenv PATH "$PYENV_ROOT/bin"
-if command -v pyenv 1>/dev/null 2>&1;
-    status is-interactive; and source (pyenv init -|psub)
-end
-
 # pipx provides a way to execute binaries from Python packages in
 # isolated environments.
 # https://github.com/pipxproject/pipx
@@ -134,6 +126,14 @@ setenv GOPATH "$HOME/.go"
 setenv GOROOT "$HOME/usr/lib/go"
 addenv PATH "$GOROOT/bin"
 addenv PATH "$GOPATH/bin"
+
+# pyenv is a simple python version management.
+# https://github.com/pyenv/pyenv
+setenv PYENV_ROOT "$HOME/.pyenv"
+addenv PATH "$PYENV_ROOT/bin"
+if command -v pyenv 1>/dev/null 2>&1;
+    status is-interactive; and source (pyenv init -|psub)
+end
 
 ####################################################################
 ## Appearance

@@ -56,7 +56,7 @@ case "$TERM" in
   xterm-color|*-256color) color_prompt=yes;;
 esac
 
-if [ -n "$force_color_prompt" ]; then 
+if [ -n "$force_color_prompt" ]; then
   if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
     # We have color support; assume it's compliant with Ecma-48
     # (ISO/IEC-6429). (Lack of such support is extremely rare, and such
@@ -220,14 +220,6 @@ addenv LD_LIBRARY_PATH "$HOME/usr/lib"
 # https://www.freedesktop.org/wiki/Software/pkg-config/
 addenv PKG_CONFIG_PATH "$HOME/usr/lib/pkgconfig"
 
-# pyenv is a simple python version management.
-# https://github.com/pyenv/pyenv
-setenv PYENV_ROOT "$HOME/.pyenv"
-addenv PATH "$PYENV_ROOT/bin"
-if command -v pyenv 1>/dev/null 2>&1; then
-  eval "$(pyenv init -)"
-fi
-
 # pipx provides a way to execute binaries from Python packages in
 # isolated environments.
 # https://github.com/pipxproject/pipx
@@ -241,3 +233,10 @@ setenv GOROOT "$HOME/usr/lib/go"
 addenv PATH "$GOROOT/bin"
 addenv PATH "$GOPATH/bin"
 
+# pyenv is a simple python version management.
+# https://github.com/pyenv/pyenv
+setenv PYENV_ROOT "$HOME/.pyenv"
+addenv PATH "$PYENV_ROOT/bin"
+if command -v pyenv 1>/dev/null 2>&1; then
+  eval "$(pyenv init -)"
+fi
