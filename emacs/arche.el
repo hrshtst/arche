@@ -3446,6 +3446,20 @@ was printed, and only have ElDoc display if one wasn't."
 
   (put 'c-default-style 'safe-local-variable #'stringp))
 
+;; Package `google-c-style' provides the google C/C++ coding style.
+(use-package google-c-style
+  :straight (:type git :host github :repo "google/styleguide" :branch "gh-pages")
+
+  :hook ((c-mode-common . google-set-c-style)
+         (c-mode-common . google-make-newline-indent)))
+
+;; Package `modern-cpp-font-lock' provides syntax highliting support
+;; for modern C++.
+(use-package modern-cpp-font-lock
+  :hook (c++-mode . modern-c++-font-lock-mode)
+
+  :blackout modern-c++-font-lock-mode)
+
 ;;;; Clojure
 ;; https://clojure.org/
 
