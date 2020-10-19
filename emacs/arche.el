@@ -3460,6 +3460,29 @@ was printed, and only have ElDoc display if one wasn't."
 
   :blackout modern-c++-font-lock-mode)
 
+;; Package `clang-format' provides functionality to use clang-format
+;; with emacs integration.
+(use-package clang-format
+  :if (executable-find "clang-format")
+  :init
+
+  (defun arche-clang-format-buffer-on-projectile ()
+    "Reformat buffer if .clang-format exists in the projectile root."
+    (when (and (featurep 'projectile)
+               (file-exists-p (expand-file-name ".clang-format" (projectile-project-root))))
+      (clang-format-buffer)))
+
+  (define-minor-mode arche-clang-format-buffer-on-projectile-mode
+    "Minor mode to reformat buffer on save using clang-format if
+    .clang-format is found in project root."  nil nil nil
+    (if arche-clang-format-buffer-on-projectile-mode
+        (add-hook 'before-save-hook #'arche-clang-format-buffer-on-projectile nil 'local)
+      (remove-hook 'before-save-hook #'arche-clang-format-buffer-on-projectile 'local)))
+
+  (put 'arche-clang-format-buffer-on-projectile-mode 'safe-local-variable #'booleanp)
+
+  (add-hook 'c-mode-common-hook #'arche-clang-format-buffer-on-projectile-mode))
+
 ;;;; Clojure
 ;; https://clojure.org/
 
