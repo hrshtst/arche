@@ -3310,10 +3310,6 @@ order."
   ;; variable with a multiline docstring.
   (setq eldoc-echo-area-use-multiline-p nil)
 
-  ;; Original code from
-  ;; https://github.com/PythonNut/emacs-config/blob/1a92a1ff1d563fa6a9d7281bbcaf85059c0c40d4/modules/config-intel.el#L130-L137,
-  ;; thanks!
-
   (arche-defadvice arche--advice-eldoc-better-display-message-p (&rest _)
     :override #'eldoc--message-command-p
     "Make ElDoc smarter about when to display its messages.
