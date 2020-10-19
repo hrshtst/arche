@@ -3223,39 +3223,9 @@ order."
 ;; be clever, so it "just works" instantly for dozens of languages
 ;; with zero configuration.
 (use-package dumb-jump
-  ;; :init/el-patch
-
-  ;; (defvar dumb-jump-mode-map
-  ;;   (let ((map (make-sparse-keymap)))
-  ;;     (define-key map (kbd "C-M-g") 'dumb-jump-go)
-  ;;     (define-key map (kbd "C-M-p") 'dumb-jump-back)
-  ;;     (define-key map (kbd "C-M-q") 'dumb-jump-quick-look)
-  ;;     map))
-
-  ;; (define-minor-mode dumb-jump-mode
-  ;;   "Minor mode for jumping to variable and function definitions"
-  ;;   :global t
-  ;;   :keymap dumb-jump-mode-map)
-
-  ;; :init
-
-  ;; (dumb-jump-mode +1)
-
-  ;; :bind (:map dumb-jump-mode-map
-  ;;             ("M-Q" . #'dumb-jump-quick-look))
-  ;; :bind* (("C-M-d" . #'dumb-jump-go-prompt)
-  ;;         ("C-x 4 g" . #'dumb-jump-go-other-window)
-  ;;         ("C-x 4 d" . #'arche-dumb-jump-go-prompt-other-window))
   :config
 
-  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
-
-  ;; (defun arche-dumb-jump-go-prompt-other-window ()
-  ;;   "Like `dumb-jump-go-prompt' but use a different window."
-  ;;   (interactive)
-  ;;   (let ((dumb-jump-window 'other))
-  ;;     (dumb-jump-go-prompt)))
-)
+  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
 
 ;;;; Display contextual metadata
 
