@@ -2914,6 +2914,10 @@ set LSP configuration (see `lsp-python-ms')."
 
   :config
 
+  ;; We want to make sure the PATH is set up correctly by now, since
+  ;; otherwise we might not be able to find the LSP server binaries.
+  (arche-env-setup)
+
   ;; As per <https://github.com/emacs-lsp/lsp-mode#performance>.
   (setq read-process-output-max (* 1024 1024))
 
@@ -2923,17 +2927,11 @@ set LSP configuration (see `lsp-python-ms')."
 This is a `:before-until' advice for several `lsp-mode' logging
 functions."
     (or
-     ;; Messages we get when trying to start LSP (happens every time
-     ;; we open a buffer).
-     (member format `("No LSP server for %s(check *lsp-log*)."
-                      "Connected to %s."
-                      ,(concat
-                        "Unable to calculate the languageId for current "
-                        "buffer. Take a look at "
-                        "lsp-language-id-configuration.")
-                      ,(concat
-                        "There are no language servers supporting current "
-                        "mode %s registered with `lsp-mode'.")))
+     (string-match-p "No LSP server for %s" format)
+     (string-match-p "Connected to %s" format)
+     (string-match-p "Unable to calculate the languageId" format)
+     (string-match-p
+      "There are no language servers supporting current mode" format)
      ;; Errors we get from gopls for no good reason (I can't figure
      ;; out why). They don't impair functionality.
      (and (stringp (car args))
@@ -2988,15 +2986,6 @@ killed (which happens during Emacs shutdown)."
   (setq lsp-enable-on-type-formatting nil)
 
   :blackout " LSP")
-
-;; Feature `lsp-clients' from package `lsp-mode' defines how to
-;; interface with the various popular LSP servers.
-;; (use-feature lsp-clients
-;;   :config
-
-;;   ;; We want to make sure the PATH is set up correctly by now, since
-;;   ;; otherwise we might not be able to find the LSP server binaries.
-;;   (arche-env-setup))
 
 ;;;; Indentation
 
@@ -3714,7 +3703,7 @@ This works around an upstream bug; see
 ;; for use with `lsp-mode'.
 (use-package lsp-haskell
   :demand t
-  :after (:all haskell-mode))
+  :after (:all lsp-mode haskell-mode))
 
 ;;;; Lua
 ;; <http://www.lua.org/>
@@ -3865,7 +3854,7 @@ Return either a string or nil."
 ;; better than Palantir's in my opinion.
 (use-package lsp-python-ms
   :demand t
-  :after (:all python)
+  :after (:all lsp-mode python)
   :config
 
   (arche-defadvice arche--lsp-python-ms-silence (func &rest args)
@@ -3993,17 +3982,16 @@ Return either a string or nil."
     (when (eq major-mode 'sh-mode)
       (setq mode-name (capitalize (symbol-name sh-shell)))))
 
-  ;; (use-feature lsp-clients
-  ;;   :config
+  (use-feature lsp-bash
+    :config
 
-  ;;   ;; Only activate the Bash LSP server in Bash code, not all shell
-  ;;   ;; script code. It's not very helpful to get Bash syntax errors
-  ;;   ;; while editing Zsh code.
-  ;;   (arche-protect-macros
-  ;;     (setf (lsp--client-activation-fn (gethash 'bash-ls lsp-clients))
-  ;;           (lambda (&rest _)
-  ;;             (memq sh-shell '(sh bash))))))
-  )
+    ;; Only activate the Bash LSP server in Bash code, not all shell
+    ;; script code. It's not very helpful to get Bash syntax errors
+    ;; while editing Zsh code.
+    (arche-protect-macros
+      (setf (lsp--client-activation-fn (gethash 'bash-ls lsp-clients))
+            (lambda (&rest _)
+              (memq sh-shell '(sh bash)))))))
 
 ;;;; Swift
 ;; https://developer.apple.com/swift/
