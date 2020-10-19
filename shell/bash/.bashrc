@@ -233,10 +233,9 @@ fi
 # Configure paths for Go Programming Language.
 # https://golang.org/
 # https://github.com/golang/go/wiki/SettingGOPATH
-setenv GOPATH "$HOME/.go"
-setenv GOROOT "$HOME/usr/lib/go"
-addenv PATH "$GOROOT/bin"
-addenv PATH "$GOPATH/bin"
+# $GOROOT is assumed to be /usr/local/go
+setenv GOPATH "$HOME/usr/go"
+addenv PATH "$GOPATH/bin:/usr/local/go/bin"
 
 # pyenv is a simple python version management.
 # https://github.com/pyenv/pyenv

@@ -47,7 +47,7 @@
 	# fetch.
 	prune = true
 [ghq]
-  root = ~/.go/src
+  root = ~/usr/go/src
   root = ~/usr/ghq
 [include]
 	path = ~/.gitconfig.local
@@ -71,4 +71,3 @@
 [user]
   name = Hiroshi Atsuta
   email = atsuta.hiroshi@gmail.com
-
