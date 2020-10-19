@@ -3217,6 +3217,19 @@ order."
 
 ;;;; Definition location
 
+;; Package `imenu-list' creates a buffer which is populated with the
+;; current buffer's imenu entries. This buffer is shown as a sidebar.
+(use-package imenu-list
+  :bind (("<f10>" . #'imenu-list-smart-toggle))
+
+  :config
+
+  ;; Set the focus to the imenu-list buffer when activating.
+  (setq imenu-list-focus-after-activation t)
+
+  ;; Always shows the buffer with the constant size.
+  (setq imenu-list-auto-resize nil))
+
 ;; Package `dumb-jump' provides a mechanism to jump to the definitions
 ;; of functions, variables, etc. in a variety of programming
 ;; languages. The advantage of `dumb-jump' is that it doesn't try to
