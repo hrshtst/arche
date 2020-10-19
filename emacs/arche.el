@@ -2909,7 +2909,8 @@ set LSP configuration (see `lsp-python-ms')."
                    ;; framework for, until they are phased out in favor of
                    ;; LSP.
                    #'clojure-mode
-                   #'ruby-mode))
+                   #'ruby-mode
+                   #'fish-mode))
         (lsp))))
 
   :config
@@ -3992,6 +3993,12 @@ Return either a string or nil."
       (setf (lsp--client-activation-fn (gethash 'bash-ls lsp-clients))
             (lambda (&rest _)
               (memq sh-shell '(sh bash)))))))
+
+;;;; Fish
+;; https://fishshell.com/
+
+;; Package `fish-mode' provides a major mode for fish shell script.
+(use-package fish-mode)
 
 ;;;; Swift
 ;; https://developer.apple.com/swift/
