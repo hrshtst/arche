@@ -3036,17 +3036,9 @@ killed (which happens during Emacs shutdown)."
 If `company-backends' is overridden by Arche, then these
 backends will still be included.")
 
-  :bind (;; Remap the standard Emacs keybindings for invoking
-         ;; completion to instead use Company. You might think this
-         ;; could be put in the `:bind*' declaration below, but it
-         ;; seems that `bind-key*' does not work with remappings.
-         ([remap completion-at-point] . #'company-manual-begin)
-         ([remap complete-symbol] . #'company-manual-begin)
-
-         ;; The following are keybindings that take effect whenever
+  :bind (;; The following are keybindings that take effect whenever
          ;; the completions menu is visible, even if the user has not
          ;; explicitly interacted with Company.
-
          :map company-active-map
 
          ;; Make TAB always complete the current selection, instead of
@@ -3126,7 +3118,7 @@ backends will still be included.")
   ;; Company appears to override our settings in `company-active-map'
   ;; based on `company-auto-complete-chars'. Turning it off ensures we
   ;; have full control.
-  ;; (setq company-auto-complete-chars nil)
+  (setq company-auto-commit-chars nil)
 
   ;; Only search the current buffer to get suggestions for
   ;; `company-dabbrev' (a backend that creates suggestions from text
@@ -3144,6 +3136,9 @@ backends will still be included.")
   ;; metadata, like a type signature, align that information to the
   ;; right-hand side. This usually makes it look neater.
   (setq company-tooltip-align-annotations t)
+
+  ;; Make selecting item before first or after last wraps around.
+  (setq company-selection-wrap-around t)
 
   (defvar-local arche--company-buffer-modified-counter nil
     "Last return value of `buffer-chars-modified-tick'.
