@@ -3339,6 +3339,7 @@ was printed, and only have ElDoc display if one wasn't."
   ;; For use with `lsp-ui'.
   (arche-bind-key "p" #'flycheck-previous-error)
   (arche-bind-key "n" #'flycheck-next-error)
+  (arche-bind-key "l" #'flycheck-list-errors)
 
   :blackout t)
 
