@@ -5350,6 +5350,20 @@ command."
     (require 'git-gutter)
     (remove-hook 'find-file-hook #'arche--git-gutter-load))
 
+  (use-feature hydra
+    :config
+
+    (defhydra hydra-git-gutter (:hint nil)
+      "Git gutter"
+      ("p" git-gutter:previous-hunk "previous")
+      ("n" git-gutter:next-hunk "next")
+      ("a" arche-git-gutter:beginning-of-hunk "first")
+      ("e" git-gutter:end-of-hunk "last")
+      ("k" git-gutter:revert-hunk "revert")
+      ("q" nil))
+
+    (bind-key "C-c g" #'hydra-git-gutter/body))
+
   :config
 
   ;; Don't prompt when reverting hunk.
