@@ -131,6 +131,12 @@ end
 setenv GOPATH "$HOME/usr/go"
 addenv PATH "$GOPATH/bin:/usr/local/go/bin"
 
+# Configure paths for packages installed by yarn.
+# https://classic.yarnpkg.com/en/docs/cli/global
+if command -v yarn 1>/dev/null 2>&1;
+  addenv PATH (yarn global bin)
+end
+
 # pyenv is a simple python version management.
 # https://github.com/pyenv/pyenv
 setenv PYENV_ROOT "$HOME/.pyenv"
