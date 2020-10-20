@@ -3575,6 +3575,12 @@ normally set it (since that code will run during early init,
 which is a problem)."
     (setq cider-docview-code-background-color (cider-scale-background-color))))
 
+;;;; Fish
+;; https://fishshell.com/
+
+;; Package `fish-mode' provides a major mode for fish shell script.
+(use-package fish-mode)
+
 ;;;; Go
 ;; https://golang.org/
 
@@ -4005,12 +4011,6 @@ Return either a string or nil."
       (setf (lsp--client-activation-fn (gethash 'bash-ls lsp-clients))
             (lambda (&rest _)
               (memq sh-shell '(sh bash)))))))
-
-;;;; Fish
-;; https://fishshell.com/
-
-;; Package `fish-mode' provides a major mode for fish shell script.
-(use-package fish-mode)
 
 ;;;; Swift
 ;; https://developer.apple.com/swift/
