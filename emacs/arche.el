@@ -3745,8 +3745,29 @@ This works around an upstream bug; see
 
 ;; Package `markdown-mode' provides a major mode for Markdown.
 (use-package markdown-mode
+  :commands (markdown-mode gfm-mode)
+  :init
+
+  (let* ((xdg-data-home (or (getenv "XDG_DATA_HOME")
+                            (expand-file-name "~/.local/share")))
+         (css-path (expand-file-name "pandoc/github-markdown.css"
+                                     xdg-data-home)))
+    (if (and (executable-find "pandoc")
+             (file-exists-p css-path))
+        (setq markdown-command (concat "pandoc "
+                                       ;; Produce a standalone HTML file.
+                                       "--standalone --self-contained "
+                                       ;; Specify output format.
+                                       "--to=html5 "
+                                       ;; Specify CSS style sheet to link.
+                                       "--css=" css-path))))
+
   :mode (;; Extension used by Hugo.
-         ("\\.mmark\\'" . markdown-mode))
+         ("\\.mmark\\'" . markdown-mode)
+         ;; Recommended setting by official.
+         ("README\\.md\\'" . gfm-mode)
+         ("\\.md\\'" . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode))
 
   :bind (;; C-c C-s p is a really dumb binding, we prefer C-c C-s C-p.
          ;; Same for C-c C-s q.
@@ -3760,6 +3781,7 @@ This works around an upstream bug; see
          ("<S-iso-lefttab>" . #'arche-markdown-shifttab)
          ("<S-tab>" . #'arche-markdown-shifttab)
          ("<backtab>" . #'arche-markdown-shifttab))
+
   :config
 
   (defun arche-markdown-tab ()
