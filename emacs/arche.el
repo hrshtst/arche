@@ -3812,6 +3812,18 @@ item."
      ((markdown-list-item-at-point-p)
       (markdown-promote-list-item))))
 
+  ;; Turn on syntax highlighting for wiki links.
+  (setq markdown-enable-wiki-links t)
+
+  ;; Turn on syntax highlighting for inline LaTeX expressions.
+  (setq markdown-enable-math t)
+
+  ;; Change depth of indentation for markdown lists. (default: 4)
+  (setq markdown-list-indent-width 2)
+
+  ;; Fontify code in code blocks using the native major mode.
+  (setq markdown-fontify-code-blocks-natively t)
+
   (arche-defadvice arche--disable-markdown-metadata-fontification (&rest _)
     :override #'markdown-match-generic-metadata
     "Prevent fontification of YAML metadata blocks in `markdown-mode'.
@@ -3819,7 +3831,84 @@ This prevents a mis-feature wherein if the first line of a
 Markdown document has a colon in it, then it's distractingly and
 usually wrongly fontified as a metadata block. See
 https://github.com/jrblevin/markdown-mode/issues/328."
-    (prog1 nil (goto-char (point-max)))))
+    (prog1 nil (goto-char (point-max))))
+
+  (arche-defhook arche--markdown-set-command-to-use-css ()
+    gfm-mode-hook
+    "Set `markdown-command' to use CSS file for GitHub-flavored markdown."
+    (let* ((xdg-data-home (or (getenv "XDG_DATA_HOME")
+                              (expand-file-name "~/.local/share")))
+           (css-file (expand-file-name "pandoc/github-markdown.css"
+                                       xdg-data-home)))
+      (if (and (executable-find "pandoc")
+               (file-exists-p css-file))
+          (setq markdown-command (concat "pandoc "
+                                         ;; Produce a standalone HTML file.
+                                         "--standalone --self-contained "
+                                         ;; Specify output format.
+                                         "--to=html5 "
+                                         ;; Specify CSS style sheet to link.
+                                         "--css=" css-file)))))
+
+  ;; Define keybindings for markdown mode with hydra.
+  (use-feature hydra
+    :config
+
+    (defhydra hydra-markdown-mode (:hint nil)
+      "
+Text Styles     |        ^^_i_: italic          ^^_b_: bold       ^^_c_: code(inline) ^^_C_: code(block)    _q_: blockquote _P_: preformatted _k_: kbd
+Headings        |        ^^_h_: auto(atx)       ^^_1_: h1  _2_: h2  _3_: h3   _4_: h4   _H_: auto(setext)   _!_: h1(setext) _@_: h2(setext)
+Compile/Preview |        ^^_m_: compile         ^^_p_: preview    ^^_e_: export       ^^_v_: export/preview _o_: open       _l_: live preview
+Promote/Demote  | _-_,_<left>_: promote _=_,_<right>_: demote  ^^_<up>_: move up ^^_<down>_: move down
+Objects         |      ^^_C-i_: image         ^^_C-l_: link     ^^_C-f_: footnote   ^^_C-w_: wiki-link    _C--_: hrz line   _C-u_: uri    _C-t_: table
+Miscellaneous   |      ^^_C-o_: follow link   ^^_C-d_: do       ^^_C-k_: kill
+"
+      ;; Text Styles
+      ("i" markdown-insert-italic)
+      ("b" markdown-insert-bold)
+      ("c" markdown-insert-code)
+      ("k" markdown-insert-kbd)
+      ("q" markdown-insert-blockquote :exit t)
+      ("P" markdown-insert-pre :exit t)
+      ("C" markdown-insert-gfm-code-block :exit t)
+      ;; Headings
+      ("h" markdown-insert-header-dwim)
+      ("H" markdown-insert-header-setext-dwim)
+      ("1" markdown-insert-header-atx-1)
+      ("2" markdown-insert-header-atx-2)
+      ("3" markdown-insert-header-atx-3)
+      ("4" markdown-insert-header-atx-4)
+      ("!" markdown-insert-header-setext-1)
+      ("@" markdown-insert-header-setext-2)
+      ;; Maintenance
+      ("m" markdown-other-window :exit t)
+      ("p" markdown-preview :exit t)
+      ("e" markdown-export :exit t)
+      ("v" markdown-export-and-preview :exit t)
+      ("o" markdown-open :exit t)
+      ("l" markdown-live-preview-mode :exit t)
+      ;; Promote/Demote
+      ("<left>" markdown-promote)
+      ("-" markdown-promote)
+      ("<right>" markdown-demote)
+      ("=" markdown-demote)
+      ("<up>" markdown-move-up)
+      ("<down>" markdown-move-down)
+      ("]" markdown-complete :exit t)
+      ;; Links, footnotes
+      ("C-i" markdown-insert-image :exit t)
+      ("C-l" markdown-insert-link :exit t)
+      ("C-t" markdown-insert-table :exit t)
+      ("C-u" markdown-insert-uri :exit t)
+      ("C-f" markdown-insert-footnote :exit t)
+      ("C-w" markdown-insert-wiki-link :exit t)
+      ("C--" markdown-insert-hr :exit t)
+      ;; Misc.
+      ("C-o" markdown-follow-thing-at-point :exit t)
+      ("C-d" markdown-do :exit t)
+      ("C-k" markdown-kill-thing-at-point))
+
+    (bind-key "<f9>" #'hydra-markdown-mode/body markdown-mode-map)))
 
 ;;;; Protobuf
 
