@@ -5751,6 +5751,23 @@ Also run `arche-atomic-chrome-setup-hook'."
   ;; Listen for requests from the Chrome/Firefox extension.
   (atomic-chrome-start-server))
 
+;; Package `academic-phrases' provides a list of academic phrases
+;; organized by the topic or by the paper section. M-x academic-phrases
+;; retrieves a list of phrases by topic, and M-x
+;; academi-phrases-by-section allows us to browse the phrases by the
+;; paper section.
+(use-package academic-phrases)
+
+;; Package `powerthesaurus' provides a plugin to integrate Emacs with
+;; www.powerthesaurus.org. M-x powerthesaurus-lookup-word looks up a
+;; list of synonyms of a selected or an input text at
+;; powerthesaurus.org.
+(use-package powerthesaurus)
+
+;; Package `mw-thesaurus' provides a way to lookup a word and display
+;; its thesaurus definition from Merriam-Webster Thesaurus.
+(use-package mw-thesaurus)
+
 ;; Package `sx' allows you to browse Stack Overflow from within Emacs.
 ;; First, run `sx-authenticate' in order to provide your username and
 ;; password. After that, you can use any of the autoloaded entry
