@@ -4127,6 +4127,18 @@ Return either a string or nil."
 ;; Feature `tex' from package `auctex' provides the base major mode
 ;; for TeX.
 (use-feature tex
+  :init
+
+  (arche-defhook arche--yasnippet-tex-setup ()
+    TeX-mode-hook
+    "Enable `yasnippet-minor-mode' in `TeX-mode'."
+    (yas-minor-mode +1))
+
+  (arche-defhook arche--replace-str-setup ()
+    TeX-mode-hook
+    "Enable `arche-replace-str-mode' in `TeX-mode'."
+    (arche-replace-str-mode +1))
+
   :config/el-patch
 
   ;; Remove annoying messages when opening *.tex files.
@@ -4266,6 +4278,20 @@ environment with point at the end of a non-empty line of text."
   ;; Prevent section headers from being displayed in different font
   ;; sizes.
   (setq font-latex-fontify-sectioning 1))
+
+;; Feature `reftex' is a specialized feature for support of labels,
+;; references, citations, and the index in LaTeX.
+(use-feature reftex
+  :init
+
+  (add-hook 'LaTeX-mode-hook 'turn-on-reftex))
+
+;; Package `latex-math-preview' provides preview of particular
+;; region in LaTeX file and displays it.
+(use-package latex-math-preview
+  :config
+
+  (setq preview-scale-function 1.2))
 
 ;;;; VimScript
 ;; http://vimdoc.sourceforge.net/htmldoc/usr_41.html
