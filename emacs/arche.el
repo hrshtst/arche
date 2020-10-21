@@ -4136,8 +4136,8 @@ Return either a string or nil."
 
   (arche-defhook arche--replace-str-setup ()
     TeX-mode-hook
-    "Enable `arche-replace-str-mode' in `TeX-mode'."
-    (arche-replace-str-mode +1))
+    "Enable `arche-replace-punc-mode' in `TeX-mode'."
+    (arche-replace-punc-mode +1))
 
   :config/el-patch
 
