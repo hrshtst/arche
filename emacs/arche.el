@@ -5659,21 +5659,10 @@ Instead, display simply a flat colored region in the fringe."
       (when-let ((win (get-buffer-window buf)))
         (select-window win)))))
 
-;; Package `rg' just provides an interactive command `rg' to run the
-;; search tool of the same name.
-(use-package rg
-  :straight (:host github :repo "dajva/rg.el")
-  :bind* (("C-c k" . #'arche-rg))
-  :config
-
-  (defun arche-rg (&optional only-current-type)
-    "Search for string in current project.
-With ONLY-CURRENT-TYPE non-nil, or interactively with prefix
-argument, search only in files matching current type."
-    (interactive "P")
-    (rg-run (rg-read-pattern nil)
-            (if only-current-type (car (rg-default-alias)) "*")
-            (rg-project-root buffer-file-name))))
+;; Package `deadgrep' provides a fancy inteface for an external
+;; command `rg'.
+(use-package deadgrep
+  :bind (("C-c k" . #'deadgrep)))
 
 ;;;; Internet applications
 
