@@ -4085,6 +4085,9 @@ Return either a string or nil."
 (use-feature sh-script
   :config
 
+  ;; Make the default indentation increment shorter.
+  (setq sh-basic-offset 2)
+
   (dolist (func '(sh-set-shell sh-make-vars-local))
     (advice-add func :around #'arche--advice-silence-messages))
 
