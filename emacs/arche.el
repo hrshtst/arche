@@ -5876,7 +5876,8 @@ This is non-nil if `arche--advice-kill-emacs-dispatch' has called
     ;; slow (double-digit milliseconds).
     '(prescient--save
       arche--org-clock-save
-      save-place-kill-emacs-hook)
+      save-place-kill-emacs-hook
+      recentf-save-list)
     "List of functions on `kill-emacs-hook' which can be run eagerly.
 If actually present on `kill-emacs-hook', then these functions
 are run immediately on `save-buffers-kill-emacs'. This means that
