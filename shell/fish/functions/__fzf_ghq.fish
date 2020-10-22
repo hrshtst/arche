@@ -19,10 +19,17 @@ function __fzf_ghq -d "Lists repositories downloaded with ghq and goes into sele
 
     set -q FZF_GHQ_PREVIEW
     or set -l FZF_GHQ_PREVIEW "\
-dir=\$(ghq root)/{}
-if [[ ! -d \$dir ]]; then
-  dir=\$GOPATH/src/{}
-fi
+command -v git &>/dev/null && \
+  readarray -t root_dirs < <(git config --get-all ghq.root)
+[ \${#root_dirs[@]} -gt 0 ] || \
+  readarray -t root_dirs < <(ghq root)
+
+for (( i=\${#root_dirs[@]}-1; i>=0; i-- )); do
+  root=\"\${root_dirs[\$i]/\'~\'/$HOME}\"
+  dir=\$root/{}
+  [ -d  \$dir ] && break
+done
+
 readme=\$(find \$dir -maxdepth 1 -name README* | \
   awk \'{ print length(\$0) \" \" \$0; }\' | \
   sort -n | cut -d \' \' -f 2-)
@@ -38,8 +45,18 @@ fi
     eval "$FZF_GHQ_COMMAND | "(__fzfcmd) "+m $FZF_DEFAULT_OPTS $FZF_GHQ_OPTS --query \"$fzf_query\" --preview-window right:70%:wrap --preview '$FZF_GHQ_PREVIEW'" | read -l select
     set -x SHELL $cur_shell
 
+    # Find root directories
+    type -q git; and set -l root_dirs (git config --get-all ghq.root)
+    test (count $root_dirs) -gt 0; or set -l root_dirs (ghq root)
+
     if not test -z "$select"
-        env SHELL=(which fish) ghq look "$select"
+        for root in $root_dirs[-1..0]
+            set -l dir (string replace "~" $HOME "$root/$select")
+            if test -d "$dir"
+                cd "$dir"
+                break
+            end
+        end
 
         # Remove last token from commandline.
         commandline -t ""
