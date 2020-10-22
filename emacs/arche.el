@@ -3236,6 +3236,7 @@ order."
 ;; be clever, so it "just works" instantly for dozens of languages
 ;; with zero configuration.
 (use-package dumb-jump
+  :demand t
   :config
 
   (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
