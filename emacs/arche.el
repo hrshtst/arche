@@ -1081,7 +1081,7 @@ active minibuffer, even if the minibuffer is not selected."
   (set-face-attribute 'aw-leading-char-face nil
                       :foreground "yellow"
                       :weight 'bold
-                      :height 3.0))
+                      :height 2.0))
 
 ;; Package `transpose-frame' provides simple commands to mirror,
 ;; rotate, and transpose Emacs windows: `flip-frame', `flop-frame',
