@@ -2535,10 +2535,10 @@ buffer."
     (defhydra hydra-occur-dwim (:hint nil)
       "Occur mode"
       ("o" arche-occur-dwim "Start occur-dwim")
-      ("j" occur-next "Next")
-      ("k" occur-prev "Prev")
+      ("j" next-error-no-select "Next")
+      ("k" previous-error-no-select "Prev")
       ("x" delete-window "Hide" :exit t)
-      ("r" (arche-reattach-occur) "Re-attach"))
+      ("r" arche-reattach-occur "Re-attach"))
 
     (bind-key "C-c o" #'hydra-occur-dwim/body))
 
@@ -2561,6 +2561,7 @@ buffer."
 
   (defun arche-reattach-occur ()
     "Reattach *Occur* buffer otherwise call `hydra-occur-dwim/body'."
+    (interactive)
     (unless (arche--focus-on-occur-buffer)
       (hydra-occur-dwim/body)))
 
