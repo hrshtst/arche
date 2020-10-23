@@ -2540,7 +2540,7 @@ buffer."
       ("x" delete-window "Hide" :exit t)
       ("r" arche-reattach-occur "Re-attach"))
 
-    (bind-key "C-c o" #'hydra-occur-dwim/body))
+    (bind-key "M-o" #'hydra-occur-dwim/body))
 
   ;; Function `arche-occur-dwim' is originally from:
   ;; <https://github.com/abo-abo/hydra/wiki/Emacs#occur>
