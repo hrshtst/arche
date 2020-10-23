@@ -2200,7 +2200,7 @@ _d_: subtree
       ("b" outline-backward-same-level)
       ("z" nil "leave"))
 
-    (bind-key "C-c #" #'hydra-outline/body))
+    (arche-bind-key "#" #'hydra-outline/body))
 
   :blackout outline-minor-mode)
 
