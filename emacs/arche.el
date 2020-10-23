@@ -3895,7 +3895,7 @@ Miscellaneous   |      ^^_C-o_: follow link   ^^_C-d_: do       ^^_C-k_: kill
       ("C-d" markdown-do :exit t)
       ("C-k" markdown-kill-thing-at-point))
 
-    (bind-key "<f9>" #'hydra-markdown-mode/body markdown-mode-map)))
+    (bind-key "M-P ." #'hydra-markdown-mode/body markdown-mode-map)))
 
 ;;;; Protobuf
 
