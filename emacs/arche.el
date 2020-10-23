@@ -1132,7 +1132,7 @@ active minibuffer, even if the minibuffer is not selected."
     ;; Quit
     ("q" nil "quit" :column nil))
 
-  (bind-key "M-o" #'hydra-window/body))
+  (arche-bind-key "w" #'hydra-window/body))
 
 ;; Feature `ibuffer' provides a more modern replacement for the
 ;; `list-buffers' command.
