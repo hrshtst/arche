@@ -5467,12 +5467,6 @@ command."
              git-gutter:revert-hunk)
   :init
 
-  (arche-bind-key "v p" #'git-gutter:previous-hunk)
-  (arche-bind-key "v n" #'git-gutter:next-hunk)
-  (arche-bind-key "v a" #'arche-git-gutter:beginning-of-hunk)
-  (arche-bind-key "v e" #'git-gutter:end-of-hunk)
-  (arche-bind-key "v k" #'git-gutter:revert-hunk)
-
   ;; Disable in Org mode, as per
   ;; <https://github.com/syl20bnr/spacemacs/issues/10555> and
   ;; <https://github.com/syohex/emacs-git-gutter/issues/24>.
@@ -5501,7 +5495,7 @@ command."
       ("k" git-gutter:revert-hunk "revert")
       ("q" nil))
 
-    (bind-key "C-c g" #'hydra-git-gutter/body))
+    (arche-bind-key "v" #'hydra-git-gutter/body))
 
   :config
 
