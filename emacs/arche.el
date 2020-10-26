@@ -5127,6 +5127,83 @@ non-nil value to enable trashing for file operations."
 
 ;; Feature `dired' provides a simplistic filesystem manager in Emacs.
 (use-feature dired
+  :bind (:map dired-mode-map
+              ;; This binding is way nicer than ^. It's inspired by
+              ;; Sunrise Commander.
+              ("J" . #'dired-up-directory))
+  :bind* (("C-x w" . arche-rename-current-file))
+  :config
+
+  (defun arche-rename-current-file (newname)
+    "Rename file visited by current buffer to NEWNAME.
+Interactively, prompt the user for the target filename, with
+completion.
+
+If NEWNAME is a directory then extend it with the basename of
+`buffer-file-name'. Make parent directories automatically."
+    (interactive
+     (progn
+       (unless buffer-file-name
+         (user-error "Current buffer is not visiting a file"))
+       (let ((newname (read-file-name "Rename to: " nil buffer-file-name)))
+         (when (equal (file-truename newname)
+                      (file-truename buffer-file-name))
+           (user-error "%s" "Can't rename a file to itself"))
+         (list newname))))
+    (unless buffer-file-name
+      (error "Current buffer is not visiting a file"))
+    (when (equal (file-truename newname)
+                 (file-truename buffer-file-name))
+      (error "%s: %s" "Can't rename a file to itself" newname))
+    (when (equal newname (file-name-as-directory newname))
+      (setq newname
+            (concat newname (file-name-nondirectory buffer-file-name))))
+    (make-directory (file-name-directory newname) 'parents)
+    ;; Passing integer as OK-IF-ALREADY-EXISTS means prompt for
+    ;; confirmation before overwriting. Why? Who can say...
+    (dired-rename-file buffer-file-name newname 0))
+
+  (arche-defadvice arche--advice-dired-check-for-ls-dired (&rest _)
+    :before #'dired-insert-directory
+    "Check if ls --dired is supported ahead of time, and silently.
+
+This advice prevents Dired from printing a message if your ls
+does not support the --dired option. (We do this by performing
+the check ourselves, and refraining from printing a message in
+the problematic case.)"
+    (when (eq dired-use-ls-dired 'unspecified)
+      (setq dired-use-ls-dired
+            (eq 0 (call-process insert-directory-program
+                                nil nil nil "--dired")))))
+
+  (add-hook 'dired-mode-hook #'arche--autorevert-silence)
+
+  ;; Disable the prompt about whether I want to kill the Dired buffer
+  ;; for a deleted directory. Of course I do! It's just a Dired
+  ;; buffer, after all. Note that this variable, for reasons unknown
+  ;; to me, is defined in `dired-x', but only affects the behavior of
+  ;; functions defined in `dired'.
+  (setq dired-clean-confirm-killing-deleted-buffers nil)
+
+  ;; Instantly revert Dired buffers on re-visiting them, with no
+  ;; message. (A message is shown if insta-revert is either disabled
+  ;; or determined dynamically by setting this variable to a
+  ;; function.)
+  (setq dired-auto-revert-buffer t)
+
+  ;; Use a directory of a Dired buffer displayed in the next window on
+  ;; the same frame as a default target directory in the prompt for
+  ;; file copy, rename etc.
+  (setq dired-dwim-target t)
+
+  ;; Always copy directories recursively without asking.
+  (setq dired-recursive-copies 'always)
+
+  ;; Always match only file names when doing isearch in Dired.
+  (setq dired-isearch-filenames t))
+
+(use-feature dired-x
+  :after dired
   :init
 
   (use-feature hydra
@@ -5278,88 +5355,12 @@ wdired          | ^C-x C-q^: edit     ^C-c C-c^: commit   ^C-c ESC^: abort
       ("e" image-dired-dired-edit-comment-and-tags "edit comment and tags")
       ("q" hydra-dired/body "back" :color blue)))
 
-  :bind (:map dired-mode-map
-              ;; This binding is way nicer than ^. It's inspired by
-              ;; Sunrise Commander.
-              ("J" . #'dired-up-directory)
-              ("." . #'hydra-dired/body))
-  :bind* (("C-x w" . arche-rename-current-file))
-  :config
-
-  (defun arche-rename-current-file (newname)
-    "Rename file visited by current buffer to NEWNAME.
-Interactively, prompt the user for the target filename, with
-completion.
-
-If NEWNAME is a directory then extend it with the basename of
-`buffer-file-name'. Make parent directories automatically."
-    (interactive
-     (progn
-       (unless buffer-file-name
-         (user-error "Current buffer is not visiting a file"))
-       (let ((newname (read-file-name "Rename to: " nil buffer-file-name)))
-         (when (equal (file-truename newname)
-                      (file-truename buffer-file-name))
-           (user-error "%s" "Can't rename a file to itself"))
-         (list newname))))
-    (unless buffer-file-name
-      (error "Current buffer is not visiting a file"))
-    (when (equal (file-truename newname)
-                 (file-truename buffer-file-name))
-      (error "%s: %s" "Can't rename a file to itself" newname))
-    (when (equal newname (file-name-as-directory newname))
-      (setq newname
-            (concat newname (file-name-nondirectory buffer-file-name))))
-    (make-directory (file-name-directory newname) 'parents)
-    ;; Passing integer as OK-IF-ALREADY-EXISTS means prompt for
-    ;; confirmation before overwriting. Why? Who can say...
-    (dired-rename-file buffer-file-name newname 0))
-
-  (arche-defadvice arche--advice-dired-check-for-ls-dired (&rest _)
-    :before #'dired-insert-directory
-    "Check if ls --dired is supported ahead of time, and silently.
-
-This advice prevents Dired from printing a message if your ls
-does not support the --dired option. (We do this by performing
-the check ourselves, and refraining from printing a message in
-the problematic case.)"
-    (when (eq dired-use-ls-dired 'unspecified)
-      (setq dired-use-ls-dired
-            (eq 0 (call-process insert-directory-program
-                                nil nil nil "--dired")))))
-
-  (add-hook 'dired-mode-hook #'arche--autorevert-silence)
-
-  ;; Disable the prompt about whether I want to kill the Dired buffer
-  ;; for a deleted directory. Of course I do! It's just a Dired
-  ;; buffer, after all. Note that this variable, for reasons unknown
-  ;; to me, is defined in `dired-x', but only affects the behavior of
-  ;; functions defined in `dired'.
-  (setq dired-clean-confirm-killing-deleted-buffers nil)
-
-  ;; Instantly revert Dired buffers on re-visiting them, with no
-  ;; message. (A message is shown if insta-revert is either disabled
-  ;; or determined dynamically by setting this variable to a
-  ;; function.)
-  (setq dired-auto-revert-buffer t)
-
-  ;; Use a directory of a Dired buffer displayed in the next window on
-  ;; the same frame as a default target directory in the prompt for
-  ;; file copy, rename etc.
-  (setq dired-dwim-target t)
-
-  ;; Always copy directories recursively without asking.
-  (setq dired-recursive-copies 'always)
-
-  ;; Always match only file names when doing isearch in Dired.
-  (setq dired-isearch-filenames t))
-
-(use-feature dired-x
   :bind (;; Bindings for jumping to the current directory in Dired.
          ("C-x C-j" . #'dired-jump)
          ("C-x 4 C-j" . #'dired-jump-other-window)
          :map dired-mode-map
-         (")" . #'dired-omit-mode))
+         (")" . #'dired-omit-mode)
+         ("." . #'hydra-dired/body))
 
   :config
 
