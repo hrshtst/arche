@@ -5185,7 +5185,170 @@ the problematic case.)"
   ;; message. (A message is shown if insta-revert is either disabled
   ;; or determined dynamically by setting this variable to a
   ;; function.)
-  (setq dired-auto-revert-buffer t))
+  (setq dired-auto-revert-buffer t)
+
+  ;; Use a directory of a Dired buffer displayed in the next window on
+  ;; the same frame as a default target directory in the prompt for
+  ;; file copy, rename etc.
+  (setq dired-dwim-target t)
+
+  ;; Always copy directories recursively without asking.
+  (setq dired-recursive-copies 'always)
+
+  ;; Always match only file names when doing isearch in Dired.
+  (setq dired-isearch-filenames t)
+
+  ;; Define hydra commands.
+  (use-feature hydra
+    :config
+
+    (defhydra hydra-dired (:color pink :hint nil)
+      "
+Movements         |     _p_: ↑line         _n_: ↓line         _<_: ↑dir          _>_: ↓dir          _J_: parent dir     _j_: go to
+                  | _M-C-p_: ↑subdir   _M-C-n_: ↓subdir   _M-C-u_: ↑tree     _M-C-d_: ↓tree       _M-{_: ↑marked     _M-}_: ↓marked
+Actions on files  |     _f_: visit          _v_: view           _a_: alternate      _+_: create dir     _=_: compare with marked
+                  |     _o_: visit other  _C-o_: view other
+Dired buffer      |     _g_: reload         _i_: insert subdir  _$_: hide subdir    _s_: sort toggle    _(_: details
+                  |     _l_: redisplay      _k_: remove line  _M-$_: hide all subdir^ ^                 _)_: omit mode
+Flag for deletion |     _d_: flag for del   _~_: flag backups   _x_: execute deletion
+Mark/Unmark       |     _m_: mark           _u_: unmark         _U_: unmark all     _t_: toggle marking _*_: mark prefix
+Actions on marks  |     _C_: copy           _R_: rename/move    _D_: delete marked  _O_: chown          _G_: chgrp          _M_: chmod
+                  |     _I_: show info      _y_: show filetypes _S_: symlink        _Y_: rel symlink    _A_: find           _Q_: replace
+                  |     _Z_: compress       _c_: compress to    _B_: byte-compile   _L_: load           _T_: touch          _w_: copy filenames
+                  |     _!_: shell command
+Miscellaneous     |     _%_: regex prefix   _h_: help           _?_: summary
+Image dired       |   _C-t_: image dired prefix
+wdired          | ^C-x C-q^: edit     ^C-c C-c^: commit   ^C-c ESC^: abort
+"
+      ;; Movements
+      ("p" dired-previous-line)
+      ("n" dired-next-line)
+      ("<" dired-prev-dirline)
+      (">" dired-next-dirline)
+      ("J" dired-up-directory)
+      ("j" dired-goto-file)
+      ("M-C-p" dired-prev-subdir)
+      ("M-C-n" dired-next-subdir)
+      ("M-C-u" dired-tree-up)
+      ("M-C-d" dired-tree-down)
+      ("M-{" dired-prev-marked-file)
+      ("M-}" dired-next-marked-file)
+      ;; Actions on files
+      ("f" dired-find-file :color blue)
+      ("RET" dired-find-file :color blue)
+      ("o" dired-find-file-other-window)
+      ("v" dired-view-file)
+      ("C-o" dired-display-file)
+      ("a" dired-find-alternate-file :color blue)
+      ("+" dired-create-directory)
+      ("=" dired-diff)
+      ;; Dired buffer
+      ("g" revert-buffer)
+      ("l" dired-do-redisplay)
+      ("i" dired-maybe-insert-subdir)
+      ("k" dired-do-kill-lines)
+      ("$" dired-hide-subdir)
+      ("M-$" dired-hide-all)
+      ("s" dired-sort-toggle-or-edit)
+      ("(" dired-hide-details-mode)
+      (")" dired-omit-mode)
+      ;; Flag for deletion
+      ("d" dired-flag-file-deletion)
+      ("~" dired-flag-backup-files)
+      ("x" dired-do-flagged-delete)
+      ;; Mark/Unmark
+      ("m" dired-mark)
+      ("u" dired-unmark)
+      ("U" dired-unmark-all-marks)
+      ("t" dired-toggle-marks)
+      ("*" hydra-dired-mark/body :color blue)
+      ;; Actions on marks
+      ("C" dired-do-copy)
+      ("R" dired-do-rename)
+      ("D" dired-do-delete)
+      ("O" dired-do-chown)
+      ("G" dired-do-chgrp)
+      ("M" dired-do-chmod)
+      ("I" dired-info)
+      ("y" dired-show-file-type)
+      ("S" dired-do-symlink)
+      ("Y" dired-do-relsymlink)
+      ("A" dired-do-find-regexp)
+      ("Q" dired-do-find-regexp-and-replace)
+      ("Z" dired-do-compress)
+      ("c" dired-do-compress-to)
+      ("B" dired-do-byte-compile)
+      ("L" dired-do-load)
+      ("T" dired-do-touch)
+      ("w" dired-copy-filename-as-kill)
+      ("!" dired-do-shell-command)
+      ;; Miscellaneous
+      ("%" hydra-dired-regexp/body :color blue)
+      ("h" describe-mode)
+      ("?" dired-summary)
+      ;; Image dired
+      ("C-t" hydra-dired-image/body :color blue)
+      ("q" nil :color blue)
+      ("." nil :color blue))
+
+    (defhydra hydra-dired-mark (:color amaranth :columns 4)
+      "Marking and Unmarking Files"
+      ("m" dired-mark "mark")
+      ("u" dired-unmark "unmark")
+      ("*" dired-mark-executables "executables")
+      ("/" dired-mark-directories "directories")
+      ("." dired-mark-extension "extensions")
+      ("@" dired-mark-symlinks "symlinks")
+      ("%" dired-mark-files-regexp "match regexp")
+      ("s" dired-mark-subdir-files "mark subdir")
+      ("t" dired-toggle-marks "toggle marks")
+      ("c" dired-change-marks "change marks")
+      ("?" dired-unmark-all-files "unmark specific")
+      ("!" dired-unmark-all-marks "unmark all")
+      ("C-n" dired-next-marked-file "next marked")
+      ("n" dired-next-marked-file nil)
+      ("C-p" dired-prev-marked-file "prev marked")
+      ("p" dired-prev-marked-file nil)
+      ("N" dired-number-of-marked-files "# of marked")
+      ("q" hydra-dired/body "back" :color blue))
+
+    (defhydra hydra-dired-regexp (:color teal :columns 4
+                                  :after-exit
+                                  (if (eq major-mode 'dired-mode)
+                                      (hydra-dired/body)))
+      "Regular Expression Commands"
+      ("d" dired-flag-files-regexp "mark for deletion")
+      ("g" dired-mark-files-containing-regexp "mark files grep")
+      ("m" dired-mark-files-regexp "mark match files")
+      ("&" dired-flag-garbage-files "mark garbage files")
+      ("u" dired-upcase "upcase filenames")
+      ("l" dired-downcase "downcase filenames")
+      ("C" dired-do-copy-regexp "copy marked files")
+      ("R" dired-do-rename-regexp "rename marked files")
+      ("S" dired-do-symlink-regexp "symlink")
+      ("Y" dired-do-relsymlink "rel symlink")
+      ("q" hydra-dired/body "back" :color blue))
+
+    (defhydra hydra-dired-image (:color teal :columns 4
+                                 :after-exit
+                                 (if (eq major-mode 'dired-mode)
+                                     (hydra-dired/body)))
+      "Image Dired"
+      ("i" image-dired-dired-display-image "display image")
+      ("x" image-dired-dired-display-external "display external")
+      ("j" image-dired-jump-thumbnail-buffer "jump thumb buffer")
+      ("." image-dired-display-thumb "display thumb")
+      ("d" image-dired-display-thumbs "marked in thumb buf")
+      ("a" image-dired-display-thumbs-append "append thumbs")
+      ("C-t" image-dired-dired-toggle-marked-thumbs "toggle thumbs")
+      ("t" image-dired-tag-files "tag files")
+      ("r" image-dired-delete-tag "delete tag")
+      ("f" image-dired-mark-tagged-files "mark tagged files")
+      ("c" image-dired-dired-comment-files "commend files")
+      ("e" image-dired-dired-edit-comment-and-tags "edit comment and tags")
+      ("q" hydra-dired/body "back" :color blue))
+
+    (bind-key "." #'hydra-dired/body dired-mode-map)))
 
 (use-feature dired-x
   :bind (;; Bindings for jumping to the current directory in Dired.
