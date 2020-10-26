@@ -1137,8 +1137,7 @@ active minibuffer, even if the minibuffer is not selected."
 ;; Feature `ibuffer' provides a more modern replacement for the
 ;; `list-buffers' command.
 (use-feature ibuffer
-  :bind (([remap list-buffers] . #'ibuffer))
-  :config
+  :init
 
   (use-feature hydra
     :config
@@ -1232,9 +1231,11 @@ active minibuffer, even if the minibuffer is not selected."
       (">" ibuffer-filter-by-size-gt "size")
       ("<" ibuffer-filter-by-size-lt "size")
       ("/" ibuffer-filter-disable "disable")
-      ("b" hydra-ibuffer-main/body "back" :color blue))
+      ("b" hydra-ibuffer-main/body "back" :color blue)))
 
-    (bind-key "." #'hydra-ibuffer-main/body ibuffer-mode-map)))
+  :bind (([remap list-buffers] . #'ibuffer)
+         :map ibuffer-mode-map
+         ("." . #'hydra-ibuffer-main/body)))
 
 ;; Package `perspective' provides multiple named workspaces or
 ;; perspectives. Each perspective has its own buffer list and its own
@@ -1243,12 +1244,7 @@ active minibuffer, even if the minibuffer is not selected."
 ;; visible.
 (use-package perspective
   :demand t
-  :config
-
-  (persp-mode +1)
-
-  ;; Sort perspectives by order created when calling `persp-switch'.
-  (setq persp-sort 'created)
+  :init
 
   (use-feature hydra
     :config
@@ -1310,7 +1306,14 @@ perspective: %s(arche--perspective-names)
       ("C-z" (hydra-set-property 'hydra-toggle :verbosity 1) :exit nil)
       ("q" nil))
 
-    (bind-key "C-z" #'hydra-perspective/body)))
+    (bind-key "C-z" #'hydra-perspective/body))
+
+  :config
+
+  (persp-mode +1)
+
+  ;; Sort perspectives by order created when calling `persp-switch'.
+  (setq persp-sort 'created))
 
 ;; Package `pc-bufsw' provides a quick buffer switcher, which switches
 ;; buffers according to most recently used order with C-TAB and
@@ -2156,13 +2159,7 @@ two inserted lines are the same."
 ;; Feature `outline' provides major and minor modes for collapsing
 ;; sections of a buffer into an outline-like format.
 (use-feature outline
-  :demand t
-  :config
-
-  (define-globalized-minor-mode global-outline-minor-mode
-    outline-minor-mode outline-minor-mode)
-
-  (global-outline-minor-mode +1)
+  :init
 
   (use-feature hydra
     :config
@@ -2201,6 +2198,14 @@ _d_: subtree
       ("z" nil "leave"))
 
     (arche-bind-key "#" #'hydra-outline/body))
+
+  :demand t
+  :config
+
+  (define-globalized-minor-mode global-outline-minor-mode
+    outline-minor-mode outline-minor-mode)
+
+  (global-outline-minor-mode +1)
 
   :blackout outline-minor-mode)
 
@@ -2251,14 +2256,13 @@ invocation will kill the newline."
 ;; which allows you to select, kill, delete, copy, yank or insert a
 ;; text in a rectangle.
 (use-feature rect
-  :config
+  :init
 
   (use-feature hydra
     :config
 
     (defhydra hydra-rectangle (:body-pre (rectangle-mark-mode +1)
-                               :color pink
-                               :post (deactivate-mark))
+                               :color pink)
       "
 ^ ^ _k_ ^ ^   _M-w_ copy   _o_pen     _n_umber-lines
 _h_ ^ ^ _l_   _x_ kill     _t_ype     _e_xchange-point
@@ -2266,27 +2270,27 @@ _h_ ^ ^ _l_   _x_ kill     _t_ype     _e_xchange-point
 ^^^^^^        _d_elete     _u_ndo     _q_uit
 "
       ;; Movement
-      ("h" rectangle-backward-char nil)
-      ("j" rectangle-next-line nil)
-      ("k" rectangle-previous-line nil)
-      ("l" rectangle-forward-char nil)
+      ("h" rectangle-backward-char)
+      ("j" rectangle-next-line)
+      ("k" rectangle-previous-line)
+      ("l" rectangle-forward-char)
       ;; Copy/Paste
-      ("M-w" copy-rectangle-as-kill nil)
-      ("x" kill-rectangle nil)
-      ("y" yank-rectangle nil)
-      ("d" delete-rectangle nil)
+      ("M-w" copy-rectangle-as-kill)
+      ("x" kill-rectangle)
+      ("y" yank-rectangle)
+      ("d" delete-rectangle)
       ;; Edit
-      ("o" open-rectangle nil)
-      ("t" string-rectangle nil)
-      ("c" clear-rectangle nil)
-      ("u" undo nil)
+      ("o" open-rectangle)
+      ("t" string-rectangle)
+      ("c" clear-rectangle)
+      ("u" undo)
       ;; Others
-      ("n" rectangle-number-lines nil)
-      ("e" rectangle-exchange-point-and-mark nil)
+      ("n" rectangle-number-lines)
+      ("e" rectangle-exchange-point-and-mark)
       ("r" (if (region-active-p)
                (deactivate-mark)
-             (rectangle-mark-mode +1)) nil)
-      ("q" nil nil))
+             (rectangle-mark-mode +1)))
+      ("q" nil))
 
     (bind-key "C-x SPC" #'hydra-rectangle/body)))
 
@@ -3749,6 +3753,65 @@ This works around an upstream bug; see
 (use-package markdown-mode
   :commands (markdown-mode gfm-mode)
 
+  :init
+
+  (use-feature hydra
+    :config
+
+    (defhydra hydra-markdown-mode (:hint nil)
+      "
+Text Styles     |        ^^_i_: italic          ^^_b_: bold       ^^_c_: code(inline) ^^_C_: code(block)    _q_: blockquote _P_: preformatted _k_: kbd
+Headings        |        ^^_h_: auto(atx)       ^^_1_: h1  _2_: h2  _3_: h3   _4_: h4   _H_: auto(setext)   _!_: h1(setext) _@_: h2(setext)
+Compile/Preview |        ^^_m_: compile         ^^_p_: preview    ^^_e_: export       ^^_v_: export/preview _o_: open       _l_: live preview
+Promote/Demote  | _-_,_<left>_: promote _=_,_<right>_: demote  ^^_<up>_: move up ^^_<down>_: move down
+Objects         |      ^^_C-i_: image         ^^_C-l_: link     ^^_C-f_: footnote   ^^_C-w_: wiki-link    _C--_: hrz line   _C-u_: uri    _C-t_: table
+Miscellaneous   |      ^^_C-o_: follow link   ^^_C-d_: do       ^^_C-k_: kill
+"
+      ;; Text Styles
+      ("i" markdown-insert-italic)
+      ("b" markdown-insert-bold)
+      ("c" markdown-insert-code)
+      ("k" markdown-insert-kbd)
+      ("q" markdown-insert-blockquote :exit t)
+      ("P" markdown-insert-pre :exit t)
+      ("C" markdown-insert-gfm-code-block :exit t)
+      ;; Headings
+      ("h" markdown-insert-header-dwim)
+      ("H" markdown-insert-header-setext-dwim)
+      ("1" markdown-insert-header-atx-1)
+      ("2" markdown-insert-header-atx-2)
+      ("3" markdown-insert-header-atx-3)
+      ("4" markdown-insert-header-atx-4)
+      ("!" markdown-insert-header-setext-1)
+      ("@" markdown-insert-header-setext-2)
+      ;; Maintenance
+      ("m" markdown-other-window :exit t)
+      ("p" markdown-preview :exit t)
+      ("e" markdown-export :exit t)
+      ("v" markdown-export-and-preview :exit t)
+      ("o" markdown-open :exit t)
+      ("l" markdown-live-preview-mode :exit t)
+      ;; Promote/Demote
+      ("<left>" markdown-promote)
+      ("-" markdown-promote)
+      ("<right>" markdown-demote)
+      ("=" markdown-demote)
+      ("<up>" markdown-move-up)
+      ("<down>" markdown-move-down)
+      ("]" markdown-complete :exit t)
+      ;; Links, footnotes
+      ("C-i" markdown-insert-image :exit t)
+      ("C-l" markdown-insert-link :exit t)
+      ("C-t" markdown-insert-table :exit t)
+      ("C-u" markdown-insert-uri :exit t)
+      ("C-f" markdown-insert-footnote :exit t)
+      ("C-w" markdown-insert-wiki-link :exit t)
+      ("C--" markdown-insert-hr :exit t)
+      ;; Misc.
+      ("C-o" markdown-follow-thing-at-point :exit t)
+      ("C-d" markdown-do :exit t)
+      ("C-k" markdown-kill-thing-at-point)))
+
   :mode (;; Extension used by Hugo.
          ("\\.mmark\\'" . markdown-mode)
          ;; Recommended setting by official.
@@ -3767,7 +3830,8 @@ This works around an upstream bug; see
          ;; `markdown-mode-map'...
          ("<S-iso-lefttab>" . #'arche-markdown-shifttab)
          ("<S-tab>" . #'arche-markdown-shifttab)
-         ("<backtab>" . #'arche-markdown-shifttab))
+         ("<backtab>" . #'arche-markdown-shifttab)
+         ("M-P ." . #'hydra-markdown-mode/body))
 
   :config
 
@@ -3835,67 +3899,7 @@ https://github.com/jrblevin/markdown-mode/issues/328."
                                          ;; Specify output format.
                                          "--to=html5 "
                                          ;; Specify CSS style sheet to link.
-                                         "--css=" css-file)))))
-
-  ;; Define keybindings for markdown mode with hydra.
-  (use-feature hydra
-    :config
-
-    (defhydra hydra-markdown-mode (:hint nil)
-      "
-Text Styles     |        ^^_i_: italic          ^^_b_: bold       ^^_c_: code(inline) ^^_C_: code(block)    _q_: blockquote _P_: preformatted _k_: kbd
-Headings        |        ^^_h_: auto(atx)       ^^_1_: h1  _2_: h2  _3_: h3   _4_: h4   _H_: auto(setext)   _!_: h1(setext) _@_: h2(setext)
-Compile/Preview |        ^^_m_: compile         ^^_p_: preview    ^^_e_: export       ^^_v_: export/preview _o_: open       _l_: live preview
-Promote/Demote  | _-_,_<left>_: promote _=_,_<right>_: demote  ^^_<up>_: move up ^^_<down>_: move down
-Objects         |      ^^_C-i_: image         ^^_C-l_: link     ^^_C-f_: footnote   ^^_C-w_: wiki-link    _C--_: hrz line   _C-u_: uri    _C-t_: table
-Miscellaneous   |      ^^_C-o_: follow link   ^^_C-d_: do       ^^_C-k_: kill
-"
-      ;; Text Styles
-      ("i" markdown-insert-italic)
-      ("b" markdown-insert-bold)
-      ("c" markdown-insert-code)
-      ("k" markdown-insert-kbd)
-      ("q" markdown-insert-blockquote :exit t)
-      ("P" markdown-insert-pre :exit t)
-      ("C" markdown-insert-gfm-code-block :exit t)
-      ;; Headings
-      ("h" markdown-insert-header-dwim)
-      ("H" markdown-insert-header-setext-dwim)
-      ("1" markdown-insert-header-atx-1)
-      ("2" markdown-insert-header-atx-2)
-      ("3" markdown-insert-header-atx-3)
-      ("4" markdown-insert-header-atx-4)
-      ("!" markdown-insert-header-setext-1)
-      ("@" markdown-insert-header-setext-2)
-      ;; Maintenance
-      ("m" markdown-other-window :exit t)
-      ("p" markdown-preview :exit t)
-      ("e" markdown-export :exit t)
-      ("v" markdown-export-and-preview :exit t)
-      ("o" markdown-open :exit t)
-      ("l" markdown-live-preview-mode :exit t)
-      ;; Promote/Demote
-      ("<left>" markdown-promote)
-      ("-" markdown-promote)
-      ("<right>" markdown-demote)
-      ("=" markdown-demote)
-      ("<up>" markdown-move-up)
-      ("<down>" markdown-move-down)
-      ("]" markdown-complete :exit t)
-      ;; Links, footnotes
-      ("C-i" markdown-insert-image :exit t)
-      ("C-l" markdown-insert-link :exit t)
-      ("C-t" markdown-insert-table :exit t)
-      ("C-u" markdown-insert-uri :exit t)
-      ("C-f" markdown-insert-footnote :exit t)
-      ("C-w" markdown-insert-wiki-link :exit t)
-      ("C--" markdown-insert-hr :exit t)
-      ;; Misc.
-      ("C-o" markdown-follow-thing-at-point :exit t)
-      ("C-d" markdown-do :exit t)
-      ("C-k" markdown-kill-thing-at-point))
-
-    (bind-key "M-P ." #'hydra-markdown-mode/body markdown-mode-map)))
+                                         "--css=" css-file))))))
 
 ;;;; Protobuf
 
@@ -5123,82 +5127,8 @@ non-nil value to enable trashing for file operations."
 
 ;; Feature `dired' provides a simplistic filesystem manager in Emacs.
 (use-feature dired
-  :bind (:map dired-mode-map
-              ;; This binding is way nicer than ^. It's inspired by
-              ;; Sunrise Commander.
-              ("J" . #'dired-up-directory))
-  :bind* (("C-x w" . arche-rename-current-file))
-  :config
+  :init
 
-  (defun arche-rename-current-file (newname)
-    "Rename file visited by current buffer to NEWNAME.
-Interactively, prompt the user for the target filename, with
-completion.
-
-If NEWNAME is a directory then extend it with the basename of
-`buffer-file-name'. Make parent directories automatically."
-    (interactive
-     (progn
-       (unless buffer-file-name
-         (user-error "Current buffer is not visiting a file"))
-       (let ((newname (read-file-name "Rename to: " nil buffer-file-name)))
-         (when (equal (file-truename newname)
-                      (file-truename buffer-file-name))
-           (user-error "%s" "Can't rename a file to itself"))
-         (list newname))))
-    (unless buffer-file-name
-      (error "Current buffer is not visiting a file"))
-    (when (equal (file-truename newname)
-                 (file-truename buffer-file-name))
-      (error "%s: %s" "Can't rename a file to itself" newname))
-    (when (equal newname (file-name-as-directory newname))
-      (setq newname
-            (concat newname (file-name-nondirectory buffer-file-name))))
-    (make-directory (file-name-directory newname) 'parents)
-    ;; Passing integer as OK-IF-ALREADY-EXISTS means prompt for
-    ;; confirmation before overwriting. Why? Who can say...
-    (dired-rename-file buffer-file-name newname 0))
-
-  (arche-defadvice arche--advice-dired-check-for-ls-dired (&rest _)
-    :before #'dired-insert-directory
-    "Check if ls --dired is supported ahead of time, and silently.
-
-This advice prevents Dired from printing a message if your ls
-does not support the --dired option. (We do this by performing
-the check ourselves, and refraining from printing a message in
-the problematic case.)"
-    (when (eq dired-use-ls-dired 'unspecified)
-      (setq dired-use-ls-dired
-            (eq 0 (call-process insert-directory-program
-                                nil nil nil "--dired")))))
-
-  (add-hook 'dired-mode-hook #'arche--autorevert-silence)
-
-  ;; Disable the prompt about whether I want to kill the Dired buffer
-  ;; for a deleted directory. Of course I do! It's just a Dired
-  ;; buffer, after all. Note that this variable, for reasons unknown
-  ;; to me, is defined in `dired-x', but only affects the behavior of
-  ;; functions defined in `dired'.
-  (setq dired-clean-confirm-killing-deleted-buffers nil)
-
-  ;; Instantly revert Dired buffers on re-visiting them, with no
-  ;; message. (A message is shown if insta-revert is either disabled
-  ;; or determined dynamically by setting this variable to a
-  ;; function.)
-  (setq dired-auto-revert-buffer t)
-
-  ;; Use a directory of a Dired buffer displayed in the next window on
-  ;; the same frame as a default target directory in the prompt for
-  ;; file copy, rename etc.
-  (setq dired-dwim-target t)
-
-  ;; Always copy directories recursively without asking.
-  (setq dired-recursive-copies 'always)
-
-  ;; Always match only file names when doing isearch in Dired.
-  (setq dired-isearch-filenames t)
-
-  ;; Define hydra commands.
   (use-feature hydra
     :config
 
@@ -5346,14 +5276,91 @@ wdired          | ^C-x C-q^: edit     ^C-c C-c^: commit   ^C-c ESC^: abort
       ("f" image-dired-mark-tagged-files "mark tagged files")
       ("c" image-dired-dired-comment-files "commend files")
       ("e" image-dired-dired-edit-comment-and-tags "edit comment and tags")
-      ("q" hydra-dired/body "back" :color blue))
+      ("q" hydra-dired/body "back" :color blue)))
 
-    (bind-key "." #'hydra-dired/body dired-mode-map)))
+  :bind (:map dired-mode-map
+              ;; This binding is way nicer than ^. It's inspired by
+              ;; Sunrise Commander.
+              ("J" . #'dired-up-directory)
+              ("." . #'hydra-dired/body))
+  :bind* (("C-x w" . arche-rename-current-file))
+  :config
+
+  (defun arche-rename-current-file (newname)
+    "Rename file visited by current buffer to NEWNAME.
+Interactively, prompt the user for the target filename, with
+completion.
+
+If NEWNAME is a directory then extend it with the basename of
+`buffer-file-name'. Make parent directories automatically."
+    (interactive
+     (progn
+       (unless buffer-file-name
+         (user-error "Current buffer is not visiting a file"))
+       (let ((newname (read-file-name "Rename to: " nil buffer-file-name)))
+         (when (equal (file-truename newname)
+                      (file-truename buffer-file-name))
+           (user-error "%s" "Can't rename a file to itself"))
+         (list newname))))
+    (unless buffer-file-name
+      (error "Current buffer is not visiting a file"))
+    (when (equal (file-truename newname)
+                 (file-truename buffer-file-name))
+      (error "%s: %s" "Can't rename a file to itself" newname))
+    (when (equal newname (file-name-as-directory newname))
+      (setq newname
+            (concat newname (file-name-nondirectory buffer-file-name))))
+    (make-directory (file-name-directory newname) 'parents)
+    ;; Passing integer as OK-IF-ALREADY-EXISTS means prompt for
+    ;; confirmation before overwriting. Why? Who can say...
+    (dired-rename-file buffer-file-name newname 0))
+
+  (arche-defadvice arche--advice-dired-check-for-ls-dired (&rest _)
+    :before #'dired-insert-directory
+    "Check if ls --dired is supported ahead of time, and silently.
+
+This advice prevents Dired from printing a message if your ls
+does not support the --dired option. (We do this by performing
+the check ourselves, and refraining from printing a message in
+the problematic case.)"
+    (when (eq dired-use-ls-dired 'unspecified)
+      (setq dired-use-ls-dired
+            (eq 0 (call-process insert-directory-program
+                                nil nil nil "--dired")))))
+
+  (add-hook 'dired-mode-hook #'arche--autorevert-silence)
+
+  ;; Disable the prompt about whether I want to kill the Dired buffer
+  ;; for a deleted directory. Of course I do! It's just a Dired
+  ;; buffer, after all. Note that this variable, for reasons unknown
+  ;; to me, is defined in `dired-x', but only affects the behavior of
+  ;; functions defined in `dired'.
+  (setq dired-clean-confirm-killing-deleted-buffers nil)
+
+  ;; Instantly revert Dired buffers on re-visiting them, with no
+  ;; message. (A message is shown if insta-revert is either disabled
+  ;; or determined dynamically by setting this variable to a
+  ;; function.)
+  (setq dired-auto-revert-buffer t)
+
+  ;; Use a directory of a Dired buffer displayed in the next window on
+  ;; the same frame as a default target directory in the prompt for
+  ;; file copy, rename etc.
+  (setq dired-dwim-target t)
+
+  ;; Always copy directories recursively without asking.
+  (setq dired-recursive-copies 'always)
+
+  ;; Always match only file names when doing isearch in Dired.
+  (setq dired-isearch-filenames t))
 
 (use-feature dired-x
   :bind (;; Bindings for jumping to the current directory in Dired.
          ("C-x C-j" . #'dired-jump)
-         ("C-x 4 C-j" . #'dired-jump-other-window))
+         ("C-x 4 C-j" . #'dired-jump-other-window)
+         :map dired-mode-map
+         (")" . #'dired-omit-mode))
+
   :config
 
   ;; Prevent annoying "Omitted N lines" messages when auto-reverting.
