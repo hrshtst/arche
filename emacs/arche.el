@@ -5912,16 +5912,17 @@ Also run `arche-atomic-chrome-setup-hook'."
                   "Firefox")
                  ((eq conn atomic-chrome-server-atomic-chrome)
                   "Chromium")))
-               (alt-browser
-                (when (eq conn atomic-chrome-server-atomic-chrome)
-                  "Google Chrome")))
-      (cond
-       ((arche-operating-system-p macOS)
-        (call-process "open" nil nil nil "-a" browser))
-       ((executable-find "wmctrl")
-        (unless (or (zerop (call-process "wmctrl" nil nil nil "-a" browser))
-                    (not alt-browser))
-          (call-process "wmctrl" nil nil nil "-a" alt-browser))))))
+               (opener
+                (if (arche-operating-system-p macOS)
+                    "open"
+                  "wmctrl")))
+      (when (executable-find opener)
+        (let ((alt-browser
+               (when (eq conn atomic-chrome-server-atomic-chrome)
+                 "Google Chrome")))
+          (unless (or (zerop (call-process opener nil nil nil "-a" browser))
+                      (not alt-browser))
+            (call-process opener nil nil nil "-a" alt-browser))))))
 
   ;; Listen for requests from the Chrome/Firefox extension.
   (atomic-chrome-start-server))
