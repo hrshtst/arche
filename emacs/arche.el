@@ -3051,6 +3051,7 @@ backends will still be included.")
          ;; The following are keybindings that take effect whenever
          ;; the completions menu is visible, even if the user has not
          ;; explicitly interacted with Company.
+
          :map company-active-map
 
          ;; Make TAB always complete the current selection, instead of
