@@ -3041,7 +3041,14 @@ killed (which happens during Emacs shutdown)."
 If `company-backends' is overridden by Arche, then these
 backends will still be included.")
 
-  :bind (;; The following are keybindings that take effect whenever
+  :bind (;; Remap the standard Emacs keybindings for invoking
+         ;; completion to instead use Company. You might think this
+         ;; could be put in the `:bind*' declaration below, but it
+         ;; seems that `bind-key*' does not work with remappings.
+         ([remap completion-at-point] . #'company-manual-begin)
+         ([remap complete-symbol] . #'company-manual-begin)
+
+         ;; The following are keybindings that take effect whenever
          ;; the completions menu is visible, even if the user has not
          ;; explicitly interacted with Company.
          :map company-active-map
