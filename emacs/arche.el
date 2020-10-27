@@ -3263,66 +3263,30 @@ order."
   :demand t
   :config
 
-  (arche-when-compiletime (version<= "27" emacs-version)
-    (el-patch-defun eldoc-print-current-symbol-info (&optional interactive)
-      (el-patch-concat
-        "Document thing at point."
-        (el-patch-add "\nDon't trample on existing messages."))
-      (interactive '(t))
-      (let ((token (eldoc--request-state)))
-        (cond (interactive
-               (eldoc--invoke-strategy))
-              ((not (eldoc--request-docs-p token))
-               ;; Erase the last message if we won't display a new one.
-               (when eldoc-last-message
-                 (el-patch-swap
-                   (eldoc--message nil)
-                   (setq eldoc-last-message nil))))
-              (t
-               (let ((non-essential t))
-                 (setq eldoc--last-request-state token)
-                 ;; Only keep looking for the info as long as the user hasn't
-                 ;; requested our attention.  This also locally disables
-                 ;; inhibit-quit.
-                 (while-no-input
-                   (eldoc--invoke-strategy))))))))
-
-  (arche-when-compiletime (and (version< emacs-version "27")
-                                (version<= "26" emacs-version))
-    (el-patch-defun eldoc-print-current-symbol-info ()
-      (el-patch-concat
-        "Print the text produced by `eldoc-documentation-function'."
-        (el-patch-add "\nDon't trample on existing messages."))
-      ;; This is run from post-command-hook or some idle timer thing,
-      ;; so we need to be careful that errors aren't ignored.
-      (with-demoted-errors "eldoc error: %s"
-        (and (or (eldoc-display-message-p)
-                 ;; Erase the last message if we won't display a new one.
-                 (when eldoc-last-message
-                   (el-patch-swap
-                     (eldoc-message nil)
-                     (setq eldoc-last-message nil))
-                   nil))
-             (eldoc-message (funcall eldoc-documentation-function))))))
-
-  (arche-when-compiletime (version< emacs-version "26")
-    (el-patch-defun eldoc-print-current-symbol-info ()
-      ;; This is run from post-command-hook or some idle timer thing,
-      ;; so we need to be careful that errors aren't ignored.
-      (with-demoted-errors "eldoc error: %s"
-        (and (or (eldoc-display-message-p)
-                 ;; Erase the last message if we won't display a new one.
-                 (when eldoc-last-message
-                   (el-patch-swap
-                     (eldoc-message nil)
-                     (setq eldoc-last-message nil))
-                   nil))
-             (eldoc-message (funcall eldoc-documentation-function))))))
+  ;; For Emacs 26 and below, `eldoc--message' is not defined. For
+  ;; Emacs 27 and above, `eldoc-message' is obsolete.
+  (with-no-warnings
+    (arche-defadvice arche--advice-eldoc-no-trample (func &rest args)
+      :around #'eldoc-print-current-symbol-info
+      "Prevent `eldoc' from trampling on existing messages."
+      (arche-flet ((defun eldoc-message (&optional string)
+                     (if string
+                         (funcall eldoc-message string)
+                       (setq eldoc-last-message nil)))
+                   (defun eldoc--message (&optional string)
+                     (if string
+                         (funcall eldoc--message string)
+                       (setq eldoc-last-message nil))))
+        (apply func args))))
 
   ;; Always truncate ElDoc messages to one line. This prevents the
   ;; echo area from resizing itself unexpectedly when point is on a
   ;; variable with a multiline docstring.
   (setq eldoc-echo-area-use-multiline-p nil)
+
+  ;; Original code from
+  ;; https://github.com/PythonNut/emacs-config/blob/1a92a1ff1d563fa6a9d7281bbcaf85059c0c40d4/modules/config-intel.el#L130-L137,
+  ;; thanks!
 
   (arche-defadvice arche--advice-eldoc-better-display-message-p (&rest _)
     :override #'eldoc--message-command-p
