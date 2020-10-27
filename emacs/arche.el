@@ -2288,9 +2288,9 @@ _h_ ^ ^ _l_   _x_ kill     _t_ype     _e_xchange-point
       ("r" (if (region-active-p)
                (deactivate-mark)
              (rectangle-mark-mode +1)))
-      ("q" nil))
+      ("q" nil)))
 
-    (bind-key "C-x SPC" #'hydra-rectangle/body)))
+  :bind (("C-x SPC" . #'hydra-rectangle/body)))
 
 ;; Package `expand-region' allows us to increase or decrease the
 ;; selected region by semantic units.
