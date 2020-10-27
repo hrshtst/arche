@@ -236,24 +236,24 @@ This means that FILENAME is a symlink whose target is inside
   "Execute BODY, with the function `load' made silent."
   (declare (indent 0))
   `(arche-flet ((defun load (file &optional noerror _nomessage &rest args)
-                   (apply load file noerror 'nomessage args)))
+                  (apply load file noerror 'nomessage args)))
      ,@body))
 
 (defmacro arche--with-silent-write (&rest body)
   "Execute BODY, with the function `write-region' made silent."
   (declare (indent 0))
   `(arche-flet ((defun write-region
-                     (start end filename &optional append visit lockname
-                            mustbenew)
-                   (funcall write-region start end filename append 0
-                            lockname mustbenew)
-                   (when (or (stringp visit) (eq visit t))
-                     (setq buffer-file-name
-                           (if (stringp visit)
-                               visit
-                             filename))
-                     (set-visited-file-modtime)
-                     (set-buffer-modified-p nil))))
+                    (start end filename &optional append visit lockname
+                           mustbenew)
+                  (funcall write-region start end filename append 0
+                           lockname mustbenew)
+                  (when (or (stringp visit) (eq visit t))
+                    (setq buffer-file-name
+                          (if (stringp visit)
+                              visit
+                            filename))
+                    (set-visited-file-modtime)
+                    (set-buffer-modified-p nil))))
      (cl-letf (((symbol-function #'message) #'ignore))
        ,@body)))
 
@@ -270,19 +270,19 @@ also be a single string."
        (when (stringp ,regexps-sym)
          (setq ,regexps-sym (list ,regexps-sym)))
        (arche-flet ((defun message (format &rest args)
-                       (let ((str (apply #'format format args)))
-                         ;; Can't use an unnamed block because during
-                         ;; byte-compilation, some idiot loads `cl', which
-                         ;; sticks an advice onto `dolist' that makes it
-                         ;; behave like `cl-dolist' (i.e., wrap it in
-                         ;; another unnamed block) and therefore breaks
-                         ;; this code.
-                         (cl-block done
-                           (dolist (regexp ,regexps-sym)
-                             (when (or (null regexp)
-                                       (string-match-p regexp str))
-                               (cl-return-from done)))
-                           (funcall message "%s" str)))))
+                      (let ((str (apply #'format format args)))
+                        ;; Can't use an unnamed block because during
+                        ;; byte-compilation, some idiot loads `cl', which
+                        ;; sticks an advice onto `dolist' that makes it
+                        ;; behave like `cl-dolist' (i.e., wrap it in
+                        ;; another unnamed block) and therefore breaks
+                        ;; this code.
+                        (cl-block done
+                          (dolist (regexp ,regexps-sym)
+                            (when (or (null regexp)
+                                      (string-match-p regexp str))
+                              (cl-return-from done)))
+                          (funcall message "%s" str)))))
          ,@body))))
 
 (defun arche--advice-silence-messages (func &rest args)
@@ -675,10 +675,10 @@ KEY-NAME, COMMAND, and PREDICATE are as in `bind-key'."
   :around #'quoted-insert
   "Allow quitting out of \\[quoted-insert] with \\[keyboard-quit]."
   (arche-flet ((defun insert-and-inherit (&rest args)
-                  (dolist (arg args)
-                    (when (equal arg ?\C-g)
-                      (signal 'quit nil)))
-                  (apply insert-and-inherit args)))
+                 (dolist (arg args)
+                   (when (equal arg ?\C-g)
+                     (signal 'quit nil)))
+                 (apply insert-and-inherit args)))
     (apply quoted-insert args)))
 
 ;; Package `which-key' displays the key bindings and associated
@@ -1812,18 +1812,18 @@ password that the user has decided not to save.")
       (if (member key blacklist)
           ?n
         (arche-flet ((defun auth-source-read-char-choice (prompt choices)
-                        (let ((choice (funcall auth-source-read-char-choice
-                                               prompt choices)))
-                          (when (= choice ?N)
-                            (push key blacklist)
-                            (make-directory
-                             (file-name-directory
-                              arche--auth-source-blacklist-file)
-                             'parents)
-                            (with-temp-file arche--auth-source-blacklist-file
-                              (print blacklist (current-buffer)))
-                            (setq choice ?n))
-                          choice)))
+                       (let ((choice (funcall auth-source-read-char-choice
+                                              prompt choices)))
+                         (when (= choice ?N)
+                           (push key blacklist)
+                           (make-directory
+                            (file-name-directory
+                             arche--auth-source-blacklist-file)
+                            'parents)
+                           (with-temp-file arche--auth-source-blacklist-file
+                             (print blacklist (current-buffer)))
+                           (setq choice ?n))
+                         choice)))
           (funcall func file add))))))
 
 ;;; Saving files
@@ -2486,8 +2486,8 @@ multiple files will miss any match that occurs earlier in a
 visited file than point happens to be currently in that
 buffer."
       (arche-flet ((defun perform-replace (&rest args)
-                      (apply perform-replace
-                             (append args (list (point-min) (point-max))))))
+                     (apply perform-replace
+                            (append args (list (point-min) (point-max))))))
         (apply func args)))))
 
 ;; Package `visual-regexp' provides an alternate version of
@@ -2627,9 +2627,9 @@ via return key."
         :around #'auto-revert-buffers
         "Inhibit `autorevert' for buffers not displayed in any window."
         (arche-flet ((defun buffer-list (&rest args)
-                        (cl-remove-if
-                         #'arche-autorevert-inhibit-p
-                         (apply buffer-list args))))
+                       (cl-remove-if
+                        #'arche-autorevert-inhibit-p
+                        (apply buffer-list args))))
           (apply auto-revert-buffers args)))
     (arche-defadvice arche--autorevert-only-visible (bufs)
       :filter-return #'auto-revert--polled-buffers
@@ -3333,9 +3333,9 @@ was printed, and only have ElDoc display if one wasn't."
     :around #'lsp-ui-sideline-apply-code-actions
     "Apply code fix immediately if only one is possible."
     (arche-flet ((defun completing-read (prompt collection &rest args)
-                    (if (= (safe-length collection) 1)
-                        (car collection)
-                      (apply completing-read prompt collection args))))
+                   (if (= (safe-length collection) 1)
+                       (car collection)
+                     (apply completing-read prompt collection args))))
       (apply orig-fun args)))
 
   (use-feature lsp-mode
@@ -3358,11 +3358,11 @@ was printed, and only have ElDoc display if one wasn't."
     :around #'lsp-ui-doc--render-buffer
     "Prevent `lsp-ui-doc' from removing newlines from documentation."
     (arche-flet ((defun replace-regexp-in-string
-                      (regexp rep string &rest args)
-                    (if (equal regexp "`\\([\n]+\\)")
-                        string
-                      (apply replace-regexp-in-string
-                             regexp rep string args))))
+                     (regexp rep string &rest args)
+                   (if (equal regexp "`\\([\n]+\\)")
+                       string
+                     (apply replace-regexp-in-string
+                            regexp rep string args))))
       (apply func args))))
 
 ;;; Language support
@@ -4190,10 +4190,10 @@ FORCE is not nil.")
     :around #'TeX-load-style-file
     "Inhibit the \"Loading **/auto/*.el (source)...\" messages."
     (arche-flet ((defun load (file &optional
-                                    noerror _nomessage
-                                    nosuffix must-suffix)
-                    (funcall
-                     load file noerror 'nomessage nosuffix must-suffix)))
+                                   noerror _nomessage
+                                   nosuffix must-suffix)
+                   (funcall
+                    load file noerror 'nomessage nosuffix must-suffix)))
       (funcall TeX-load-style-file file)))
 
   (arche-defadvice arche--advice-inhibit-tex-removing-duplicates-message
@@ -5773,9 +5773,9 @@ changes, which means that `git-gutter' needs to be re-run.")
       "Disable the cutesy bitmap pluses and minuses from `git-gutter-fringe'.
 Instead, display simply a flat colored region in the fringe."
       (arche-flet ((defun fringe-helper-insert-region
-                        (beg end _bitmap &rest args)
-                      (apply fringe-helper-insert-region
-                             beg end 'arche--git-gutter-blank args)))
+                       (beg end _bitmap &rest args)
+                     (apply fringe-helper-insert-region
+                            beg end 'arche--git-gutter-blank args)))
         (apply func args)))))
 
 ;;;; External commands
