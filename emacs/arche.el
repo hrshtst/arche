@@ -6435,6 +6435,51 @@ nil."
                         (format-mode-line arche-mode-line-right))
                        'fixedcase 'literal)))
 
+;;;; Highlighting
+
+;; Feature `hi-lock' provides commands to make text matching entered
+;; regexps be highlighted.
+(use-feature hi-lock
+  :init
+
+  (use-feature hydra
+    :config
+
+    (defhydra hydra-highlight (:color blue)
+      "Highlight"
+      ("h" highlight-regexp "regexp")
+      ("p" highlight-phrase "phrase")
+      ("l" highlight-lines-matching-regexp "lines")
+      ("." highlight-symbol-at-point "symbol at point")
+      ("i" hi-lock-find-patterns "add patterns")
+      ("u" unhighlight-regexp "unhighlight")
+      ("q" nil "quit")))
+
+  :bind (("M-P h" . #'hydra-highlight/body))
+
+  :config
+
+  (arche-defadvice arche--hi-lock-suggest-last-search (func &rest args)
+    :around #'hi-lock-face-buffer
+    "Suggest last string used for search to be highlighted in `hi-lock-mode'."
+    (interactive
+     (list
+      (hi-lock-regexp-okay
+       (read-regexp "Regexp to highlight" 'regexp-history-last
+                    (cond
+                     ((and (boundp 'ctrlf-search-history)
+                           ctrlf-search-history)
+                      'ctrlf-search-history)
+                     ((and (boundp 'minibuffer-history-search-history)
+                           minibuffer-history-search-history)
+                      'minibuffer-history-search-history)
+                     (minibuffer-history 'minibuffer-history))))
+      (hi-lock-read-face-name)
+      current-prefix-arg))
+    (apply func args))
+
+  :blackout t)
+
 ;;;; Color theme
 
 (defcustom arche-color-theme-enable t
