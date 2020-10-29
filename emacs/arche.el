@@ -2153,6 +2153,7 @@ two inserted lines are the same."
 ;; Feature `outline' provides major and minor modes for collapsing
 ;; sections of a buffer into an outline-like format.
 (use-feature outline
+  :demand t
   :init
 
   (use-feature hydra
@@ -2202,7 +2203,8 @@ _o_: other       ^ ^             ^ ^                 _\\^_: subtree up
 
     (arche-bind-key "@" #'hydra-outline/body))
 
-  :demand t
+  :bind (:map arche-keymap
+         ("@" . hydra-outline/body))
   :config
 
   (define-globalized-minor-mode global-outline-minor-mode
@@ -2628,8 +2630,9 @@ via return key."
       ("<drag-mouse-1>" ignore)
       ("q" nil)))
 
-  :bind (("M-P l" . mc/edit-lines)
-         ("M-P u" . hydra-multiple-cursors/body)))
+  :bind (:map arche-keymap
+         ("l" . mc/edit-lines)
+         ("u" . hydra-multiple-cursors/body)))
 
 ;;; Electricity: automatic things
 ;;;; Autorevert
@@ -3860,7 +3863,8 @@ Miscellaneous   |      ^^_C-o_: follow link   ^^_C-d_: do       ^^_C-k_: kill
          ("<S-iso-lefttab>" . #'arche-markdown-shifttab)
          ("<S-tab>" . #'arche-markdown-shifttab)
          ("<backtab>" . #'arche-markdown-shifttab)
-         ("M-P ." . #'hydra-markdown-mode/body))
+         :map arche-keymap
+         ("." . #'hydra-markdown-mode/body))
 
   :config
 
@@ -6535,7 +6539,8 @@ nil."
       ("u" unhighlight-regexp "unhighlight")
       ("q" nil "quit")))
 
-  :bind (("M-P h" . #'hydra-highlight/body))
+  :bind (:map arche-keymap
+         ("h" . #'hydra-highlight/body))
 
   :config
 
