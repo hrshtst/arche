@@ -2260,9 +2260,11 @@ invocation will kill the newline."
     :config
 
     (defhydra hydra-rectangle (:body-pre (rectangle-mark-mode +1)
-                               :color pink)
+                                         :color pink
+                                         :hint nil
+                                         :post (deactivate-mark))
       "
-^ ^ _k_ ^ ^   _M-w_ copy   _o_pen     _n_umber-lines
+^ ^ _k_ ^ ^   _M-w_ copy   _o_pen     _N_umber-lines
 _h_ ^ ^ _l_   _x_ kill     _t_ype     _e_xchange-point
 ^ ^ _j_ ^ ^   _y_ank       _c_lear    _r_eset-region-mark
 ^^^^^^        _d_elete     _u_ndo     _q_uit
@@ -2283,7 +2285,7 @@ _h_ ^ ^ _l_   _x_ kill     _t_ype     _e_xchange-point
       ("c" clear-rectangle)
       ("u" undo)
       ;; Others
-      ("n" rectangle-number-lines)
+      ("N" rectangle-number-lines)
       ("e" rectangle-exchange-point-and-mark)
       ("r" (if (region-active-p)
                (deactivate-mark)
