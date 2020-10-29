@@ -1323,10 +1323,6 @@ perspective: %s(arche--perspective-names)
   ;; Enable `pc-bufsw' minor mode.
   (pc-bufsw t)
 
-  ;; Buffers previously displayed in the current window are
-  ;; preferentially listed.
-  (setq pc-bufsw-prefer-current-window t)
-
   (defvar arche--pc-bufsw-exclude nil
     "Regexp pattern for buffer names excluded from list of `pc-bufsw'.
 When a buffer name matches this regexp it is excluded in the list
