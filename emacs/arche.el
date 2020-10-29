@@ -2576,6 +2576,56 @@ via return key."
     (arche--focus-on-occur-buffer)
     (hydra-occur-dwim/body)))
 
+;;;; Multiple cursors
+
+;; Package `multiple-cursors' creates several cursors that all do the
+;; same thing as you type. When an active region spans multiple lines
+;; typing \\[mc/edit-lines] adds a cursor to each line. When a word is
+;; marked with a region typing \\[mc/mark-next-line-like-this],
+;; \\[mc/mark-previous-line-like-this] or \\[mc/mark-all-like-thi]
+;; adds cursors based the keywords in the buffer. To get out of
+;; `multiple-cursors-mode', press <return> or \\[keyboard-quit].
+(use-package multiple-cursors
+  :init
+
+  (use-feature hydra
+    :config
+
+    (defhydra hydra-multiple-cursors (:hint nil)
+      "
+ Point^^^^^^              Misc^^            Insert^^       % 2(mc/num-cursors) cursor%s(if (> (mc/num-cursors) 1) \"s\" \"\")
+------------------------------------------------------------------
+  _k_     _K_    _M-k_    _l_: edit lines   _0_: numbers
+  ^↑^    ^↑^    ^↑^    _m_: mark all     _a_: letters
+ ^mark^  ^skip^ ^un-mk^   _r_: regexp
+  ^↓^    ^↓^    ^↓^
+  _j_     _J_    _M-j_
+ [_|_]: align with input CHAR   [Click]: cursor at point"
+      ;; Point
+      ("k" mc/mark-previous-like-this)
+      ("K" mc/skip-to-previous-like-this)
+      ("M-k" mc/unmark-previous-like-this)
+      ("j" mc/mark-next-like-this)
+      ("J" mc/skip-to-next-like-this)
+      ("M-j" mc/unmark-next-like-this)
+      ;; Misc
+      ("l" mc/edit-lines :exit t)
+      ("m" mc/mark-all-like-this :exit t)
+      ("r" mc/mark-all-in-region-regexp :exit t)
+      ;; Insert
+      ("0" mc/insert-numbers :exit t)
+      ("a" mc/insert-letters :exit t)
+      ;; Others
+      ("|" mc/vertical-align)
+      ("<mouse-1>" mc/add-cursor-on-click)
+      ;; Help with click recognition in this hydra
+      ("<down-mouse-1>" ignore)
+      ("<drag-mouse-1>" ignore)
+      ("q" nil)))
+
+  :bind (("M-P l" . mc/edit-lines)
+         ("M-P u" . hydra-multiple-cursors/body)))
+
 ;;; Electricity: automatic things
 ;;;; Autorevert
 

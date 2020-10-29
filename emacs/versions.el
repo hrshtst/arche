@@ -73,6 +73,7 @@
  ("melpa" . "401185621fd57899b314a205ea1ffd9765e570c8")
  ("modern-cpp-font-lock" . "865955d0035382a17a7f03add0d00d0bd812b103")
  ("mozc" . "08c83425312065dd37ef65e34e5f93ab972a3930")
+ ("multiple-cursors.el" . "83abb0533a9d9635bc86d6d52a4e7641b0eaaf63")
  ("mw-thesaurus.el" . "8327bae11588bcad5d73dcfbeb5e8d10f623d6b6")
  ("no-littering" . "60ce8946226882cda4561da47453fcf9b9da8ddc")
  ("org" . "a88806b554b15461a88a4e00c9e0e338fe59ac37")
