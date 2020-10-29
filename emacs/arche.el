@@ -5446,6 +5446,65 @@ are probably not going to be installed."
 ;; Feature `smerge-mode' provides an interactive mode for visualizing
 ;; and resolving Git merge conflicts.
 (use-feature smerge-mode
+  :init
+
+  (arche-defhook arche--enable-smerge-maybe ()
+    find-file-hook
+    "Auto-enable `smerge-mode' when merge conflict is detected."
+    (save-excursion
+      (goto-char (point-min))
+      (when (re-search-forward "^<<<<<<< " nil :noerror)
+        (smerge-mode +1))))
+
+  (arche-defhook arche--open-hydra-smerge ()
+    magit-diff-mode-hook
+    "Open `hydra-smerge' menu when entering `magit-diff-mode'."
+    (when smerge-mode
+      (hydra-smerge/body)))
+
+  (use-feature hydra
+    :config
+
+    (defhydra hydra-smerge (:color pink
+                            :hint nil
+                            :pre (smerge-mode +1)
+                            ;; Disable `smerge-mode' when quitting hydra if
+                            ;; no merge conflicts remain.
+                            :post (smerge-auto-leave))
+      "
+^Move^       ^Keep^               ^Diff^                 ^Other^
+^^-----------^^-------------------^^---------------------^^-------
+_n_ext       _b_ase               _<_: upper/base        _C_ombine
+_p_rev       _u_pper              _=_: upper/lower       _r_esolve
+^^           _l_ower              _>_: base/lower        _k_ill current
+^^           _a_ll                _R_efine
+^^           _RET_: current       _E_diff
+"
+      ;; Move
+      ("n" smerge-next)
+      ("p" smerge-prev)
+      ;; Keep
+      ("b" smerge-keep-base)
+      ("u" smerge-keep-upper)
+      ("l" smerge-keep-lower)
+      ("a" smerge-keep-all)
+      ("RET" smerge-keep-current)
+      ("C-m" smerge-keep-current)
+      ;; Diff
+      ("<" smerge-diff-base-upper)
+      ("=" smerge-diff-upper-lower)
+      (">" smerge-diff-base-lower)
+      ("R" smerge-refine)
+      ("E" smerge-ediff)
+      ;; Other
+      ("C" smerge-combine-with-next)
+      ("r" smerge-resolve)
+      ("k" smerge-kill-current)
+      ("q" nil "cancel")))
+
+  :bind (:map arche-keymap
+         ("s" . hydra-smerge/body))
+
   :blackout t)
 
 ;; Package `with-editor' provides infrastructure for using Emacs as an
