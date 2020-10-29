@@ -2164,38 +2164,47 @@ two inserted lines are the same."
 
     (defhydra hydra-outline (:color pink :hint nil)
       "
-^Hide^             ^Show^           ^Move
-^^^^^^------------------------------------------------------
-_q_: sublevels     _a_: all         _u_: up
-_t_: body          _e_: entry       _n_: next visible
-_o_: other         _i_: children    _p_: previous visible
-_c_: entry         _k_: branches    _f_: forward same level
-_l_: leaves        _s_: subtree     _b_: backward same level
-_d_: subtree
+^Hide^           ^Show^          ^Edit^              ^Move
+^^^^^^^^--------------------------------------------------------------------
+_c_: entry       _e_: entry      _@_: mark subtree   _n_: next visible
+_d_: subtree     _s_: subtree    _<_: promote        _p_: previous visible
+_l_: leaves      _k_: branches   _>_: demote         _f_: forward same level
+_t_: body        _i_: children   _m_: insert head    _b_: backward same level
+_q_: sublevels   _a_: all        ^ ^                 _u_: upper heading
+_o_: other       ^ ^             ^ ^                 _\\^_: subtree up
+^ ^              ^ ^             ^ ^                 _v_: subtree down
 
 "
       ;; Hide
-      ("q" outline-hide-sublevels)
-      ("t" outline-hide-body)
-      ("o" outline-hide-other)
       ("c" outline-hide-entry)
-      ("l" outline-hide-leaves)
       ("d" outline-hide-subtree)
+      ("l" outline-hide-leaves)
+      ("t" outline-hide-body)
+      ("q" outline-hide-sublevels)
+      ("o" outline-hide-other)
       ;; Show
-      ("a" outline-show-all)
       ("e" outline-show-entry)
-      ("i" outline-show-children)
-      ("k" outline-show-branches)
       ("s" outline-show-subtree)
+      ("k" outline-show-branches)
+      ("i" outline-show-children)
+      ("a" outline-show-all)
+      ;; Edit
+      ("@" outline-mark-subtree :exit t)
+      ("<" outline-promote)
+      (">" outline-demote)
+      ("m" outline-insert-heading :exit t)
       ;; Move
-      ("u" outline-up-heading)
       ("n" outline-next-visible-heading)
       ("p" outline-previous-visible-heading)
       ("f" outline-forward-same-level)
       ("b" outline-backward-same-level)
+      ("u" outline-up-heading)
+      ("^" outline-move-subtree-up)
+      ("v" outline-move-subtree-down)
+      ;; Quit
       ("z" nil "leave"))
 
-    (arche-bind-key "#" #'hydra-outline/body))
+    (arche-bind-key "@" #'hydra-outline/body))
 
   :demand t
   :config
