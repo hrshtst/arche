@@ -2441,8 +2441,7 @@ the reverse direction from \\[pop-global-mark]."
 ;; to it.
 (use-package avy
   :bind (("C-:" . #'avy-goto-char)
-         ("C-'" . #'avy-goto-char-timer)
-         ("C-c C-j" . #'avy-resume)))
+         ("C-'" . #'avy-goto-char-timer)))
 
 ;; Define `hydra' for navigation commands alternative to the default
 ;; `goto-map'.
