@@ -77,6 +77,7 @@
  ("mw-thesaurus.el" . "8327bae11588bcad5d73dcfbeb5e8d10f623d6b6")
  ("no-littering" . "60ce8946226882cda4561da47453fcf9b9da8ddc")
  ("org" . "a88806b554b15461a88a4e00c9e0e338fe59ac37")
+ ("org-journal" . "14ce0119fe2d89f2f2207788be2edce0b9372822")
  ("osx-trash" . "0f1dc052d0a750b8c75f14530a4897f5d4324b4e")
  ("package-lint" . "05596996286089acc7693b700c7c31780439e39f")
  ("parseclj" . "eff941126859bc9e949eae5cd6c2592e731629f2")
