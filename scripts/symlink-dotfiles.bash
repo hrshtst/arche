@@ -25,6 +25,9 @@ force_link() {
   ln -sf "$1" "$2"
 }
 
+# Shell
+force_link "$dotfiles/shell/shared/.profile" "$HOME/.profile"
+
 # Bash
 force_link "$dotfiles/shell/bash/.bashrc" "$HOME/.bashrc"
 
