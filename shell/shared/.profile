@@ -157,3 +157,12 @@ if has ssh-agent; then
     fi
 
 fi
+
+# Prevent the system from loading this file more than once.
+export ARCHE_SKIP_PROFILE=1
+
+# When running login shell on WSL load $HOME/.bashrc automatically.
+if grep -qEi "(microsoft|wsl)" /proc/version 2>&1 /dev/null && \
+     shopt -q login_shell; then
+  . "$HOME/.bashrc"
+fi
