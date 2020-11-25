@@ -5,11 +5,23 @@
 # /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # are used as reference as well.
 
+# Load environment settings.
+if [ -z ${ARCHE_SKIP_PROFILE+set} ] && [ -f "$HOME/.profile" ]; then
+  . "$HOME/.profile"
+fi
+
 # If not running interactively, don't do anything.
 case $- in
   *i*) ;;
     *) return;;
 esac
+
+## External configuration
+if [ -f "$HOME/.bashrc.local" ]; then
+  . "$HOME/.bashrc.local"
+fi
+
+## Shell configuration
 
 ### Preferences on command history
 
@@ -111,46 +123,48 @@ fi
 # Colored GCC warnings and errors
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
-### Useful aliases
+## Useful aliases
 
-# Check if a command is hashed on the system
-has() {
-  type "$1" >/dev/null 2>&1
-}
+# Check if a command is hashed on the system.
+if ! declare -f has > /dev/null; then
+  has() {
+    type "$1" >/dev/null 2>&1
+  }
+fi
 
-# Open files with associated applications
+# Open files with associated applications.
 if has xdg-open; then
   alias open='xdg-open &>/dev/null'
 fi
 
-# Manipulate X selection (aka clipboard)
+# Manipulate X selection (aka clipboard).
 if has xsel; then
   alias pbcopy="tr -d '\n' | xsel --clipboard --input"
   alias pbpaste='xsel --clipboard --output'
 fi
 
-# Run pylab
+# Run pylab.
 if has ipython; then
   alias pylab='ipython --pylab'
 fi
 
-# Go to parent directory
+# Go to parent directory.
 alias ..='cd ..'
 
-# Prompt before removing more than three files
+# Prompt before removing more than three files.
 alias rm='rm -I --preserve-root'
 
-# Get current IP address
+# Get current IP address.
 alias myip='curl -sS http://ipecho.net/plain; echo'
 
-# Some more useful aliases
+# Some more useful aliases.
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
 alias dot='ls .[a-zA-Z0-9_]*'
 alias j='jobs -l'
 
-# Add an "alert" alias for long running commands.  Use like so:
+# Add an "alert" alias for long running commands. Use like this:
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
@@ -167,7 +181,7 @@ tmux() {
   fi
 }
 
-### Bash completion
+## Bash completion
 
 # Enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
@@ -180,73 +194,16 @@ if ! shopt -oq posix; then
   fi
 fi
 
-### Set environment variables
-
-# Set a value to an environment variable
-setenv() {
-  if [ $# -ne 2 ]; then
-    echo "setenv: Too few arguments"
-    return 1
-  fi
-
-  export $1="$2"
-}
-
-# Add a value to the head of a variable with a delimiter
-addenv() {
-  if [ $# -ne 2 ]; then
-    echo "addenv: Too few arguments"
-    return 1
-  fi
-
-  local var=$1
-  local value="$2"
-  local current="$(eval echo "\$$var")"
-
-  if [[ -z $current ]]; then
-    setenv $var "$value"
-  else
-    if [[ ":$current:" != *":$value:"* ]]; then
-      setenv $var "${value}:${current}"
-    fi
-  fi
-}
-
-# Add a path for my own library
-addenv PATH "$HOME/usr/bin"
-addenv LD_LIBRARY_PATH "$HOME/usr/lib"
-
-# Add a path for pkg-config
-# https://www.freedesktop.org/wiki/Software/pkg-config/
-addenv PKG_CONFIG_PATH "$HOME/usr/lib/pkgconfig"
-
-# pipx provides a way to execute binaries from Python packages in
-# isolated environments.
-# https://github.com/pipxproject/pipx
-addenv PATH "$HOME/.local/bin"
 # Autocompletion function for pipx is provided along with argcomplete,
 # which is a dependency of pipx.
 if command -v register-python-argcomplete 1>/dev/null 2>&1; then
   eval "$(register-python-argcomplete pipx)"
 fi
 
-# Configure paths for Go Programming Language.
-# https://golang.org/
-# https://github.com/golang/go/wiki/SettingGOPATH
-# $GOROOT is assumed to be /usr/local/go
-setenv GOPATH "$HOME/usr/go"
-addenv PATH "$GOPATH/bin:/usr/local/go/bin"
-
-# Configure paths for packages installed by yarn.
-# https://classic.yarnpkg.com/en/docs/cli/global
-if command -v yarn 1>/dev/null 2>&1; then
-  addenv PATH "$(yarn global bin)"
-fi
+## Applications
 
 # pyenv is a simple python version management.
 # https://github.com/pyenv/pyenv
-setenv PYENV_ROOT "$HOME/.pyenv"
-addenv PATH "$PYENV_ROOT/bin"
 if command -v pyenv 1>/dev/null 2>&1; then
   eval "$(pyenv init -)"
 fi
