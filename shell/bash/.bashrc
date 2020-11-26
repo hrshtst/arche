@@ -12,7 +12,7 @@ fi
 
 # If not running interactively, don't do anything.
 case $- in
-  *i*) ;;
+  *i*) [ $SHLVL -eq 1 ] && exec fish;;
     *) return;;
 esac
 
