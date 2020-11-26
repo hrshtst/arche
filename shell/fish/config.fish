@@ -12,140 +12,6 @@ if status is-interactive; and not set -q TMUX
 end
 
 ####################################################################
-## Environment variables
-
-# Helper function used in `setenv` and `addenv`
-# The first argument is the caller function name, i.e. `setenv` or
-# `addenv`. The second is the number of arguments provided for the
-# caller function. The third is the variable name to create if it is not
-# exist.
-function __helper_setenv --description 'Helper function for setenv.'
-
-    set -l func $argv[1]
-    set -l n_arg $argv[2]
-
-    # No arguments should raise an error.
-    if test $n_arg -eq 0
-        printf (_ '%s: No arguments provided\n') $func >&2
-        return
-    end
-
-    # `setenv` and `addenv` accepts two arguments: the var name and the
-    # value. If there are more than two arguments it is an error.
-    if test $n_arg -ge 3
-        printf (_ '%s: Too many arguments\n') $func >&2
-        return 1
-    end
-
-    if not set -q argv[3]
-        return
-    end
-    set -l var $argv[3]
-
-    # Validate the variable name.
-    if not string match -qr '^\w+$' -- $var
-        printf (_ '%s: Variable name must contain alphanumeric characters\n') $func >&2
-        return 1
-    end
-end
-
-# Set an environment variable to a provided value.
-function setenv --description 'Set an env var to a provided value.'
-
-    __helper_setenv setenv (count $argv) $argv[1]
-    if test $status -ne 0
-        return 1
-    end
-
-    # A single argument should create the named var with an empty
-    # string, the second provided set the var to it.
-    set -l var $argv[1]
-    set -l val ''
-    set -q argv[2]; and set -l val $argv[2]
-
-    # All variables that end in `PATH` are treated as a special kind to
-    # support colon-delimited path lists. All other variables are
-    # treated literally. See details in the doc:
-    # https://fishshell.com/docs/current/index.html#path-variables
-    if string match -r -q -- 'PATH$' $var
-        set -gx $var (string split -- ':' $val)
-    else
-        set -gx $var $val
-    end
-end
-
-# Add a value to the head of an environment variable.
-function addenv --description 'Add a value to the head of an env var.'
-
-    __helper_setenv addenv (count $argv) $argv[1]
-    if test $status -ne 0
-        return 1
-    end
-
-    # A single argument should create the named var with an empty
-    # string, the second provided set the var to it.
-    set -l var $argv[1]
-    set -l val ''
-    set -q argv[2]; and set -l val $argv[2]
-
-    # If the named variabled does not exist create it.
-    set -q $var; or set -gx $var
-
-    # All variables that end in `PATH` are treated as a special kind to
-    # support colon-delimited path lists. All other variables are
-    # treated literally. See details in the doc:
-    # https://fishshell.com/docs/current/index.html#path-variables
-    if string match -r -q -- 'PATH$' $var
-        for i in (string split -- ':' $val)[-1..1]
-            if not contains -- "$i" $$var
-                set --prepend -gx $var "$i"
-            end
-        end
-    else
-        set -gx $var "$val$$var"
-    end
-end
-
-# Set paths for my own library
-addenv PATH "$HOME/usr/bin"
-addenv LD_LIBRARY_PATH "$HOME/usr/lib"
-
-# Add directories to search for .pc files for pkg-config.
-# https://www.freedesktop.org/wiki/Software/pkg-config/
-addenv PKG_CONFIG_PATH "$HOME/usr/lib/pkgconfig"
-
-# pipx provides a way to execute binaries from Python packages in
-# isolated environments.
-# https://github.com/pipxproject/pipx
-addenv PATH "$HOME/.local/bin"
-# Autocompletion function for pipx is provided along with argcomplete,
-# which is a dependency of pipx.
-if command -v register-python-argcomplete 1>/dev/null 2>&1;
-    register-python-argcomplete --shell fish pipx | source
-end
-
-# Configure paths for Go Programming Language.
-# https://golang.org/
-# https://github.com/golang/go/wiki/SettingGOPATH
-# $GOROOT is assumed to be /usr/local/go
-setenv GOPATH "$HOME/usr/go"
-addenv PATH "$GOPATH/bin:/usr/local/go/bin"
-
-# Configure paths for packages installed by yarn.
-# https://classic.yarnpkg.com/en/docs/cli/global
-if command -v yarn 1>/dev/null 2>&1;
-  addenv PATH (yarn global bin)
-end
-
-# pyenv is a simple python version management.
-# https://github.com/pyenv/pyenv
-setenv PYENV_ROOT "$HOME/.pyenv"
-addenv PATH "$PYENV_ROOT/bin"
-if command -v pyenv 1>/dev/null 2>&1;
-    status is-interactive; and source (pyenv init -|psub)
-end
-
-####################################################################
 ## Appearance
 
 # Enable starship.
@@ -207,6 +73,24 @@ alias la='ls -A'
 alias l='ls -CF'
 alias dot='ls .[a-zA-Z0-9_]*'
 alias j='jobs -l'
+
+####################################################################
+## Applications
+
+# pipx provides a way to execute binaries from Python packages in
+# isolated environments.
+# https://github.com/pipxproject/pipx
+# Autocompletion function for pipx is provided along with argcomplete,
+# which is a dependency of pipx.
+if command -v register-python-argcomplete 1>/dev/null 2>&1;
+    register-python-argcomplete --shell fish pipx | source
+end
+
+# pyenv is a simple python version management.
+# https://github.com/pyenv/pyenv
+if command -v pyenv 1>/dev/null 2>&1;
+    status is-interactive; and source (pyenv init -|psub)
+end
 
 ####################################################################
 ## Package manager
