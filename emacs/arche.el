@@ -5138,28 +5138,6 @@ be invoked before `org-mode-hook' is run."
                  org-clock-cancel))
     (advice-add fun :before #'arche--advice-org-clock-load-automatically)))
 
-;; Package `org-journal' provides functions to maintain a simple
-;; personal diary / journal integrated with the Emacs Calendar.
-(use-package org-journal
-  :after org
-  :init
-
-  ;; Let each org file in journal directory represent a week.
-  (setq org-journal-file-type 'weekly)
-
-  (defun org-journal-save-entry-and-exit ()
-    "Saves the buffer of the current day's entry and kills the window.
-
-This is similar to org-capture like behavior."
-    (interactive)
-    (save-buffer)
-    (kill-buffer-and-window))
-
-  :bind (("C-c C-j" . #'org-journal-new-entry)
-
-         :map org-journal-mode-map
-         ("C-x C-s" . #'org-journal-save-entry-and-exit)))
-
 ;;;; Filesystem management
 
 ;; When deleting a file interactively, move it to the trash instead.
