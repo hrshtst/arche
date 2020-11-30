@@ -54,6 +54,9 @@ safe_link "$dotfiles/emacs/init.el" "$HOME/.emacs.d/init.el"
 safe_link "$dotfiles/emacs/versions.el" \
           "$HOME/.emacs.d/straight/versions/arche.el"
 
+# Vim
+safe_link "$dotfiles/vim/.vimrc" "$HOME/.vimrc"
+
 # Git
 safe_link "$dotfiles/git/.gitconfig" "$HOME/.gitconfig"
 safe_link "$dotfiles/git/.gitexclude" "$HOME/.gitexclude"
