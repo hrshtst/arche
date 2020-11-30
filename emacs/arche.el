@@ -2785,6 +2785,7 @@ via return key."
   (arche--smartparens-pair-setup #'python-mode "\"\"\"")
   (arche--smartparens-pair-setup #'latex-mode "\\[")
   (arche--smartparens-pair-setup #'markdown-mode "```")
+  (arche--smartparens-pair-setup #'css-mode "{")
 
   ;; It's unclear to me why any of this is needed.
   (arche--smartparens-pair-setup #'json-mode "[")
