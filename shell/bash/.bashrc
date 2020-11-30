@@ -12,7 +12,7 @@ fi
 
 # If not running interactively, don't do anything.
 case $- in
-  *i*) [ $SHLVL -eq 1 ] && exec fish;;
+  *i*) [ $SHLVL -eq 1 ] && command -v fish &> /dev/null && exec fish;;
     *) return;;
 esac
 
