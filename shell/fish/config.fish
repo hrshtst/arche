@@ -67,6 +67,13 @@ function myip
     echo
 end
 
+# Open file with the preferred application.
+if type -q wslview
+    alias open='wslview'
+else
+    alias open='xdg-open &>/dev/null'
+end
+
 # Some more useful aliases
 alias ll='ls -alF'
 alias la='ls -A'

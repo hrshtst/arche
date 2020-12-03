@@ -126,15 +126,26 @@ export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quo
 ## Useful aliases
 
 # Check if a command is hashed on the system.
-if ! declare -f has > /dev/null; then
-  has() {
-    type "$1" >/dev/null 2>&1
-  }
-fi
+has() {
+  type "$1" >/dev/null 2>&1
+}
+
+# Return True (0) if the shell running on WSL.
+is_wsl () {
+  if grep -qEi "(microsoft|wsl)" /proc/version 2>&1 /dev/null; then
+    return 0
+  else
+    return 1
+  fi
+}
 
 # Open files with associated applications.
-if has xdg-open; then
-  alias open='xdg-open &>/dev/null'
+if is_wsl; then
+  alias open='wslview &>/dev/null'
+else
+  if has xdg-open; then
+    alias open='xdg-open &>/dev/null'
+  fi
 fi
 
 # Manipulate X selection (aka clipboard).
