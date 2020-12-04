@@ -6039,6 +6039,9 @@ Also run `arche-atomic-chrome-setup-hook'."
   ;; Markdown.
   (setq atomic-chrome-default-major-mode 'markdown-mode)
 
+  ;; Create a new frame and window when editing.
+  (setq atomic-chrome-buffer-open-style 'frame)
+
   (arche-defhook arche--atomic-chrome-switch-back ()
     atomic-chrome-edit-done-hook
     "Switch back to the browser after finishing with `atomic-chrome'."
