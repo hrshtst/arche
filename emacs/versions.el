@@ -98,6 +98,7 @@
  ("s.el" . "43ba8b563bee3426cead0e6d4ddc09398e1a349d")
  ("selectrum" . "aa01792c354029885d889cd0ada7a9c69553a8b9")
  ("sesman" . "edee869c209c016e5f0c5cbb8abb9f3ccd2d1e05")
+ ("sly" . "68561f1b7b66fa0240766ece836bb04da31ea17d")
  ("smartparens" . "c59bfef7e8f1687ac77b0afaaaed86d8051d3de1")
  ("spinner" . "2daa167bec1c7566d662d48613a94453536b524a")
  ("ssh-config-mode-el" . "7860b39039e3a35ecddda8274879b2a019cafccd")

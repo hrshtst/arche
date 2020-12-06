@@ -3637,6 +3637,17 @@ normally set it (since that code will run during early init,
 which is a problem)."
     (setq cider-docview-code-background-color (cider-scale-background-color))))
 
+;;;; Common Lisp
+;; https://lisp-lang.org/
+
+;; Package `sly' is a fork of `slime' which provides Common Lisp IDE
+;; features for Emacs. It redesigns REPL based on Emacs's own feature
+;; with improved user interfaces.
+(use-package sly
+  :config
+
+  (setq inferior-lisp-program "ros -Q run"))
+
 ;;;; Fish
 ;; https://fishshell.com/
 
