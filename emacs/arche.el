@@ -2957,6 +2957,10 @@ currently active.")
 ;; someday.
 (use-package pyvenv)
 
+;; Package `poetry' is a wrapper around Poetry to control it within
+;; Emacs.
+(use-package poetry)
+
 ;;;; Language servers
 
 ;; Package `lsp-mode' is an Emacs client for the Language Server

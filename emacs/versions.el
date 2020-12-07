@@ -86,6 +86,7 @@
  ("pip-requirements.el" . "216cd1690f80cc965d4ae47b8753fc185f778ff6")
  ("pkg-info" . "76ba7415480687d05a4353b27fea2ae02b8d9d61")
  ("pkgbuild-mode" . "887c01cb06420501c7780fb01a8a76bdb0864cca")
+ ("poetry.el" . "d5163fe065239bb7b46ed8b3ff3b85b1f3229af3")
  ("popup-el" . "13364d7674535db225789b03da766746734a4f28")
  ("prescient.el" . "41443e1c9f794b569dafdad4c0b64a608df64b99")
  ("projectile" . "3670ebea092c7bae4973f5bcecf5ac3588a0ac60")
