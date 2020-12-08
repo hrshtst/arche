@@ -942,42 +942,7 @@ ourselves."
   ;; This doesn't actually load Selectrum.
   (selectrum-mode +1)
 
-  :bind (([remap yank-pop] . #'arche-yank-pop-with-selectrum)
-         ("C-x C-z" . #'selectrum-repeat))
-  :config
-
-  ;; The code is adapted from:
-  ;; <https://github.com/raxod502/selectrum/wiki/Useful-Commands#yank-pop>.
-  (defun arche-yank-pop-with-selectrum (&optional arg)
-    "Choose text to yank from `kill-ring' with Selectrum interface.
-When the previous command is not a `yank' nor a `yank-pop', open
-Selectrum interface to choose text to insert at the point. Note
-that the `selectrum-should-sort-p' is set to nil in this case.
-When this command is executed immediately after a `yank' or with
-arguments, call the regular `yank-pop' with the provided
-arguments passed."
-    (interactive "*P")
-    (if arg (yank-pop arg)
-      (let* ((last-command-old last-command)
-             (selectrum-should-sort-p nil)
-             (enable-recursive-minibuffers t)
-             (text (completing-read
-                    "Yank: "
-                    (cl-remove-duplicates
-                     kill-ring :test #'string= :from-end t)
-                    nil t nil nil))
-             ;; Find `text' in `kill-ring'.
-             (pos (cl-position text kill-ring :test #'string=))
-             ;; Translate relative to `kill-ring-yank-pointer'.
-             (n (+ pos (length kill-ring-yank-pointer))))
-        (unless (string= text (current-kill n t))
-          (error "Could not setup for `current-kill'"))
-        ;; Restore `last-command' over Selectrum commands.
-        (setq last-command last-command-old)
-        ;; Delegate to `yank-pop' if appropriate or just insert.
-        (if (eq last-command 'yank)
-            (yank-pop n)
-          (insert-for-yank text))))))
+  :bind (("C-x C-z" . #'selectrum-repeat)))
 
 ;; Package `prescient' is a library for intelligent sorting and
 ;; filtering in various contexts.
@@ -1001,6 +966,41 @@ arguments passed."
   :config
 
   (selectrum-prescient-mode +1))
+
+;; Package `consult' provides various handy commands based on the
+;; Emacs completion function `completing-read'. The commands are
+;; compatible with `selectrum'.
+(use-package consult
+  :straight (:host github :repo "minad/consult")
+  :init
+
+  ;; Replace `multi-occur' function.
+  (fset 'multi-occur #'consult-multi-occur)
+
+  :bind (([remap switch-to-buffer] . #'consult-buffer)
+         ([remap switch-to-buffer-other-window] . #'consult-buffer-other-window)
+         ([remap switch-to-buffer-other-frame] . #'consult-buffer-other-frame)
+         ([remap copy-to-register] . #'consult-register)
+         ([remap bookmark-jump] . #'consult-bookmark)
+         ([remap yank-pop] . #'consult-yank-pop)
+         ("C-c o" . #'consult-outline)
+         ("C-x C-r" . #'consult-recent-file)
+         ("<help> a" . #'consult-apropos))
+
+  :config
+
+  ;; Enable preview mode.
+  (consult-preview-mode)
+
+  :blackout t)
+
+;; Package `marginalia' adds richer annotations to minibuffer
+;; completions.
+(use-package marginalia
+  :straight (:host github :repo "minad/marginalia")
+  :init
+
+  (marginalia-mode +1))
 
 ;;; Window management
 
@@ -1371,22 +1371,7 @@ function return the vector of distilled buffers as well."
 ;; across Emacs sessions.
 (use-feature recentf
   :demand t
-  :bind (("C-x C-r" . #'arche-recentf-open-files))
   :config
-
-  ;; Use `completing-read' to choose via Selectrum interface.
-  (defun arche-recentf-open-files (&optional files)
-    "Select a file with `completing-read' from the recent files list.
-If optional argument FILES is non-nil, it is a list of files to
-choose from. It defaults to the whole recent list, namely
-`recentf-list'."
-    (interactive)
-    (unless (or files recentf-list)
-      (error "There is no recent files to open"))
-    (let ((prompt "Find recent file: ")
-          (candidates (mapcar 'abbreviate-file-name
-                              (or files recentf-list))))
-      (find-file (completing-read prompt candidates))))
 
   ;; Make `recentf-save-list' and `recentf-cleanup' silent. We have to
   ;; do this before turning on `recentf-mode' because they are called
@@ -2478,6 +2463,10 @@ the reverse direction from \\[pop-global-mark]."
     ("M-c" avy-goto-char-timer "char (avy)" :exit t)
     ("g" goto-line "line" :exit t)
     ("M-g" avy-goto-line "line (avy)" :exit t)
+    ;; Jump
+    ("o" consult-outline "outline" :column "Jump")
+    ("m" consult-mark "mark")
+    ("l" consult-line "line")
     ;; Misc.
     ("v" recenter-top-bottom "recenter" :column "Misc.")
     ("q" nil "quit"))
