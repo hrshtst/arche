@@ -2985,7 +2985,9 @@ set LSP configuration (see `lsp-python-ms')."
                    ;; LSP.
                    #'clojure-mode
                    #'ruby-mode
-                   #'fish-mode))
+                   #'fish-mode
+                   ;; https://github.com/rcjsuen/dockerfile-language-server-nodejs/issues/247
+                   #'dockerfile-mode))
         (lsp))))
 
   :config
