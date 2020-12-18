@@ -55,9 +55,8 @@ Our Emacs configuration does not support any versions below this.")
     (setq package-enable-at-startup nil)
 
     ;; Prevent Custom from modifying this file.
-    (setq custom-file (expand-file-name
-                       (format "custom-%d-%d.el" (emacs-pid) (random))
-                       temporary-file-directory))
+    (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+    (load custom-file 'noerror 'nomessage)
 
     ;; Make sure we are running a modern enough Emacs, otherwise abort
     ;; init.
