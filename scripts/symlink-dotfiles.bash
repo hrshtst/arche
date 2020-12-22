@@ -35,7 +35,7 @@ force_link "$dotfiles/shell/bash/.bashrc" "$HOME/.bashrc"
 mkdir -p "$HOME/.config/fish"
 safe_link "$dotfiles/shell/fish/config.fish" \
           "$HOME/.config/fish/config.fish"
-safe_link "$dotfiles/shell/fish/fishfile" "$HOME/.config/fish/fishfile"
+safe_link "$dotfiles/shell/fish/fish_plugins" "$HOME/.config/fish/fish_plugins"
 mkdir -p "$HOME/.config/fish/functions"
 for i in "$dotfiles/shell/fish/functions/"*.fish; do
   filename="$(basename "$i")"
