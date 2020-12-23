@@ -127,3 +127,24 @@ set -gx FZF_DEFAULT_OPTS '--height 40% --reverse --border --inline-info --bind=c
 
 ####################################################################
 ## Keybindings
+
+# Remove key bindings defined by fzf.fish
+bind --erase --all \cf
+bind --erase --all \cr
+bind --erase --all \cv
+bind --erase --all \e\cl
+bind --erase --all \e\cs
+
+# Add my key bindings for fzf.fish
+bind \cx\cf '__fzf_search_current_dir'
+bind \e\cc  '__fzf_search_docker_container'
+bind \e\ci  '__fzf_search_docker_image'
+bind \eg    '__fzf_search_ghq'
+bind \e\cb  '__fzf_search_git_branch'
+bind \e\cl  '__fzf_search_git_log'
+bind \e\cs  '__fzf_search_git_status'
+bind \e\ct  '__fzf_search_git_tag'
+bind \cr    '__fzf_search_history'
+bind \e\cp  '__fzf_search_process'
+bind \e\cv  '__fzf_search_shell_variables'
+bind \cx\cr '__fzf_search_z'
