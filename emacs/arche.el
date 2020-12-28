@@ -4422,7 +4422,7 @@ environment with point at the end of a non-empty line of text."
          ("\\.html?\\'" . web-mode)
          ;; My additions.
          ("\\.ejs\\'" . web-mode)
-         ("\\.jsx?\\'" . web-mode)
+         ("\\.[cm]?jsx?\\'" . web-mode)
          ("\\.tsx?\\'" . web-mode)
          ("\\.css\\'" . web-mode))
   ;; Use `web-mode' rather than `js-mode' for scripts.
@@ -4457,7 +4457,7 @@ environment with point at the end of a non-empty line of text."
 
   ;; When using `web-mode' to edit JavaScript files, support JSX tags.
   (add-to-list 'web-mode-content-types-alist
-               '("jsx" . "\\.js[x]?\\'"))
+               '("jsx" . "\\.[cm]?js[x]?\\'"))
 
   ;; Create line comments instead of block comments by default in
   ;; JavaScript. See <https://github.com/fxbois/web-mode/issues/619>.
