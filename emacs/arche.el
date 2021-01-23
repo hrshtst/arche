@@ -2832,9 +2832,9 @@ via return key."
   ;; We need to do this both before and after Apheleia is loaded
   ;; because the autoloading is set up such that the minor mode
   ;; definition is evaluated twice.
-  (blackout 'apheleia-mode)
+  (blackout 'apheleia-mode " Aph")
 
-  :blackout t)
+  :blackout " Aph")
 
 ;;;; Snippet expansion
 
