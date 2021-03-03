@@ -2712,6 +2712,8 @@ via return key."
 ;; and keybindings for operating on paired delimiters at the
 ;; s-expression level. It provides a Paredit compatibility layer.
 (use-package smartparens
+  ;; Use sirikid's fork until #1079 is pulled into the original.
+  :straight (:type git :host github :repo "sirikid/smartparens" :branch "hotfix/when-let")
   :demand t
   :config
 
