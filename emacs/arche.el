@@ -971,11 +971,11 @@ ourselves."
 ;; Emacs completion function `completing-read'. The commands are
 ;; compatible with `selectrum'.
 (use-package consult
-  :straight (:host github :repo "minad/consult")
   :init
 
-  ;; Replace `multi-occur' function.
-  (fset 'multi-occur #'consult-multi-occur)
+  ;; Use Consult to select xref locations with preview
+  (setq xref-show-xrefs-function #'consult-xref)
+  (setq xref-show-definitions-function #'consult-xref)
 
   :bind (([remap switch-to-buffer] . #'consult-buffer)
          ([remap switch-to-buffer-other-window] . #'consult-buffer-other-window)
@@ -989,18 +989,31 @@ ourselves."
 
   :config
 
-  ;; Enable preview mode.
-  (consult-preview-mode)
+  ;; Configure the narrowing key. Both < and C-+ work reasonably well.
+  (setq consult-narrow-key "<")
+
+  ;; Configure a function which returns the project root directory by
+  ;; `projectile-project-root'.
+  (autoload 'projectile-project-root "projectile")
+  (setq consult-project-root-function #'projectile-project-root)
 
   :blackout t)
 
 ;; Package `marginalia' adds richer annotations to minibuffer
 ;; completions.
 (use-package marginalia
-  :straight (:host github :repo "minad/marginalia")
   :init
 
-  (marginalia-mode +1))
+  (marginalia-mode +1)
+
+  (use-feature selectrum
+    :config
+
+    (arche-defadvice arche--marginalia-cycle-ensure-selectrum-refresh ()
+      :after #'marginalia-cycle
+      "Make sure that Selectrum is refreshed when cycling annotations."
+      (when (bound-and-true-p selectrum-mode)
+        (selectrum-exhibit)))))
 
 ;;; Window management
 
