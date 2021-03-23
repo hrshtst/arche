@@ -67,6 +67,16 @@ function myip
     echo
 end
 
+# Create a new directory and change to it.
+function take
+    if test (count $argv) -eq 0
+        return 1
+    end
+    mkdir -p $argv
+    cd $argv[1]
+    pwd
+end
+
 # Open file with the preferred application.
 if type -q wslview
     alias open='wslview'
