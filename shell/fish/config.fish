@@ -135,6 +135,14 @@ bind --erase --all \cv
 bind --erase --all \e\cl
 bind --erase --all \e\cs
 
+# Because of scoping rules, to capture the shell variables exactly as
+# they are, we must read them before even executing
+# __fzf_search_shell_variables. We use psub to store the variables'
+# info in temporary files and pass in the filenames as arguments. This
+# variable is intentionally global so that it can be referenced by
+# custom key bindings and tests
+set --global fzf_search_vars_cmd '__fzf_search_shell_variables (set --show | psub) (set --names | psub)'
+
 # Add my key bindings for fzf.fish
 bind \cx\cf '__fzf_search_current_dir'
 bind \e\cc  '__fzf_search_docker_container'
@@ -146,7 +154,7 @@ bind \e\cs  '__fzf_search_git_status'
 bind \e\ct  '__fzf_search_git_tag'
 bind \cr    '__fzf_search_history'
 bind \e\cp  '__fzf_search_process'
-bind \e\cv  '__fzf_search_shell_variables'
+bind \e\cv  $fzf_search_vars_cmd
 bind \cx\cr '__fzf_search_z'
 
 # Bind the function push-line to Ctrl-Q.
