@@ -148,3 +148,6 @@ bind \cr    '__fzf_search_history'
 bind \e\cp  '__fzf_search_process'
 bind \e\cv  '__fzf_search_shell_variables'
 bind \cx\cr '__fzf_search_z'
+
+# Bind the function push-line to Ctrl-Q.
+bind \cq 'push-line'
