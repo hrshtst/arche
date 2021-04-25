@@ -2115,8 +2115,8 @@ they are definitely programming-oriented."
 If enabled, then saving the buffer deletes all trailing
 whitespace and ensures that the file ends with exactly one
 newline."
-  nil nil nil
-  (if arche-fix-whitespace-mode
+  :after-hook
+  (if radian-fix-whitespace-mode
       (progn
         (setq require-final-newline t)
         (add-hook 'before-save-hook #'delete-trailing-whitespace nil 'local))
@@ -2161,7 +2161,7 @@ two inserted lines are the same."
 
   (define-minor-mode arche-highlight-long-lines-mode
     "Minor mode for highlighting long lines."
-    nil nil nil
+    :after-hook
     (if arche-highlight-long-lines-mode
         (progn
           (setq-local whitespace-style '(face lines-tail))
