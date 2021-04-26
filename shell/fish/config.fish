@@ -155,8 +155,8 @@ set --global fzf_search_vars_cmd '__fzf_search_shell_variables (set --show | psu
 
 # Add my key bindings for fzf.fish
 bind \cx\cf '__fzf_search_current_dir'
-bind \e\cc  '__fzf_search_docker_container'
-bind \e\ci  '__fzf_search_docker_image'
+bind \ec  '__fzf_search_docker_container'
+bind \ei  '__fzf_search_docker_image'
 bind \eg    '__fzf_search_ghq'
 bind \e\cb  '__fzf_search_git_branch'
 bind \e\cl  '__fzf_search_git_log'
