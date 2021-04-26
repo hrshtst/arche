@@ -627,13 +627,13 @@ nice.)"
 (straight-register-package 'org)
 (straight-register-package 'org-plus-contrib)
 
-(defcustom radian-org-enable-contrib nil
+(defcustom arche-org-enable-contrib nil
   "Non-nil means to make Org contrib modules available.
 This has to be set at the beginning of init, i.e. in the top
 level of init.local.el."
   :type 'boolean)
 
-(if radian-org-enable-contrib
+(if arche-org-enable-contrib
     (straight-use-package 'org-plus-contrib)
   (straight-use-package 'org))
 
@@ -2116,7 +2116,7 @@ If enabled, then saving the buffer deletes all trailing
 whitespace and ensures that the file ends with exactly one
 newline."
   :after-hook
-  (if radian-fix-whitespace-mode
+  (if arche-fix-whitespace-mode
       (progn
         (setq require-final-newline t)
         (add-hook 'before-save-hook #'delete-trailing-whitespace nil 'local))
@@ -4032,7 +4032,7 @@ See https://emacs.stackexchange.com/a/3338/12534."
    (t
     (setq python-shell-interpreter "python")))
 
-  (arche-defhook radian--python-use-correct-executable ()
+  (arche-defhook arche--python-use-correct-executable ()
     python-mode-hook
     "Use correct executables for Python tooling."
     (save-excursion
