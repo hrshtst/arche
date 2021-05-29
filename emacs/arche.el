@@ -2830,8 +2830,9 @@ via return key."
   (arche--smartparens-pair-setup #'protobuf-mode "{")
 
   ;; Work around https://github.com/Fuco1/smartparens/issues/1036.
-  (sp-local-pair #'minibuffer-mode "`" nil :actions nil)
-  (sp-local-pair #'minibuffer-mode "'" nil :actions nil)
+  (when (fboundp 'minibuffer-mode)
+    (sp-local-pair #'minibuffer-mode "`" nil :actions nil)
+    (sp-local-pair #'minibuffer-mode "'" nil :actions nil))
 
   ;; Work around https://github.com/Fuco1/smartparens/issues/783.
   (setq sp-escape-quotes-after-insert nil)
@@ -3372,8 +3373,11 @@ order."
   ;; defined, use the default `completing-read' mechanism to decide
   ;; between them (i.e., delegate to Selectrum) rather than using the
   ;; janky built-in `xref' thingie.
-  (setq xref-show-definitions-function
-        #'xref-show-definitions-completing-read))
+  (when (and
+         (boundp 'xref-show-definitions-function)
+         (fboundp 'xref-show-definitions-completing-read))
+    (setq xref-show-definitions-function
+          #'xref-show-definitions-completing-read)))
 
 ;; Package `dumb-jump' provides a mechanism to jump to the definitions
 ;; of functions, variables, etc. in a variety of programming
