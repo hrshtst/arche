@@ -625,7 +625,7 @@ nice.)"
 ;; real one is registered.
 
 (straight-register-package 'org)
-(straight-register-package 'org-plus-contrib)
+(straight-register-package 'org-contrib)
 
 (defcustom arche-org-enable-contrib nil
   "Non-nil means to make Org contrib modules available.
@@ -634,7 +634,7 @@ level of init.local.el."
   :type 'boolean)
 
 (if arche-org-enable-contrib
-    (straight-use-package 'org-plus-contrib)
+    (straight-use-package 'org-contrib)
   (straight-use-package 'org))
 
 ;;; el-patch
@@ -2829,8 +2829,21 @@ via return key."
   ;; Deal with `protobuf-mode' not using `define-minor-mode'.
   (arche--smartparens-pair-setup #'protobuf-mode "{")
 
+  ;; Work around https://github.com/Fuco1/smartparens/issues/1036.
+  (sp-local-pair #'minibuffer-mode "`" nil :actions nil)
+  (sp-local-pair #'minibuffer-mode "'" nil :actions nil)
+
   ;; Work around https://github.com/Fuco1/smartparens/issues/783.
   (setq sp-escape-quotes-after-insert nil)
+
+  ;; For some reason two C-g's are required to exit out of the
+  ;; minibuffer if you've just typed a parenthesis pair. This appears
+  ;; to be intentional, but doesn't make a lot of intuitive sense
+  ;; since we've disabled highlighting. Kill the problematic
+  ;; keybinding. See also
+  ;; https://github.com/Fuco1/smartparens/pull/890 which was about a
+  ;; similar problem.
+  (define-key sp-pair-overlay-keymap (kbd "C-g") nil)
 
   ;; Quiet some silly messages.
   (dolist (key '(:unmatched-expression :no-matching-tag))
@@ -3350,6 +3363,17 @@ order."
   ;; Always shows the buffer with the constant size.
   (setq imenu-list-auto-resize nil))
 
+;; Feature `xref' provides the built-in Emacs interface for source
+;; navigation, which various packages can plug into.
+(use-feature xref
+  :config
+
+  ;; When there are multiple options for where a symbol might be
+  ;; defined, use the default `completing-read' mechanism to decide
+  ;; between them (i.e., delegate to Selectrum) rather than using the
+  ;; janky built-in `xref' thingie.
+  (setq xref-show-definitions-function #'xref-show-definitions-completing-read))
+
 ;; Package `dumb-jump' provides a mechanism to jump to the definitions
 ;; of functions, variables, etc. in a variety of programming
 ;; languages. The advantage of `dumb-jump' is that it doesn't try to
@@ -3359,7 +3383,7 @@ order."
   :demand t
   :config
 
-  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
+  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate 100))
 
 ;;;; Display contextual metadata
 
@@ -4240,39 +4264,14 @@ Return either a string or nil."
     "Enable `arche-replace-punc-mode' in `TeX-mode'."
     (arche-replace-punc-mode +1))
 
-  :config/el-patch
+  :config
 
   ;; Remove annoying messages when opening *.tex files.
-  (defun TeX-update-style (&optional force)
-    (el-patch-concat
-      "Run style specific hooks"
-      (el-patch-add
-        ", silently,")
-      " for the current document.
-
-Only do this if it has not been done before, or if optional argument
-FORCE is not nil.")
-    (unless (or (and (boundp 'TeX-auto-update)
-                     (eq TeX-auto-update 'BibTeX)) ; Not a real TeX buffer
-                (and (not force)
-                     TeX-style-hook-applied-p))
-      (setq TeX-style-hook-applied-p t)
-      (el-patch-remove
-        (message "Applying style hooks..."))
-      (TeX-run-style-hooks (TeX-strip-extension nil nil t))
-      ;; Run parent style hooks if it has a single parent that isn't itself.
-      (if (or (not (memq TeX-master '(nil t)))
-              (and (buffer-file-name)
-                   (string-match TeX-one-master
-                                 (file-name-nondirectory (buffer-file-name)))))
-          (TeX-run-style-hooks (TeX-master-file)))
-      (if (and TeX-parse-self
-               (null (cdr-safe (assoc (TeX-strip-extension nil nil t)
-                                      TeX-style-hook-list))))
-          (TeX-auto-apply))
-      (run-hooks 'TeX-update-style-hook)
-      (el-patch-remove
-        (message "Applying style hooks...done"))))
+  (radian-defadvice radian--tex-update-style-silently (func &rest args)
+    :around #'TeX-update-style
+    "Silence silly messages from `TeX-update-style'."
+    (radian--with-silent-message "Applying style hooks"
+      (apply func args)))
 
   :config
 
@@ -4503,24 +4502,7 @@ enough for the moment."
     ;; `comment-normalize-vars' will key off the syntax and think
     ;; that a single "/" starts a comment, which completely borks
     ;; auto-fill.
-    (setq-local comment-start-skip "// *"))
-
-  (use-feature apheleia
-    :config
-
-    (arche-defhook arche--web-highlight-after-formatting ()
-      apheleia-post-format-hook
-      "Make sure syntax highlighting works with Apheleia.
-The problem is that `web-mode' doesn't do highlighting correctly
-in the face of arbitrary buffer modifications, and kind of hacks
-around the problem by hardcoding a special case for yanking based
-on the value of `this-command'. So, when buffer modifications
-happen in an unexpected (to `web-mode') way, we have to manually
-poke it. Otherwise the modified text remains unfontified."
-      ;; (setq web-mode-fontification-off nil)
-      (when (and web-mode-scan-beg web-mode-scan-end global-font-lock-mode)
-        (save-excursion
-          (font-lock-fontify-region web-mode-scan-beg web-mode-scan-end))))))
+    (setq-local comment-start-skip "// *")))
 
 ;;; Configuration file formats
 
