@@ -4267,10 +4267,10 @@ Return either a string or nil."
   :config
 
   ;; Remove annoying messages when opening *.tex files.
-  (radian-defadvice radian--tex-update-style-silently (func &rest args)
+  (arche-defadvice arche--tex-update-style-silently (func &rest args)
     :around #'TeX-update-style
     "Silence silly messages from `TeX-update-style'."
-    (radian--with-silent-message "Applying style hooks"
+    (arche--with-silent-message "Applying style hooks"
       (apply func args)))
 
   :config
