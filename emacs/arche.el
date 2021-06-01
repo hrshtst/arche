@@ -1,6 +1,6 @@
 ;; -*- lexical-binding: t -*-
 
-;; Copyright (c) 2016-2020 Hiroshi Atsuta
+;; Copyright (c) 2016-2021 Hiroshi Atsuta
 
 ;; Author: Hiroshi Atsuta <atsuta@ieee.org>
 
