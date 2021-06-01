@@ -5976,6 +5976,18 @@ Instead, display simply a flat colored region in the fringe."
                             beg end 'arche--git-gutter-blank args)))
         (apply func args)))))
 
+;;;; OS-level virtualization tools, a.k.a. Docker
+
+;; Package `docker' provides interface to Docker commands.
+(use-package docker
+  :bind ("C-c d" . #'docker))
+
+;; Package `docker-tramp' provides TRAMP integration for docker
+;; containers.
+(use-package docker-tramp)
+
+;; Package `'
+
 ;;;; External commands
 
 ;; Feature `compile' provides a way to run a shell command from Emacs
