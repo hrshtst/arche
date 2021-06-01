@@ -3689,6 +3689,16 @@ normally set it (since that code will run during early init,
 which is a problem)."
     (setq cider-docview-code-background-color (cider-scale-background-color))))
 
+;;;; CMake
+;; https://cmake.org/
+
+;; Package `cmake-mode' provides syntax highlighting and indentation
+;; for CMakeLists.txt and *.cmake source files.
+(use-package cmake-mode)
+
+;; Package `cmake-font-lock' provides a better syntax highlighting.
+(use-package cmake-font-lock)
+
 ;;;; Common Lisp
 ;; https://lisp-lang.org/
 
