@@ -997,6 +997,15 @@ ourselves."
 
   :config
 
+  ;; Prevent automatic buffer preview by configuring :preview-key on
+  ;; commands showing files because it is annoying to load LSP to
+  ;; preview newly opening files.
+  (consult-customize
+   ;; Disable preview for `consult-theme' completely.
+   consult-theme :preview-key nil
+   ;; Set preview for `consult-recent-file' to key `M-.'.
+   consult-recent-file :preview-key (kbd "M-."))
+
   ;; Configure the narrowing key. Both < and C-+ work reasonably well.
   (setq consult-narrow-key "<")
 
