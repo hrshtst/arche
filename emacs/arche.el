@@ -3034,7 +3034,9 @@ set LSP configuration (see `lsp-python-ms')."
                    ;; LSP.
                    #'clojure-mode
                    #'fish-mode
-                   #'ruby-mode))
+                   #'ruby-mode
+                   #'markdown-mode
+                   #'cmake-mode))
         (lsp))))
 
   :config
