@@ -3466,6 +3466,33 @@ was printed, and only have ElDoc display if one wasn't."
   (arche-bind-key "n" #'flycheck-next-error)
   (arche-bind-key "l" #'flycheck-list-errors)
 
+  ;; It is sometimes incovenient that the `lsp' checker is only
+  ;; enabled as a flycheck's syntax checker in `lsp-mode'. This issue
+  ;; can be fixed by setting up an additional syntax checker as stated
+  ;; in the following comment:
+  ;; https://github.com/flycheck/flycheck/issues/1762#issuecomment-750458442
+  (defvar-local arche-flycheck-local-cache nil
+    "Syntax checker to use in specific mode.")
+
+  (arche-defadvice arche--advice-flycheck-checker-get
+      (func checker property)
+    :around #'flycheck-checker-get
+    "Apply an additional CHECKER's PROPERTY defined for a specific
+mode when getting it."
+    (or (alist-get property
+                   (alist-get checker arche-flycheck-local-cache))
+        (funcall func checker property)))
+
+  (use-feature lsp-mode
+    :config
+
+    (arche-defhook arche--set-mode-specific-flycheck-checker ()
+      lsp-managed-mode-hook
+      "Set `arche-flycheck-local-cache' for specific modes."
+      (when (derived-mode-p 'sh-mode)
+        (setq arche-flycheck-local-cache
+              '((lsp . ((next-checkers . (sh-shellcheck)))))))))
+
   :blackout t)
 
 ;; Package `lsp-ui' provides a pretty UI for showing diagnostic
