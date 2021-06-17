@@ -139,33 +139,23 @@ set -gx FZF_DEFAULT_OPTS '--height 40% --reverse --border --inline-info --bind=c
 ## Keybindings
 
 # Remove key bindings defined by fzf.fish
-bind --erase --all \cf
-bind --erase --all \cr
-bind --erase --all \cv
-bind --erase --all \e\cl
-bind --erase --all \e\cs
-
-# Because of scoping rules, to capture the shell variables exactly as
-# they are, we must read them before even executing
-# __fzf_search_shell_variables. We use psub to store the variables'
-# info in temporary files and pass in the filenames as arguments. This
-# variable is intentionally global so that it can be referenced by
-# custom key bindings and tests
-set --global fzf_search_vars_cmd '__fzf_search_shell_variables (set --show | psub) (set --names | psub)'
+_fzf_uninstall_bindings
 
 # Add my key bindings for fzf.fish
-bind \cx\cf '__fzf_search_current_dir'
-bind \ec  '__fzf_search_docker_container'
-bind \ei  '__fzf_search_docker_image'
-bind \eg    '__fzf_search_ghq'
-bind \e\cb  '__fzf_search_git_branch'
-bind \e\cl  '__fzf_search_git_log'
-bind \e\cs  '__fzf_search_git_status'
-bind \e\ct  '__fzf_search_git_tag'
-bind \cr    '__fzf_search_history'
-bind \e\cp  '__fzf_search_process'
-bind \e\cv  $fzf_search_vars_cmd
-bind \cx\cr '__fzf_search_z'
+fzf_configure_bindings \
+    --directory=\cx\cf \
+    --git_log=\cxgl \
+    --git_status=\cxgs \
+    --history=\cr \
+    --variables=\chv
+
+bind \cxdc  '_fzf_search_docker_container'
+bind \cxdi  '_fzf_search_docker_image'
+bind \cx\[  '_fzf_search_ghq'
+bind \cxgb  '_fzf_search_git_branch'
+bind \cxgt  '_fzf_search_git_tag'
+bind \cxp   '_fzf_search_process'
+bind \cx\cr '_fzf_search_z'
 
 # Bind the function push-line to Ctrl-Q.
 bind \cq 'push-line'
