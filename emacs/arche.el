@@ -2010,7 +2010,7 @@ for the matched punctuation mark."
   "Minor mode to automatically replace specified punctuation marks on save.
 If it is enabled, saving current buffer replaces punctuation
 marks specified in `arche-replace-punc-pairs'"
-  nil nil nil
+  :init-value nil :lighter nil :keymap nil
   (if arche-replace-punc-mode
       (add-hook 'before-save-hook #'arche-replace-punc nil 'local)
     (remove-hook 'before-save-hook #'arche-replace-punc 'local)))
@@ -3627,7 +3627,7 @@ mode when getting it."
 
   (define-minor-mode arche-clang-format-buffer-on-projectile-mode
     "Minor mode to reformat buffer on save using clang-format."
-    nil nil nil
+    :init-value nil :lighter nil :keymap nil
     (if arche-clang-format-buffer-on-projectile-mode
         (add-hook 'before-save-hook #'arche-clang-format-buffer-on-projectile nil 'local)
       (remove-hook 'before-save-hook #'arche-clang-format-buffer-on-projectile 'local)))
