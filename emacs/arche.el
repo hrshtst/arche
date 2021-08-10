@@ -936,54 +936,100 @@ ourselves."
         (setq input (car result))))
     input))
 
-;; Package `selectrum' is an incremental completion and narrowing
-;; framework. Like Ivy and Helm, which it improves on, Selectrum
-;; provides a user interface for choosing from a list of options by
-;; typing a query to narrow the list, and then selecting one of the
-;; remaining candidates. This offers a significant improvement over
-;; the default Emacs interface for candidate selection.
-(use-package selectrum
-  :straight (:host github :repo "raxod502/selectrum")
+;; Package `vertico' provides a minimalistic vertical complemention UI
+;; based on Emacs's default completion system. To use it in the
+;; similar way as Ivy and Helm, extensions and complementary packages
+;; should be additionally installed because it only focuses to provide
+;; the competion UI.
+(straight-use-package '(vertico :files (:defaults "extensions/*")
+                                :includes (vertico-directory
+                                           vertico-repeat)))
+
+(use-feature vertico
   :defer t
   :init
 
-  ;; This doesn't actually load Selectrum.
-  (selectrum-mode +1)
+  (vertico-mode +1)
 
-  :bind (("C-x C-z" . #'selectrum-repeat)))
+  ;; Enable cycling for `vertico-next' and `vertico-previous'.
+  (setq vertico-cycle t)
 
-;; Package `prescient' is a library for intelligent sorting and
-;; filtering in various contexts.
-(use-package prescient
+  ;; Extend maximal number of candidates to show.
+  (setq vertico-count 15)
+
+  ;; Do not allow the cursor in the minibuffer prompt
+  (setq minibuffer-prompt-properties
+        '(read-only t cursor-intangible t face minibuffer-prompt))
+  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+
+  :bind (("C-x C-z" . #'vertico-repeat)
+         :map vertico-map
+         ("RET" . #'vertico-directory-enter)
+         ("DEL" . #'vertico-directory-delete-char)
+         ("M-DEL" . #'vertico-directory-delete-word))
+
   :config
 
-  ;; Remember usage statistics across Emacs sessions.
-  (prescient-persist-mode +1)
+  ;; Hide commands in M-x which do not work in the current mode.
+  (arche-when-compiletime (version<= "28" emacs-version)
+    (setq read-extended-command-predicate
+          #'command-completion-default-include-p)))
 
-  ;; The default settings seem a little forgetful to me. Let's try
-  ;; this out.
-  (setq prescient-history-length 1000))
+;; Package `orderless' is a completion back-end that achieves
+;; incremental and narrowing completion framework such as Ivy and
+;; Helm.
+(use-package orderless
+  :init
 
-;; Package `selectrum-prescient' provides intelligent sorting and
-;; filtering for candidates in Selectrum menus.
-(use-package selectrum-prescient
-  :straight (:host github :repo "raxod502/prescient.el"
-                   :files ("selectrum-prescient.el"))
-  :demand t
-  :after selectrum
+  (setq completion-styles '(orderless))
+  (setq completion-category-defaults nil)
+  (setq completion-category-overrides '((file (styles partial-completion)))))
+
+;; Feature `savehist' toggles persistent minibuffer history over Emacs
+;; restarts.
+(use-feature savehist
+  :init
+
+  (savehist-mode +1))
+
+;; Package `marginalia' adds richer annotations to minibuffer
+;; completions.
+(use-package marginalia
+  :init
+
+  (marginalia-mode +1)
+
+  :bind (:map minibuffer-local-map
+         ("M-A" . #'marginalia-cycle)))
+
+;; Package `embark' provides a sort of right-click contextual menu for
+;; Emacs.
+(use-package embark
+  :bind (("C-." . #'embark-act)
+         ("C-;" . #'embark-dwim))
+
   :config
 
-  (selectrum-prescient-mode +1))
+  ;; Hide the mode line of the Embark live/completions buffers.
+  (add-to-list 'display-buffer-alist
+               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+                 nil
+                 (window-parameters (mode-line-format . none)))))
 
 ;; Package `consult' provides various handy commands based on the
 ;; Emacs completion function `completing-read'. The commands are
-;; compatible with `selectrum'.
+;; fully compatible with `vertico' since the both packages are based
+;; on `completing-read'.
 (use-package consult
   :init
 
-  ;; Use Consult to select xref locations with preview
+  ;; Use Consult to select xref locations with preview.
   (setq xref-show-xrefs-function #'consult-xref)
   (setq xref-show-definitions-function #'consult-xref)
+
+  ;; Replace `completing-read-multiple' with an enhanced version.
+  (advice-add #'completing-read-multiple
+              :override #'consult-completing-read-multiple)
 
   :bind (([remap switch-to-buffer] . #'consult-buffer)
          ([remap switch-to-buffer-other-window] . #'consult-buffer-other-window)
@@ -1016,26 +1062,14 @@ ourselves."
 
   :blackout t)
 
-;; Package `marginalia' adds richer annotations to minibuffer
-;; completions.
-(use-package marginalia
-  :init
-
-  (marginalia-mode +1)
-
-  (use-feature selectrum
-    :config
-
-    (arche-defadvice arche--marginalia-cycle-ensure-selectrum-refresh ()
-      :after #'marginalia-cycle
-      "Make sure that Selectrum is refreshed when cycling annotations."
-      (when (bound-and-true-p selectrum-mode)
-        (selectrum-exhibit)))))
+;; Feature `embark-consult' is included in the package Embark, which
+;; provides integration between Embark and Consult.
+(use-package embark-consult
+  :after (embark consult)
+  :demand t
+  :hook (embark-collect-mode . consult-preview-at-point-mode))
 
 ;;; Window management
-
-;; Bind the same keys as oldish `helm-mini' to switching buffers.
-(bind-key "C-;" #'switch-to-buffer)
 
 (arche-defadvice arche--advice-keyboard-quit-minibuffer-first
     (keyboard-quit)
