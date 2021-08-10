@@ -76,7 +76,8 @@ Our Emacs configuration does not support any versions below this.")
 	     (link-target
 	      ;; This function returns the target of the link. If the
 	      ;; init-file is not a symlink, then we abort.
-	      (file-symlink-p this-file)))
+	      (if user-init-file (file-symlink-p this-file)
+		this-file)))
 
         (unless link-target
           (error "Init-file %S is not a symlink" this-file))
