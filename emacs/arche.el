@@ -6719,20 +6719,12 @@ your local configuration."
     ;; one.
     (require 'zerodark-theme)
 
-    (let ((background-purple (if (true-color-p) "#48384c" "#5f5f5f"))
-          (class '((class color) (min-colors 89)))
-          (green (if (true-color-p) "#98be65" "#87af5f"))
+    (let ((class '((class color) (min-colors 89)))
           (orange (if (true-color-p) "#da8548" "#d7875f"))
-          (purple (if (true-color-p) "#c678dd" "#d787d7")))
+          (blue (if (true-color-p) "#72a4ff" "#0000cd")))
       (custom-theme-set-faces
        'zerodark
-       `(selectrum-current-candidate
-         ((,class (:background
-                   ,background-purple
-                   :weight bold
-                   :foreground ,purple))))
-       `(selectrum-primary-highlight ((,class (:foreground ,orange))))
-       `(selectrum-secondary-highlight ((,class (:foreground ,green)))))
+       `(completions-common-part ((,class (:weight bold :foreground ,blue)))))
       (setq arche--mozc-cursor-color orange))
 
     (enable-theme 'zerodark)))
