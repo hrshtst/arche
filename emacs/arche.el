@@ -1371,6 +1371,12 @@ perspective: %s(arche--perspective-names)
 
     (bind-key "C-z" #'hydra-perspective/body))
 
+  (use-feature ibuffer
+    :bind (([remap list-buffers] . #'persp-ibuffer)))
+
+  :bind (([remap switch-to-buffer] . #'persp-switch-to-buffer*)
+         ([remap kill-buffer] . #'persp-kill-buffer*))
+
   :config
 
   (persp-mode +1)
