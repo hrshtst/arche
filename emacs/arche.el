@@ -2866,6 +2866,7 @@ via return key."
   (arche--smartparens-pair-setup #'prog-mode "(")
   (arche--smartparens-pair-setup #'prog-mode "[")
   (arche--smartparens-pair-setup #'prog-mode "{")
+  (arche--smartparens-pair-setup #'go-mode "{")
   (arche--smartparens-pair-setup #'python-mode "\"\"\"")
   (arche--smartparens-pair-setup #'latex-mode "\\[")
   (arche--smartparens-pair-setup #'markdown-mode "```")
