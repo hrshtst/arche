@@ -2863,22 +2863,18 @@ via return key."
                    '((arche--smartparens-indent-new-pair "RET")
                      (arche--smartparens-indent-new-pair "<return>"))))
 
-  (arche--smartparens-pair-setup #'prog-mode "(")
-  (arche--smartparens-pair-setup #'prog-mode "[")
-  (arche--smartparens-pair-setup #'prog-mode "{")
-  (arche--smartparens-pair-setup #'go-mode "{")
+  (dolist (delim '("(" "[" "{"))
+    (dolist (mode '(
+                    fundamental-mode
+                    javascript-mode
+                    protobuf-mode
+                    text-mode
+                    web-mode
+                    ))
+      (arche--smartparens-pair-setup mode delim)))
+
   (arche--smartparens-pair-setup #'python-mode "\"\"\"")
-  (arche--smartparens-pair-setup #'latex-mode "\\[")
   (arche--smartparens-pair-setup #'markdown-mode "```")
-  (arche--smartparens-pair-setup #'css-mode "{")
-
-  ;; It's unclear to me why any of this is needed.
-  (arche--smartparens-pair-setup #'json-mode "[")
-  (arche--smartparens-pair-setup #'json-mode "{")
-  (arche--smartparens-pair-setup #'tex-mode "{")
-
-  ;; Deal with `protobuf-mode' not using `define-minor-mode'.
-  (arche--smartparens-pair-setup #'protobuf-mode "{")
 
   ;; Work around https://github.com/Fuco1/smartparens/issues/1036.
   (when (fboundp 'minibuffer-mode)
