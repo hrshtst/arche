@@ -130,3 +130,7 @@ init-file is loaded, not just once.")
                   (delete-file (concat arche-lib-file "c")))
                 (load arche-lib-file nil 'nomessage 'nosuffix)))
           (run-hooks 'arche--finalize-init-hook)))))))
+
+;; Local Variables:
+;; no-native-compile: t
+;; End:

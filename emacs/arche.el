@@ -6752,6 +6752,7 @@ your local configuration."
 ;; Local Variables:
 ;; checkdoc-symbol-words: ("top-level")
 ;; indent-tabs-mode: nil
+;; no-native-compile: t
 ;; outline-regexp: ";;;+ "
 ;; sentence-end-double-space: nil
 ;; End:
