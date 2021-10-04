@@ -147,7 +147,7 @@ if has ssh-agent; then
         if [ -n "$HOME" ]; then
             pkill -U "$USER" ssh-agent
             mkdir -p "$HOME/.ssh"
-            ssh-agent -t 86400 > "$HOME/.ssh/agent-info"
+            ssh-agent ${SSH_AGENT_ARGS:--t 86400} > "$HOME/.ssh/agent-info"
             ssh_connect
         fi
     }
