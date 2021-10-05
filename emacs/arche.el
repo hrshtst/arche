@@ -6725,6 +6725,11 @@ your local configuration."
        `(completions-common-part ((,class (:weight bold :foreground ,blue)))))
       (setq arche--mozc-cursor-color orange))
 
+    (dolist (face '(outline-1
+                    outline-2
+                    outline-3))
+      (set-face-attribute face nil :height 1.0))
+
     (enable-theme 'zerodark)))
 
 ;; Make adjustments to color theme that was selected by Radian or
