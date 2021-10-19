@@ -8,8 +8,8 @@
 setenv () {
   case $# in
     0) export -p ;;
-    1) unset $1 ;;
-    2) export $1="$2" ;;
+    1) unset "$1" ;;
+    2) export "$1"="$2" ;;
     *) printf "error: ignored the last %d arguments (setenv)\n" $(($#-2)) >&2 ;;
   esac
 }
@@ -18,7 +18,7 @@ setenv () {
 # False (1).
 _is_valid () {
   if [ ! -d "$2" ]; then
-    printf "warning: no such directory: $2\n" >&2
+    echo "warning: no such directory: $2" >&2
     return 1
   fi
   return 0
@@ -44,14 +44,14 @@ addenv () {
   fi
 
   var=$1; shift
-  value="$(eval printf "%s" \${$var})"
+  value="$(eval 'echo $'"$var")"
 
   case $var in
     *PATH)
       i=$#
       while [ "$i" -gt 0 ]; do
         eval "v=\${$i}"
-        if [ $force = false ] && _is_valid $var "$v"; then
+        if [ $force = false ] && _is_valid "$var" "$v"; then
           value="${v}:$value"
         fi
         i=$((i-1))
@@ -63,7 +63,7 @@ addenv () {
       done
       ;;
   esac
-  setenv $var "$value"
+  setenv "$var" "$value"
 }
 
 # Return True if a command is hashed on the system.
@@ -108,6 +108,7 @@ fi
 ### ~/.profile.local
 
 if [ -n "$HOME" ] && [ -f "$HOME/.profile.local" ]; then
+    # shellcheck source=/dev/null
   . "$HOME/.profile.local"
 fi
 
@@ -136,6 +137,7 @@ if has ssh-agent; then
     }
 
     ssh_connected() {
+        # shellcheck disable=SC2009
         ps -p "$SSH_AGENT_PID" 2>&1 | grep -qF ssh-agent
     }
 
@@ -147,7 +149,7 @@ if has ssh-agent; then
         if [ -n "$HOME" ]; then
             pkill -U "$USER" ssh-agent
             mkdir -p "$HOME/.ssh"
-            ssh-agent ${SSH_AGENT_ARGS:--t 86400} > "$HOME/.ssh/agent-info"
+            ssh-agent "${SSH_AGENT_ARGS:--t 86400}" > "$HOME/.ssh/agent-info"
             ssh_connect
         fi
     }
@@ -163,7 +165,11 @@ fi
 export ARCHE_SKIP_PROFILE=1
 
 # When running login shell on WSL load $HOME/.bashrc automatically.
-if grep -qEi "(microsoft|wsl)" /proc/version 2>&1 /dev/null && \
-     shopt -q login_shell; then
-  . "$HOME/.bashrc"
+if grep -qEi "(microsoft|wsl)" /proc/version >/dev/null 2>&1; then
+  case $0 in
+    -*)
+      # shellcheck source=/dev/null
+      . "$HOME/.bashrc"
+      ;;
+  esac
 fi

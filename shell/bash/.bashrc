@@ -7,6 +7,7 @@
 
 # Load environment settings.
 if [ -z ${ARCHE_SKIP_PROFILE+set} ] && [ -f "$HOME/.profile" ]; then
+  # shellcheck source=/dev/null
   . "$HOME/.profile"
 fi
 
@@ -18,6 +19,7 @@ esac
 
 ## External configuration
 if [ -f "$HOME/.bashrc.local" ]; then
+  # shellcheck source=/dev/null
   . "$HOME/.bashrc.local"
 fi
 
@@ -68,6 +70,7 @@ case "$TERM" in
   xterm-color|*-256color) color_prompt=yes;;
 esac
 
+# shellcheck disable=SC2154
 if [ -n "$force_color_prompt" ]; then
   if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
     # We have color support; assume it's compliant with Ecma-48
@@ -110,7 +113,12 @@ fi
 
 # Enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
-  test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+  if [ -r "$HOME/.dircolors" ]; then
+    eval "$(dircolors -b "$HOME/.dircolors")"
+  else
+    eval "$(dircolors -b)"
+  fi
+
   alias ls='ls --color=auto'
   alias dir='dir --color=auto'
   alias vdir='vdir --color=auto'
@@ -186,9 +194,9 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 tmux() {
   TMUX_SHELL=${TMUX_SHELL:-$(which bash)}
   if test $# = 0; then
-    command tmux new-session $TMUX_SHELL \; set-option default-shell $TMUX_SHELL
+    command tmux new-session "$TMUX_SHELL" \; set-option default-shell "$TMUX_SHELL"
   else
-    command tmux $@
+    command tmux "$@"
   fi
 }
 
