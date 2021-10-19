@@ -48,6 +48,12 @@
 (require 'map)
 (require 'subr-x)
 
+;;; Set early configuration
+
+;; Disable byte-compilation warnings from native-compiled packages
+;; from being reported asynchronously into the UI.
+(setq native-comp-async-report-warnings-errors nil)
+
 ;;; Define customization groups
 
 (defgroup arche-hooks nil
@@ -4292,7 +4298,6 @@ Return either a string or nil."
 (use-package rust-mode)
 
 ;;;; Scheme
-
 ;; http://www.schemers.org/
 
 ;; Package `geiser' provides REPL integration for several
