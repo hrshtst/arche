@@ -2869,8 +2869,8 @@ via return key."
                     fundamental-mode
                     javascript-mode
                     protobuf-mode
+                    prog-mode
                     text-mode
-                    web-mode
                     ))
       (arche--smartparens-pair-setup mode delim)))
 
