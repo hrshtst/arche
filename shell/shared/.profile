@@ -108,7 +108,7 @@ fi
 ### ~/.profile.local
 
 if [ -n "$HOME" ] && [ -f "$HOME/.profile.local" ]; then
-    # shellcheck source=/dev/null
+  # shellcheck source=/dev/null
   . "$HOME/.profile.local"
 fi
 
@@ -116,13 +116,13 @@ fi
 
 if has gpg-connect-agent; then
 
-    gpg_restart() {
-        gpg-connect-agent reloadagent /bye
-    }
+  gpg_restart() {
+    gpg-connect-agent reloadagent /bye
+  }
 
-    gpg_forget() {
-        gpg-connect-agent reloadagent /bye
-    }
+  gpg_forget() {
+    gpg-connect-agent reloadagent /bye
+  }
 
 fi
 
@@ -130,34 +130,34 @@ fi
 
 if has ssh-agent; then
 
-    ssh_connect() {
-        if [ -n "$HOME" ] && [ -f "$HOME/.ssh/agent-info" ]; then
-            eval "$(cat "$HOME/.ssh/agent-info")" >/dev/null
-        fi
-    }
-
-    ssh_connected() {
-        # shellcheck disable=SC2009
-        ps -p "$SSH_AGENT_PID" 2>&1 | grep -qF ssh-agent
-    }
-
-    ssh_forget() {
-        ssh-add -D
-    }
-
-    ssh_restart() {
-        if [ -n "$HOME" ]; then
-            pkill -U "$USER" ssh-agent
-            mkdir -p "$HOME/.ssh"
-            ssh-agent "${SSH_AGENT_ARGS:--t 86400}" > "$HOME/.ssh/agent-info"
-            ssh_connect
-        fi
-    }
-
-    ssh_connect
-    if ! ssh_connected; then
-        ssh_restart
+  ssh_connect() {
+    if [ -n "$HOME" ] && [ -f "$HOME/.ssh/agent-info" ]; then
+      eval "$(cat "$HOME/.ssh/agent-info")" >/dev/null
     fi
+  }
+
+  ssh_connected() {
+    # shellcheck disable=SC2009
+    ps -p "$SSH_AGENT_PID" 2>&1 | grep -qF ssh-agent
+  }
+
+  ssh_forget() {
+    ssh-add -D
+  }
+
+  ssh_restart() {
+    if [ -n "$HOME" ]; then
+      pkill -U "$USER" ssh-agent
+      mkdir -p "$HOME/.ssh"
+      ssh-agent "${SSH_AGENT_ARGS:--t 86400}" > "$HOME/.ssh/agent-info"
+      ssh_connect
+    fi
+  }
+
+  ssh_connect
+  if ! ssh_connected; then
+    ssh_restart
+  fi
 
 fi
 

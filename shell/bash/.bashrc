@@ -14,7 +14,7 @@ fi
 # If not running interactively, don't do anything.
 case $- in
   *i*) [ $SHLVL -eq 1 ] && command -v fish &> /dev/null && exec fish;;
-    *) return;;
+  *) return;;
 esac
 
 ## External configuration
@@ -91,11 +91,11 @@ unset color_prompt
 
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
-xterm*|rxvt*)
-  PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-  ;;
-*)
-  ;;
+  xterm*|rxvt*)
+    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+    ;;
+  *)
+    ;;
 esac
 
 # Append number of executed commands.
