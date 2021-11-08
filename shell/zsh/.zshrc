@@ -81,7 +81,7 @@ zinit light junegunn/fzf
 # such as fast-syntax-highlighting and zsh-autosuggestions should be
 # loaded after this. Note that lazy-loading is desabled to set
 # the description style for group names in completion menu.
-zinit ice lucid atinit'zicompinit; zicdreplay'
+zinit ice lucid atinit'ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay'
 zinit light Aloxaf/fzf-tab
 
 # Create an impressive look on the command line with a rich syntax
