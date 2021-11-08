@@ -56,16 +56,16 @@ zinit light romkatv/powerlevel10k
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ -f "${HOME}/.p10k.zsh" ]] && source "${HOME}/.p10k.zsh"
 
-# By typing in any part of any command from history and pressing <up>
-# and <down>, you can choose completed commands in history.
-zinit ice wait lucid atload"bindkey -e '^P' history-substring-search-up; bindkey -e '^N' history-substring-search-down"
-zinit light zsh-users/zsh-history-substring-search
-
 # Set an arctic, north-bluish clean and elegant color theme.
 zinit ice atclone"dircolors -b src/dir_colors > c.zsh" \
       atpull'%atclone' pick'c.zsh' nocompile'!' \
       atload'zstyle ":completion:*" list-colors ${(s.:.)LS_COLORS}'
 zinit light arcticicestudio/nord-dircolors
+
+# By typing in any part of any command from history and pressing <up>
+# and <down>, you can choose completed commands in history.
+zinit ice wait lucid atload"bindkey -e '^P' history-substring-search-up; bindkey -e '^N' history-substring-search-down"
+zinit light zsh-users/zsh-history-substring-search
 
 # Install a o called command-line fuzzy finder, which enables us to
 # filter and choose a selection from any list.
