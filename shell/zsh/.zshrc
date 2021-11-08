@@ -71,6 +71,32 @@ zinit light arcticicestudio/nord-dircolors
 zinit ice wait lucid atload"bindkey -e '^P' history-substring-search-up; bindkey -e '^N' history-substring-search-down"
 zinit light zsh-users/zsh-history-substring-search
 
+### Modern CLI utility
+
+# A replacement for cat with syntax highlighting.
+zinit ice wait lucid from"gh-r" cp"bat-*/bat.1 -> $ZPFX/man/man1" mv"bat-*/autocomplete/bat.zsh -> $ZINIT[COMPLETIONS_DIR]/_bat" sbin"bat-*/bat"
+zinit light sharkdp/bat
+
+# View cheatsheets maintained by comunity on the command-line.
+zinit ice wait lucid from"gh-r" mv"cheat* -> cheat" sbin"cheat"
+zinit light cheat/cheat
+
+# A syntax-highlighting pager for git and diff output
+zinit ice wait lucid from"gh-r" sbin"delta-*/delta"
+zinit light dandavison/delta
+
+# A replacement for ls with more color support.
+zinit ice wait lucid from"gh-r" cp"man/exa.1 -> $ZPFX/man/man1" sbin"bin/exa"
+zinit light ogham/exa
+
+# Load completion for exa.
+zinit ice wait lucid id-as"exa-completion" depth"1" as"completion"
+zinit light ogham/exa
+
+# A simple, fast and user-friendly alternative to find.
+zinit ice wait lucid from"gh-r" cp"fd-*/fd.1 -> $ZPFX/man/man1" sbin"fd-*/fd"
+zinit light sharkdp/fd
+
 # Install a o called command-line fuzzy finder, which enables us to
 # filter and choose a selection from any list.
 zinit ice wait lucid id-as"fzf-bin" from"gh-r" sbin"fzf"
@@ -79,6 +105,19 @@ zinit light junegunn/fzf
 # Install miscellaneous files related to fzf with Zinit.
 zinit ice wait lucid depth"1" as"program" pick"bin/fzf-tmux" atload"[[ $- == *i* ]] && source shell/completion.zsh 2> /dev/null" src"shell/key-bindings.zsh"
 zinit light junegunn/fzf
+
+# Management utility for remote repository clones.
+zinit ice wait lucid from"gh-r" cp"ghq*/README.adoc -> $ZPFX/man/man1/ghq.1" sbin"ghq*/ghq"
+zinit light x-motemen/ghq
+
+# A fast alternative to grep that respects your gitignore.
+zinit ice wait lucid from"gh-r" cp"ripgrep-*/doc/rg.1 -> $ZPFX/man/man1" sbin"ripgrep-*/rg"
+zinit light BurntSushi/ripgrep
+
+# A smarter cd command inspired by z and autojump.
+# zinit ice wait lucid from"gh-r" cp"man/*.1 -> $ZPFX/man/man1" mv"completions/_zoxide -> $ZINIT[COMPLETIONS_DIR]" sbin"zoxide"
+zinit ice wait lucid from"gh-r" atclone"cp man/* $ZPFX/man/man1" atpull"%atclone" mv"completions/_zoxide -> $ZINIT[COMPLETIONS_DIR]" atload"!eval $(zoxide init zsh)" sbin"zoxide"
+zinit light ajeetdsouza/zoxide
 
 ### Completions and syntax highlighting
 
