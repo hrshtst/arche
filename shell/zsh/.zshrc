@@ -43,6 +43,9 @@ zinit light-mode for \
       zdharma-continuum/z-a-patch-dl \
       zdharma-continuum/z-a-bin-gem-node
 
+# Define colors so that to work across a range of terminal emulators.
+[[ $COLORTERM = *(24bit|truecolor)* ]] || zmodload zsh/nearcolor
+
 # Theme the prompt with Powerlevel10k.
 if [[ -f "${HOME}/.p10k.zsh" ]]; then
   zinit ice wait'!' lucid depth'1' atload'source ${HOME}/.p10k.zsh; _p9k_precmd' nocd
