@@ -43,6 +43,8 @@ zinit light-mode for \
       zdharma-continuum/z-a-patch-dl \
       zdharma-continuum/z-a-bin-gem-node
 
+### Prompt and color theme
+
 # Define colors so that to work across a range of terminal emulators.
 [[ $COLORTERM = *(24bit|truecolor)* ]] || zmodload zsh/nearcolor
 
@@ -62,6 +64,8 @@ zinit ice atclone"dircolors -b src/dir_colors > c.zsh" \
       atload'zstyle ":completion:*" list-colors ${(s.:.)LS_COLORS}'
 zinit light arcticicestudio/nord-dircolors
 
+### Command history utility
+
 # By typing in any part of any command from history and pressing <up>
 # and <down>, you can choose completed commands in history.
 zinit ice wait lucid atload"bindkey -e '^P' history-substring-search-up; bindkey -e '^N' history-substring-search-down"
@@ -75,6 +79,10 @@ zinit light junegunn/fzf
 # Install miscellaneous files related to fzf with Zinit.
 zinit ice wait lucid depth"1" as"program" pick"bin/fzf-tmux" atload"[[ $- == *i* ]] && source shell/completion.zsh 2> /dev/null" src"shell/key-bindings.zsh"
 zinit light junegunn/fzf
+
+### Completions and syntax highlighting
+
+# These plugins should be loaded last.
 
 # Replace the default completion menu with fzf. Zsh's compinit should
 # be executed before loading fzf-tab, and plugins that wrap widegets
