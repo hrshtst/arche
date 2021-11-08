@@ -307,7 +307,7 @@ if (( $+commands[exa] )); then
 
   function l() {
     emulate -LR zsh
-    exa --all --header --long --color-scale $@
+    exa --all --header --long --classify --binary --color-scale $@
   }
 
   function lg() {
