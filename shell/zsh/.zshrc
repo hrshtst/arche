@@ -55,7 +55,7 @@ zinit light-mode for \
 ### Prompt and color theme
 
 # Define colors so that to work across a range of terminal emulators.
-[[ $COLORTERM = *(24bit|truecolor)* ]] || zmodload zsh/nearcolor
+[[ $COLORTERM == *(24bit|truecolor)* ]] || zmodload zsh/nearcolor 2>/dev/null
 
 # Theme the prompt with Powerlevel10k.
 if [[ -f "${HOME}/.p10k.zsh" ]]; then
