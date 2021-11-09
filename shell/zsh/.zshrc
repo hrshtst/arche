@@ -4,6 +4,15 @@
 # The configuration is basically stolen from raxod502/radian:
 # https://github.com/raxod502/radian
 
+## Autostart tmux
+
+# Start tmux session automatically when the current shell is
+# interactive.
+if (( $+commands[tmux] )) && [[ -o interactive ]] && (( ! $+TMUX )); then
+  export TMUX_DEFAULT_SHELL=$(which zsh)
+  exec tmux new-session $TMUX_DEFAULT_SHELL \; set-option default-shell $TMUX_DEFAULT_SHELL
+fi
+
 ## External configuration
 ### ~/.zshrc.local
 
