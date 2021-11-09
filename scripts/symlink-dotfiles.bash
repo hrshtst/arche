@@ -43,6 +43,11 @@ for i in "$dotfiles/shell/fish/functions/"*.fish; do
             "$HOME/.config/fish/functions/$filename"
 done
 
+# Zsh
+safe_link "$dotfiles/shell/zsh/.zshrc" "$HOME/.zshrc"
+safe_link "$dotfiles/shell/zsh/.zshenv" "$HOME/.zshenv"
+safe_link "$dotfiles/shell/zsh/.zprofile" "$HOME/.zprofile"
+
 # tmux
 mkdir -p "$HOME/.config/tmux"
 safe_link "$dotfiles/tmux/tmux.conf" "$HOME/.config/tmux/tmux.conf"
