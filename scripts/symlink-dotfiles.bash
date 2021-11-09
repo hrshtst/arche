@@ -47,6 +47,7 @@ done
 safe_link "$dotfiles/shell/zsh/.zshrc" "$HOME/.zshrc"
 safe_link "$dotfiles/shell/zsh/.zshenv" "$HOME/.zshenv"
 safe_link "$dotfiles/shell/zsh/.zprofile" "$HOME/.zprofile"
+safe_link "$dotfiles/shell/zsh/.p10k.zsh" "$HOME/.p10k.zsh"
 
 # tmux
 mkdir -p "$HOME/.config/tmux"
