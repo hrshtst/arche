@@ -6,9 +6,9 @@
 ####################################################################
 ## Autostart tmux
 
-set -gx TMUX_SHELL (which fish)
+set -gx TMUX_DEFAULT_SHELL (which fish)
 if status is-interactive; and not set -q TMUX
-    exec tmux new-session $TMUX_SHELL \; set-option default-shell $TMUX_SHELL
+    exec tmux new-session $TMUX_DEFAULT_SHELL \; set-option default-shell $TMUX_DEFAULT_SHELL
 end
 
 ####################################################################
