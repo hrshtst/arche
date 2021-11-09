@@ -13,7 +13,7 @@ fi
 
 # If not running interactively, don't do anything.
 case $- in
-  *i*) [ $SHLVL -eq 1 ] && command -v fish &> /dev/null && exec fish;;
+  *i*) [ $SHLVL -eq 1 ] && command -v zsh &> /dev/null && exec zsh;;
   *) return;;
 esac
 
