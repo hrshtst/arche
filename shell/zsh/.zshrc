@@ -896,7 +896,7 @@ export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_CTRL_T_OPTS="--preview '(bat --style=numbers --color=always {} || cat {} || tree -NC {}) 2> /dev/null | head -200'"
 
 # Bind `fzf-file-widget` to `C-x C-f`.
-bindkey -s '^X^F' '^T'
+bindkey -s '^x^f' '^t'
 
 # When a previous command is too long, it is truncated in
 # `fzf-history-wiedget`. The preview window (typeiing ? key) shows the
