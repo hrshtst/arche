@@ -931,9 +931,6 @@ zstyle ':fzf-tab:complete:(kill|ps):argument-rest' fzf-flags --preview-window=do
 
 # Switch group using `,` and `.`.
 zstyle ':fzf-tab:*' switch-group ',' '.'
-# Use tmux popup window to show completion menu. See below:
-# https://github.com/Aloxaf/fzf-tab/wiki/Configuration#fzf-command
-zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
 
 ### ghq
 
