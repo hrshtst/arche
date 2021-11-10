@@ -969,6 +969,26 @@ function ghq-cd-widget() {
 zle -N ghq-cd-widget
 bindkey '\eg' ghq-cd-widget
 
+### pipx
+
+# The pipx provides a way to execute binaries from Python packages in
+# isolated environments.
+# https://github.com/pipxproject/pipx
+
+# Autocompletion function for pipx is provided along with argcomplete,
+# which is a dependency of pipx.
+if (( $+commands[pipx] )); then
+  autoload -Uz bashcompinit && bashcompinit
+  eval "$(register-python-argcomplete pipx)"
+fi
+
+### pyenv
+# The pyenv is a simple python version management.
+# https://github.com/pyenv/pyenv
+if (( $+commands[pyenv] )); then
+  eval "$(pyenv init -)"
+fi
+
 ### zoxide
 
 function zoxide-cd-widget() {
