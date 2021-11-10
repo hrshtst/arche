@@ -99,7 +99,7 @@ alias j='jobs -l'
 # https://github.com/pipxproject/pipx
 # Autocompletion function for pipx is provided along with argcomplete,
 # which is a dependency of pipx.
-if command -v register-python-argcomplete 1>/dev/null 2>&1;
+if command -v pipx 1>/dev/null 2>&1;
     register-python-argcomplete --shell fish pipx | source
 end
 
