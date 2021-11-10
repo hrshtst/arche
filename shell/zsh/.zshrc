@@ -353,6 +353,8 @@ alias ds='dirs -v | head -10'
 
 if (( $+commands[exa] )); then
 
+  alias ls='exa'
+
   function l() {
     emulate -LR zsh
     exa --all --header --long --classify --binary --color-scale $@
