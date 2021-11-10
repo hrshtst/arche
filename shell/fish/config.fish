@@ -106,7 +106,8 @@ end
 # pyenv is a simple python version management.
 # https://github.com/pyenv/pyenv
 if command -v pyenv 1>/dev/null 2>&1;
-    status is-interactive; and source (pyenv init -|psub)
+    status is-login; and pyenv init --path | source
+    status is-interactive; and pyenv init - | source
 end
 
 ####################################################################

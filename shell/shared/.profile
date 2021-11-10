@@ -101,6 +101,9 @@ if [ -n "$HOME" ]; then
   # https://github.com/pyenv/pyenv
   setenv PYENV_ROOT "$HOME/.pyenv"
   addenv PATH "$PYENV_ROOT/bin"
+  if has pyenv; then
+    addenv PATH "$(pyenv root)/shims"
+  fi
 
 fi
 
