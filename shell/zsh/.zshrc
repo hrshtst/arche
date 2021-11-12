@@ -748,6 +748,7 @@ if (( $+commands[git] )); then
   alias gbl='git blame'
 
   alias gb='git branch'
+  alias gba='git branch --all'
   alias gbsu='git branch --set-upstream-to'
   alias gbusu='git branch --unset-upstream'
   alias gbd='git branch --delete'
