@@ -417,7 +417,7 @@ function open() {
       ;;
     linux*)
       [[ "$(uname -r)" != *icrosoft* ]] && open_cmd='nohup xdg-open' || {
-          open_cmd='cmd.exe /c start ""'
+          open_cmd='/mnt/c/Windows/System32/cmd.exe /c start ""'
           [[ -e "$1" ]] && { 1="$(wslpath -w "${1:a}")" || return 1 }
         }
       ;;
