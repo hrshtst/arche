@@ -133,7 +133,20 @@ but can wrap at any higher level up to the top-level form."
   (declare (indent 0))
   `(eval '(progn ,@body)))
 
-(defmacro arche-flet (bindings &rest body)
+(defmacro radian-protect-macros-maybe (feature &rest body)
+  "Same as `radian-protect-macros', but only if FEATURE is unavailable.
+Otherwise eval BODY normally (subject to eager macroexpansion).
+In either case, eagerly load FEATURE during byte-compilation."
+  (declare (indent 1))
+  (let ((available (featurep feature)))
+    (when byte-compile-current-file
+      (setq available (require feature nil 'noerror)))
+    (if available
+        `(progn ,@body)
+      `(radian-protect-macros
+         (progn ,@body)))))
+
+(defmacro radian-flet (bindings &rest body)
   "Temporarily override function definitions using `cl-letf*'.
 BINDINGS are composed of `defun'-ish forms. NAME is the function
 to override. It has access to the original function as a
@@ -611,7 +624,8 @@ NAME and ARGS are as in `use-package'."
                    (straight (car straight))
                    (straight-use-package-by-default name))))
     `(if (radian-enabled-p ',name)
-         (use-package ,name ,@args)
+         (radian-protect-macros-maybe ,name
+           (use-package ,name ,@args))
        ,@(when package
            (list `(straight-register-package ',package))))))
 
@@ -620,9 +634,10 @@ NAME and ARGS are as in `use-package'."
 NAME and ARGS are as in `use-package'."
   (declare (indent defun))
   `(when (radian-enabled-p ',name)
-     (use-package ,name
-                  :straight nil
-                  ,@args)))
+     (radian-protect-macros-maybe ,name
+       (use-package ,name
+         :straight nil
+         ,@args))))
 
 (defun arche--remove-sharp-quotes (form)
   "Remove sharp quotes in all sub-forms of FORM."
@@ -2706,6 +2721,7 @@ buffer."
 ;; regexp engines other than Emacs'; for example, Python or Perl
 ;; regexps.
 (use-package visual-regexp-steroids
+  :functions (pcre-to-elisp) ; used in an advice on `visual-regexp'
   :demand t
   :after visual-regexp
   :bind (([remap query-replace-regexp] . #'arche-query-replace-literal))
