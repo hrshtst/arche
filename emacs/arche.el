@@ -67,13 +67,52 @@
 
 ;;; Define utility functions and variables
 
-(defvar arche-directory (file-name-directory
-                         (directory-file-name
-                          (file-name-directory
-                           arche-lib-file)))
-  "Path to the Git repository containing this configuration.")
+(defcustom radian-org-enable-contrib nil
+  "Non-nil means to make Org contrib modules available.
+This has to be set at the beginning of init, i.e. in the top
+level of init.local.el."
+  :type 'boolean)
 
-(defmacro arche-protect-macros (&rest body)
+(defcustom radian-color-theme-enable t
+  "Non-nil means to load the default Radian color theme.
+Set this to nil if you wish to load a different color theme in
+your local configuration."
+  :type 'boolean)
+
+(make-obsolete-variable 'radian-org-enable-contrib
+                        'radian-disabled-packages
+                        "2021-11-28")
+
+(make-obsolete-variable 'radian-color-theme-enable
+                        'radian-disabled-packages
+                        "2021-11-28")
+
+(defvar radian-disabled-packages nil
+  "List of packages that Radian should not load.
+
+Radian always loads the packages `use-package', `straight',
+`blackout', `bind-key' and `el-patch' even if they are members of
+this list.")
+
+(unless radian-org-enable-contrib
+  (add-to-list 'radian-disabled-packages
+               'org-contrib))
+
+(unless radian-color-theme-enable
+  (add-to-list 'radian-disabled-packages
+               'zerodark-theme))
+
+(defvar radian-directory (file-name-directory
+                          (directory-file-name
+                           (file-name-directory
+                            radian-lib-file)))
+  "Path to the Radian Git repository.")
+
+(defmacro radian-enabled-p (package)
+  "Return nil if PACKAGE should not be loaded by Radian."
+  `(not (memq ',package radian-disabled-packages)))
+
+(defmacro radian-protect-macros (&rest body)
   "Eval BODY, protecting macros from incorrect expansion.
 This macro should be used in the following situation:
 
@@ -561,8 +600,23 @@ binding the variable dynamically over the entire init-file."
 ;; https://github.com/jwiegley/use-package#notes-about-lazy-loading.
 (setq use-package-always-defer t)
 
+(defmacro radian-use-package (name &rest args)
+  "Like `use-package', but handles `radian-exclude-packages' properly.
+NAME and ARGS are as in `use-package'."
+  (declare (indent 1))
+  (let* ((straight (cl-loop for cur on ',args by #'cdr
+                            when (eq (car cur) :straight)
+                            collect (cadr cur)))
+         (package (cond
+                   (straight (car straight))
+                   (straight-use-package-by-default name))))
+    `(if (radian-enabled-p ,name)
+         (use-package ,name ,@args)
+       ,@(when package
+           (list `(straight-register-package ',package))))))
+
 (defmacro use-feature (name &rest args)
-  "Like `use-package', but with `straight-use-package-by-default' disabled.
+  "Like `radian-use-package', but without straight.el integration.
 NAME and ARGS are as in `use-package'."
   (declare (indent defun))
   `(use-package ,name
@@ -630,16 +684,6 @@ nice.)"
 
 (straight-register-package 'org)
 (straight-register-package 'org-contrib)
-
-(defcustom arche-org-enable-contrib nil
-  "Non-nil means to make Org contrib modules available.
-This has to be set at the beginning of init, i.e. in the top
-level of init.local.el."
-  :type 'boolean)
-
-(if arche-org-enable-contrib
-    (straight-use-package 'org-contrib)
-  (straight-use-package 'org))
 
 ;;; el-patch
 
