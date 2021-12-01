@@ -4190,7 +4190,19 @@ Return either a string or nil."
             (goto-char (point-min))
             (let ((venv (string-trim (buffer-string))))
               (when (file-directory-p venv)
-                (cl-return venv)))))))))
+                (cl-return venv))))))))
+
+  (use-feature apheleia
+    :config
+
+    ;; Let apheleia run isort on the current buffer and then black on
+    ;; the result of isort.
+    (when (executable-find "isort")
+      ;; (setf (alist-get 'isort apheleia-formatters)
+      ;;       '("isort" "--stdout" "-"))
+      (push '(isort . ("isort" "--stdout" "-")) apheleia-formatters)
+      (setf (alist-get 'python-mode apheleia-mode-alist)
+            '(isort black)))))
 
 ;; Package `lsp-pyright' is a lsp-mode client leveraging Microsoft's
 ;; newer version of LSP server for Python.
