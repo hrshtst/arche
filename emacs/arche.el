@@ -4192,33 +4192,17 @@ Return either a string or nil."
               (when (file-directory-p venv)
                 (cl-return venv)))))))))
 
-;; Package `lsp-python-ms' downloads Microsoft's LSP server for Python
-;; and configures it with `lsp-mode'. Microsoft's server behaves
-;; better than Palantir's in my opinion.
-(use-package lsp-python-ms
+;; Package `lsp-pyright' is a lsp-mode client leveraging Microsoft's
+;; newer version of LSP server for Python.
+(use-package lsp-pyright
   :demand t
   :after (:all lsp-mode python)
   :config
 
-  (arche-defadvice arche--lsp-python-ms-silence (func &rest args)
-    :around #'lsp-python-ms--language-server-started-callback
-    "Inhibit a silly message."
-    (arche--with-silent-message "Python language server started"
-      (apply func args)))
-
-  (arche-defadvice arche--lsp-python-ms-discover-virtualenvs
-      (func &rest args)
-    :around #'lsp-python-ms--extra-init-params
+  (arche-defadvice arche--lsp-pyright-discover-virtualenvs (&rest _)
+    :after-until #'lsp-pyright-locate-venv
     "Automatically discover Pipenv and Poetry virtualenvs."
-    (let ((lsp-python-ms-extra-paths lsp-python-ms-extra-paths)
-          (exec-path exec-path))
-      (when-let ((venv (arche--python-find-virtualenv)))
-        (setq lsp-python-ms-extra-paths
-              (file-expand-wildcards
-               (expand-file-name
-                "lib/python*/site-packages" venv)))
-        (push (expand-file-name "bin" venv) exec-path))
-      (apply func args))))
+    (arche--python-find-virtualenv)))
 
 ;;;; Ruby
 ;; https://www.ruby-lang.org/
