@@ -1838,6 +1838,10 @@ unquote it using a comma."
 (arche-register-dotfile ".config/fish/config.fish" "f c")
 (arche-register-dotfile ".config/fish/config.local.fish" "f l")
 
+;; Zsh
+(arche-register-dotfile ".zshrc" "z r")
+(arche-register-dotfile ".zshrc.local" "z l")
+
 ;; Feature `auth-source' reads and writes secrets from files like
 ;; ~/.netrc for TRAMP and related packages, so for example you can
 ;; avoid having to type in a particular host's password every time.
