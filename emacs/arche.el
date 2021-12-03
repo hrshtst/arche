@@ -2534,9 +2534,9 @@ the reverse direction from \\[pop-global-mark]."
   (defhydra hydra-goto-map (:hint nil)
     ""
     ;; Errors
-    ("h" first-error "first" :column "Errors" )
-    ("j" next-error "next")
-    ("k" previous-error "previous")
+    ("a" first-error "first" :column "Errors" )
+    ("n" next-error "next")
+    ("p" previous-error "previous")
     ;; Goto
     ("c" goto-char "char" :column "Goto" :exit t)
     ("M-c" avy-goto-char-timer "char (avy)" :exit t)
@@ -2632,8 +2632,8 @@ buffer."
     (defhydra hydra-occur-dwim (:hint nil)
       "Occur mode"
       ("o" arche-occur-dwim "Start occur-dwim")
-      ("j" next-error-no-select "Next")
-      ("k" previous-error-no-select "Prev")
+      ("n" next-error-no-select "Next")
+      ("p" previous-error-no-select "Prev")
       ("x" delete-window "Hide" :exit t)
       ("r" arche-reattach-occur "Re-attach"))
 
