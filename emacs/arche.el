@@ -6091,7 +6091,20 @@ Instead, display simply a flat colored region in the fringe."
 ;; Package `deadgrep' provides a fancy inteface for an external
 ;; command `rg'.
 (use-package deadgrep
-  :bind (("C-c k" . #'deadgrep)))
+  :init
+
+  (arche-defhook arche--deadgrep-enable-next-error-follow ()
+    deadgrep-finished-hook
+    "Enable `next-error-follow-minor-mode' on deadgrep buffer."
+    (next-error-follow-minor-mode +1))
+
+  :bind (("C-c k" . #'deadgrep))
+  :config
+
+  ;; Find the project root directory by `projectile-project-root' when
+  ;; searching.
+  (autoload 'projectile-project-root "projectile")
+  (setq deadgrep-project-root-function #'projectile-project-root))
 
 ;;;; Internet applications
 
