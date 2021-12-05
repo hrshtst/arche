@@ -2564,7 +2564,16 @@ the reverse direction from \\[pop-global-mark]."
   :straight (:host github :repo "raxod502/ctrlf")
   :init
 
-  (ctrlf-mode +1))
+  (ctrlf-mode +1)
+
+  :config
+
+  ;; Wait until the fix is merged:
+  ;; https://github.com/raxod502/ctrlf/pull/92
+  (arche-defadvice arche--ctrlf-fix-repositioning-window (&rest _)
+    :after #'ctrlf--finalize
+    "Fix repositioning window after recentering the buffer."
+    (set-window-start (get-buffer-window) ctrlf--final-window-start)))
 
 ;; Feature `fileloop' provides the underlying machinery used to do
 ;; operations on multiple files, such as find-and-replace.
