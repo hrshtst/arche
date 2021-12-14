@@ -4096,6 +4096,10 @@ item."
   ;; Fontify code in code blocks using the native major mode.
   (setq markdown-fontify-code-blocks-natively t)
 
+  ;; Use asymmetric header styling, which places hash marks only at
+  ;; the beginning of the line.
+  (setq markdown-asymmetric-header t)
+
   (arche-defadvice arche--disable-markdown-metadata-fontification (&rest _)
     :override #'markdown-match-generic-metadata
     "Prevent fontification of YAML metadata blocks in `markdown-mode'.
