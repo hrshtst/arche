@@ -1375,15 +1375,35 @@ perspective: %s(arche--perspective-names)
   (use-feature ibuffer
     :bind (([remap list-buffers] . #'persp-ibuffer)))
 
-  :bind (([remap switch-to-buffer] . #'persp-switch-to-buffer*)
-         ([remap kill-buffer] . #'persp-kill-buffer*))
+  :bind (([remap kill-buffer] . #'persp-kill-buffer*))
 
   :config
 
   (persp-mode +1)
 
   ;; Sort perspectives by order created when calling `persp-switch'.
-  (setq persp-sort 'created))
+  (setq persp-sort 'created)
+
+  (use-feature consult
+    :config
+
+    (defvar arche--source-perspective-buffer
+      `(:name     "Perspective Buffer"
+        :narrow   (?b . "Buffer")
+        :category buffer
+        :face     consult-buffer
+        :history  buffer-name-history
+        :default  t
+        :items    ,#'persp-get-buffer-names)
+      "Buffer candidate source in the current perspective.")
+
+    (consult-customize consult--source-buffer
+                       :name    "All Buffer"
+                       :narrow   `(?b . "Buffer")
+                       :hidden  t
+                       :default nil)
+
+    (push arche--source-perspective-buffer consult-buffer-sources)))
 
 ;; Package `pc-bufsw' provides a quick buffer switcher, which switches
 ;; buffers according to most recently used order with C-TAB and
