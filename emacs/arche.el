@@ -1402,6 +1402,7 @@ perspective: %s(arche--perspective-names)
         :category buffer
         :face     consult-buffer
         :history  buffer-name-history
+        :state    ,#'consult--buffer-state
         :default  t
         :items    ,#'persp-get-buffer-names)
       "Buffer candidate source in the current perspective.")
