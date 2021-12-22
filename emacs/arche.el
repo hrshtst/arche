@@ -1310,6 +1310,29 @@ active minibuffer, even if the minibuffer is not selected."
          :map ibuffer-mode-map
          ("." . #'hydra-ibuffer-main/body)))
 
+;; Feature `ido' allows us to interactively do things with buffers and
+;; files.
+(use-feature ido
+  :config
+
+  (setq ido-ignore-buffers
+        (list (rx (or (and bos
+                           (or " "
+                               "*Occur"
+                               "*eldoc"
+                               "*helpful"
+                               "*tramp"
+                               "magit"))
+                      (and bos
+                           (or "*Apropos*"
+                               "*Backtrace*"
+                               "*Flycheck errors*"
+                               "*Flymake log*"
+                               "*IBuffer*"
+                               "*Semantic SymRef*"
+                               "*Completions*")
+                           eos))))))
+
 ;; Package `perspective' provides multiple named workspaces or
 ;; perspectives. Each perspective has its own buffer list and its own
 ;; window layout. Switching to a perspective restores its window
