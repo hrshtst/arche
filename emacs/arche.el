@@ -1155,7 +1155,12 @@ active minibuffer, even if the minibuffer is not selected."
   (if-let ((minibuffer (active-minibuffer-window)))
       (progn
         (switch-to-buffer (window-buffer minibuffer))
-        (minibuffer-keyboard-quit))
+        (if (featurep 'delsel)
+            (progn
+              (eval-when-compile
+                (require 'delsel))
+              (minibuffer-keyboard-quit))
+          (abort-minibuffers)))
     (funcall keyboard-quit)))
 
 (arche-defadvice arche--advice-kill-buffer-maybe-kill-window
