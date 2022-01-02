@@ -1448,29 +1448,35 @@ perspective: %s(arche--perspective-names)
   ;; Enable `pc-bufsw' minor mode.
   (pc-bufsw t)
 
-  (defvar arche--pc-bufsw-exclude nil
+  (defvar arche--pc-bufsw-ignore nil
     "Regexp pattern for buffer names excluded from list of `pc-bufsw'.
 When a buffer name matches this regexp it is excluded in the list
 for buffer switching by calling `pc-bufsw'.")
 
-  (setq arche--pc-bufsw-exclude
-        "^\\*eldoc\\|^\\*helpful\\|^\\*.*process\\|^magit\\|*Occur\\|*Backtrace*")
+  (defun arche--persp-make-ignore-buffer-rx ()
+    (if (or ido-ignore-buffers arche--pc-bufsw-ignore)
+        (rx-to-string (append (list 'or)
+                              (mapcar (lambda (rx) `(regexp ,rx))
+                                      (append
+                                       ido-ignore-buffers
+                                       arche--pc-bufsw-ignore))))
+      "^$"))
 
   (arche-defadvice arche--pc-bufsw-distill-buffers-in-current-persp
       (buffer-vector)
     :filter-return #'pc-bufsw--get-walk-vector
-    "Distill so that buffers in current perspective are only visible.
-Besides, buffers whose name matches the regexp represented in
-`arche--pc-bufsw-exclude' are hidden.
+    "Distill buffers so that those in current perspective are only visible.
+Besides, buffers whose name matches the regexp expressed in
+`ido-ignore-buffers' and `arche--pc-bufsw-ignore' are hidden.
 BUFFER-VECTOR is supposed to be a vector containing buffers which
 is returned by the original function. This advice makes the
 function return the vector of distilled buffers as well."
-    (let ((filtered-list ()))
+    (let ((ignore-rx (arche--persp-make-ignore-buffer-rx))
+          (filtered-list ()))
       (mapc
        (lambda (buf)
-         (unless (and arche--pc-bufsw-exclude
-                      (string-match-p arche--pc-bufsw-exclude
-                                      (buffer-name buf)))
+         (unless (string-match-p ignore-rx
+                                 (buffer-name buf))
            (push buf filtered-list)))
        buffer-vector)
       (vconcat (nreverse (if (fboundp 'persp-buffer-list-filter)
