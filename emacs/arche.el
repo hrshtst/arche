@@ -1,6 +1,6 @@
 ;; -*- lexical-binding: t -*-
 
-;; Copyright (c) 2016-2021 Hiroshi Atsuta
+;; Copyright (c) 2016-2022 Hiroshi Atsuta
 
 ;; Author: Hiroshi Atsuta <atsuta@ieee.org>
 
@@ -8,15 +8,13 @@
 
 ;;; Commentary:
 
-;; This is my personal configuration for Emacs. The word "arche",
-;; which is an ancient Greek word with senses "beginning", "origin" or
-;; "source of action", is used for namespace partitioning. I borrowed
-;; some snippets of code, just substituting the prefix "radian-" with
-;; "arche-", from the implementation originally written by Radon
-;; Rosborough <https://github.com/raxod502/radian/emacs/radian.el>. I
-;; learned a lot from his elegant implementation and meticulous
-;; comments about the pratical way of Emacs-Lisp. I would like to
-;; express my thanks to him.
+;; This file is the primary configuration of Emacs which is loaded
+;; from init.el. Since this is forked from Radon Rosborough's
+;; configuration <https://github.com/raxod502/radian/emacs/radian.el>,
+;; a large part of the code is stolen from his original
+;; implementation, substituting the prefix "radian-" with "arche-",
+;; and some part is added or modified based on my personal preference.
+;; See commentary in init.el in this directory.
 
 ;;; Code:
 
