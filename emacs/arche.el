@@ -3438,9 +3438,9 @@ backends will still be included.")
   (setq company-require-match #'company-explicit-action-p)
 
   ;; Company appears to override our settings in `company-active-map'
-  ;; based on `company-auto-complete-chars'. Turning it off ensures we
+  ;; based on `company-insertion-triggers'. Turning it off ensures we
   ;; have full control.
-  (setq company-auto-commit-chars nil)
+  (setq company-insertion-triggers nil)
 
   ;; Only search the current buffer to get suggestions for
   ;; `company-dabbrev' (a backend that creates suggestions from text
@@ -3896,10 +3896,8 @@ mode when getting it."
 
   :config
 
-  ;; Wherein we hope nobody else is relying on sticking obsolete
-  ;; advices onto these functions.
-  (ad-deactivate 'enable-theme)
-  (ad-deactivate 'disable-theme)
+  (advice-remove 'enable-theme #'cider--docview-adapt-to-theme)
+  (advice-remove 'disable-theme #'cider--docview-adapt-to-theme)
 
   (arche-defadvice arche--advice-cider-hack-color-calculation (&rest _)
     :before #'cider-docview-fontify-code-blocks
