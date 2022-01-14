@@ -67,52 +67,52 @@
 
 ;;; Define utility functions and variables
 
-(defcustom radian-org-enable-contrib nil
+(defcustom arche-org-enable-contrib nil
   "Non-nil means to make Org contrib modules available.
 This has to be set at the beginning of init, i.e. in the top
 level of init.local.el."
   :type 'boolean)
 
-(defcustom radian-color-theme-enable t
-  "Non-nil means to load the default Radian color theme.
+(defcustom arche-color-theme-enable t
+  "Non-nil means to load the default color theme.
 Set this to nil if you wish to load a different color theme in
 your local configuration."
   :type 'boolean)
 
-(make-obsolete-variable 'radian-org-enable-contrib
-                        'radian-disabled-packages
+(make-obsolete-variable 'arche-org-enable-contrib
+                        'arche-disabled-packages
                         "2021-11-28")
 
-(make-obsolete-variable 'radian-color-theme-enable
-                        'radian-disabled-packages
+(make-obsolete-variable 'arche-color-theme-enable
+                        'arche-disabled-packages
                         "2021-11-28")
 
-(defvar radian-disabled-packages nil
-  "List of packages that Radian should not load.
+(defvar arche-disabled-packages nil
+  "List of packages that should not be loaded.
 
-Radian always loads the packages `use-package', `straight',
-`blackout', `bind-key' and `el-patch' even if they are members of
-this list.")
+The packages `use-package', `straight', `blackout', `bind-key'
+and `el-patch' are always loaded even if they are members of this
+list.")
 
-(unless radian-org-enable-contrib
-  (add-to-list 'radian-disabled-packages
+(unless arche-org-enable-contrib
+  (add-to-list 'arche-disabled-packages
                'org-contrib))
 
-(unless radian-color-theme-enable
-  (add-to-list 'radian-disabled-packages
-               'zerodark-theme))
+(unless arche-color-theme-enable
+  (add-to-list 'arche-disabled-packages
+               'modus-themes))
 
-(defvar radian-directory (file-name-directory
-                          (directory-file-name
-                           (file-name-directory
-                            radian-lib-file)))
-  "Path to the Radian Git repository.")
+(defvar arche-directory (file-name-directory
+                         (directory-file-name
+                          (file-name-directory
+                           arche-lib-file)))
+  "Path to the Git repository containing this configuration.")
 
-(defun radian-enabled-p (package)
-  "Return nil if PACKAGE should not be loaded by Radian."
-  (not (memq package radian-disabled-packages)))
+(defun arche-enabled-p (package)
+  "Return nil if PACKAGE should not be loaded."
+  (not (memq package arche-disabled-packages)))
 
-(defmacro radian-protect-macros (&rest body)
+(defmacro arche-protect-macros (&rest body)
   "Eval BODY, protecting macros from incorrect expansion.
 This macro should be used in the following situation:
 
@@ -133,8 +133,8 @@ but can wrap at any higher level up to the top-level form."
   (declare (indent 0))
   `(eval '(progn ,@body) lexical-binding))
 
-(defmacro radian-protect-macros-maybe (feature &rest body)
-  "Same as `radian-protect-macros', but only if FEATURE is unavailable.
+(defmacro arche-protect-macros-maybe (feature &rest body)
+  "Same as `arche-protect-macros', but only if FEATURE is unavailable.
 Otherwise eval BODY normally (subject to eager macroexpansion).
 In either case, eagerly load FEATURE during byte-compilation."
   (declare (indent 1))
@@ -143,10 +143,10 @@ In either case, eagerly load FEATURE during byte-compilation."
       (setq available (require feature nil 'noerror)))
     (if available
         `(progn ,@body)
-      `(radian-protect-macros
+      `(arche-protect-macros
          (progn ,@body)))))
 
-(defmacro radian-flet (bindings &rest body)
+(defmacro arche-flet (bindings &rest body)
   "Temporarily override function definitions using `cl-letf*'.
 BINDINGS are composed of `defun'-ish forms. NAME is the function
 to override. It has access to the original function as a
@@ -613,8 +613,8 @@ binding the variable dynamically over the entire init-file."
 ;; https://github.com/jwiegley/use-package#notes-about-lazy-loading.
 (setq use-package-always-defer t)
 
-(defmacro radian-use-package (name &rest args)
-  "Like `use-package', but handles `radian-exclude-packages' properly.
+(defmacro arche-use-package (name &rest args)
+  "Like `use-package', but handles `arche-exclude-packages' properly.
 NAME and ARGS are as in `use-package'."
   (declare (indent 1))
   (let* ((straight (cl-loop for cur on ',args by #'cdr
@@ -623,18 +623,18 @@ NAME and ARGS are as in `use-package'."
          (package (cond
                    (straight (car straight))
                    (straight-use-package-by-default name))))
-    `(if (radian-enabled-p ',name)
-         (radian-protect-macros-maybe ,name
+    `(if (arche-enabled-p ',name)
+         (arche-protect-macros-maybe ,name
            (use-package ,name ,@args))
        ,@(when package
            (list `(straight-register-package ',package))))))
 
 (defmacro use-feature (name &rest args)
-  "Like `radian-use-package', but without straight.el integration.
+  "Like `arche-use-package', but without straight.el integration.
 NAME and ARGS are as in `use-package'."
   (declare (indent defun))
-  `(when (radian-enabled-p ',name)
-     (radian-protect-macros-maybe ,name
+  `(when (arche-enabled-p ',name)
+     (arche-protect-macros-maybe ,name
        (use-package ,name
          :straight nil
          ,@args))))
@@ -1556,8 +1556,8 @@ function return the vector of distilled buffers as well."
 
 ;; Follow symlinks when opening files. This has the concrete impact,
 ;; for instance, that when you edit init.el with M-P e e i and then
-;; later do C-x C-f, you will be in the Radian repository instead of
-;; your home directory.
+;; later do C-x C-f, you will be in the repository instead of your
+;; home directory.
 (setq find-file-visit-truename t)
 
 ;; Disable the warning "X and Y are the same file" which normally
@@ -6826,18 +6826,12 @@ nil."
 
 ;;;; Color theme
 
-(defcustom arche-color-theme-enable t
-  "Non-nil means to load the default Arche color theme.
-Set this to nil if you wish to load a different color theme in
-your local configuration."
-  :type 'boolean)
-
 ;; Package `modus-themes' provides highly accessible themes which
 ;; comfort with the highest standard for color contrast between
 ;; backgraound and foreground values.
 (straight-register-package
  '(modus-themes :host gitlab :repo "protesilaos/modus-themes"))
-(when arche-color-theme-enable
+(when (arche-enabled-p 'modus-themes)
   (use-package modus-themes
     :no-require t))
 
@@ -6859,55 +6853,54 @@ your local configuration."
 ;; We should only get here if init was successful. If we do,
 ;; byte-compile this file asynchronously in a subprocess using the
 ;; Makefile. That way, the next startup will be fast(er).
-(when (radian-enabled-p 'bytecomp)
+(when (arche-enabled-p 'bytecomp)
   (run-with-idle-timer
    1 nil
-   #'radian-byte-compile))
+   #'arche-byte-compile))
 
 ;; Enable color theme as late as is humanly possible. This reduces
 ;; frame flashing and other artifacts during startup.
-(when arche-color-theme-enable
-  (use-feature modus-themes
-    :no-require t
-    :functions (modus-themes-load-themes
-                modus-themes-load-operandi
-                modus-themes-load-vivendi)
-    :demand t
-    :bind (("<f6>" . #'modus-themes-toggle))
-    :config
+(use-feature modus-themes
+  :no-require t
+  :functions (modus-themes-load-themes
+              modus-themes-load-operandi
+              modus-themes-load-vivendi)
+  :demand t
+  :bind (("<f6>" . #'modus-themes-toggle))
+  :config
 
-    ;; Needed because `:no-require' for some reason disables the
-    ;; load-time `require' invocation, as well as the compile-time
-    ;; one.
-    (require 'modus-themes)
+  ;; Needed because `:no-require' for some reason disables the
+  ;; load-time `require' invocation, as well as the compile-time
+  ;; one.
+  (require 'modus-themes)
 
-    ;; Add all your customizations prior to loading the themes.
-    (setq modus-themes-fringes 'subtle)
+  ;; Add all your customizations prior to loading the themes.
+  (setq modus-themes-fringes 'subtle)
 
-    ;; Load the theme files before enabling a theme.
-    (modus-themes-load-themes)
+  ;; Load the theme files before enabling a theme.
+  (modus-themes-load-themes)
 
-    (defun true-color-p ()
-      "Return non-nil on displays that support 256 colors."
-      (or
-       (display-graphic-p)
-       (= (tty-display-color-cells) 16777216)))
+  (defun true-color-p ()
+    "Return non-nil on displays that support 256 colors."
+    (or
+     (display-graphic-p)
+     (= (tty-display-color-cells) 16777216)))
 
-    (let ((class '((class color) (min-colors 89)))
-          (blue (if (true-color-p) "#72a4ff" "#0000cd"))
-          (orange (if (true-color-p) "#da8548" "#d7875f")))
-      (custom-theme-set-faces
-       'modus-operandi
-       `(completions-common-part ((,class (:weight bold :foreground ,blue)))))
-      (setq arche--mozc-cursor-color orange))
+  (let ((class '((class color) (min-colors 89)))
+        (blue (if (true-color-p) "#72a4ff" "#0000cd"))
+        (orange (if (true-color-p) "#da8548" "#d7875f")))
+    (custom-theme-set-faces
+     'modus-operandi
+     `(completions-common-part ((,class (:weight bold :foreground ,blue)))))
+    (setq arche--mozc-cursor-color orange))
 
-    (dolist (face '(outline-1
-                    outline-2
-                    outline-3))
-      (set-face-attribute face nil :height 1.0))
+  (dolist (face '(outline-1
+                  outline-2
+                  outline-3))
+    (set-face-attribute face nil :height 1.0))
 
-    ;; Load the theme of your choice.
-    (modus-themes-load-operandi)))
+  ;; Load the theme of your choice.
+  (modus-themes-load-operandi))
 
 ;; Make adjustments to color theme that was selected by Radian or
 ;; user. See <https://github.com/raxod502/radian/issues/456>.
