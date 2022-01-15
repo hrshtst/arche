@@ -96,7 +96,7 @@ list.")
 
 (unless arche-color-theme-enable
   (add-to-list 'arche-disabled-packages
-               'modus-themes))
+               'zerodark-theme))
 
 (defvar arche-directory (file-name-directory
                          (directory-file-name
@@ -6820,13 +6820,12 @@ nil."
 
 ;;;; Color theme
 
-;; Package `modus-themes' provides highly accessible themes which
-;; comfort with the highest standard for color contrast between
-;; backgraound and foreground values.
+;; Package `zerodark-theme' provides a good-looking color theme that
+;; works in both windowed and tty Emacs.
 (straight-register-package
- '(modus-themes :host gitlab :repo "protesilaos/modus-themes"))
-(when (arche-enabled-p 'modus-themes)
-  (use-package modus-themes
+ '(zerodark-theme :host github :repo "NicolasPetton/zerodark-theme"))
+(when (arche-enabled-p 'zerodark-theme)
+  (use-package zerodark-theme
     :no-require t))
 
 ;;; Closing
@@ -6854,47 +6853,41 @@ nil."
 
 ;; Enable color theme as late as is humanly possible. This reduces
 ;; frame flashing and other artifacts during startup.
-(use-feature modus-themes
+(use-feature zerodark-theme
   :no-require t
-  :functions (modus-themes-load-themes
-              modus-themes-load-operandi
-              modus-themes-load-vivendi)
+  :functions (true-color-p)
   :demand t
-  :bind (("<f6>" . #'modus-themes-toggle))
   :config
 
-  ;; Needed because `:no-require' for some reason disables the
-  ;; load-time `require' invocation, as well as the compile-time
-  ;; one.
-  (require 'modus-themes)
+    ;; Needed because `:no-require' for some reason disables the
+    ;; load-time `require' invocation, as well as the compile-time
+    ;; one.
+    (require 'zerodark-theme)
 
-  ;; Add all your customizations prior to loading the themes.
-  (setq modus-themes-fringes 'subtle)
+    (let ((background-purple (if (true-color-p) "#48384c" "#5f5f5f"))
+          (class '((class color) (min-colors 89)))
+          (green (if (true-color-p) "#98be65" "#87af5f"))
+          (blue (if (true-color-p) "#72a4ff" "#0000cd"))
+          (orange (if (true-color-p) "#da8548" "#d7875f"))
+          (purple (if (true-color-p) "#c678dd" "#d787d7")))
+      (custom-theme-set-faces
+       'zerodark
+       `(selectrum-current-candidate
+         ((,class (:background
+                   ,background-purple
+                   :weight bold
+                   :foreground ,purple))))
+       `(selectrum-primary-highlight ((,class (:foreground ,orange))))
+       `(selectrum-secondary-highlight ((,class (:foreground ,green))))
+       `(completions-common-part ((,class (:weight bold :foreground ,blue)))))
+      (setq arche--mozc-cursor-color orange))
 
-  ;; Load the theme files before enabling a theme.
-  (modus-themes-load-themes)
+    (dolist (face '(outline-1
+                    outline-2
+                    outline-3))
+      (set-face-attribute face nil :height 1.0))
 
-  (defun true-color-p ()
-    "Return non-nil on displays that support 256 colors."
-    (or
-     (display-graphic-p)
-     (= (tty-display-color-cells) 16777216)))
-
-  (let ((class '((class color) (min-colors 89)))
-        (blue (if (true-color-p) "#72a4ff" "#0000cd"))
-        (orange (if (true-color-p) "#da8548" "#d7875f")))
-    (custom-theme-set-faces
-     'modus-operandi
-     `(completions-common-part ((,class (:weight bold :foreground ,blue)))))
-    (setq arche--mozc-cursor-color orange))
-
-  (dolist (face '(outline-1
-                  outline-2
-                  outline-3))
-    (set-face-attribute face nil :height 1.0))
-
-  ;; Load the theme of your choice.
-  (modus-themes-load-operandi))
+    (enable-theme 'zerodark))
 
 ;; Make adjustments to color theme that was selected by Radian or
 ;; user. See <https://github.com/raxod502/radian/issues/456>.
