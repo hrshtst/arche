@@ -1,5 +1,6 @@
 (("academic-phrases" . "25d9cf67feac6359cb213f061735e2679c84187f")
  ("ace-window" . "0577c426a9833ab107bab46c60d1885c611b2fb9")
+ ("all-the-icons.el" . "483dba65e897071c156cefec937edcf51aa333db")
  ("apache-mode" . "f2c11aac2f5fc598123e04f4604bea248689a117")
  ("apheleia" . "e95769bf348cd348ef361cd212b72232196809ba")
  ("apples-mode" . "83a9ab0d6ba82496e2f7df386909b1a55701fccb")
@@ -75,7 +76,6 @@
  ("markdown-mode" . "ba8de41d861ea0947f2585429b4ca39917683e35")
  ("melpa" . "b46e83f2ea2c4df1ef343c79c7e249605c9639b3")
  ("modern-cpp-font-lock" . "43c6b68ff58fccdf9deef11674a172e4eaa8455c")
- ("modus-themes" . "b820405223866acc738e0abc7a62d6791609c745")
  ("mozc" . "c914d1dfe8b4193731b22da7ee3f53612a94269d")
  ("multiple-cursors.el" . "8a60fc7ef0ae6e5ca089a7c95264cd0ae83e7274")
  ("mw-thesaurus.el" . "96f02694bc28f31c2a280a05d47e6ff589f525f3")
@@ -129,5 +129,6 @@
  ("yaml-mode" . "535273d5a1eb76999d20afbcf4d9f056d8ffd2da")
  ("yaml.el" . "84b88c9ed178af16da18b230c1f61c57cefedf28")
  ("yasnippet" . "5cbdbf0d2015540c59ed8ee0fcf4788effdf75b6")
- ("yasnippet-snippets" . "f50b4c16ca2a73fd04ebd301f0bf2f5ab6107d88"))
+ ("yasnippet-snippets" . "f50b4c16ca2a73fd04ebd301f0bf2f5ab6107d88")
+ ("zerodark-theme" . "b463528704f6eb00684c0ee003fbd8e42901cde0"))
 :beta
