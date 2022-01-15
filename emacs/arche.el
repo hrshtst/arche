@@ -1,9 +1,5 @@
 ;; -*- lexical-binding: t -*-
 
-;; Copyright (c) 2016-2022 Hiroshi Atsuta
-
-;; Author: Hiroshi Atsuta <atsuta@ieee.org>
-
 ;; This file is NOT part of GNU Emacs.
 
 ;;; Commentary:
