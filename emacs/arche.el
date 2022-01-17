@@ -6188,8 +6188,6 @@ Instead, display simply a flat colored region in the fringe."
 ;; containers.
 (use-package docker-tramp)
 
-;; Package `'
-
 ;;;; External commands
 
 ;; Feature `compile' provides a way to run a shell command from Emacs
