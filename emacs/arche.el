@@ -5410,6 +5410,29 @@ be invoked before `org-mode-hook' is run."
                  org-clock-cancel))
     (advice-add fun :before #'arche--advice-org-clock-load-automatically)))
 
+;;;; Note taking
+
+;; Package `org-roam' is a note-taking tool or a knowledge management
+;; system which leverages the Org-mode ecosystem. Its usage is
+;; designed based on the Zettelkasten method.
+;; `org-roam-directory' should be set in init.local.el.
+(use-package org-roam
+  :bind (("C-c n l" . #'org-roam-buffer-toggle)
+         ("C-c n f" . #'org-roam-node-find)
+         ("C-c n g" . #'org-roam-graph)
+         ("C-c n i" . #'org-roam-node-insert)
+         ("C-c n c" . #'org-roam-capture)
+         ;; Dailies
+         ("C-c n j" . #'org-roam-dailies-capture-today))
+
+  :config
+
+  ;; Make `org-roam-db-sync' silent.
+  (advice-add #'org-roam-db-sync :around #'arche--advice-silence-messages)
+
+  ;; Keep org-roam session automatically synchronized.
+  (org-roam-db-autosync-mode +1))
+
 ;;;; Filesystem management
 
 ;; When deleting a file interactively, move it to the trash instead.

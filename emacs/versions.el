@@ -83,6 +83,7 @@
  ("orderless" . "ce462a63e32dd32bceea041f656bb79da953d62f")
  ("org" . "9623da44081520fa8519064003a84249a710ec6f")
  ("org-contrib" . "8c138dc5375dc13a0d1952e61c638ef4d57df368")
+ ("org-roam" . "6170cc99288e75b8e3f3fd3101b66acc12a9613a")
  ("osx-trash" . "af74a2055a15bf4182d8196600f7decd66eec634")
  ("package-lint" . "b5f5554ec38ec2a4d5ef49a0ad9f57f6825d9af9")
  ("parseclj" . "a8c4cf30fb68b66ae51541462a8b21753229a6e5")
