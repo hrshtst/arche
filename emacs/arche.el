@@ -1626,7 +1626,7 @@ minutes in case Emacs is shut down accidentally.")
 ;; between and within these projects.
 (use-package projectile
   :defer 1
-  :bind-keymap* (("C-c p" . projectile-command-map))
+  :bind-keymap* (("C-c p" . #'projectile-command-map))
   :config
 
   ;; Use Selectrum (via `completing-read') for Projectile instead of
@@ -2408,7 +2408,7 @@ _o_: other       ^ ^             ^ ^                 _\\^_: subtree up
     (arche-bind-key "@" #'hydra-outline/body))
 
   :bind (:map arche-keymap
-         ("@" . hydra-outline/body))
+         ("@" . #'hydra-outline/body))
   :config
 
   (define-globalized-minor-mode global-outline-minor-mode
@@ -2852,8 +2852,8 @@ via return key."
       ("q" nil)))
 
   :bind (:map arche-keymap
-         ("l" . mc/edit-lines)
-         ("u" . hydra-multiple-cursors/body)))
+         ("l" . #'mc/edit-lines)
+         ("u" . #'hydra-multiple-cursors/body)))
 
 ;;; Electricity: automatic things
 ;;;; Autorevert
@@ -5459,7 +5459,7 @@ non-nil value to enable trashing for file operations."
               ;; This binding is way nicer than ^. It's inspired by
               ;; Sunrise Commander.
               ("J" . #'dired-up-directory))
-  :bind* (("C-x w" . arche-rename-current-file))
+  :bind* (("C-x w" . #'arche-rename-current-file))
   :config
 
   (defun arche-rename-current-file (newname)
@@ -5787,7 +5787,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
       ("q" nil "cancel")))
 
   :bind (:map arche-keymap
-         ("s" . hydra-smerge/body))
+         ("s" . #'hydra-smerge/body))
 
   :blackout t)
 
