@@ -76,7 +76,7 @@
  ("markdown-mode" . "ba8de41d861ea0947f2585429b4ca39917683e35")
  ("melpa" . "b46e83f2ea2c4df1ef343c79c7e249605c9639b3")
  ("modern-cpp-font-lock" . "43c6b68ff58fccdf9deef11674a172e4eaa8455c")
- ("mozc" . "c914d1dfe8b4193731b22da7ee3f53612a94269d")
+ ("mozc" . "273be57ac69667558efc9548c3b50531f0027efa")
  ("multiple-cursors.el" . "8a60fc7ef0ae6e5ca089a7c95264cd0ae83e7274")
  ("mw-thesaurus.el" . "96f02694bc28f31c2a280a05d47e6ff589f525f3")
  ("no-littering" . "3c6601f7f45dd42c8f951c2b160470c8dd33c949")
