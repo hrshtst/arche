@@ -106,7 +106,7 @@
  ("s.el" . "08661efb075d1c6b4fa812184c1e5e90c08795a9")
  ("sesman" . "e0f555f963c9f02f8e4a50e06fc353eb4c15ee77")
  ("sly" . "2e00c3bd4bdf6658f258cc78b3254f0ec24591e5")
- ("smartparens" . "a010b090c88c20d6066e20c43fd51b7f6ba8ec6f")
+ ("smartparens" . "f59a40d54f35299007c396bd667ce3e9ec4714e3")
  ("spinner" . "34905eae12a236753fa88abc831eff1e41e8576e")
  ("ssh-config-mode-el" . "d560a0876a93ad4130baf33dae1b9405ad37a405")
  ("straight.el" . "3b0f1a1d215f3dd441bca6a31313aaf91874a311")
