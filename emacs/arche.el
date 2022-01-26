@@ -2116,6 +2116,72 @@ color is not changed even when `mozc-mode' is on."
                                   arche--mozc-cursor-color
                                 arche--mozc-cursor-color-default))))))))
 
+;; Package `migemo' provides a generator that produces a regex pattern
+;; to match Japanese kanji or hiragana/katakana characters from
+;; romanized Japanese. It should be combined with completion styles or
+;; text search commands.
+(use-package migemo
+  :if (executable-find "cmigemo")
+  :commands (migemo-get-pattern)
+  :init
+
+  ;; Disable features from `migemo' that relate with `isearch'.
+  (setq migemo-isearch-enable-p nil)
+
+  ;; Disable keybindings custmized by `migemo'.
+  (setq migemo-use-default-isearch-keybinding nil)
+
+  ;; Since where the migemo dictionary lives depends on the system,
+  ;; this variable might ought to be set in init.local.el.
+  (setq migemo-dictionary "/usr/share/cmigemo/utf-8/migemo-dict")
+
+  ;; Starting typing a few of characters in the query drops the
+  ;; performance significantly since the lesser the input string, the
+  ;; more complex regexp is generated. For a stupid workaround, set
+  ;; the minimum number of characters to start searching.
+  (setq migemo-isearch-min-length 3)
+
+  ;; Integration with `ctrlf'.
+  (use-feature ctrlf
+    :bind (:map ctrlf-minibuffer-mode-map
+                ("M-m" . #'ctrlf-toggle-migemo)
+                ("M-s m" . #'ctrlf-toggle-migemo))
+    :config
+
+    (add-to-list 'ctrlf-style-alist
+                 '(migemo
+                   . (:prompt "migemo"
+                              :translator ctrlf-translate-migemo
+                              :case-fold ctrlf-no-uppercase-literal-p
+                              :fallback (isearch-forward
+                                         . isearch-backward))))
+
+    (defun ctrlf-translate-migemo (input)
+      "Build a Japanese-matching regexp from literal INPUT.
+The input is treated literally, but converted into an equivalent
+regexp that matches Japanese letters by the command `cmigemo'."
+      (migemo-get-pattern input))
+
+    (defun ctrlf-forward-migemo ()
+      "Search forward for migemo string.
+If already in a search, go to next candidate, or if no input then
+insert the previous search string."
+      (interactive)
+      (ctrlf-forward 'migemo nil nil nil t))
+
+    (defun ctrlf-backward-migemo ()
+      "Search backward for migemo string.
+If already in a search, go to previous candidate, or if no input
+then insert the previous search string."
+      (interactive)
+      (ctrlf-backward 'migemo nil t))
+
+    (defun ctrlf-toggle-migemo ()
+      "Toggle CTRLF style to `migemo' or back to `literal'."
+      (interactive)
+      (setq ctrlf--style
+            (if (eq ctrlf--style 'migemo) 'literal 'migemo)))))
+
 ;;;; Text formatting
 
 (add-to-list 'safe-local-variable-values '(auto-fill-function . nil))
