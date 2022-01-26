@@ -1394,7 +1394,6 @@ active minibuffer, even if the minibuffer is not selected."
                            (or " "
                                "*Occur"
                                "*eldoc"
-                               "*helpful"
                                "*tramp"
                                "magit"))
                       (and bos
