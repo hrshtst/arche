@@ -2131,6 +2131,9 @@ color is not changed even when `mozc-mode' is on."
   ;; Disable keybindings custmized by `migemo'.
   (setq migemo-use-default-isearch-keybinding nil)
 
+  ;; Add option to ignore newline operators between characters.
+  (setq migemo-options '("-q" "--emacs" "--nonewline"))
+
   ;; Since where the migemo dictionary lives depends on the system,
   ;; this variable might ought to be set in init.local.el.
   (setq migemo-dictionary "/usr/share/cmigemo/utf-8/migemo-dict")
