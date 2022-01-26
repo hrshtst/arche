@@ -1118,8 +1118,12 @@ ourselves."
   (consult-customize
    ;; Disable preview for `consult-theme' completely.
    consult-theme :preview-key nil
-   ;; Set preview for `consult-recent-file' to key `M-.'.
-   consult-recent-file :preview-key (kbd "M-."))
+   ;; Set preview command for files to key `M-.'.
+   consult-ripgrep consult-git-grep consult-grep
+   consult-bookmark consult-recent-file consult-xref
+   consult--source-recent-file consult--source-project-recent-file
+   consult--source-bookmark
+   :preview-key (kbd "M-."))
 
   ;; Configure the narrowing key. Both < and C-+ work reasonably well.
   (setq consult-narrow-key "<")
