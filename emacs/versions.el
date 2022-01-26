@@ -1,5 +1,6 @@
 (("academic-phrases" . "25d9cf67feac6359cb213f061735e2679c84187f")
  ("ace-window" . "0577c426a9833ab107bab46c60d1885c611b2fb9")
+ ("affe" . "425e46cbc44d532b5bcacd90ad55b784834e536b")
  ("all-the-icons.el" . "483dba65e897071c156cefec937edcf51aa333db")
  ("apache-mode" . "f2c11aac2f5fc598123e04f4604bea248689a117")
  ("apheleia" . "e95769bf348cd348ef361cd212b72232196809ba")

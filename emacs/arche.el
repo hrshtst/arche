@@ -6371,6 +6371,26 @@ Instead, display simply a flat colored region in the fringe."
   (autoload 'projectile-project-root "projectile")
   (setq deadgrep-project-root-function #'projectile-project-root))
 
+;; Package `affe' provides an asynchronous fuzzy finder. It produces a
+;; list by `fd' or `ripgrep' in the background process, then filter
+;; the list in an asynchronous fashion. The results displayed in the
+;; minibuffer using `consult'.
+(use-package affe
+  :config
+
+  ;; Set a manual preview key for `affe-grep'.
+  (consult-customize affe-grep :preview-key (kbd "M-."))
+
+  (use-feature orderless
+    :config
+
+    ;; Use the regexp transformer implemented in `orderless'.
+    (defun affe-orderless-regexp-compiler (input _type)
+      (setq input (orderless-pattern-compiler input))
+      (cons input
+            (lambda (str) (orderless--highlight input str))))
+    (setq affe-regexp-compiler #'affe-orderless-regexp-compiler)))
+
 ;;;; Internet applications
 
 ;; Feature `browse-url' provides commands for opening URLs in
