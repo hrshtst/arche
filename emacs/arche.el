@@ -1039,11 +1039,20 @@ ourselves."
 ;; incremental and narrowing completion framework such as Ivy and
 ;; Helm.
 (use-package orderless
-  :init
+  :demand t
+  :config
+
+  (orderless-define-completion-style orderless+initialism
+    (orderless-matching-styles '(orderless-initialism
+                                 orderless-literal
+                                 orderless-regexp)))
 
   (setq completion-styles '(orderless))
-  (setq completion-category-defaults nil)
-  (setq completion-category-overrides '((file (styles partial-completion)))))
+  (setq completion-category-overrides
+        '((command (styles orderless+initialism))
+          (file (styles orderless+initialism))
+          (symbol (styles orderless+initialism))
+          (variable (styles orderless+initialism)))))
 
 ;; Feature `savehist' toggles persistent minibuffer history over Emacs
 ;; restarts.
