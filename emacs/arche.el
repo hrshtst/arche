@@ -2144,6 +2144,34 @@ color is not changed even when `mozc-mode' is on."
   ;; the minimum number of characters to start searching.
   (setq migemo-isearch-min-length 3)
 
+  ;; Integration with `orderless'.
+  (use-feature orderless
+    :config
+
+    (defun orderless-migemo (component)
+      "Match a component as a migemo search string.
+The COMPONENT is converted into a Japanese-matching regexp by the
+command `cmigemo'."
+      (let ((pattern (migemo-get-pattern component)))
+        (condition-case nil
+            (progn (string-match-p pattern "") pattern)
+          (invalid-regexp nil))))
+
+    (defun orderless-migemo-dispatcher (pattern _index _total)
+      "Dispatches a pattern with prefix ! as a migemo search string.
+When the PATTERN has a prefix !, use `orderless-migemo' as the
+completion style. Otherwise, treat it as the default completion
+style."
+      (cond
+       ((equal "!" pattern)
+        '(orderless-literal . ""))
+       ((string-prefix-p "!" pattern)
+        `(orderless-migemo . ,(substring pattern 1)))))
+
+    ;; For the details of `orderless-style-dispatchers', consult the
+    ;; documentation for `orderless-dispatch'.
+    (setq orderless-style-dispatchers '(orderless-migemo-dispatcher)))
+
   ;; Integration with `ctrlf'.
   (use-feature ctrlf
     :bind (:map ctrlf-minibuffer-mode-map
