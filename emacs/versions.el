@@ -75,6 +75,7 @@
  ("marginalia" . "5573318a0e95d49c676a022cb68aaad095aa0c76")
  ("markdown-mode" . "ba8de41d861ea0947f2585429b4ca39917683e35")
  ("melpa" . "b46e83f2ea2c4df1ef343c79c7e249605c9639b3")
+ ("migemo" . "f756cba3d5268968da361463c2e29b3a659a3de7")
  ("modern-cpp-font-lock" . "43c6b68ff58fccdf9deef11674a172e4eaa8455c")
  ("mozc" . "273be57ac69667558efc9548c3b50531f0027efa")
  ("multiple-cursors.el" . "8a60fc7ef0ae6e5ca089a7c95264cd0ae83e7274")
