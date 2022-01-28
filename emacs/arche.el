@@ -6381,10 +6381,17 @@ Instead, display simply a flat colored region in the fringe."
 ;; the list in an asynchronous fashion. The results displayed in the
 ;; minibuffer using `consult'.
 (use-package affe
+  :bind (:map search-map
+         ("g" . #'affe-grep)
+         ("f" . #'affe-find))
+
   :config
 
-  ;; Set a manual preview key for `affe-grep'.
-  (consult-customize affe-grep :preview-key (kbd "M-."))
+  (use-feature consult
+    :config
+
+    ;; Set a manual preview key for `affe-grep'.
+    (consult-customize affe-grep :preview-key (kbd "M-.")))
 
   (use-feature orderless
     :config
