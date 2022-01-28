@@ -5529,13 +5529,41 @@ be invoked before `org-mode-hook' is run."
 ;; designed based on the Zettelkasten method.
 ;; `org-roam-directory' should be set in init.local.el.
 (use-package org-roam
+  :init
+
+  ;; Integration with `affe'.
+  (defun arche-org-roam-grep (&optional initial)
+    "Do fuzzy grep in Org-roam directory."
+    (interactive "P")
+    (cond
+     ((fboundp 'affe-grep)
+      (affe-grep org-roam-directory initial))
+     ((fboundp 'consult-grep)
+      (consult-grep org-roam-directory initial))
+     (t
+      (user-error "No available commands for fuzzy grep"))))
+
+  (defun arche-org-roam-find (&optional initial)
+    "Do fuzzy find in Org-roam directory."
+    (interactive "P")
+    (cond
+     ((fboundp 'affe-find)
+      (affe-find org-roam-directory initial))
+     ((fboundp 'consult-find)
+      (consult-find org-roam-directory initial))
+     (t
+      (user-error "No available commands for fuzzy find"))))
+
   :bind (("C-c n l" . #'org-roam-buffer-toggle)
          ("C-c n f" . #'org-roam-node-find)
          ("C-c n g" . #'org-roam-graph)
          ("C-c n i" . #'org-roam-node-insert)
          ("C-c n c" . #'org-roam-capture)
          ;; Dailies
-         ("C-c n j" . #'org-roam-dailies-capture-today))
+         ("C-c n j" . #'org-roam-dailies-capture-today)
+         ;; Grep / Find
+         ("C-c n G" . #'arche-org-roam-grep)
+         ("C-c n F" . #'arche-org-roam-find))
 
   :config
 
