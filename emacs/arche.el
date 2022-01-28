@@ -2788,6 +2788,10 @@ the reverse direction from \\[pop-global-mark]."
 
 ;;;; Find and replace
 
+;; Add a keybind to `search-map' since the default keybind `M-s' is
+;; used in the package `smartparens'.
+(bind-key* "M-/" search-map)
+
 (arche-bind-key "c" #'toggle-case-fold-search)
 
 ;; Package `ctrlf' provides a replacement for `isearch' that is more
