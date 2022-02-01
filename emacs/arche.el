@@ -5322,6 +5322,49 @@ messages."
 ;; clocker, etc. There are *many* extensions.
 (use-feature org
   :functions (org-bookmark-jump-unhide) ; some issue with Emacs 26
+  :init
+
+  ;; Stolen from: <https://scripter.co/org-keywords-lower-case/>,
+  ;; applying to Org properties as well.
+  (defun arche-org-lower-case-keywords ()
+    "Lower case Org keywords, block identifiers and properties.
+
+Example: \"#+TITLE\" -> \"#+title\"
+         \"#+BEGIN_EXAMPLE\" -> \"#+begin_example\"
+         \":properties:\" -> \":properties:\"
+
+Inspiration:
+https://code.orgmode.org/bzg/org-mode/commit/13424336a6f30c50952d291e7a82906c1210daf0."
+    (interactive)
+    (save-excursion
+      (goto-char (point-min))
+      (let ((case-fold-search nil)
+            (count 0))
+        ;; Match examples: "#+foo bar", "#+foo:", "=#+foo=", "~#+foo~",
+        ;;                 "‘#+foo’", "“#+foo”", ",#+foo bar",
+        ;;                 "#+FOO_bar<eol>", "#+FOO<eol>",
+        ;;                 ":foo:<eol>", ":foo: bar".
+        (while (re-search-forward "\\(?1:\\(?:#\\+\\|:\\)[A-Z_]+\\(?:_[[:alpha:]]+\\)*\\)\\(?:[ :=~’”]\\|$\\)" nil :noerror)
+          (setq count (1+ count))
+          (replace-match (downcase (match-string-no-properties 1)) :fixedcase nil nil 1))
+        (message "Lower-cased %d matches" count))))
+
+  (define-minor-mode arche-org-lower-case-keywords-mode
+    "Minor mode to automatically lower Org keywords on save.
+If enabled, then saving the buffer converts all Org keywords,
+block identifiers and property names to lower cases."
+    :after-hook
+    (if arche-org-lower-case-keywords-mode
+        (add-hook 'before-save-hook #'arche-org-lower-case-keywords nil 'local)
+      (remove-hook 'before-save-hook #'arche-org-lower-case-keywords 'local)))
+
+  (put 'arche-org-lower-case-keywords-mode 'safe-local-variable #'booleanp)
+
+  (arche-defhook arche--org-lower-case-keywords-setup ()
+    org-mode-hook
+    "Enable `arche-org-lower-case-keywords-mode' in `org-mode'."
+    (arche-org-lower-case-keywords-mode +1))
+
   :bind (:map org-mode-map
 
               ;; Prevent Org from overriding the bindings for
