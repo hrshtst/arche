@@ -66,7 +66,6 @@ safe_link "$dotfiles/vim/.vimrc" "$HOME/.vimrc"
 # Git
 safe_link "$dotfiles/git/.gitconfig" "$HOME/.gitconfig"
 safe_link "$dotfiles/git/.gitexclude" "$HOME/.gitexclude"
-safe_link "$dotfiles/git/.gitmessage" "$HOME/.gitmessage"
 
 # pandoc
 mkdir -p "$HOME/.local/share/pandoc"

@@ -26,8 +26,6 @@
   autoSetupRebase = always
 [color]
   ui = auto
-[commit]
-  template = ~/.gitmessage
 [core]
   autocrlf = input
   editor = vim
