@@ -96,7 +96,7 @@ list.")
 
 (unless arche-color-theme-enable
   (add-to-list 'arche-disabled-packages
-               'zerodark-theme))
+               'modus-themes))
 
 (defvar arche-directory (file-name-directory
                          (directory-file-name
@@ -7052,12 +7052,13 @@ nil."
 
 ;;;; Color theme
 
-;; Package `zerodark-theme' provides a good-looking color theme that
-;; works in both windowed and tty Emacs.
+;; Package `modus-themes' provides highly accessible themes which
+;; comfort with the highest standard for color contrast between
+;; background and foreground values.
 (straight-register-package
- '(zerodark-theme :host github :repo "NicolasPetton/zerodark-theme"))
-(when (arche-enabled-p 'zerodark-theme)
-  (use-package zerodark-theme
+ '(modus-themes :host gitlab :repo "protesilaos/modus-themes"))
+(when (arche-enabled-p 'modus-themes)
+  (use-package modus-themes
     :no-require t))
 
 ;;; Closing
@@ -7085,41 +7086,34 @@ nil."
 
 ;; Enable color theme as late as is humanly possible. This reduces
 ;; frame flashing and other artifacts during startup.
-(use-feature zerodark-theme
+(use-feature modus-themes
   :no-require t
-  :functions (true-color-p)
+  :functions (modus-themes-load-themes
+              modus-themes-load-operandi
+              modus-themes-load-vivendi)
   :demand t
+  :init
+
+  (arche-defhook arche--modus-themes-set-mozc-cursor-color ()
+    modus-themes-after-load-theme-hook
+    "Update `arche--mozc-cursor-color' according to `modus-themes'."
+    (pcase (modus-themes--current-theme)
+      ('modus-operandi (setq arche--mozc-cursor-color "#904200"))
+      ('modus-vivendi (setq arche--mozc-cursor-color "#fba849"))
+      (_ (setq arche--mozc-cursor-color "#da8548"))))
+
+  :bind (("<f6>" . #'modus-themes-toggle))
   :config
 
-    ;; Needed because `:no-require' for some reason disables the
-    ;; load-time `require' invocation, as well as the compile-time
-    ;; one.
-    (require 'zerodark-theme)
+  ;; Needed because `:no-require' for some reason disables the
+  ;; load-time `require' invocation, as well as the compile-time one.
+  (require 'modus-themes)
 
-    (let ((background-purple (if (true-color-p) "#48384c" "#5f5f5f"))
-          (class '((class color) (min-colors 89)))
-          (green (if (true-color-p) "#98be65" "#87af5f"))
-          (blue (if (true-color-p) "#72a4ff" "#0000cd"))
-          (orange (if (true-color-p) "#da8548" "#d7875f"))
-          (purple (if (true-color-p) "#c678dd" "#d787d7")))
-      (custom-theme-set-faces
-       'zerodark
-       `(selectrum-current-candidate
-         ((,class (:background
-                   ,background-purple
-                   :weight bold
-                   :foreground ,purple))))
-       `(selectrum-primary-highlight ((,class (:foreground ,orange))))
-       `(selectrum-secondary-highlight ((,class (:foreground ,green))))
-       `(completions-common-part ((,class (:weight bold :foreground ,blue)))))
-      (setq arche--mozc-cursor-color orange))
+  ;; Add all your customizations prior to loading the themes.
+  (modus-themes-load-themes)
 
-    (dolist (face '(outline-1
-                    outline-2
-                    outline-3))
-      (set-face-attribute face nil :height 1.0))
-
-    (enable-theme 'zerodark))
+  ;; Load the dard theme by default.
+  (modus-themes-load-vivendi))
 
 ;; Make adjustments to color theme that was selected by Radian or
 ;; user. See <https://github.com/raxod502/radian/issues/456>.
