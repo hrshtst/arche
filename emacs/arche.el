@@ -3467,11 +3467,10 @@ backends will still be included.")
 
          :map company-active-map
 
-         ;; Make TAB complete a common part of all candidates then
-         ;; select the current candidate when typing TAB consecutively
-         ;; twice.
-         ("<tab>" . #'company-complete)
-         ("TAB" . #'company-complete)
+         ;; Make TAB always complete the current selection, instead of
+         ;; only completing a common prefix.
+         ("<tab>" . #'company-complete-selection)
+         ("TAB" . #'company-complete-selection)
 
          ;; When was the last time you used the C-s binding for
          ;; searching candidates? It conflicts with buffer search,
