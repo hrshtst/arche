@@ -2070,6 +2070,10 @@ permission."
 (use-package mozc
   :if (executable-find "mozc_emacs_helper")
   :demand t
+  :bind (;; We have to rebind frequently-used keybindings since they
+         ;; are somehow disabled in `mozc-mode'.
+         :map mozc-mode-map
+              ("C-x C-s" . #'save-buffer))
   :bind* (("S-SPC" . #'toggle-input-method))
   :config
 
@@ -2079,7 +2083,8 @@ permission."
   ;; Display an indicator when mozc-mode enabled.
   (setq mozc-leim-title "も")
 
-  (arche-defadvice arche--advice-mozc-helper-process-start-quietly (func &rest args)
+  (arche-defadvice arche--advice-mozc-helper-process-start-quietly
+      (func &rest args)
     :around #'mozc-helper-process-start
     "Make starting the mozc helper process silent."
     (arche--with-silent-message "Starting mozc-helper-process"
