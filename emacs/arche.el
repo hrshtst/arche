@@ -1222,7 +1222,7 @@ active minibuffer, even if the minibuffer is not selected."
 ;; left of the window. Pressing that character will switch to that
 ;; window.
 (use-package ace-window
-  :bind (("C-t" . #'aw-flip-window))
+  :bind (("C-t" . #'ace-window))
   :config
 
   ;; Initial characters used in window labels would like to be on the
