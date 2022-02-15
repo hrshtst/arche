@@ -1229,6 +1229,9 @@ active minibuffer, even if the minibuffer is not selected."
   ;; home positions.
   (setq aw-keys '(?a ?s ?d ?f ?j ?k ?l))
 
+  ;; Restrict selectable windows within the current frame only.
+  (setq aw-scope 'frame)
+
   ;; Make the face of leading character more visible.
   (set-face-attribute 'aw-leading-char-face nil
                       :foreground "yellow"
