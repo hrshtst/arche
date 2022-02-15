@@ -2483,45 +2483,45 @@ two inserted lines are the same."
 
     (defhydra hydra-outline (:color pink :hint nil)
       "
-^Hide^           ^Show^          ^Edit^              ^Move
-^^^^^^^^--------------------------------------------------------------------
-_c_: entry       _e_: entry      _@_: mark subtree   _n_: next visible
-_d_: subtree     _s_: subtree    _<_: promote        _p_: previous visible
-_l_: leaves      _k_: branches   _>_: demote         _f_: forward same level
-_t_: body        _i_: children   _m_: insert head    _b_: backward same level
-_q_: sublevels   _a_: all        ^ ^                 _u_: upper heading
-_o_: other       ^ ^             ^ ^                 _\\^_: subtree up
-^ ^              ^ ^             ^ ^                 _v_: subtree down
+^Hide^             ^Show^            ^Edit^                ^Move
+^^^^^^^^----------------------------------------------------------------------------
+_C-c_: entry       _C-e_: entry       _@_ : mark subtree   _M-n_: next visible
+_C-d_: subtree     _C-s_: subtree    _C-<_: promote        _M-p_: previous visible
+_C-l_: leaves      _C-k_: branches   _C->_: demote         _M-f_: forward same level
+^   ^              _C-i_: children   _C-m_: insert head    _M-b_: backward same level
+_C-t_: body        _C-a_: all        ^   ^                 _M-u_: upper heading
+_C-q_: sublevels   ^   ^             ^   ^                 _C-\\^_: subtree up
+_C-o_: other       ^   ^             ^   ^                 _C-M-v_: subtree down
 
 "
       ;; Hide
-      ("c" outline-hide-entry)
-      ("d" outline-hide-subtree)
-      ("l" outline-hide-leaves)
-      ("t" outline-hide-body)
-      ("q" outline-hide-sublevels)
-      ("o" outline-hide-other)
+      ("C-c" outline-hide-entry)
+      ("C-d" outline-hide-subtree)
+      ("C-l" outline-hide-leaves)
+      ("C-t" outline-hide-body)
+      ("C-q" outline-hide-sublevels)
+      ("C-o" outline-hide-other)
       ;; Show
-      ("e" outline-show-entry)
-      ("s" outline-show-subtree)
-      ("k" outline-show-branches)
-      ("i" outline-show-children)
-      ("a" outline-show-all)
+      ("C-e" outline-show-entry)
+      ("C-s" outline-show-subtree)
+      ("C-k" outline-show-branches)
+      ("C-i" outline-show-children)
+      ("C-a" outline-show-all)
       ;; Edit
       ("@" outline-mark-subtree :exit t)
-      ("<" outline-promote)
-      (">" outline-demote)
-      ("m" outline-insert-heading :exit t)
+      ("C-<" outline-promote)
+      ("C->" outline-demote)
+      ("C-m" outline-insert-heading :exit t)
       ;; Move
-      ("n" outline-next-visible-heading)
-      ("p" outline-previous-visible-heading)
-      ("f" outline-forward-same-level)
-      ("b" outline-backward-same-level)
-      ("u" outline-up-heading)
-      ("^" outline-move-subtree-up)
-      ("v" outline-move-subtree-down)
+      ("M-n" outline-next-visible-heading)
+      ("M-p" outline-previous-visible-heading)
+      ("M-f" outline-forward-same-level)
+      ("M-b" outline-backward-same-level)
+      ("M-u" outline-up-heading)
+      ("C-^" outline-move-subtree-up)
+      ("C-M-v" outline-move-subtree-down)
       ;; Quit
-      ("z" nil "leave"))
+      ("C-z" nil "leave"))
 
     (arche-bind-key "@" #'hydra-outline/body))
 
