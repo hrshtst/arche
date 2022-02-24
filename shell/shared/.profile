@@ -93,7 +93,6 @@ if [ -n "$HOME" ]; then
   # Configure paths for packages installed by yarn.
   # https://classic.yarnpkg.com/en/docs/cli/global
   if has yarn; then
-    addenv PATH "$(yarn global dir)/node_modules/.bin"
     addenv PATH "$(yarn global bin)"
   fi
 
