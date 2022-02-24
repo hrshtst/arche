@@ -5237,7 +5237,7 @@ SYMBOL is as in `xref-find-definitions'."
   ;; `make-local' warning gets triggered every time you call
   ;; `define-minor-mode' inside of `use-package', and the `noruntime'
   ;; warning gets triggered basically all the time for everything.
-  (setq byte-compile-warnings '(not make-local noruntime))
+  (setq byte-compile-warnings '(not make-local noruntime docstrings))
 
   (defun arche-batch-byte-compile ()
     "Byte-compile arche.el. For usage in batch mode."
