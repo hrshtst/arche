@@ -115,6 +115,10 @@ zinit light junegunn/fzf
 zinit ice wait lucid depth"1" as"program" pick"bin/fzf-tmux" atload"[[ $- == *i* ]] && source shell/completion.zsh 2> /dev/null" src"shell/key-bindings.zsh"
 zinit light junegunn/fzf
 
+# Official GitHub CLI.
+zinit ice wait lucid from"gh-r" atclone"cp gh_*/share/man/man1/* $ZPFX/man/man1" atpull"%atclone" sbin"gh_*/bin/gh"
+zinit light cli/cli
+
 # Management utility for remote repository clones.
 zinit ice wait lucid from"gh-r" cp"ghq*/README.adoc -> $ZPFX/man/man1/ghq.1" sbin"ghq*/ghq"
 zinit light x-motemen/ghq
@@ -122,6 +126,10 @@ zinit light x-motemen/ghq
 # A fast alternative to grep that respects your gitignore.
 zinit ice wait lucid from"gh-r" cp"ripgrep-*/doc/rg.1 -> $ZPFX/man/man1" sbin"ripgrep-*/rg"
 zinit light BurntSushi/ripgrep
+
+# Watch a path and run a command when any modifications are detected.
+zinit ice wait lucid from"gh-r" cp"watchexec-*/watchexec.1 -> $ZPFX/man/man1" sbin"watchexec-*/watchexec"
+zinit light watchexec/watchexec
 
 # A smarter cd command inspired by z and autojump.
 # zinit ice wait lucid from"gh-r" cp"man/*.1 -> $ZPFX/man/man1" mv"completions/_zoxide -> $ZINIT[COMPLETIONS_DIR]" sbin"zoxide"
