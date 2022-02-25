@@ -104,6 +104,18 @@ if [ -n "$HOME" ]; then
     addenv PATH "$(pyenv root)/shims"
   fi
 
+  # LaTeX is a markup language to write a document.
+  if [ -d "/usr/local/texlive" ]; then
+    year=$(find "/usr/local/texlive" -mindepth 1 -maxdepth 1 -type d -printf "%f\n" | \
+             grep "[0-9]\+" | sort -r | head -1)
+    if [ -n "$year" ]; then
+      os=$(uname -s | tr '[:upper:]' '[:lower:]')
+      if [ "$os" = linux ] || [ "$os" = darwin ]; then
+        arch=$(uname -m)
+        addenv PATH "/usr/local/texlive/${year}/bin/${arch}-${os}"
+      fi
+    fi
+  fi
 fi
 
 ## External configuration
