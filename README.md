@@ -10,18 +10,27 @@ Installation process is devided into three parts: installing
 prerequisite software, installing the configuration, and optionally
 installing the local configuration.
 
-### Installing requisite software
+### Installing prerequisite software
 
 #### Ubuntu
 
 - Emacs:
   - Language Server
     - Bash: `yarn global add bash-language-server`
-    - C/C++: `apt install clangd`
+    - C/C++: `apt install libclang-dev`
+    - Go: `go install golang.org/x/tools/gopls@latest`
+    - HTML: `yarn global add vscode-html-languageserver-bin`
+    - JavaScript: `yarn global add typescript typescript-language-server`
+    - LaTeX: `wget --directory-prefix ~/.local/bin https://raw.githubusercontent.com/astoff/digestif/master/scripts/digestif`
+    - Python: `pipx install pyright`
 
 ### Installing configuration
 
 Use symbolic links:
+
+``` shell
+make link
+```
 
 ### Installing local configuration
 
