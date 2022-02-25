@@ -127,6 +127,10 @@ zinit light x-motemen/ghq
 zinit ice wait lucid from"gh-r" cp"ripgrep-*/doc/rg.1 -> $ZPFX/man/man1" sbin"ripgrep-*/rg"
 zinit light BurntSushi/ripgrep
 
+# A shell script static analysis tool.
+zinit ice wait lucid from"gh-r" sbin"shellcheck-*/shellcheck"
+zinit light koalaman/shellcheck
+
 # Watch a path and run a command when any modifications are detected.
 zinit ice wait lucid from"gh-r" cp"watchexec-*/watchexec.1 -> $ZPFX/man/man1" sbin"watchexec-*/watchexec"
 zinit light watchexec/watchexec
