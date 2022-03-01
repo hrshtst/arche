@@ -7109,7 +7109,7 @@ nil."
       ('modus-vivendi (setq arche--mozc-cursor-color "#fba849"))
       (_ (setq arche--mozc-cursor-color "#da8548"))))
 
-  :bind (("<f6>" . #'modus-themes-toggle))
+  :bind (("<f9>" . #'modus-themes-toggle))
   :config
 
   ;; Needed because `:no-require' for some reason disables the
