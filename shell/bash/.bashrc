@@ -226,3 +226,9 @@ fi
 if command -v pyenv 1>/dev/null 2>&1; then
   eval "$(pyenv init -)"
 fi
+
+## External configuration hook
+
+if type -t arche_after_init_hook > /dev/null; then
+  arche_after_init_hook
+fi
