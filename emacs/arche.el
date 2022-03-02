@@ -1074,8 +1074,8 @@ ourselves."
 ;; Package `embark' provides a sort of right-click contextual menu for
 ;; Emacs.
 (use-package embark
-  :bind (("C-." . #'embark-act)
-         ("C-;" . #'embark-dwim))
+  :bind (("C-;" . #'embark-act)
+         ("C-:" . #'embark-dwim))
 
   :config
 
@@ -1191,6 +1191,34 @@ active minibuffer, even if the minibuffer is not selected."
         (kill-buffer-and-window))
     (funcall func buffer-or-name)))
 
+;; Select window in cyclic order with easier key bindings.
+(defun arche-prev-window ()
+  "Select the previous window."
+  (interactive)
+  (other-window -1))
+(bind-key "C-." #'other-window)
+(bind-key "C-," #'arche-prev-window)
+
+(defun arche-split-window-vertically-even (&optional arg)
+  "Split the window side by side into given numbers of windows.
+
+When called with prefix arguments the selected window will be
+split into the provided number of windows. When called without
+prefix acts normally like as `split-window-right'."
+  (interactive "P")
+  (let ((count (cond ((numberp arg) arg)
+                     ((and (listp arg)
+                           (> (length arg) 0)) 3)
+                     (t 2))))
+    (when arg
+      (delete-other-windows))
+    (dotimes (_ (- count 1))
+      (split-window-right))
+    (when arg
+      (balance-windows))))
+
+(bind-key "C-x 3" #'arche-split-window-vertically-even)
+
 ;; Feature `windmove' provides keybindings S-left, S-right, S-up, and
 ;; S-down to move between windows. This is much more convenient and
 ;; efficient than using the default binding, C-x o, to cycle through
@@ -1222,7 +1250,8 @@ active minibuffer, even if the minibuffer is not selected."
 ;; left of the window. Pressing that character will switch to that
 ;; window.
 (use-package ace-window
-  :bind (("C-t" . #'ace-window))
+  :bind (("M-t" . #'ace-window)
+         ("C-t" . #'aw-flip-window))
   :config
 
   ;; Initial characters used in window labels would like to be on the
@@ -1245,7 +1274,7 @@ active minibuffer, even if the minibuffer is not selected."
 (use-package transpose-frame
   :bind* (("s-t" . #'transpose-frame)
           ;; Swap windows horizontally.
-          ("<f2>" . #'flop-frame)))
+          ("<f6>" . #'flop-frame)))
 
 ;; Package `buffer-move' provides simple commands to swap Emacs
 ;; windows: `buf-move-up', `buf-move-down', `buf-move-left',
