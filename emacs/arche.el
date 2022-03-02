@@ -1250,6 +1250,15 @@ prefix acts normally like as `split-window-right'."
 ;; left of the window. Pressing that character will switch to that
 ;; window.
 (use-package ace-window
+  :commands (aw--push-window)
+  :init
+
+  (arche-defadvice arche--aw-push-window-for-other-window (&rest _)
+    :after #'other-window
+    "Push the selected window to `aw--window-ring' when calling
+`other-window'."
+    (aw--push-window (selected-window)))
+
   :bind (("M-t" . #'ace-window)
          ("C-t" . #'aw-flip-window))
   :config
