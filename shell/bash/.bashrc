@@ -227,6 +227,12 @@ if command -v pyenv 1>/dev/null 2>&1; then
   eval "$(pyenv init -)"
 fi
 
+# PDM is a project management tool.
+# https://github.com/pdm-project/pdm
+if command -v pdm 1>/dev/null 2>&1; then
+  eval "$(pdm --pep582 bash)"
+fi
+
 ## External configuration hook
 
 if type -t arche_after_init_hook > /dev/null; then

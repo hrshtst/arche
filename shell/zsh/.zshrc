@@ -1008,6 +1008,13 @@ if (( $+commands[pyenv] )); then
   eval "$(pyenv init -)"
 fi
 
+### PDM
+# PDM is a project management tool.
+# https://github.com/pdm-project/pdm
+if (( $+commands[pdm] )); then
+  eval "$(pdm --pep582 zsh)"
+fi
+
 ### zoxide
 
 function zoxide-cd-widget() {
