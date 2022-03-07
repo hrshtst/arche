@@ -183,6 +183,7 @@ export ARCHE_SKIP_PROFILE=1
 if grep -qEi "(microsoft|wsl)" /proc/version >/dev/null 2>&1; then
   WSL_HOST="$(awk '/nameserver / {print $2; exit}' /etc/resolv.conf 2>/dev/null)"
   export DISPLAY="${WSL_HOST}:0"
+  export PULSE_SERVER="tcp:${WSL_HOST}"
   export LIBGL_ALWAYS_INDIRECT=1
   unset WSL_HOST
   case $0 in
