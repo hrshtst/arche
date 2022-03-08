@@ -135,6 +135,14 @@ zinit light BurntSushi/ripgrep
 zinit ice wait lucid from"gh-r" sbin"shellcheck-*/shellcheck"
 zinit light koalaman/shellcheck
 
+# A very fast implementation of tldr in Rust.
+zinit ice wait lucid as"program" from"gh-r" mv"tealdeer* -> tldr" sbin"tldr"
+zinit light dbrgn/tealdeer
+
+# Load completion for tldr.
+zinit ice wait lucid id-as"tldr-completion" as"completion" from"gh-r" bpick"completions_zsh" mv"completions_zsh -> $ZINIT[COMPLETIONS_DIR]/_tldr"
+zinit light dbrgn/tealdeer
+
 # Watch a path and run a command when any modifications are detected.
 zinit ice wait lucid from"gh-r" cp"watchexec-*/watchexec.1 -> $ZPFX/man/man1" sbin"watchexec-*/watchexec"
 zinit light watchexec/watchexec
