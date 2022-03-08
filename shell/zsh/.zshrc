@@ -128,7 +128,7 @@ zinit ice wait lucid from"gh-r" cp"ghq*/README.adoc -> $ZPFX/man/man1/ghq.1" sbi
 zinit light x-motemen/ghq
 
 # Python project and its dependencies management tool.
-zinit ice wait lucid as"program" from"gh-r" bpick"*amd64.deb" pick"usr/bin/pyflow"
+zinit ice wait lucid as"program" from"gh-r" bpick"*amd64.deb" sbin"usr/bin/pyflow"
 zinit light David-OConnor/pyflow
 
 # A fast alternative to grep that respects your gitignore.
