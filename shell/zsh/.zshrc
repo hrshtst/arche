@@ -90,6 +90,10 @@ zinit light sharkdp/bat
 zinit ice wait lucid from"gh-r" mv"cheat* -> cheat" sbin"cheat"
 zinit light cheat/cheat
 
+# Load completion for cheat
+zinit ice wait lucid id-as"cheat-completion" as"completion" depth"1" mv"scripts/cheat.zsh -> $ZINIT[COMPLETIONS_DIR]/_cheat"
+zinit light cheat/cheat
+
 # A syntax-highlighting pager for git and diff output
 zinit ice wait lucid from"gh-r" sbin"delta-*/delta"
 zinit light dandavison/delta
