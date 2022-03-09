@@ -116,6 +116,10 @@ if [ -n "$HOME" ]; then
       fi
     fi
   fi
+
+  # Lots of applications are installed in $ZPFX by zinit.
+  ZPFX=$HOME/.config/zinit/polaris
+  addenv PATH "$ZPFX/bin"
 fi
 
 ## External configuration

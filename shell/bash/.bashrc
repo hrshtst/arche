@@ -233,12 +233,6 @@ if command -v pdm 1>/dev/null 2>&1; then
   eval "$(pdm --pep582 bash)"
 fi
 
-# Lots of applications are installed in $ZPFX by zinit.
-ZPFX=$HOME/.config/zinit/polaris
-if [[ ! ":$PATH:" =~ *":$ZPFX/bin:"* ]]; then
-  export PATH="$ZPFX/bin:$PATH"
-fi
-
 ## External configuration hook
 
 if type -t arche_after_init_hook > /dev/null; then
