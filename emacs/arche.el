@@ -5451,6 +5451,10 @@ block identifiers and property names to lower cases."
           ("C-c c" . #'org-capture))
   :config
 
+  ;; Prevent this binding from overriding the alternative binding to
+  ;; move focus to the previous window.
+  (unbind-key "C-," org-mode-map)
+
   ;; If you try to insert a heading in the middle of an entry, don't
   ;; split it in half, but instead insert the new heading after the
   ;; end of the current entry.
