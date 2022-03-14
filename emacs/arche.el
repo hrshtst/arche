@@ -6479,6 +6479,93 @@ Instead, display simply a flat colored region in the fringe."
       (when-let ((win (get-buffer-window buf)))
         (select-window win)))))
 
+;; The package `vterm' is a terminal emulator working inside Emacs
+;; based on libvterm, which is fast and capable of handling large
+;; outputs.
+;; https://github.com/raxod502/straight.el/issues/891#issuecomment-984438357
+;; https://github.com/raxod502/straight.el/issues/800#issuecomment-985484197
+(use-package vterm
+  :if (bound-and-true-p module-file-suffix)
+  :straight `(:pre-build (("rm" "-fr" "build")
+			  ("mkdir" "build")
+			  ("bash" "-c" "cd \"$1\" && cmake .. && make" "--"
+                           ,(concat (straight--repos-dir "emacs-libvterm") "build"))))
+  :init
+
+  ;; Increase max scrollback than default.
+  (setq vterm-max-scrollback 10000)
+
+  ;; Set vterm buffer name.
+  (setq vterm-buffer-name-string "vterm: %s")
+
+  ;; Define keys that won't be sent to the terminal.
+  (setq vterm-keymap-exceptions
+        '("<f2>" "C-c" "C-x" "C-u" "C-g" "C-h" "C-l" "M-x" "M-o" "C-y" "M-y"))
+
+  :bind (:map vterm-copy-mode-map
+              ("q" . #'vterm-copy-mode-done)))
+
+;; The package `vterm-toggle' provides a command to pop up `vterm'
+;; buffer and hide it.
+(use-package vterm-toggle
+  :commands (vterm-toggle--get-window)
+  :init
+
+  ;; Open vterm buffer per project.
+  (setq vterm-toggle-scope 'project)
+
+  ;; Never open vterm buffer fullscreen.
+  (setq vterm-toggle-fullscreen-p nil)
+
+  ;; Inhibit `vterm-toggle' from deleting window when hiding the
+  ;; vterm buffer.
+  (setq vterm-toggle-hide-method 'quit-window)
+
+  ;; Show vterm buffer in the bottom window.
+  (add-to-list 'display-buffer-alist
+               '((lambda (bufname _)
+                   (with-current-buffer bufname
+                     (equal major-mode 'vterm-mode)))
+                 (display-buffer-reuse-window
+                  display-buffer-in-direction)
+                 (direction . bottom)
+                 (reusable-frames . visible)
+                 (window-height . 0.4)))
+
+  (defun arche-vterm-in-current-window ()
+    "Open vterm buffer in the current window."
+    (interactive)
+    (let ((display-buffer-alist
+           '((lambda (bufname _)
+               (with-current-buffer bufname
+                 (equal major-mode 'vterm-mode)))
+             (display-buffer-reuse-window display-buffer-same-window))))
+      (if (or (derived-mode-p 'vterm-mode)
+              (and (vterm-toggle--get-window)
+                   vterm-toggle-hide-method))
+          (vterm-toggle-hide)
+        (unless (vterm-toggle-forward)
+          ;; Somehow, `vterm-toggle-show' doesn't respect
+          ;; `display-buffer' actions defined in
+          ;; `display-buffer-alist'. I don't know why...
+          (vterm-toggle-show)))))
+
+  :bind (("<f2>" . #'vterm-toggle)
+         ("C-<f2>" . #'vterm-toggle-cd)
+         ("S-<f2>" . #'arche-vterm-in-current-window)
+         :map vterm-mode-map
+         ("M-." . #'vterm-toggle-forward)
+         ("M-," . #'vterm-toggle-backward))
+  :config
+
+  (arche-defadvice arche--advice-vterm-toggle--project-root
+      (func)
+    :around #'vterm-toggle--project-root
+    "Allow `projectile' to find the current project root."
+    (if (fboundp 'projectile-project-root)
+        (projectile-project-root)
+      (funcall func))))
+
 ;; Package `deadgrep' provides a fancy inteface for an external
 ;; command `rg'.
 (use-package deadgrep
