@@ -66,19 +66,11 @@ Our Emacs configuration does not support any versions below this.")
                        "Emacs %s, but you are running Emacs %s")
                arche-minimum-emacs-version emacs-version)
 
-      (let* ((this-file (or
-			 ;; We may be loading init.el in batch mode,
-			 ;; in which case `user-init-file' is nil. In
-			 ;; that case, we should have some backup
-			 ;; options to try.
-			 user-init-file
-			 load-file-name
-			 buffer-file-name))
-	     (link-target
-	      ;; This function returns the target of the link. If the
-	      ;; init-file is not a symlink, then we abort.
-	      (if user-init-file (file-symlink-p this-file)
-		this-file)))
+      (let* ((this-file (or user-init-file "~/.emacs.d/init.el"))
+             (link-target
+              ;; This function returns the target of the link. If the
+              ;; init-file is not a symlink, then we abort.
+              (file-symlink-p this-file)))
 
         (unless link-target
           (error "Init-file %S is not a symlink" this-file))
