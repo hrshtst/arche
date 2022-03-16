@@ -6485,7 +6485,9 @@ Instead, display simply a flat colored region in the fringe."
 ;; https://github.com/raxod502/straight.el/issues/891#issuecomment-984438357
 ;; https://github.com/raxod502/straight.el/issues/800#issuecomment-985484197
 (use-package vterm
-  :if (bound-and-true-p module-file-suffix)
+  :if (and (bound-and-true-p module-file-suffix)
+           (executable-find "libtool")
+           (executable-find "cmake"))
   :straight `(:pre-build (("rm" "-fr" "build")
 			  ("mkdir" "build")
 			  ("bash" "-c" "cd \"$1\" && cmake .. && make" "--"
@@ -6508,6 +6510,7 @@ Instead, display simply a flat colored region in the fringe."
 ;; The package `vterm-toggle' provides a command to pop up `vterm'
 ;; buffer and hide it.
 (use-package vterm-toggle
+  :after vterm
   :commands (vterm-toggle--get-window)
   :init
 
