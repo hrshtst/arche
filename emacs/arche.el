@@ -6485,13 +6485,12 @@ Instead, display simply a flat colored region in the fringe."
 ;; https://github.com/raxod502/straight.el/issues/891#issuecomment-984438357
 ;; https://github.com/raxod502/straight.el/issues/800#issuecomment-985484197
 (use-package vterm
-  :if (and (bound-and-true-p module-file-suffix)
-           (executable-find "libtool")
-           (executable-find "cmake"))
-  :straight `(:pre-build (("rm" "-fr" "build")
-			  ("mkdir" "build")
-			  ("bash" "-c" "cd \"$1\" && cmake .. && make" "--"
-                           ,(concat (straight--repos-dir "emacs-libvterm") "build"))))
+  :if (bound-and-true-p module-file-suffix)
+  :straight `(:pre-build ,(when (and (executable-find "libtool") (executable-find "cmake"))
+                            `(("rm" "-fr" "build")
+        		      ("mkdir" "build")
+        		      ("bash" "-c" "cd \"$1\" && cmake .. && make" "--"
+                               ,(concat (straight--repos-dir "emacs-libvterm") "build")))))
   :init
 
   ;; Increase max scrollback than default.
