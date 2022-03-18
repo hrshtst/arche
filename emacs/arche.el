@@ -6509,8 +6509,6 @@ Instead, display simply a flat colored region in the fringe."
 ;; The package `vterm-toggle' provides a command to pop up `vterm'
 ;; buffer and hide it.
 (use-package vterm-toggle
-  :after vterm
-  :commands (vterm-toggle--get-window)
   :init
 
   ;; Open vterm buffer per project.
@@ -6534,6 +6532,14 @@ Instead, display simply a flat colored region in the fringe."
                  (reusable-frames . visible)
                  (window-height . 0.4)))
 
+  :bind (("<f2>" . #'vterm-toggle)
+         ("C-<f2>" . #'vterm-toggle-cd)
+         ("S-<f2>" . #'arche-vterm-in-current-window)
+         :map vterm-mode-map
+         ("M-." . #'vterm-toggle-forward)
+         ("M-," . #'vterm-toggle-backward))
+  :config
+
   (defun arche-vterm-in-current-window ()
     "Open vterm buffer in the current window."
     (interactive)
@@ -6551,14 +6557,6 @@ Instead, display simply a flat colored region in the fringe."
           ;; `display-buffer' actions defined in
           ;; `display-buffer-alist'. I don't know why...
           (vterm-toggle-show)))))
-
-  :bind (("<f2>" . #'vterm-toggle)
-         ("C-<f2>" . #'vterm-toggle-cd)
-         ("S-<f2>" . #'arche-vterm-in-current-window)
-         :map vterm-mode-map
-         ("M-." . #'vterm-toggle-forward)
-         ("M-," . #'vterm-toggle-backward))
-  :config
 
   (arche-defadvice arche--advice-vterm-toggle--project-root
       (func)
