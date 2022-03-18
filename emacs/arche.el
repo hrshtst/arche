@@ -4747,7 +4747,14 @@ environment with point at the end of a non-empty line of text."
             (when (looking-at "\n")
               (delete-char 1)))))))
 
-  (put 'LaTeX-using-Biber 'safe-local-variable #'booleanp))
+  (put 'LaTeX-using-Biber 'safe-local-variable #'booleanp)
+
+  (use-feature apheleia
+    :config
+
+    ;; Indent by two spaces instead of tab character.
+    (setf (alist-get 'latexindent apheleia-formatters)
+          '("latexindent" "--logfile=/dev/null" "--yaml=defaultIndent: '  '"))))
 
 ;; Feature `font-latex' from package `auctex' provides the syntax
 ;; highlighting for the LaTeX major mode.
