@@ -4421,7 +4421,7 @@ https://github.com/jrblevin/markdown-mode/issues/328."
   :config
 
   ;; The only consistent style.
-  (setq python-fill-docstring-style 'django)
+  (setq python-fill-docstring-style 'pep-257)
 
   (arche-defhook arche--python-fix-outline-mode-config ()
     python-mode-hook
