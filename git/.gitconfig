@@ -46,11 +46,14 @@
   # Automatically prune stale branches from the remote on every
   # fetch.
   prune = true
+[filter "lfs"]
+  clean = git-lfs clean -- %f
+  required = true
+  smudge = git-lfs smudge -- %f
+  process = git-lfs filter-process
 [ghq]
   root = ~/usr/go/src
   root = ~/usr/ghq
-[include]
-  path = ~/.gitconfig.local
 [init]
   defaultBranch = main
 [merge]
@@ -70,6 +73,6 @@
   enabled = true
 [status]
   submoduleSummary = true
-[user]
-  name = Hiroshi Atsuta
-  email = atsuta@ieee.org
+# .gitconfig.local should be included last.
+[include]
+  path = ~/.gitconfig.local
