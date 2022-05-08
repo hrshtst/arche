@@ -10,5 +10,5 @@ set -o pipefail
      | (grep -v "In toplevel form"                  || true) \
      | (grep -v "In end of data"                    || true) \
      | (grep -v "Warning: Package cl is deprecated" || true) \
-     | (grep -v "Warning: Error: %S" || true) \
+     | (grep -v "Warning: Missing format argument" || true) \
      | (! grep .)) || (rm -f emacs/arche.elc; false)

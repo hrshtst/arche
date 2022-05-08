@@ -1461,6 +1461,9 @@ prefix acts normally like as `split-window-right'."
   :demand t
   :init
 
+  ;; Suppress redundant warning.
+  (setq persp-suppress-no-prefix-key-warning t)
+
   (use-feature hydra
     :config
 
@@ -2691,7 +2694,7 @@ _h_ ^ ^ _l_   _x_ kill     _t_ype     _e_xchange-point
          ;; M-_. It's logical to also bind M-/ to `undo-tree-redo'.
          ;; This overrides the default binding of M-/, which is to
          ;; `dabbrev-expand'.
-         :map undo-tree-map
+         :map undo-tree-mode-map
          ("M-/" . #'undo-tree-redo))
   :config
 
@@ -5376,7 +5379,7 @@ messages."
 ;; interacting with this data, including an agenda view, a time
 ;; clocker, etc. There are *many* extensions.
 (use-feature org
-  :functions (org-bookmark-jump-unhide) ; some issue with Emacs 26
+  :functions (org-at-heading-p org-next-visible-heading org-bookmark-jump-unhide) ; some issue with Emacs 26
   :init
 
   ;; Stolen from: <https://scripter.co/org-keywords-lower-case/>,
@@ -5624,6 +5627,13 @@ be invoked before `org-mode-hook' is run."
                  org-clock-goto
                  org-clock-cancel))
     (advice-add fun :before #'arche--advice-org-clock-load-automatically)))
+
+;; Feature `org-fold' provides handling temporary invisibility
+;; (folding and unfolding) of text in org buffers.
+(use-feature org-fold
+  :commands (org-fold-show-entry org-fold-show-children
+             org-fold-hide-subtree org-back-to-heading org-fold-hide-sublevels
+             org-fold-folded-p org-fold-region))
 
 ;;;; Note taking
 
