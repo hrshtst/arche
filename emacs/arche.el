@@ -4463,7 +4463,7 @@ See https://emacs.stackexchange.com/a/3338/12534."
            (substring-no-properties (match-string 1))))))
     (with-no-warnings
       (setq-local
-       lsp-python-ms-python-executable-cmd
+       lsp-pyright-python-executable-cmd
        python-shell-interpreter)))
 
   ;; I honestly don't understand why people like their packages to
@@ -4515,7 +4515,7 @@ Return either a string or nil."
   :config
 
   (arche-defadvice arche--lsp-pyright-discover-virtualenvs (&rest _)
-    :after-until #'lsp-pyright-locate-venv
+    :before-until #'lsp-pyright-locate-venv
     "Automatically discover Pipenv and Poetry virtualenvs."
     (arche--python-find-virtualenv)))
 
