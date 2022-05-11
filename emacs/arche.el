@@ -666,7 +666,6 @@ nice.)"
 ;; a strict superset of those provided by similar packages `diminish',
 ;; `delight', and `dim'.
 (use-package blackout
-  :straight (:host github :repo "raxod502/blackout")
   :demand t)
 
 ;;;; straight.el configuration
@@ -2851,7 +2850,6 @@ the reverse direction from \\[pop-global-mark]."
 ;; browsers and other programs (think of what happens when you type
 ;; ctrl+F).
 (use-package ctrlf
-  :straight (:host github :repo "raxod502/ctrlf")
   :init
 
   (ctrlf-mode +1)
@@ -3209,7 +3207,6 @@ via return key."
 ;; applying code formatters asynchronously on save without moving
 ;; point or modifying the scroll position.
 (use-package apheleia
-  :straight (:host github :repo "raxod502/apheleia")
   :init
 
   (apheleia-global-mode +1)
