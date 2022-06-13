@@ -3336,6 +3336,10 @@ currently active.")
 
 ;;;; Language servers
 
+;; In recent versions of `f' some files seem not to be loaded by
+;; straight.el somehow.
+(straight-use-package '(f :files ("f.el" "f-shortdoc.el" "f-pkg.el")))
+
 ;; Package `lsp-mode' is an Emacs client for the Language Server
 ;; Protocol <https://langserver.org/>. It is where we get all of our
 ;; information for completions, definition location, documentation,
