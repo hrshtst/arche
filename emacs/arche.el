@@ -2696,6 +2696,13 @@ _h_ ^ ^ _l_   _x_ kill     _t_ype     _e_xchange-point
 
   (global-undo-tree-mode +1)
 
+  (arche-defadvice arche--advice-suppress-undo-tree-save-history
+      (undo-tree-save-history &rest args)
+    :around #'undo-tree-save-history
+    "Suppress the annoying message saying undo history is saved to file."
+    (let ((inhibit-message t))
+      (apply undo-tree-save-history args)))
+
   (arche-defadvice arche--advice-suppress-undo-tree-buffer-modified-message
       (undo-tree-load-history &rest args)
     :around #'undo-tree-load-history
