@@ -1096,10 +1096,6 @@ ourselves."
   (setq xref-show-xrefs-function #'consult-xref)
   (setq xref-show-definitions-function #'consult-xref)
 
-  ;; Replace `completing-read-multiple' with an enhanced version.
-  (advice-add #'completing-read-multiple
-              :override #'consult-completing-read-multiple)
-
   :bind (([remap switch-to-buffer] . #'consult-buffer)
          ([remap switch-to-buffer-other-window] . #'consult-buffer-other-window)
          ([remap switch-to-buffer-other-frame] . #'consult-buffer-other-frame)
@@ -6626,7 +6622,7 @@ Instead, display simply a flat colored region in the fringe."
     :config
 
     ;; Use the regexp transformer implemented in `orderless'.
-    (defun affe-orderless-regexp-compiler (input _type)
+    (defun affe-orderless-regexp-compiler (input _type _ignorecase)
       (setq input (orderless-pattern-compiler input))
       (cons input
             (lambda (str) (orderless--highlight input str))))
