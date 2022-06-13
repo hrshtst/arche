@@ -6920,7 +6920,7 @@ bound dynamically before being used.")
                 ((or ?y ?Y) (funcall save-buffers-kill-emacs arg))
                 ((or ?n ?N))
                 ((or ?r ?R)
-                 (restart-emacs arg))
+                 (restart-emacs))
                 ((or ?e ?E)
                  (restart-emacs-start-new-emacs
                   (restart-emacs--translate-prefix-to-args arg)))
