@@ -7291,6 +7291,7 @@ nil."
       (set-face-background face (face-foreground face)))))
 
 ;; Local Variables:
+;; byte-compile-warnings: (not make-local noruntime unresolved)
 ;; checkdoc-symbol-words: ("top-level")
 ;; indent-tabs-mode: nil
 ;; no-native-compile: t
