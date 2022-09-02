@@ -127,6 +127,10 @@ zinit light cli/cli
 zinit ice wait lucid from"gh-r" cp"ghq*/README.adoc -> $ZPFX/man/man1/ghq.1" sbin"ghq*/ghq"
 zinit light x-motemen/ghq
 
+# A command-line benchmarking tool.
+zinit ice wait lucid from"gh-r" cp"hyperfine-*/hyperfine.1 -> $ZPFX/man/man1" mv"hyperfine-*/autocomplete/_hyperfine -> $ZINIT[COMPLETIONS_DIR]" sbin"hyperfine-*/hyperfine"
+zinit light sharkdp/hyperfine
+
 # Python project and its dependencies management tool.
 zinit ice wait lucid as"program" from"gh-r" bpick"*amd64.deb" sbin"usr/bin/pyflow"
 zinit light David-OConnor/pyflow
