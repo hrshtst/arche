@@ -101,7 +101,6 @@
  ("pkgbuild-mode" . "9525be8ecbd3a0d0bc7cc27e6d0f403e111aa067")
  ("poetry.el" . "5a8575bc78d7fc5a39b2ba4665a909e36961fceb")
  ("popup-el" . "5420f7fbdc1df31d3158bcb57d1ed9cf15a4c8ef")
- ("prescient.el" . "a86b71431002f7c7be6ea86f6f2694d206564b13")
  ("project" . "3cdd9afe894d4a7bcf036c377d8bdaa3cab927a8")
  ("projectile" . "683862872462c1c3c68fa41e370817399c15f836")
  ("protobuf" . "5028da4153fbfe3e1783cfb06d9c5f088fa31e71")
