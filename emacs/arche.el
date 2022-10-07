@@ -1008,6 +1008,8 @@ ourselves."
   :defer t
   :init
 
+  (vertico-mode +1)
+
   ;; Enable cycling for `vertico-next' and `vertico-previous'.
   (setq vertico-cycle t)
 
@@ -1026,8 +1028,6 @@ ourselves."
          ("M-DEL" . #'vertico-directory-delete-word))
 
   :config
-
-  (vertico-mode +1)
 
   ;; Hide commands in M-x which do not work in the current mode.
   (arche-when-compiletime (version<= "28" emacs-version)
