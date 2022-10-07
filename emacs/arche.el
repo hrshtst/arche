@@ -995,11 +995,11 @@ ourselves."
         (setq input (car result))))
     input))
 
-;; Package `vertico' provides a minimalistic vertical complemention UI
-;; based on Emacs's default completion system. To use it in the
-;; similar way as Ivy and Helm, extensions and complementary packages
-;; should be additionally installed because it only focuses to provide
-;; the competion UI.
+;; Package `vertico' is an incremental completion and narrowing
+;; framework. Like Ivy and Helm, which it improves on, Vertico
+;; provides a user interface for choosing from a list of options by
+;; typing a query to narrow the list, and then selecting one of the
+;; remaining candidates. This offers a significant improvement over
 (straight-use-package '(vertico :files (:defaults "extensions/*")
                                 :includes (vertico-directory
                                            vertico-repeat)))
@@ -1681,7 +1681,7 @@ minutes in case Emacs is shut down accidentally.")
   :bind-keymap* (("C-c p" . #'projectile-command-map))
   :config
 
-  ;; Use Selectrum (via `completing-read') for Projectile instead of
+  ;; Use Vertico (via `completing-read') for Projectile instead of
   ;; IDO.
   (setq projectile-completion-system 'default)
 
@@ -3736,7 +3736,7 @@ order."
 
   ;; When there are multiple options for where a symbol might be
   ;; defined, use the default `completing-read' mechanism to decide
-  ;; between them (i.e., delegate to Selectrum) rather than using the
+  ;; between them (i.e., delegate to Vertico) rather than using the
   ;; janky built-in `xref' thingie.
   (when (and
          (boundp 'xref-show-definitions-function)
@@ -6976,7 +6976,7 @@ This is passed to `set-frame-font'."
   (setq which-key-echo-keystrokes echo-keystrokes))
 
 ;; Don't suggest shorter ways to type commands in M-x, since they
-;; don't apply when using Selectrum.
+;; don't apply when using Vertico.
 (setq suggest-key-bindings 0)
 
 ;; Don't blink the cursor on the opening paren when you insert a
