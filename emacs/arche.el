@@ -53,13 +53,13 @@
 (defgroup arche-hooks nil
   "Startup hooks for our Emacs configuration."
   :group 'arche
-  :link '(url-link :tag "GitHub" "https://github.com/hrshtst/dotfiles"))
+  :link '(url-link :tag "GitHub" "https://github.com/hrshtst/arche"))
 
 (defgroup arche nil
   "Customize our Emacs configuration."
   :prefix "arche-"
   :group 'emacs
-  :link '(url-link :tag "GitHub" "https://github.com/hrshtst/dotfiles"))
+  :link '(url-link :tag "GitHub" "https://github.com/hrshtst/arche"))
 
 ;;; Define utility functions and variables
 
