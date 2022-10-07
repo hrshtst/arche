@@ -1008,8 +1008,6 @@ ourselves."
   :defer t
   :init
 
-  (vertico-mode +1)
-
   ;; Enable cycling for `vertico-next' and `vertico-previous'.
   (setq vertico-cycle t)
 
@@ -1029,10 +1027,22 @@ ourselves."
 
   :config
 
+  (vertico-mode +1)
+
   ;; Hide commands in M-x which do not work in the current mode.
   (arche-when-compiletime (version<= "28" emacs-version)
     (setq read-extended-command-predicate
-          #'command-completion-default-include-p)))
+          #'command-completion-default-include-p))
+
+  (arche-defadvice radian--advice-vertico-select-first-candidate (&rest _)
+    :after #'vertico--update-candidates
+    "Select first candidate rather than prompt by default.
+Suggestion from https://github.com/minad/vertico/issues/272 about
+how to recover previous Selectrum behavior, so that repeated TAB
+navigates down a directory tree. Submit the prompt using M-TAB or
+<up> RET."
+    (when (> vertico--total 0)
+      (setq vertico--index 0))))
 
 ;; Package `orderless' is a completion back-end that achieves
 ;; incremental and narrowing completion framework such as Ivy and
