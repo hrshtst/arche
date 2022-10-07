@@ -2365,49 +2365,48 @@ marks specified in `arche-replace-punc-pairs'"
 ;; for this, but I wrote this code before I knew about it. Also, I'm
 ;; not sure how well it handles the edge cases for docstrings and
 ;; such.
-(arche-when-compiletime (version<= "26" emacs-version)
-  (arche-defadvice arche--advice-auto-fill-only-text (func &rest args)
-    :around #'internal-auto-fill
-    "Only perform auto-fill in text, comments, or docstrings."
-    (cl-block nil
-      ;; Don't auto-fill on the first line of a docstring, since it
-      ;; shouldn't be wrapped into the body.
-      (when (and (derived-mode-p #'emacs-lisp-mode)
-                 (eq (get-text-property (point) 'face) 'font-lock-doc-face)
-                 (save-excursion
-                   (beginning-of-line)
-                   (looking-at-p "[[:space:]]*\"")))
-        (cl-return))
-      (when (and (derived-mode-p 'text-mode)
-                 (not (derived-mode-p 'yaml-mode)))
-        (apply func args)
-        (cl-return))
-      ;; Inspired by <https://emacs.stackexchange.com/a/14716/12534>.
-      (when-let ((faces (save-excursion
-                          ;; In `web-mode', the end of the line isn't
-                          ;; fontified, so we have to step backwards
-                          ;; by one character before checking the
-                          ;; properties.
-                          (ignore-errors
-                            (backward-char))
-                          (get-text-property (point) 'face))))
-        (unless (listp faces)
-          (setq faces (list faces)))
-        (when (cl-some
-               (lambda (face)
-                 (memq face '(font-lock-comment-face
-                              font-lock-comment-delimiter-face
-                              font-lock-doc-face
-                              web-mode-javascript-comment-face)))
-               faces)
-          ;; Fill Elisp docstrings to the appropriate column. Why
-          ;; docstrings are filled to a different column, I don't know.
-          (let ((fill-column (if (and
-                                  (derived-mode-p #'emacs-lisp-mode)
-                                  (memq 'font-lock-doc-face faces))
-                                 emacs-lisp-docstring-fill-column
-                               fill-column)))
-            (apply func args)))))))
+(arche-defadvice arche--advice-auto-fill-only-text (func &rest args)
+  :around #'internal-auto-fill
+  "Only perform auto-fill in text, comments, or docstrings."
+  (cl-block nil
+    ;; Don't auto-fill on the first line of a docstring, since it
+    ;; shouldn't be wrapped into the body.
+    (when (and (derived-mode-p #'emacs-lisp-mode)
+               (eq (get-text-property (point) 'face) 'font-lock-doc-face)
+               (save-excursion
+                 (beginning-of-line)
+                 (looking-at-p "[[:space:]]*\"")))
+      (cl-return))
+    (when (and (derived-mode-p 'text-mode)
+               (not (derived-mode-p 'yaml-mode)))
+      (apply func args)
+      (cl-return))
+    ;; Inspired by <https://emacs.stackexchange.com/a/14716/12534>.
+    (when-let ((faces (save-excursion
+                        ;; In `web-mode', the end of the line isn't
+                        ;; fontified, so we have to step backwards
+                        ;; by one character before checking the
+                        ;; properties.
+                        (ignore-errors
+                          (backward-char))
+                        (get-text-property (point) 'face))))
+      (unless (listp faces)
+        (setq faces (list faces)))
+      (when (cl-some
+             (lambda (face)
+               (memq face '(font-lock-comment-face
+                            font-lock-comment-delimiter-face
+                            font-lock-doc-face
+                            web-mode-javascript-comment-face)))
+             faces)
+        ;; Fill Elisp docstrings to the appropriate column. Why
+        ;; docstrings are filled to a different column, I don't know.
+        (let ((fill-column (if (and
+                                (derived-mode-p #'emacs-lisp-mode)
+                                (memq 'font-lock-doc-face faces))
+                               emacs-lisp-docstring-fill-column
+                             fill-column)))
+          (apply func args))))))
 
 (blackout 'auto-fill-mode)
 
@@ -5360,7 +5359,6 @@ messages."
 ;; interacting with this data, including an agenda view, a time
 ;; clocker, etc. There are *many* extensions.
 (use-package org
-  :functions (org-at-heading-p org-next-visible-heading org-bookmark-jump-unhide) ; some issue with Emacs 26
   :init
 
   ;; Stolen from: <https://scripter.co/org-keywords-lower-case/>,
@@ -6767,7 +6765,7 @@ Also run `arche-atomic-chrome-setup-hook'."
               (defvar arche--currently-profiling-p t)
 
               ;; Abbreviated (and flattened) version of init.el.
-              (defvar arche-minimum-emacs-version "26.1")
+              (defvar arche-minimum-emacs-version "27.1")
               (defvar arche-local-init-file
                 (expand-file-name "init.local.el" user-emacs-directory))
               (setq package-enable-at-startup nil)
@@ -6955,14 +6953,6 @@ This is passed to `set-frame-font'."
 ;; closing paren, as we already have superior handling of that from
 ;; Smartparens.
 (setq blink-matching-paren nil)
-
-(arche-defadvice arche--advice-read-passwd-hide-char (func &rest args)
-  :around #'read-passwd
-  "Display passwords as **** rather than .... in the minibuffer.
-This is the default behavior is Emacs 27, so this advice only has
-an effect for Emacs 26 or below."
-  (let ((read-hide-char (or read-hide-char ?*)))
-    (apply func args)))
 
 (setq minibuffer-message-properties '(face minibuffer-prompt))
 
