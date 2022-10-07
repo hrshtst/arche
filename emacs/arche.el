@@ -4672,12 +4672,13 @@ Return either a string or nil."
     (arche--with-silent-message "Applying style hooks"
       (apply func args)))
 
-  :config
-
   ;; The following configuration is recommended in the manual at
   ;; https://www.gnu.org/software/auctex/manual/auctex/Quick-Start.html.
   (setq TeX-auto-save t)
   (setq TeX-parse-self t)
+
+  ;; Save buffers automatically when compiling, instead of prompting.
+  (setq TeX-save-query nil)
 
   (arche-with-operating-system macOS
     (when (or (file-directory-p "/Applications/TeXShop.app")
@@ -4714,15 +4715,7 @@ Return either a string or nil."
     "Remove frills from the `mode-name' in TeX modes.
 In practice, this means removing the stuff that comes after the
 slash, e.g. \"LaTeX/P\" becomes just \"LaTeX\"."
-    (setq mode-name TeX-base-mode-name)))
-
-;; Feature `tex' from package `auctex' provides support for
-;; running TeX commands and displaying their output.
-(use-feature tex
-  :config
-
-  ;; Save buffers automatically when compiling, instead of prompting.
-  (setq TeX-save-query nil)
+    (setq mode-name TeX-base-mode-name))
 
   (arche-defadvice arche--advice-hide-tex-compilation-buffers (name)
     :filter-return #'TeX-process-buffer-name
