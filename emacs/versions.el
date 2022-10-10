@@ -80,7 +80,7 @@
  ("melpa" . "e0efb01cd7b9d2cd9099e5937e62bf80ef65b9ca")
  ("migemo" . "f756cba3d5268968da361463c2e29b3a659a3de7")
  ("modern-cpp-font-lock" . "43c6b68ff58fccdf9deef11674a172e4eaa8455c")
- ("modus-themes" . "47251a4aa01de4435e662ef6a7ebae8dd8b8babf")
+ ("modus-themes" . "72e1b474841e9c69871154f89ba27c088f228e13")
  ("mozc" . "0a8903627b00a4f6b0cea6e6194bd4771ae558b9")
  ("multiple-cursors.el" . "1e4842d1297241a5277bfd5c7bfab9e8711da60a")
  ("mw-thesaurus.el" . "bae48760b09f750359ef702875fdde783be2ce4d")
