@@ -1034,7 +1034,7 @@ ourselves."
     (setq read-extended-command-predicate
           #'command-completion-default-include-p))
 
-  (arche-defadvice radian--advice-vertico-select-first-candidate (&rest _)
+  (arche-defadvice arche--advice-vertico-select-first-candidate (&rest _)
     :after #'vertico--update-candidates
     "Select first candidate rather than prompt by default.
 Suggestion from https://github.com/minad/vertico/issues/272 about
@@ -3470,7 +3470,7 @@ killed (which happens during Emacs shutdown)."
   ;; default behavior.
   ;; https://github.com/emacs-lsp/lsp-mode/issues/1775
   ;; https://emacs-lsp.github.io/lsp-mode/page/faq/#how-do-i-force-lsp-mode-to-forget-the-workspace-folders-for-multi-root
-  (arche-defadvice radian--lsp-multi-root-fix (&rest _)
+  (arche-defadvice arche--lsp-multi-root-fix (&rest _)
     :before #'lsp
     "Fix multi-root servers for `lsp-mode'."
     (setf (lsp-session-server-id->folders (lsp-session)) (ht)))
