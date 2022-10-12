@@ -3281,8 +3281,12 @@ via return key."
 ;; some stuff.
 (use-package yasnippet
   :hook ((prog-mode text-mode) . yas-minor-mode)
-  :bind (:map yas-minor-mode-map
 
+  :bind (;; Additional keybindings for yasnippet.
+         ("C-c y n" . #'yas-new-snippet)
+         ("C-c y v" . #'yas-visit-snippet-file)
+         ("C-c y i" . #'yas-insert-snippet)
+         :map yas-minor-mode-map
               ;; Disable TAB from expanding snippets, as I don't use it and
               ;; it's annoying.
               ("TAB" . nil)
