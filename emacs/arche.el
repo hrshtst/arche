@@ -3280,6 +3280,7 @@ via return key."
 ;; here is because it gets pulled in by LSP, and we need to unbreak
 ;; some stuff.
 (use-package yasnippet
+  :hook ((prog-mode text-mode) . yas-minor-mode)
   :bind (:map yas-minor-mode-map
 
               ;; Disable TAB from expanding snippets, as I don't use it and
@@ -3358,7 +3359,10 @@ currently active.")
       ;; override the Yasnippet keymap we only need to dynamically
       ;; rebind `yas-keymap' for the duration of that function.
       (let ((yas-keymap arche--yasnippet-then-company-keymap))
-        (apply yas--make-control-overlay args))))
+        (apply yas--make-control-overlay args)))
+
+    ;; Make snippets show in candidates.
+    (push '(company-capf :with company-yasnippet) company-backends))
 
   :blackout yas-minor-mode)
 
@@ -3455,11 +3459,6 @@ functions."
 
   (dolist (fun '(lsp-warn lsp--warn lsp--info lsp--error))
     (advice-add fun :before-until #'arche--advice-lsp-mode-silence))
-
-  ;; If we don't disable this, we get a warning about YASnippet not
-  ;; being available, even though it is. I don't use YASnippet anyway,
-  ;; so don't bother with it.
-  (setq lsp-enable-snippet nil)
 
   (arche-defadvice arche--lsp-run-from-node-modules (command)
     :filter-return #'lsp-resolve-final-function
