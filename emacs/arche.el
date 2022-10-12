@@ -1005,7 +1005,14 @@ ourselves."
                                            vertico-repeat)))
 
 (use-feature vertico
-  :init
+  :demand t
+  :bind (("C-x C-z" . #'vertico-repeat)
+         :map vertico-map
+         ("RET" . #'vertico-directory-enter)
+         ("DEL" . #'vertico-directory-delete-char)
+         ("M-DEL" . #'vertico-directory-delete-word))
+
+  :config
 
   (vertico-mode +1)
 
@@ -1019,14 +1026,6 @@ ourselves."
   (setq minibuffer-prompt-properties
         '(read-only t cursor-intangible t face minibuffer-prompt))
   (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
-
-  :bind (("C-x C-z" . #'vertico-repeat)
-         :map vertico-map
-         ("RET" . #'vertico-directory-enter)
-         ("DEL" . #'vertico-directory-delete-char)
-         ("M-DEL" . #'vertico-directory-delete-word))
-
-  :config
 
   ;; Hide commands in M-x which do not work in the current mode.
   (arche-when-compiletime (version<= "28" emacs-version)
@@ -1043,24 +1042,41 @@ navigates down a directory tree. Submit the prompt using M-TAB or
     (when (> vertico--total 0)
       (setq vertico--index 0))))
 
-;; Package `orderless' is a completion back-end that achieves
-;; incremental and narrowing completion framework such as Ivy and
-;; Helm.
-(use-package orderless
+;; Package `prescient' is a library for intelligent sorting and
+;; filtering in various contexts. The function is similar to
+;; `orderless', but its prominent feature is that sorting algorithm in
+;; `prescient' is based on frecency, a combination of frequency and
+;; recency.
+(use-package prescient
   :demand t
+  :after vertico
   :config
 
-  (orderless-define-completion-style orderless+initialism
-    (orderless-matching-styles '(orderless-initialism
-                                 orderless-literal
-                                 orderless-regexp)))
+  ;; https://github.com/minad/vertico/wiki#using-prescientel-filtering-and-sorting
 
-  (setq completion-styles '(orderless))
-  (setq completion-category-overrides
-        '((command (styles orderless+initialism))
-          (file (styles orderless+initialism))
-          (symbol (styles orderless+initialism))
-          (variable (styles orderless+initialism)))))
+  ;; Remember usage statistics across Emacs sessions.
+  (prescient-persist-mode +1)
+
+  ;; The default settings seem a little forgetful to me. Let's try
+  ;; this out.
+  (setq prescient-history-length 1000)
+
+  ;; Use prescient.el for filtering (`completion-styles') and sorting
+  ;; (`vertico-sort-function').
+  (setq completion-styles '(prescient basic))
+  (setq vertico-sort-function #'prescient-completion-sort)
+
+  ;; Common sense.
+  (setq prescient-sort-full-matches-first t)
+
+  (defun vertico-prescient-remember ()
+    "Remember the chosen candidate with Prescient."
+    (when (>= vertico--index 0)
+      (prescient-remember
+       (substring-no-properties
+        (nth vertico--index vertico--candidates)))))
+
+  (advice-add #'vertico-insert :after #'vertico-prescient-remember))
 
 ;; Feature `savehist' toggles persistent minibuffer history over Emacs
 ;; restarts.
@@ -2209,34 +2225,6 @@ color is not changed even when `mozc-mode' is on."
   ;; more complex regexp is generated. For a stupid workaround, set
   ;; the minimum number of characters to start searching.
   (setq migemo-isearch-min-length 3)
-
-  ;; Integration with `orderless'.
-  (use-feature orderless
-    :config
-
-    (defun orderless-migemo (component)
-      "Match a component as a migemo search string.
-The COMPONENT is converted into a Japanese-matching regexp by the
-command `cmigemo'."
-      (let ((pattern (migemo-get-pattern component)))
-        (condition-case nil
-            (progn (string-match-p pattern "") pattern)
-          (invalid-regexp nil))))
-
-    (defun orderless-migemo-dispatcher (pattern _index _total)
-      "Dispatches a pattern with prefix ! as a migemo search string.
-When the PATTERN has a prefix !, use `orderless-migemo' as the
-completion style. Otherwise, treat it as the default completion
-style."
-      (cond
-       ((equal "!" pattern)
-        '(orderless-literal . ""))
-       ((string-prefix-p "!" pattern)
-        `(orderless-migemo . ,(substring pattern 1)))))
-
-    ;; For the details of `orderless-style-dispatchers', consult the
-    ;; documentation for `orderless-dispatch'.
-    (setq orderless-style-dispatchers '(orderless-migemo-dispatcher)))
 
   ;; Integration with `ctrlf'.
   (use-feature ctrlf
@@ -6597,17 +6585,7 @@ Instead, display simply a flat colored region in the fringe."
     :config
 
     ;; Set a manual preview key for `affe-grep'.
-    (consult-customize affe-grep :preview-key (kbd "M-.")))
-
-  (use-feature orderless
-    :config
-
-    ;; Use the regexp transformer implemented in `orderless'.
-    (defun affe-orderless-regexp-compiler (input _type _ignorecase)
-      (setq input (orderless-pattern-compiler input))
-      (cons input
-            (lambda (str) (orderless--highlight input str))))
-    (setq affe-regexp-compiler #'affe-orderless-regexp-compiler)))
+    (consult-customize affe-grep :preview-key (kbd "M-."))))
 
 ;;;; Internet applications
 
