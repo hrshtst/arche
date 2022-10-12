@@ -3508,7 +3508,7 @@ killed (which happens during Emacs shutdown)."
   (arche-defadvice arche--lsp-multi-root-fix (&rest _)
     :before #'lsp
     "Fix multi-root servers for `lsp-mode'."
-    (setf (lsp-session-server-id->folders (lsp-session)) (ht)))
+    (eval '(setf (lsp-session-server-id->folders (lsp-session)) (ht))))
 
   :blackout " LSP")
 
