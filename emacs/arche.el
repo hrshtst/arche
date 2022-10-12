@@ -1005,7 +1005,6 @@ ourselves."
                                            vertico-repeat)))
 
 (use-feature vertico
-  :defer t
   :init
 
   (vertico-mode +1)
@@ -1014,7 +1013,7 @@ ourselves."
   (setq vertico-cycle t)
 
   ;; Extend maximal number of candidates to show.
-  (setq vertico-count 15)
+  (setq vertico-count 20)
 
   ;; Do not allow the cursor in the minibuffer prompt
   (setq minibuffer-prompt-properties
