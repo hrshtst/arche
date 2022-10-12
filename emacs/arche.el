@@ -3719,9 +3719,43 @@ menu to disappear and then come back after `company-idle-delay'."
 
   :blackout t)
 
+;; Package `company-prescient' provides intelligent sorting and
+;; filtering for candidates in Company completions.
+(use-package company-prescient
+  :demand t
+  :after company
+  :config
+
+  ;; Use `prescient' for Company menus.
+  (company-prescient-mode +1))
+
 ;; Package `company-lsp' provides a Company backend for `lsp-mode'.
 ;; It's configured automatically by `lsp-mode'.
-(use-package company-lsp)
+(use-package company-lsp
+  :init
+
+  (use-feature lsp
+    :config
+
+    (arche-defadvice arche--company-lsp-setup (&rest _)
+      :after #'lsp
+      "Disable `company-prescient' sorting by length in some contexts.
+Specifically, disable sorting by length if the LSP Company
+backend returns fuzzy-matched candidates, which implies that the
+backend has already sorted the candidates into a reasonable
+order."
+      (setq-local company-prescient-sort-length-enable
+                  (cl-dolist (w lsp--buffer-workspaces)
+                    (when (thread-first w
+                            (lsp--workspace-client)
+                            (lsp--client-server-id)
+                            (memq '(jsts-ls
+                                    bash-ls
+                                    texlab
+                                    ts-ls
+                                    svelte-ls))
+                            (not))
+                      (cl-return t)))))))
 
 ;;;; Definition location
 
@@ -6848,7 +6882,8 @@ This is non-nil if `arche--advice-kill-emacs-dispatch' has called
   (defvar arche--restart-emacs-eager-hook-functions
     ;; This list contains hooks that I determined via profiling to be
     ;; slow (double-digit milliseconds).
-    '(arche--org-clock-save
+    '(prescient--save
+      arche--org-clock-save
       save-place-kill-emacs-hook
       recentf-save-list)
     "List of functions on `kill-emacs-hook' which can be run eagerly.
