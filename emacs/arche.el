@@ -3590,6 +3590,13 @@ backends will still be included.")
          ([remap scroll-down-command] . nil)
          ([remap scroll-up-command] . nil)
 
+         ;; Now the default keybindings to select next/previous have
+         ;; been changed. Revert it to old style.
+         ("C-n" . nil)
+         ("C-p" . nil)
+         ("M-n" . #'company-select-next)
+         ("M-p" . #'company-select-previous)
+
          ;; The following are keybindings that only take effect if the
          ;; user has explicitly interacted with Company. Note that
          ;; `:map' from above is "sticky", and applies also below: see
