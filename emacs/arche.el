@@ -4005,13 +4005,6 @@ mode when getting it."
 
   (put 'c-default-style 'safe-local-variable #'stringp))
 
-;; Package `modern-cpp-font-lock' provides syntax highliting support
-;; for modern C++.
-(use-package modern-cpp-font-lock
-  :hook (c++-mode . modern-c++-font-lock-mode)
-
-  :blackout modern-c++-font-lock-mode)
-
 ;; Package `clang-format' provides functionality to use clang-format
 ;; with emacs integration.
 (use-package clang-format
