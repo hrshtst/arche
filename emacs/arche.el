@@ -3513,6 +3513,14 @@ killed (which happens during Emacs shutdown)."
     "Fix multi-root servers for `lsp-mode'."
     (eval '(setf (lsp-session-server-id->folders (lsp-session)) (ht))))
 
+  ;; Enable clang-tidy diagnostics and set flags for clangd.
+  (setq lsp-clients-clangd-args '("-j=3"
+				  "--background-index"
+				  "--clang-tidy"
+				  "--completion-style=detailed"
+				  "--header-insertion=never"
+				  "--header-insertion-decorators=0"))
+
   :blackout " LSP")
 
 ;;;; Indentation
