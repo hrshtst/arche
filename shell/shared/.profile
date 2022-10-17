@@ -78,8 +78,8 @@ has() {
 if [ -n "$HOME" ]; then
 
   # Set PATH so it includes user's private bin if it exists.
-  addenv PATH "$HOME/.local/bin" "$HOME/usr/bin"
-  addenv LD_LIBRARY_PATH "$HOME/usr/lib"
+  addenv --force PATH "$HOME/.local/bin" "$HOME/usr/bin"
+  addenv --force LD_LIBRARY_PATH "$HOME/usr/lib"
 
   # Set PATH for pkg-config.
   # https://www.freedesktop.org/wiki/Software/pkg-config/
@@ -89,8 +89,10 @@ if [ -n "$HOME" ]; then
   # https://golang.org/
   # https://github.com/golang/go/wiki/SettingGOPATH
   # $GOROOT is assumed to be /usr/local/go
-  setenv GOPATH "$HOME/usr/go"
-  addenv PATH "$GOPATH/bin" "/usr/local/go/bin"
+  if has go; then
+    setenv GOPATH "$HOME/usr/go"
+    addenv PATH "$GOPATH/bin" "/usr/local/go/bin"
+  fi
 
   # Configure paths for packages installed by yarn.
   # https://classic.yarnpkg.com/en/docs/cli/global
@@ -100,9 +102,9 @@ if [ -n "$HOME" ]; then
 
   # pyenv is a simple python version management.
   # https://github.com/pyenv/pyenv
-  setenv PYENV_ROOT "$HOME/.pyenv"
-  addenv PATH "$PYENV_ROOT/bin"
   if has pyenv; then
+    setenv PYENV_ROOT "$HOME/.pyenv"
+    addenv PATH "$PYENV_ROOT/bin"
     addenv PATH "$(pyenv root)/shims"
   fi
 
@@ -120,8 +122,10 @@ if [ -n "$HOME" ]; then
   fi
 
   # Lots of applications are installed in $ZPFX by zinit.
-  ZPFX=$HOME/.config/zinit/polaris
-  addenv PATH "$ZPFX/bin"
+  if [ -d "$HOME/.config/zinit" ]; then
+    ZPFX=$HOME/.config/zinit/polaris
+    addenv PATH "$ZPFX/bin"
+  fi
 fi
 
 ## External configuration
