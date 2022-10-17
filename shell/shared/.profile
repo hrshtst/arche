@@ -17,8 +17,8 @@ setenv () {
 # Return True (0) if the path exists in the system. Otherwise, return
 # False (1).
 _is_valid () {
-  if [ ! -d "$2" ]; then
-    echo "warning: no such directory: $2" >&2
+  if [ ! -d "$1" ]; then
+    echo "warning: no such directory (addenv): $1" >&2
     return 1
   fi
   return 0
@@ -27,7 +27,9 @@ _is_valid () {
 # Add a value to the head of a variable. If the variable name ends
 # with PATH the value is added with a delimiter ':'.
 # Usage:
-#   addenv PATH $HOME/usr/bin
+#   addenv PATH $HOME/usr/bin  # => PATH=$HOME/usr/bin:
+#   addenv PATH /bin /usr/bin  # => PATH=/bin:/usr/bin:
+#   addenv --force PATH /noexist  # => PATH=/noexist:
 addenv () {
   force=false
   case $1 in
@@ -35,7 +37,10 @@ addenv () {
       force=true
       shift
       ;;
-    *) ;;
+    --*|-*)
+      echo "warning: unrecognized option (addenv): $1" >&2
+      shift
+      ;;
   esac
 
   if [ $# -lt 2 ]; then
@@ -44,26 +49,23 @@ addenv () {
   fi
 
   var=$1; shift
-  value="$(eval 'echo $'"$var")"
-
+  curvals="$(eval 'echo $'"$var")"
   case $var in
-    *PATH)
-      i=$#
-      while [ "$i" -gt 0 ]; do
-        eval "v=\${$i}"
-        if [ $force = false ] && _is_valid "$var" "$v"; then
-          value="${v}:$value"
-        fi
-        i=$((i-1))
-      done
-      ;;
-    *)
-      for v in "$@"; do
-        value="${v}$value"
-      done
-      ;;
+    *PATH) del=":" ;;
+    *) del= ;;
   esac
-  setenv "$var" "$value"
+  newvals=
+  i=$#
+  v=
+
+  while [ "$i" -gt 0 ]; do
+    eval "v=\${$i}"
+    if [ -z "$del" ] || [ "$force" = true ] || _is_valid "$v"; then
+      newvals="${v}${del}${newvals}"
+    fi
+    i=$((i-1))
+  done
+  setenv "$var" "${newvals}${curvals}"
 }
 
 # Return True if a command is hashed on the system.
