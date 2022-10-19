@@ -9,7 +9,7 @@
 # Start tmux session automatically when the current shell is
 # interactive.
 if (( $+commands[tmux] )) && [[ -o interactive ]] && (( ! $+TMUX )); then
-  export TMUX_DEFAULT_SHELL=$(which zsh)
+  TMUX_DEFAULT_SHELL=${TMUX_DEFAULT_SHELL:-$(which zsh)}
   exec tmux new-session $TMUX_DEFAULT_SHELL \; set-option default-shell $TMUX_DEFAULT_SHELL
 fi
 
@@ -873,6 +873,15 @@ if (( $+commands[hub] )); then
 fi
 
 #### Tmux
+
+function tmux() {
+  TMUX_DEFAULT_SHELL=${TMUX_DEFAULT_SHELL:-$(which zsh)}
+  if [[ $# = 0 ]]; then
+    command tmux new-session "$TMUX_DEFAULT_SHELL" \; set-option default-shell "$TMUX_DEFAULT_SHELL"
+  else
+    command tmux "$@"
+  fi
+}
 
 if (( $+commands[tmux] )); then
   alias ta='tmux attach'
