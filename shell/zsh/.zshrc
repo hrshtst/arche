@@ -57,6 +57,13 @@ zinit light-mode for \
 # Define colors so that to work across a range of terminal emulators.
 [[ $COLORTERM == *(24bit|truecolor)* ]] || zmodload zsh/nearcolor 2>/dev/null
 
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 # Theme the prompt with Powerlevel10k.
 if [[ -f "${HOME}/.p10k.zsh" ]]; then
   zinit ice wait'!' lucid depth'1' atload'source ${HOME}/.p10k.zsh; _p9k_precmd' nocd
