@@ -4775,7 +4775,7 @@ environment with point at the end of a non-empty line of text."
     (let ((needs-fixup (save-excursion
                          (beginning-of-line)
                          (re-search-forward
-                          "[^[:space:]]" (point-at-eol) 'noerror))))
+                          "[^[:space:]]" (line-end-position) 'noerror))))
       (prog1 (apply func args)
         (when needs-fixup
           (save-excursion
@@ -5909,7 +5909,7 @@ wdired          | ^C-x C-q^: edit     ^C-c C-c^: commit   ^C-c ESC^: abort
       ("O" dired-do-chown)
       ("G" dired-do-chgrp)
       ("M" dired-do-chmod)
-      ("I" dired-info)
+      ("I" dired-do-info)
       ("y" dired-show-file-type)
       ("S" dired-do-symlink)
       ("Y" dired-do-relsymlink)
