@@ -89,20 +89,20 @@ if [ -n "$HOME" ]; then
   # https://golang.org/
   # https://github.com/golang/go/wiki/SettingGOPATH
   # $GOROOT is assumed to be /usr/local/go
-  if has go; then
+  if [[ -d /usr/local/go ]] || [[ -d "$HOME"/usr/local/go ]]; then
     setenv GOPATH "$HOME/usr/go"
     addenv PATH "$GOPATH/bin" "/usr/local/go/bin"
   fi
 
   # Configure paths for packages installed by yarn.
   # https://classic.yarnpkg.com/en/docs/cli/global
-  if has yarn; then
+  if [[ -d "$HOME"/.yarn ]]; then
     addenv PATH "$(yarn global bin)"
   fi
 
   # pyenv is a simple python version management.
   # https://github.com/pyenv/pyenv
-  if has pyenv; then
+  if [[ -d "$HOME"/.pyenv ]]; then
     setenv PYENV_ROOT "$HOME/.pyenv"
     addenv PATH "$PYENV_ROOT/bin"
     addenv PATH "$(pyenv root)/shims"
