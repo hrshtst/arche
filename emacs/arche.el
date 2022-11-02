@@ -6489,10 +6489,6 @@ Instead, display simply a flat colored region in the fringe."
 (use-package docker
   :bind ("C-c d" . #'docker))
 
-;; Package `docker-tramp' provides TRAMP integration for docker
-;; containers.
-(use-package docker-tramp)
-
 ;;;; External commands
 
 ;; Feature `compile' provides a way to run a shell command from Emacs
