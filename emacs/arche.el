@@ -4557,6 +4557,17 @@ Return either a string or nil."
     "Automatically discover Pipenv and Poetry virtualenvs."
     (arche--python-find-virtualenv)))
 
+;; Package `numpydoc' inserts NumPy style docstrings automatically in
+;; Python function definitions.
+(use-package numpydoc
+  :bind (:map python-mode-map
+         ("C-c C-n" . #'numpydoc-generate))
+
+  :config
+
+  ;; Instead of interactive insertion, insert template text
+  (setq numpydoc-insertion-style nil))
+
 ;;;; Ruby
 ;; https://www.ruby-lang.org/
 
