@@ -1,3 +1,4 @@
+# shellcheck shell=sh
 # This is my personal configuration for login shells.
 
 ## Utility functions
