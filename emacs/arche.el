@@ -5541,7 +5541,10 @@ This runs `org-insert-heading' with
   ;; the highlighting destroys the invisibility added by
   ;; `org-indent-mode'. Therefore, don't highlight when creating a
   ;; sparse tree.
-  (setq org-highlight-sparse-tree-matches nil))
+  (setq org-highlight-sparse-tree-matches nil)
+
+  ;; Add package we always need for LaTeX fragment.
+  (add-to-list 'org-latex-packages-alist '("" "bm" nil)))
 
 ;; Feature `org-indent' provides an alternative view for Org files in
 ;; which sub-headings are indented.
