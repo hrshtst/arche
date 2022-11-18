@@ -5442,7 +5442,7 @@ https://code.orgmode.org/bzg/org-mode/commit/13424336a6f30c50952d291e7a82906c121
         ;;                 "‘#+foo’", "“#+foo”", ",#+foo bar",
         ;;                 "#+FOO_bar<eol>", "#+FOO<eol>",
         ;;                 ":foo:<eol>", ":foo: bar".
-        (while (re-search-forward "\\(?1:\\(?:#\\+\\|:\\)[A-Z_]+\\(?:_[[:alpha:]]+\\)*\\)\\(?:[ :=~’”]\\|$\\)" nil :noerror)
+        (while (re-search-forward "\\(?1:\\(?:#\\+\\|:\\)[A-Za-z_]+\\(?:_[[:alpha:]]+\\)*\\)\\(?:[ :=~’”]\\|$\\)" nil :noerror)
           (setq count (1+ count))
           (replace-match (downcase (match-string-no-properties 1)) :fixedcase nil nil 1))
         (message "Lower-cased %d matches" count))))
