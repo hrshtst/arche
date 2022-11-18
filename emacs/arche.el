@@ -5505,7 +5505,8 @@ block identifiers and property names to lower cases."
   :config
 
   ;; Prevent this binding from overriding the alternative binding to
-  ;; move focus to the previous window.
+  ;; move focus to the previous window. Originally, it is bound to
+  ;; `org-cycle-agenda-files', which is still callable with C-'.
   (unbind-key "C-," org-mode-map)
 
   ;; If you try to insert a heading in the middle of an entry, don't
