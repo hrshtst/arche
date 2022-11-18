@@ -5540,16 +5540,7 @@ This runs `org-insert-heading' with
   ;; the highlighting destroys the invisibility added by
   ;; `org-indent-mode'. Therefore, don't highlight when creating a
   ;; sparse tree.
-  (setq org-highlight-sparse-tree-matches nil)
-
-  ;; This is needed for `org-journal' which will be loaded later.
-  ;; Unless pulling tags from Org remote repository, `org-version'
-  ;; returns rubbish value, which leads to failure of `org-journal'
-  ;; loading.
-  (unless (string-match-p "^[0-9]" (org-version))
-    ;; (warn "Org version is invalid: need to fetch tags from remote repo.")
-    (defun org-release () "9.4")
-    (defun org-git-version () "release_9.4-57-ga88806")))
+  (setq org-highlight-sparse-tree-matches nil))
 
 ;; Feature `org-indent' provides an alternative view for Org files in
 ;; which sub-headings are indented.
