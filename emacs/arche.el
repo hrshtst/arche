@@ -4834,6 +4834,13 @@ environment with point at the end of a non-empty line of text."
 
   (setq preview-scale-function 1.2))
 
+
+;; Package `citar' provides a completing-read front-end to browse and
+;; act on BibTeX bibliographic data and editing-support for
+;; `org-cite' and documentation major modes.
+(use-package citar
+  :bind (("C-c [" . #'citar-insert-citation)))
+
 ;;;; VimScript
 ;; http://vimdoc.sourceforge.net/htmldoc/usr_41.html
 
@@ -5669,6 +5676,21 @@ be invoked before `org-mode-hook' is run."
   :commands (org-fold-show-entry org-fold-show-children
              org-fold-hide-subtree org-back-to-heading org-fold-hide-sublevels
              org-fold-folded-p org-fold-region))
+
+;; Feature `org-cite' provides functions to handle citations in Org.
+(use-feature oc
+  :bind (:map org-mode-map
+              ("C-c [" . #'org-cite-insert))
+
+  :config
+
+  (use-feature citar
+    :config
+
+    (setq org-cite-insert-processor 'citar)
+    (setq org-cite-follow-processor 'citar)
+    (setq org-cite-activate-processor 'citar)
+    (setq org-cite-global-bibliography citar-bibliography)))
 
 ;;;; Note taking
 
