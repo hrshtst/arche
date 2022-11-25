@@ -5679,6 +5679,7 @@ be invoked before `org-mode-hook' is run."
 
 ;; Feature `org-cite' provides functions to handle citations in Org.
 (use-feature oc
+  :after org
   :bind (:map org-mode-map
               ("C-c [" . #'org-cite-insert))
 
