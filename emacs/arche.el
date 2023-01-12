@@ -7318,9 +7318,6 @@ nil."
 ;; frame flashing and other artifacts during startup.
 (use-feature modus-themes
   :no-require t
-  :functions (modus-themes-load-themes
-              modus-themes-load-operandi
-              modus-themes-load-vivendi)
   :demand t
   :init
 
@@ -7339,11 +7336,8 @@ nil."
   ;; load-time `require' invocation, as well as the compile-time one.
   (require 'modus-themes)
 
-  ;; Add all your customizations prior to loading the themes.
-  (modus-themes-load-themes)
-
   ;; Load the dard theme by default.
-  (modus-themes-load-vivendi))
+  (load-theme 'modus-vivendi :no-confirm))
 
 ;; Make adjustments to color theme that was selected by Radian or
 ;; user. See <https://github.com/raxod502/radian/issues/456>.
