@@ -1000,11 +1000,17 @@ ourselves."
 ;; provides a user interface for choosing from a list of options by
 ;; typing a query to narrow the list, and then selecting one of the
 ;; remaining candidates. This offers a significant improvement over
-(straight-use-package '(vertico :files (:defaults "extensions/*")
-                                :includes (vertico-directory
-                                           vertico-repeat)))
-
-(use-feature vertico
+(use-package vertico
+  :straight (:host github :repo "minad/vertico"
+             :files (:defaults "extensions/*")
+             :includes (vertico-buffer
+                        vertico-directory
+                        vertico-flat
+                        vertico-indexed
+                        vertico-mouse
+                        vertico-quick
+                        vertico-repeat
+                        vertico-reverse))
   :demand t
   :bind (("C-x C-z" . #'vertico-repeat)
          :map vertico-map
@@ -1015,6 +1021,8 @@ ourselves."
   :config
 
   (vertico-mode +1)
+
+  (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy)
 
   ;; Enable cycling for `vertico-next' and `vertico-previous'.
   (setq vertico-cycle t)
@@ -1031,16 +1039,6 @@ ourselves."
   (arche-when-compiletime (version<= "28" emacs-version)
     (setq read-extended-command-predicate
           #'command-completion-default-include-p))
-
-  (arche-defadvice arche--advice-vertico-select-first-candidate (&rest _)
-    :after #'vertico--update-candidates
-    "Select first candidate rather than prompt by default.
-Suggestion from https://github.com/minad/vertico/issues/272 about
-how to recover previous Selectrum behavior, so that repeated TAB
-navigates down a directory tree. Submit the prompt using M-TAB or
-<up> RET."
-    (when (> vertico--total 0)
-      (setq vertico--index 0)))
 
   ;; Ignore case... otherwise the behavior is really weird and
   ;; confusing.
