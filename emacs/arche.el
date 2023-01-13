@@ -7284,8 +7284,21 @@ nil."
   ;; load-time `require' invocation, as well as the compile-time one.
   (require 'modus-themes)
 
+  ;; All customizations should be put prior to loading themes.
+  (setq modus-themes-italic-constructs t)
+
+  (arche-defhook arche--modus-themes-custom-faces ()
+    modus-themes-after-load-theme-hook
+    "Face customizations for `modus-themes'."
+    (modus-themes-with-colors
+      (custom-set-faces
+       `(prescient-primary-highlight ((,c (:foreground ,yellow-warmer))))
+       `(prescient-secondary-highlight ((,c (:foreground ,green-warmer))))
+       `(completions-common-part nil)
+       `(completions-first-difference nil))))
+
   ;; Load the dard theme by default.
-  (load-theme 'modus-vivendi :no-confirm))
+  (modus-themes-load-theme 'modus-vivendi))
 
 ;; Make adjustments to color theme that was selected by Radian or
 ;; user. See <https://github.com/raxod502/radian/issues/456>.
