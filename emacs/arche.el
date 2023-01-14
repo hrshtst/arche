@@ -90,6 +90,9 @@ The packages `use-package', `straight', `blackout', `bind-key'
 and `el-patch' are always loaded even if they are members of this
 list.")
 
+(defvar radian-compiling nil
+  "Non-nil when Radian's make is being called.")
+
 (unless arche-org-enable-contrib
   (add-to-list 'arche-disabled-packages
                'org-contrib))
