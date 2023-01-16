@@ -5739,6 +5739,17 @@ non-nil value to enable trashing for file operations."
   :bind* (("C-x w" . #'arche-rename-current-file))
   :config
 
+  (arche-when-compiletime (version<= "29" emacs-version)
+    (arche-with-operating-system macOS
+      (arche-defadvice arche--advice-dired-guess-open-on-macos
+          (&rest _)
+        :override #'dired-guess-default
+        "Cause Dired's '!' command to use open(1).
+This advice is only activated on macOS, where it is helpful since
+most of the Linux utilities in `dired-guess-shell-alist-default'
+are probably not going to be installed."
+        "open")))
+
   (defun arche-rename-current-file (newname)
     "Rename file visited by current buffer to NEWNAME.
 Interactively, prompt the user for the target filename, with
@@ -5972,15 +5983,16 @@ wdired          | ^C-x C-q^: edit     ^C-c C-c^: commit   ^C-c ESC^: abort
   ;; Prevent annoying "Omitted N lines" messages when auto-reverting.
   (setq dired-omit-verbose nil)
 
-  (arche-with-operating-system macOS
-    (arche-defadvice arche--advice-dired-guess-open-on-macos
-        (&rest _)
-      :override #'dired-guess-default
-      "Cause Dired's '!' command to use open(1).
+  (arche-when-compiletime (version< emacs-version "29")
+    (arche-with-operating-system macOS
+      (arche-defadvice arche--advice-dired-guess-open-on-macos
+          (&rest _)
+        :override #'dired-guess-default
+        "Cause Dired's '!' command to use open(1).
 This advice is only activated on macOS, where it is helpful since
 most of the Linux utilities in `dired-guess-shell-alist-default'
 are probably not going to be installed."
-      "open")))
+        "open"))))
 
 ;;;; Terminal emulator
 
