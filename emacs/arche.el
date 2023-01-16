@@ -780,7 +780,7 @@ KEY-NAME, COMMAND, and PREDICATE are as in `bind-key'."
     ("d" toggle-debug-on-error "debug")
     ("f" auto-fill-mode "fill")
     ("F" follow-mode "follow")
-    ("l" linum-mode "line num")
+    ("l" display-line-numbers-mode "line num")
     ("o" outline-minor-mode "outline")
     ("t" toggle-truncate-lines "truncate")
     ("w" whitespace-mode "whitespace")
