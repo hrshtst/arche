@@ -5287,6 +5287,9 @@ SYMBOL is as in `xref-find-definitions'."
   ;; warning gets triggered basically all the time for everything.
   (setq byte-compile-warnings '(not make-local noruntime docstrings))
 
+  (defvar arche-byte-compile--process nil
+    "Last `arche-byte-compile' process object.")
+
   (defun arche-batch-byte-compile ()
     "Byte-compile arche.el. For usage in batch mode."
     (byte-compile-file arche-lib-file))
@@ -5305,37 +5308,43 @@ messages."
         (cl-return))
       (when report-progress
         (message "Byte-compiling updated configuration..."))
+      (when (process-live-p arche-byte-compile--process)
+        (kill-process arche-byte-compile--process))
       (ignore-errors
         (kill-buffer " *arche-byte-compile*"))
       (let ((default-directory arche-directory))
         (arche-env-setup)
-        (make-process
-         :name "arche-byte-compile"
-         :buffer " *arche-byte-compile*"
-         :command '("make" "compile")
-         :noquery t
-         :sentinel
-         (lambda (proc _event)
-           (unless (process-live-p proc)
-             (with-current-buffer (process-buffer proc)
-               (if (= 0 (process-exit-status proc))
-                   (progn
-                     (insert "Byte-compilation completed successfully!\n")
-                     (message
-                      (if report-progress
-                          "Byte-compiling updated configuration...done"
-                        "Byte-compiled updated configuration")))
-                 (save-match-data
-                   (save-excursion
-                     (goto-char (point-min))
-                     (when (looking-at "In toplevel form:")
-                       (forward-line))
-                     (when (looking-at "arche\\.el:[0-9]+:[0-9]+:Warning: ")
-                       (goto-char (match-end 0)))
-                     (message "Failed to byte-compile%s"
-                              (if (looking-at ".+")
-                                  (format ": %s" (match-string 0))
-                                " (no output)"))))))))))))
+        (setq
+         arche-byte-compile--process
+         (make-process
+          :name "arche-byte-compile"
+          :buffer " *arche-byte-compile*"
+          :command '("make" "compile")
+          :noquery t
+          :sentinel
+          (lambda (proc _event)
+            (unless (process-live-p proc)
+              (when (buffer-live-p (process-buffer proc))
+                (with-current-buffer (process-buffer proc)
+                  (if (= 0 (process-exit-status proc))
+                      (progn
+                        (insert "Byte-compilation completed successfully!\n")
+                        (message
+                         (if report-progress
+                             "Byte-compiling updated configuration...done"
+                           "Byte-compiled updated configuration")))
+                    (save-match-data
+                      (save-excursion
+                        (goto-char (point-min))
+                        (when (looking-at "In toplevel form:")
+                          (forward-line))
+                        (when (looking-at
+                               "arche\\.el:[0-9]+:[0-9]+:Warning: ")
+                          (goto-char (match-end 0)))
+                        (message "Failed to byte-compile%s"
+                                 (if (looking-at ".+")
+                                     (format ": %s" (match-string 0))
+                                   " (no output)"))))))))))))))
 
   :blackout (emacs-lisp-compilation-mode . "Byte-Compile"))
 
