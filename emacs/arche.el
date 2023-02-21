@@ -1644,16 +1644,21 @@ function return the vector of distilled buffers as well."
   :demand t
   :config
 
-  ;; Make `recentf-save-list' and `recentf-cleanup' silent. We have to
-  ;; do this before turning on `recentf-mode' because they are called
-  ;; immediately when the `recentf-mode' is enabled.
-  (dolist (func '(recentf-load-list recentf-cleanup))
-    (advice-add func :around #'arche--advice-silence-messages))
+  (arche-defadvice arche-local--recentf-silence-load (func &rest args)
+    :around #'recentf-load-list
+    "Silence loading of the recentf save file."
+    (arche--with-silent-load
+      (apply func args)))
 
-  (arche-defadvice arche--advice-recentf-save-list-silently
-      (func &rest args)
+  (arche-defadvice arche-local--recentf-silence-cleanup (func &rest args)
+    :around #'recentf-cleanup
+    "Silence recentf file list cleanup."
+    (arche--with-silent-message "recentf"
+      (apply func args)))
+
+  (arche-defadvice arche-local--recentf-silence-save (func &rest args)
     :around #'recentf-save-list
-    "Make `recentf-save-list' save the recent file silently."
+    "Silence saving of the recentf save file."
     (arche--with-silent-write
       (apply func args)))
 
@@ -3323,20 +3328,6 @@ currently active.")
   :after yasnippet)
 
 ;;; IDE features
-;;;; Virtual environments
-;;;;; Python
-
-;; Package `pyvenv' provides functions for activating and deactivating
-;; Python virtualenvs within Emacs. It's mostly not needed anymore now
-;; that `lsp-python-ms' is configured to discover the appropriate
-;; Pipenv or Poetry virtualenv, but maybe it will come in handy
-;; someday.
-(use-package pyvenv)
-
-;; Package `poetry' is a wrapper around Poetry to control it within
-;; Emacs.
-(use-package poetry)
-
 ;;;; Language servers
 
 ;; In recent versions of `f' some files seem not to be loaded by
@@ -3911,13 +3902,6 @@ mode when getting it."
 
   (add-to-list 'safe-local-variable-values
                '(lisp-indent-function . common-lisp-indent-function)))
-
-;;;; AppleScript
-;; https://developer.apple.com/library/content/documentation/AppleScript/Conceptual/AppleScriptLangGuide/introduction/ASLR_intro.html
-
-;; Package `apples-mode' provides a major mode for AppleScript.
-(use-package apples-mode
-  :mode "\\.\\(applescri\\|sc\\)pt\\'")
 
 ;;;; C, C++, Objective-C, Java
 ;; https://en.wikipedia.org/wiki/C_(programming_language)
@@ -4517,16 +4501,6 @@ Return either a string or nil."
 
 ;;;; Ruby
 ;; https://www.ruby-lang.org/
-
-;; Package `robe' provides a language server for Ruby which draws
-;; information for autocompletions and source code navigation from a
-;; live REPL in the project context. Start it with `robe-start'.
-(use-package robe
-  :init
-
-  (add-hook 'ruby-mode-hook #'robe-mode)
-
-  :blackout t)
 
 ;; Package `ruby-electric' allows you to have Emacs insert a paired
 ;; "end" when you type "do", and analogously for other paired
@@ -5829,7 +5803,10 @@ the problematic case.)"
   (setq dired-recursive-copies 'always)
 
   ;; Always match only file names when doing isearch in Dired.
-  (setq dired-isearch-filenames t))
+  (setq dired-isearch-filenames t)
+
+  ;; Showing free space is a sigificant performance hit.
+  (setq dired-free-space nil))
 
 (use-feature dired-x
   :after dired
@@ -6750,12 +6727,6 @@ Also run `arche-atomic-chrome-setup-hook'."
 ;; Package `mw-thesaurus' provides a way to lookup a word and display
 ;; its thesaurus definition from Merriam-Webster Thesaurus.
 (use-package mw-thesaurus)
-
-;; Package `sx' allows you to browse Stack Overflow from within Emacs.
-;; First, run `sx-authenticate' in order to provide your username and
-;; password. After that, you can use any of the autoloaded entry
-;; points. Navigation is keyboard-centric.
-(use-package sx)
 
 ;;;; Emacs profiling
 
