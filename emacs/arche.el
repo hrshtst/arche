@@ -728,11 +728,6 @@ This keymap is bound under \\[arche-keymap].")
 
 (bind-key* "M-P" arche-keymap)
 
-(defmacro arche-bind-key (key-name command &optional predicate)
-  "Bind a key in `arche-keymap'.
-KEY-NAME, COMMAND, and PREDICATE are as in `bind-key'."
-  `(bind-key ,key-name ,command arche-keymap ,predicate))
-
 (defun arche-join-keys (&rest keys)
   "Join key sequences KEYS. Empty strings and nils are discarded.
 \(arche--join-keys \"\\[arche-keymap] e\" \"e i\")
@@ -789,7 +784,7 @@ KEY-NAME, COMMAND, and PREDICATE are as in `bind-key'."
     ("w" whitespace-mode "whitespace")
     ("q" nil "quit"))
 
-  (arche-bind-key "t" #'hydra-toggle/body))
+  (bind-key "t" #'hydra-toggle/body arche-keymap))
 
 ;;; Environment
 ;;;; Environment variables
@@ -1356,7 +1351,7 @@ prefix acts normally like as `split-window-right'."
     ;; Quit
     ("q" nil "quit" :column nil))
 
-  (arche-bind-key "w" #'hydra-window/body))
+  (bind-key "w" #'hydra-window/body arche-keymap))
 
 ;; Feature `ibuffer' provides a more modern replacement for the
 ;; `list-buffers' command.
@@ -1962,9 +1957,9 @@ unquote it using a comma."
                              (downcase
                               bare-filename)))))))
          (defun-other-window-name
-           (intern
-            (concat (symbol-name defun-name)
-                    "-other-window")))
+          (intern
+           (concat (symbol-name defun-name)
+                   "-other-window")))
          (docstring (format "Edit file %s."
                             bare-filename))
          (docstring-other-window
@@ -1981,16 +1976,16 @@ unquote it using a comma."
                                       full-filename))))
                           (find-file ,full-filename))))
          (defun-other-window-form
-           `(defun ,defun-other-window-name ()
-              ,docstring-other-window
-              (interactive)
-              (when (or (file-exists-p ,full-filename)
-                        (yes-or-no-p
-                         ,(format
-                           "Does not exist, really visit %s? "
-                           (file-name-nondirectory
-                            full-filename))))
-                (find-file-other-window ,full-filename))))
+          `(defun ,defun-other-window-name ()
+             ,docstring-other-window
+             (interactive)
+             (when (or (file-exists-p ,full-filename)
+                       (yes-or-no-p
+                        ,(format
+                          "Does not exist, really visit %s? "
+                          (file-name-nondirectory
+                           full-filename))))
+               (find-file-other-window ,full-filename))))
          (full-keybinding
           (when keybinding
             (arche-join-keys "e" keybinding)))
@@ -2000,11 +1995,11 @@ unquote it using a comma."
        ,defun-form
        ,defun-other-window-form
        ,@(when full-keybinding
-           `((arche-bind-key ,full-keybinding #',defun-name)))
+           `((bind-key ,full-keybinding #',defun-name arche-keymap)))
        ,@(when full-other-window-keybinding
-           `((arche-bind-key
-              ,full-other-window-keybinding
-              #',defun-other-window-name)))
+           `((bind-key ,full-other-window-keybinding
+                       #',defun-other-window-name
+                       arche-keymap)))
        ;; Return the symbols for the two functions defined.
        (list ',defun-name ',defun-other-window-name))))
 
@@ -2616,7 +2611,7 @@ _C-o_: other       ^   ^             ^   ^                 _C-M-v_: subtree down
       ;; Quit
       ("C-z" nil "leave"))
 
-    (arche-bind-key "@" #'hydra-outline/body))
+    (bind-key "@" #'hydra-outline/body arche-keymap))
 
   :bind (:map arche-keymap
          ("@" . #'hydra-outline/body))
@@ -2900,7 +2895,7 @@ the reverse direction from \\[pop-global-mark]."
 ;; used in the package `smartparens'.
 (bind-key* "M-/" search-map)
 
-(arche-bind-key "c" #'toggle-case-fold-search)
+(bind-key "c" #'toggle-case-fold-search arche-keymap)
 
 ;; Package `ctrlf' provides a replacement for `isearch' that is more
 ;; similar to the tried-and-true text search interfaces in web
@@ -3824,9 +3819,9 @@ was printed, and only have ElDoc display if one wasn't."
   :config
 
   ;; For use with `lsp-ui'.
-  (arche-bind-key "p" #'flycheck-previous-error)
-  (arche-bind-key "n" #'flycheck-next-error)
-  (arche-bind-key "l" #'flycheck-list-errors)
+  (bind-key "p" #'flycheck-previous-error arche-keymap)
+  (bind-key "n" #'flycheck-next-error arche-keymap)
+  (bind-key "l" #'flycheck-list-errors arche-keymap)
 
   ;; It is sometimes incovenient that the `lsp' checker is only
   ;; enabled as a flycheck's syntax checker in `lsp-mode'. This issue
@@ -5155,7 +5150,7 @@ bizarre reason."
   (load user-init-file nil 'nomessage)
   (message "Reloading init-file...done"))
 
-(arche-bind-key "r" #'arche-reload-init)
+(bind-key "r" #'arche-reload-init arche-keymap)
 
 (defun arche-eval-buffer-or-region (&optional start end)
   "Evaluate the current region, or the whole buffer if no region is active.
@@ -6341,7 +6336,7 @@ command."
       ("k" git-gutter:revert-hunk "revert")
       ("q" nil))
 
-    (arche-bind-key "v" #'hydra-git-gutter/body))
+    (bind-key "v" #'hydra-git-gutter/body arche-keymap))
 
   :config
 
@@ -6480,7 +6475,7 @@ Instead, display simply a flat colored region in the fringe."
 (use-feature compile
   :init
 
-  (arche-bind-key "m" #'compile)
+  (bind-key "m" #'compile arche-keymap)
 
   :config
 
