@@ -63,26 +63,6 @@
 
 ;;; Define utility functions and variables
 
-(defcustom arche-org-enable-contrib nil
-  "Non-nil means to make Org contrib modules available.
-This has to be set at the beginning of init, i.e. in the top
-level of init.local.el."
-  :type 'boolean)
-
-(defcustom arche-color-theme-enable t
-  "Non-nil means to load the default color theme.
-Set this to nil if you wish to load a different color theme in
-your local configuration."
-  :type 'boolean)
-
-(make-obsolete-variable 'arche-org-enable-contrib
-                        'arche-disabled-packages
-                        "2021-11-28")
-
-(make-obsolete-variable 'arche-color-theme-enable
-                        'arche-disabled-packages
-                        "2021-11-28")
-
 (defvar arche-disabled-packages nil
   "List of packages that should not be loaded.
 
@@ -92,14 +72,6 @@ list.")
 
 (defvar arche-compiling nil
   "Non-nil when Arche's make is being called.")
-
-(unless arche-org-enable-contrib
-  (add-to-list 'arche-disabled-packages
-               'org-contrib))
-
-(unless arche-color-theme-enable
-  (add-to-list 'arche-disabled-packages
-               'modus-themes))
 
 (defvar arche-directory (file-name-directory
                          (directory-file-name
