@@ -1056,7 +1056,9 @@ ourselves."
 
   ;; Ignore case... otherwise the behavior is really weird and
   ;; confusing.
-  (setq completion-ignore-case t))
+  (setq read-file-name-completion-ignore-case t
+        read-buffer-completion-ignore-case t
+        completion-ignore-case t))
 
 ;; Package `prescient' is a library for intelligent sorting and
 ;; filtering in various contexts. The function is similar to
