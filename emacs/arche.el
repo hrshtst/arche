@@ -2472,6 +2472,14 @@ Apparently, such modes are derived from `text-mode', even though
 they are definitely programming-oriented."
   (setq-local adaptive-fill-mode nil))
 
+(defun arche-fix-whitespace-maybe ()
+  "Fix whitespace in buffer if appropriate for the current buffer.
+Don't do anything for binary coded buffers."
+  (if (eq buffer-file-coding-system 'binary)
+      (setq require-final-newline nil)
+    (setq require-final-newline t)
+    (delete-trailing-whitespace)))
+
 (define-minor-mode arche-fix-whitespace-mode
   "Minor mode to automatically fix whitespace on save.
 If enabled, then saving the buffer deletes all trailing
@@ -2480,10 +2488,8 @@ newline."
   :after-hook
   (if arche-fix-whitespace-mode
       (progn
-        (setq require-final-newline t)
-        (add-hook 'before-save-hook #'delete-trailing-whitespace nil 'local))
-    (setq require-final-newline nil)
-    (remove-hook 'before-save-hook #'delete-trailing-whitespace 'local)))
+        (add-hook 'before-save-hook #'arche-fix-whitespace-maybe nil 'local))
+    (remove-hook 'before-save-hook #'arche-fix-whitespace-maybe 'local)))
 
 (define-globalized-minor-mode arche-fix-whitespace-global-mode
   arche-fix-whitespace-mode arche-fix-whitespace-mode)
