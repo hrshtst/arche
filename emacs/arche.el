@@ -6500,6 +6500,9 @@ Instead, display simply a flat colored region in the fringe."
                                ,(concat (straight--repos-dir "emacs-libvterm") "build")))))
   :init
 
+  ;; Don't ask for confirmation before compiling.
+  (setq vterm-always-compile-module t)
+
   ;; Increase max scrollback than default.
   (setq vterm-max-scrollback 10000)
 
