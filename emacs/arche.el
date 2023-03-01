@@ -1139,7 +1139,7 @@ ourselves."
    consult-bookmark consult-recent-file consult-xref
    consult--source-recent-file consult--source-project-recent-file
    consult--source-bookmark
-   :preview-key (kbd "M-."))
+   :preview-key "M-.")
 
   ;; Configure the narrowing key. Both < and C-+ work reasonably well.
   (setq consult-narrow-key "<")
