@@ -2,9 +2,6 @@
   detachedHead = false
   statusHints = false
 [alias]
-  alias = "!_() { git config --global alias.$1 \"$2\"; }; _"
-  aliases = config --get-regexp ^alias\\.
-  checkup = !git log -1 && (git fetch --all 2>/dev/null || true) && git status
   contributors = shortlog -s -n
 # Run a command as in the repository root. See
 # https://stackoverflow.com/questions/957928#comment9747528_957978.
@@ -14,9 +11,7 @@
   root = rev-list --max-parents=0 HEAD
   precommit = diff --cached -w --word-diff=color --word-diff-regex='[^[:space:]<>]+'
   prestage = diff -w --word-diff=color
-  setup = !git init && git commit --allow-empty -m \"Initial commit\"
   tree = log --graph --date=short --pretty='format:%C(yellow)%h%Creset %s %Cgreen(%an)%Creset %Cred%d%Creset'
-  unalias = "!_() { git config --global --unset alias.$1; }; _"
   unstage = reset -q HEAD --
 [branch]
 # When creates a new branch that exists on a remote always makes it
@@ -59,11 +54,10 @@
 [pull]
   ff = only
 [push]
+  autoSetupRemote = true
   default = current
 [rebase]
   autosquash = true
-[receive]
-  denyCurrentBranch = updateInstead
 [rerere]
   enabled = true
 [status]
