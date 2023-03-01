@@ -594,11 +594,10 @@ NAME and ARGS are as in `use-package'."
          (package (cond
                    (straight (car straight))
                    (straight-use-package-by-default name))))
-    `(if (arche-enabled-p ',name)
-         (arche-protect-macros-maybe ,name
-           (use-package ,name ,@args))
-       ,@(when package
-           (list `(straight-register-package ',package))))))
+    (if (arche-enabled-p name)
+        `(use-package ,name ,@args)
+      (when package
+        `(straight-register-package ',package)))))
 
 (defmacro use-feature (name &rest args)
   "Like `arche-use-package', but without straight.el integration.
