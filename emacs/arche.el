@@ -73,6 +73,11 @@ list.")
 (defvar arche-compiling nil
   "Non-nil when Arche's make is being called.")
 
+(defvar arche-prune-straight-cache
+  (not (or arche-compiling
+           (member "--no-local" command-line-args)))
+  "Non-nil when Arche should prune straight's cache.")
+
 (defvar arche-directory (file-name-directory
                          (directory-file-name
                           (file-name-directory
@@ -459,7 +464,6 @@ hook directly into the init-file during byte-compilation."
 ;; Allow to disable local customizations with a
 ;; command-line argument.
 (if (member "--no-local" command-line-args)
-
     ;; Make sure to delete --no-local from the list, because
     ;; otherwise Emacs will issue a warning about the unknown
     ;; argument.
@@ -663,6 +667,10 @@ nice.)"
   :commands (straight-x-fetch-all))
 
 ;;; Configure ~/.emacs.d paths
+
+;;  Package `compat' contains useful functions that are implemented in
+;; future emacsen.
+(use-package compat)
 
 ;; Package `no-littering' changes the default paths for lots of
 ;; different packages, with the net result that the ~/.emacs.d folder
@@ -4710,7 +4718,7 @@ environment with point at the end of a non-empty line of text."
     (let ((needs-fixup (save-excursion
                          (beginning-of-line)
                          (re-search-forward
-                          "[^[:space:]]" (line-end-position) 'noerror))))
+                          "[^[:space:]]" (compat-call pos-eol) 'noerror))))
       (prog1 (apply func args)
         (when needs-fixup
           (save-excursion
@@ -7268,19 +7276,19 @@ nil."
     :no-require t))
 
 ;;; Closing
-
 (arche--run-hook after-init)
 
-;; Prune the build cache for straight.el; this will prevent it from
-;; growing too large. Do this after the final hook to prevent packages
-;; installed there from being pruned.
-(straight-prune-build-cache)
+(when arche-prune-straight-cache
+  ;; Prune the build cache for straight.el; this will prevent it from
+  ;; growing too large. Do this after the final hook to prevent packages
+  ;; installed there from being pruned.
+  (straight-prune-build-cache)
 
-;; Occasionally prune the build directory as well. For similar reasons
-;; as above, we need to do this after local configuration.
-(unless (bound-and-true-p arche--currently-profiling-p)
-  (when (= 0 (random 100))
-    (straight-prune-build-directory)))
+  ;; Occasionally prune the build directory as well. For similar reasons
+  ;; as above, we need to do this after local configuration.
+  (unless (bound-and-true-p arche--currently-profiling-p)
+    (when (= 0 (random 100))
+      (straight-prune-build-directory))))
 
 ;; We should only get here if init was successful. If we do,
 ;; byte-compile this file asynchronously in a subprocess using the
