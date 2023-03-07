@@ -6514,7 +6514,14 @@ Instead, display simply a flat colored region in the fringe."
         '("<f2>" "C-c" "C-x" "C-u" "C-g" "C-h" "C-l" "M-x" "M-o" "C-y" "M-y"))
 
   :bind (:map vterm-copy-mode-map
-              ("q" . #'vterm-copy-mode-done)))
+              ("q" . #'vterm-copy-mode-done))
+  :config
+
+  (arche-defadvice arche--vterm-silence-compilation (func &rest args)
+    :around #'vterm-module-compile
+    "Silence successfulness of compilation."
+    (arche--with-silent-message "succeeded"
+      (apply func args))))
 
 ;; The package `vterm-toggle' provides a command to pop up `vterm'
 ;; buffer and hide it.
