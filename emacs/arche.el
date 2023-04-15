@@ -370,6 +370,16 @@ without breaking macro-expansion.")
 ;; loaded.
 (defvar straight-current-profile)
 
+(defmacro arche--with-local-load-history (&rest body)
+  "Evaluate BODY as part of `arche-local-init-file'.
+This ensures that defined functions and variables show up as
+being defined there, instead of whatever file they are being
+loaded from."
+  (declare (indent 0))
+  `(let ((current-load-list nil))
+     ,@body
+     (push (cons ',arche-local-init-file current-load-list) load-history)))
+
 (defmacro arche--load-local-init-file ()
   "Load local init-file, with crazy hacks for byte-compilation.
 In particular, if we are byte-compiling, actually macroexpand to
@@ -407,7 +417,7 @@ usual."
         (dolist (link arche--hook-contents)
           (setf (cdr link)
                 (nreverse (cdr link))))
-        `(progn ,@forms))
+        `(arche--with-local-load-history ,@forms))
     `(load arche-local-init-file 'noerror 'nomessage)))
 
 (defmacro arche-local-on-hook (name &rest body)
@@ -441,9 +451,10 @@ hook directly into the init-file during byte-compilation."
   (declare (indent 0))
   (let ((hook (intern (format "arche-%S-hook" name))))
     `(let ((straight-current-profile 'arche-local))
-       (run-hooks ',hook)
-       ,@(when byte-compile-current-file
-           (alist-get hook arche--hook-contents)))))
+       (arche--with-local-load-history
+         ,(if byte-compile-current-file
+              `(progn ,@(alist-get hook arche--hook-contents))
+            `(run-hooks ',hook))))))
 
 ;; Allow to disable local customizations with a
 ;; command-line argument.
