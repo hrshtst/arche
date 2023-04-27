@@ -982,15 +982,7 @@ ourselves."
 ;; remaining candidates. This offers a significant improvement over
 (use-package vertico
   :straight (:host github :repo "minad/vertico"
-             :files (:defaults "extensions/*")
-             :includes (vertico-buffer
-                        vertico-directory
-                        vertico-flat
-                        vertico-indexed
-                        vertico-mouse
-                        vertico-quick
-                        vertico-repeat
-                        vertico-reverse))
+             :files (:defaults "extensions/*"))
   :demand t
   :bind (("C-x C-z" . #'vertico-repeat)
          :map vertico-map
@@ -1020,11 +1012,25 @@ ourselves."
     (setq read-extended-command-predicate
           #'command-completion-default-include-p))
 
+  ;; Select first candidate rather than prompt by default.
+  ;;
+  ;; https://github.com/minad/vertico/issues/272
+  ;; https://github.com/minad/vertico/issues/306
+  (setq vertico-preselect 'first)
+
   ;; Ignore case... otherwise the behavior is really weird and
   ;; confusing.
   (setq read-file-name-completion-ignore-case t
         read-buffer-completion-ignore-case t
-        completion-ignore-case t))
+        completion-ignore-case t)
+
+  ;; Enable mouse support for clicking on candidates.
+  (vertico-mouse-mode +1)
+
+  ;; Don't re-sort buffer candidates. The recency order is correct.
+  (vertico-multiform-mode +1)
+  (setq vertico-multiform-categories
+        '((buffer (vertico-sort-function . copy-sequence)))))
 
 ;; Package `prescient' is a library for intelligent sorting and
 ;; filtering in various contexts. The function is similar to
