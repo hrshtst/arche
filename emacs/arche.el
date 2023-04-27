@@ -4875,7 +4875,7 @@ enough for the moment."
     ;; auto-fill.
     (setq-local comment-start-skip "// *"))
 
-  (defun radian--web-mode-fill-paragraph-correctly (&optional _justify)
+  (defun arche--web-mode-fill-paragraph-correctly (&optional _justify)
     "Correct implementation of `fill-paragraph' for web-mode.
 Workaround for <https://github.com/fxbois/web-mode/issues/1263>."
     (cl-block nil
@@ -4886,11 +4886,11 @@ Workaround for <https://github.com/fxbois/web-mode/issues/1263>."
       ;; Do nothing
       t))
 
-  (radian-defhook radian--web-mode-fix-fill-paragraph ()
+  (arche-defhook arche--web-mode-fix-fill-paragraph ()
     web-mode-hook
     "Override `fill-paragraph-function' to correct value."
     (setq-local fill-paragraph-function
-                #'radian--web-mode-fill-paragraph-correctly)))
+                #'arche--web-mode-fill-paragraph-correctly)))
 
 ;;; Configuration file formats
 
