@@ -66,7 +66,8 @@ Our Emacs configuration does not support any versions below this.")
                        "Emacs %s, but you are running Emacs %s")
                arche-minimum-emacs-version emacs-version)
 
-      (let* ((this-file (or user-init-file "~/.emacs.d/init.el"))
+      (let* ((this-file (or user-init-file
+                            (expand-file-name "init.el" user-emacs-directory)))
              (link-target
               ;; This function returns the target of the link. If the
               ;; init-file is not a symlink, then we abort.
