@@ -1,9 +1,8 @@
 # This is my personal bash resource file for non-login shells executed
 # by bash(1). Some snippets of code in the former part of this file
 # are borrowed from the default .bashrc in Ubuntu which lives in
-# /etc/skel/.bashrc. Examples in
-# /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
-# are used as reference as well.
+# /etc/skel. Examples in /usr/share/doc/bash/examples/startup-files
+# (in the package bash-doc) are used as reference as well.
 
 # Load environment settings.
 if [ -z ${ARCHE_SKIP_PROFILE+set} ] && [ -f "$HOME/.profile" ]; then
