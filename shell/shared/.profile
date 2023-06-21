@@ -98,7 +98,7 @@ has() {
 
 if [ -n "$HOME" ]; then
 
-  # Set PATH so it includes user's private bin if it exists.
+  # Set PATH so it includes user's private bin.
   addenv --force PATH "$HOME/.local/bin" "$HOME/usr/bin"
   addenv --force LD_LIBRARY_PATH "$HOME/usr/lib"
 
@@ -110,23 +110,23 @@ if [ -n "$HOME" ]; then
   # https://golang.org/
   # https://github.com/golang/go/wiki/SettingGOPATH
   # $GOROOT is assumed to be /usr/local/go
-  if [ -d /usr/local/go ] || [ -d "$HOME"/usr/local/go ]; then
+  if [ -d /usr/local/go ] || [ -d "$HOME/usr/local/go" ]; then
     setenv GOPATH "$HOME/usr/go"
     addenv PATH "$GOPATH/bin" "/usr/local/go/bin"
   fi
 
   # Configure paths for packages installed by yarn.
   # https://classic.yarnpkg.com/en/docs/cli/global
-  if [ -d "$HOME"/.yarn ]; then
+  if [ -d "$HOME/.yarn" ] && has yarn; then
     addenv PATH "$(yarn global bin)"
   fi
 
   # pyenv is a simple python version management.
   # https://github.com/pyenv/pyenv
-  if [ -d "$HOME"/.pyenv ]; then
+  if [ -d "$HOME/.pyenv" ]; then
     setenv PYENV_ROOT "$HOME/.pyenv"
-    addenv PATH "$PYENV_ROOT/bin"
-    addenv PATH "$(pyenv root)/shims"
+    has pyenv || addenv PATH "$PYENV_ROOT/bin"
+    eval "$(pyenv init -)"
   fi
 
   # LaTeX is a markup language to write a document.
@@ -209,7 +209,7 @@ fi
 # Prevent the system from loading this file more than once.
 export ARCHE_SKIP_PROFILE=1
 
-# When running login shell on WSL load $HOME/.bashrc automatically.
+# Set DISPLAY When running on WSL.
 # https://github.com/canonical/ubuntu-wsl-integration/blob/master/wsl-integration.sh
 if grep -qEi "(microsoft|wsl)" /proc/version >/dev/null 2>&1; then
   WSL_HOST="$(awk '/nameserver / {print $2; exit}' /etc/resolv.conf 2>/dev/null)"
@@ -217,13 +217,6 @@ if grep -qEi "(microsoft|wsl)" /proc/version >/dev/null 2>&1; then
   export PULSE_SERVER="tcp:${WSL_HOST}"
   export LIBGL_ALWAYS_INDIRECT=1
   unset WSL_HOST
-  # case $0 in
-  #   -zsh) ;;
-  #   -*)
-  #     # shellcheck source=/dev/null
-  #     . "$HOME/.bashrc"
-  #     ;;
-  # esac
 fi
 
 # if running bash

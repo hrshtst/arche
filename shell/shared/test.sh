@@ -2,6 +2,7 @@
 
 # Testing for functions in .profile.
 
+# shellcheck source=/dev/null
 . "$PWD/.profile"
 
 # setenv
