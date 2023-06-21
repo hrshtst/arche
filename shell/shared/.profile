@@ -3,10 +3,8 @@
 
 # Check if the shell that sources this is a login shell.
 case $0 in
-  -*) login_shell=true
-      ;;
-  *)  login_shell=false
-      ;;
+  -*) login_shell=true;;
+   *) login_shell=false;;
 esac
 
 # Show error messages to stderr.
@@ -206,9 +204,6 @@ if has ssh-agent; then
 
 fi
 
-# Prevent the system from loading this file more than once.
-export ARCHE_SKIP_PROFILE=1
-
 # Set DISPLAY When running on WSL.
 # https://github.com/canonical/ubuntu-wsl-integration/blob/master/wsl-integration.sh
 if grep -qEi "(microsoft|wsl)" /proc/version >/dev/null 2>&1; then
@@ -217,13 +212,4 @@ if grep -qEi "(microsoft|wsl)" /proc/version >/dev/null 2>&1; then
   export PULSE_SERVER="tcp:${WSL_HOST}"
   export LIBGL_ALWAYS_INDIRECT=1
   unset WSL_HOST
-fi
-
-# if running bash
-if [ -n "$BASH_VERSION" ]; then
-  # include .bashrc if it exists
-  if [ -f "$HOME/.bashrc" ]; then
-    # shellcheck source=/dev/null
-    . "$HOME/.bashrc"
-  fi
 fi
