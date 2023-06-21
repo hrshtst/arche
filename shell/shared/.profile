@@ -1,6 +1,26 @@
 # shellcheck shell=sh
 # This is my personal configuration for login shells.
 
+# Check if the shell that sources this is a login shell.
+case $0 in
+  -*) login_shell=true
+      ;;
+  *)  login_shell=false
+      ;;
+esac
+
+# Show error messages to stderr.
+error () {
+  echo >&2 "error: $*"
+}
+
+# Show warning messages when the current shell is not a login shell.
+warn () {
+  if [ $login_shell = false ]; then
+    echo >&2 "warning: $*"
+  fi
+}
+
 ## Utility functions
 
 # Set a value to an environment variable and export it.
@@ -19,7 +39,7 @@ setenv () {
 # False (1).
 _is_valid () {
   if [ ! -d "$1" ]; then
-    echo "warning: no such directory (addenv): $1" >&2
+    warn "no such directory (addenv: $1)"
     return 1
   fi
   return 0
@@ -39,13 +59,13 @@ addenv () {
       shift
       ;;
     --*|-*)
-      echo "warning: unrecognized option (addenv): $1" >&2
+      warn "unrecognized option (addenv): $1"
       shift
       ;;
   esac
 
   if [ $# -lt 2 ]; then
-    printf "error: too few arguments (addenv)\n" >&2
+    error "too few arguments (addenv)"
     return 1
   fi
 
