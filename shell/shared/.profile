@@ -37,7 +37,7 @@ setenv () {
 # False (1).
 _is_valid () {
   if [ ! -d "$1" ]; then
-    warn "no such directory (addenv: $1)"
+    warn "no such directory (addenv): $1"
     return 1
   fi
   return 0
