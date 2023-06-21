@@ -80,7 +80,10 @@ addenv () {
   while [ "$i" -gt 0 ]; do
     eval "v=\${$i}"
     if [ -z "$del" ] || [ "$force" = true ] || _is_valid "$v"; then
-      newvals="${v}${del}${newvals}"
+      case ${del}${curvals}${del} in
+        *${del}${v}${del}*) ;;  # this means the entry already exists
+        *) newvals="${v}${del}${newvals}";;
+      esac
     fi
     i=$((i-1))
   done
