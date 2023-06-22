@@ -4,19 +4,15 @@
 # /etc/skel. Examples in /usr/share/doc/bash/examples/startup-files
 # (in the package bash-doc) are used as reference as well.
 
-# Load environment settings.
-if [ -z ${ARCHE_SKIP_PROFILE+set} ] && [ -f "$HOME/.profile" ]; then
-  # shellcheck source=/dev/null
-  . "$HOME/.profile"
-fi
-
 # If not running interactively, don't do anything.
 case $- in
-  *i*) [ $SHLVL -eq 1 ] && command -v zsh &> /dev/null && exec zsh;;
+  # *i*) [ $SHLVL -eq 1 ] && command -v zsh &> /dev/null && exec zsh;;
+  *i*) ;;
   *) return;;
 esac
 
 ## External configuration
+
 if [ -f "$HOME/.bashrc.local" ]; then
   # shellcheck source=/dev/null
   . "$HOME/.bashrc.local"
@@ -138,8 +134,17 @@ has() {
 }
 
 # Return True (0) if the shell running on WSL.
-is_wsl () {
+is_wsl() {
   if grep -qEi "(microsoft|wsl)" /proc/version 2>&1 /dev/null; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+# Return True (0) if the shell running on Mac OS.
+is_mac() {
+  if [[ "$OSTYPE" == darwin* ]]; then
     return 0
   else
     return 1
@@ -156,7 +161,7 @@ else
 fi
 
 # Manipulate X selection (aka clipboard).
-if has xsel; then
+if ! is_mac && has xsel; then
   alias pbcopy="tr -d '\n' | xsel --clipboard --input"
   alias pbpaste='xsel --clipboard --output'
 fi
@@ -170,7 +175,9 @@ fi
 alias ..='cd ..'
 
 # Prompt before removing more than three files.
-alias rm='rm -I --preserve-root'
+if ! is_mac; then
+  alias rm='rm -I --preserve-root'
+fi
 
 # Get current IP address.
 alias myip='curl -sS http://ipecho.net/plain; echo'
@@ -198,6 +205,14 @@ tmux() {
     command tmux "$@"
   fi
 }
+
+# Invoke tmux so that the default shell is set to zsh.
+tmux-zsh() {
+  TMUX_DEFAULT_SHELL=${TMUX_DEFAULT_SHELL:-$(which zsh)}
+  command tmux new-session "$TMUX_DEFAULT_SHELL" \; set-option default-shell "$TMUX_DEFAULT_SHELL"
+}
+alias tz='tmux-zsh'
+
 
 ## Bash completion
 
@@ -230,6 +245,55 @@ fi
 # https://github.com/pdm-project/pdm
 if command -v pdm 1>/dev/null 2>&1; then
   eval "$(pdm --pep582 bash)"
+fi
+
+## gpg-agent
+
+if has gpg-connect-agent; then
+
+  gpg_restart() {
+    gpg-connect-agent reloadagent /bye
+  }
+
+  gpg_forget() {
+    gpg-connect-agent reloadagent /bye
+  }
+
+fi
+
+## ssh-agent
+
+if has ssh-agent; then
+
+  ssh_connect() {
+    if [ -n "$HOME" ] && [ -f "$HOME/.ssh/agent-info" ]; then
+      eval "$(cat "$HOME/.ssh/agent-info")" >/dev/null
+    fi
+  }
+
+  ssh_connected() {
+    # shellcheck disable=SC2009
+    ps -p "$SSH_AGENT_PID" 2>&1 | grep -qF ssh-agent
+  }
+
+  ssh_forget() {
+    ssh-add -D
+  }
+
+  ssh_restart() {
+    if [ -n "$HOME" ]; then
+      pkill -U "$USER" ssh-agent
+      mkdir -p "$HOME/.ssh"
+      ssh-agent "${SSH_AGENT_ARGS:--t 86400}" > "$HOME/.ssh/agent-info"
+      ssh_connect
+    fi
+  }
+
+  ssh_connect
+  if ! ssh_connected; then
+    ssh_restart
+  fi
+
 fi
 
 ## External configuration hook
