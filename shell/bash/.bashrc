@@ -208,10 +208,13 @@ tmux() {
 
 # Invoke tmux so that the default shell is set to zsh.
 tmux-zsh() {
-  TMUX_DEFAULT_SHELL=${TMUX_DEFAULT_SHELL:-$(which zsh)}
-  command tmux new-session "$TMUX_DEFAULT_SHELL" \; set-option default-shell "$TMUX_DEFAULT_SHELL"
+  local default_shell
+  default_shell=$(which zsh)
+  command tmux new-session "$default_shell" \; set-option default-shell "$default_shell"
 }
+alias zsh-tmux='tmux-zsh'
 alias tz='tmux-zsh'
+alias zt='tmux-zsh'
 
 
 ## Bash completion
