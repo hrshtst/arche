@@ -203,9 +203,10 @@ zinit light zsh-users/zsh-autosuggestions
 # Force the use of Emacs keybindings.
 bindkey -e
 
-# Allow just typing "." to reload the shell configuration. Based on
-# below.
-# https://unix.stackexchange.com/a/326948/176805
+# Allow a very fast way (just typing ".") to reload the shell
+# configuration. Based on [1].
+#
+# [1]: https://unix.stackexchange.com/a/326948/176805
 function _accept-line() {
   emulate -LR zsh
   if [[ $BUFFER == "." ]]; then
@@ -214,6 +215,13 @@ function _accept-line() {
   zle .accept-line
 }
 zle -N accept-line _accept-line
+
+# Allow comments even in the interactive shell (start with #).
+setopt interactive_comments
+
+# Allow escaping a single quote within a singly-quoted string by
+# prefixing it with an additional single quote: echo 'It''s me!'
+setopt rc_quotes
 
 # Turn off flow control (which makes it so that ctrl+s and ctrl+q
 # freeze and unfreeze command output, respectively).
@@ -276,19 +284,20 @@ zstyle ':completion:*:*:*:*:manuals.*' insert-sections true
 
 #### Globbing
 
-# This makes globbing (filename generation) insensive to case.
+# This makes globs case-insensitive.
 unsetopt case_glob
 
-# This makes regular expressions using the regex module (including
-# matches with =~) insensitive to case.
+# This makes globbing regexes case-insensitive.
 unsetopt case_match
 
-# Do not require a leading '.' in a filename to be matched explicitly.
+# Allow globs to match dotfiles.
 setopt glob_dots
 
-# If numeric filenames are matched by a filename generation pattern,
-# sort the filenames numerically rather than lexicographically.
+# Sort numeric filenames numerically, instead of lexicographically.
 setopt numeric_glob_sort
+
+# Disable history expansion, so we can use ! in our commands.
+setopt no_bang_hist
 
 #### Command history
 
@@ -307,10 +316,6 @@ SAVEHIST=1000000
 # to a command.
 setopt hist_ignore_space
 
-# Do not enter command lines into the history list if they are
-# duplicates of the previous event.
-setopt hist_ignore_dups
-
 # All zsh sessions share the same history file. Timestamps are also
 # recorded for each command.
 setopt share_history
@@ -327,6 +332,10 @@ setopt hist_reduce_blanks
 # !!), don't execute the line directly; instead, perform history
 # expansion and reload the line into the editing buffer.
 setopt hist_verify
+
+# Deduplicate history entries. Helps with retrieving previous
+# commands.
+setopt hist_ignore_all_dups
 
 ### Filesystem navigation
 
@@ -438,6 +447,14 @@ else
     alias lt='tree -a'
     alias ltl='tree -aL'
   fi
+fi
+
+#### wdx
+
+if command -v wdx &>/dev/null; then
+    alias wd='wdx'
+    alias ws='wdx set'
+    alias wsf='wdx set -f'
 fi
 
 #### open
@@ -559,25 +576,25 @@ function delink() {
 # Swap the files or directories at the two provided paths. Not atomic.
 # Both paths must exist.
 function transpose {
-    emulate -LR zsh
-    if (( $# != 2 )); then
-        echo >&2 "usage: transpose <path1> <path2>"
-        return 1
+  emulate -LR zsh
+  if (( $# != 2 )); then
+    echo >&2 "usage: transpose <path1> <path2>"
+    return 1
+  fi
+  for arg in $1 $2; do
+    if [[ ! -e $arg && ! -L $arg ]]; then
+      echo >&2 "no such file or directory: $arg"
+      return 1
     fi
-    for arg in $1 $2; do
-        if [[ ! -e $arg && ! -L $arg ]]; then
-            echo >&2 "no such file or directory: $arg"
-            return 1
-        fi
-        if [[ -e $path.tmp || -L $path.tmp ]]; then
-            echo >&2 "already exists: $path.tmp"
-            return 1
-        fi
-    done
-    mv $1 $1.tmp
-    mv $2 $2.tmp
-    mv $1.tmp $2
-    mv $2.tmp $1
+    if [[ -e $path.tmp || -L $path.tmp ]]; then
+      echo >&2 "already exists: $path.tmp"
+      return 1
+    fi
+  done
+  mv $1 $1.tmp
+  mv $2 $2.tmp
+  mv $1.tmp $2
+  mv $2.tmp $1
 }
 
 #### mkdir
@@ -638,7 +655,9 @@ alias rmd='rmdir'
 
 # Prompt before removing more than three files and do not remove the
 # root ('/').
-alias rm='rm -I --preserve-root'
+if [[ "$OSTYPE" != darwin* ]]; then
+  alias rm='rm -I --preserve-root'
+fi
 
 ### Help system
 
