@@ -160,6 +160,11 @@ zinit light dbrgn/tealdeer
 zinit ice wait lucid from"gh-r" cp"watchexec-*/watchexec.1 -> $ZPFX/man/man1" sbin"watchexec-*/watchexec"
 zinit light watchexec/watchexec
 
+# Provides the 'wdx' function to set warp points to directories and
+# quickly jump to them.
+zinit ice wait lucid
+zinit light radian-software/wdx
+
 # A smarter cd command inspired by z and autojump.
 # zinit ice wait lucid from"gh-r" cp"man/*.1 -> $ZPFX/man/man1" mv"completions/_zoxide -> $ZINIT[COMPLETIONS_DIR]" sbin"zoxide"
 zinit ice wait lucid from"gh-r" atclone"cp man/* $ZPFX/man/man1" atpull"%atclone" mv"completions/_zoxide -> $ZINIT[COMPLETIONS_DIR]" atload"!eval $(zoxide init zsh)" sbin"zoxide"
