@@ -1043,6 +1043,9 @@ zstyle ':fzf-tab:complete:(kill|ps):argument-rest' fzf-flags --preview-window=do
 # Switch group using `,` and `.`.
 zstyle ':fzf-tab:*' switch-group ',' '.'
 
+# Prevent fzf-tab from modifying user's input query.
+zstyle ':fzf-tab:*' query-string input first
+
 ### ghq
 
 # Lists repositories cloned by ghq in order so that the most
