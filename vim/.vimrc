@@ -1,10 +1,10 @@
 " A handy configuration of Vim for my personal use.
 "
 " Author: Hiroshi Atsuta <atsuta@ieee.org>
-" 
+"
 " Credits: I intentionally or unintentionally borrowed ideas and code
 " from Vim experts which are open to public to write this configuration.
-" Although I am not able to recall all of the references, main resources 
+" Although I am not able to recall all of the references, main resources
 " can be listed as follows:
 "   - .vimrc written by j7k6 (https://github.com/j7k6/dotfiles/blob/master/.vimrc)
 "   - .vimrc written by Douglas Black (https://github.com/dougblack/dotfiles/blob/master/.vimrc)
@@ -68,10 +68,10 @@ filetype plugin on      " load filetype-specific plugin files
 filetype indent on      " load filetype-specific indent files
 set expandtab           " use spaces for tab
 set tabstop=2           " use 2 spaces for one tab
-set softtabstop=2       " insert spaces when typing tab 
+set softtabstop=2       " insert spaces when typing tab
 set shiftwidth=2        " 2 spaces for indent
 set modeline            " enable modeline
-set modelines=1         " only one line is effective for modeline 
+set modelines=1         " only one line is effective for modeline
 set autoindent          " enable autoindentation
 set smartindent         " reflect the syntax when doing indentation
 
@@ -85,7 +85,7 @@ set wildmenu            " show fancy command completion
 set wildmode=longest:full,full  " friendly completion behavior
 set scrolloff=999       " keep cursor vertically center
 set wrap                " wrap longer lines than width of window
-set showbreak=↪\  
+set showbreak=↪\
 set listchars=tab:→\ ,trail:·,precedes:«,extends:»,eol:¶
 set laststatus=2        " always show status bar
 set noshowmode          " no show mode, use lightline.vim
@@ -136,7 +136,7 @@ inoremap <c-h> <bs>
 inoremap <c-]> <esc><right>
 " turn highlight off and refresh window
 nnoremap <silent> <c-l> :<c-u>nohlsearch<cr><c-l>
-" go to last accessed window 
+" go to last accessed window
 nnoremap <silent> <c-o> <c-w>p
 " disable yank when deleting characters with x
 vnoremap x "_x
@@ -174,4 +174,3 @@ augroup vimrc
   autocmd FileType fish setlocal tabstop=4 shiftwidth=0 softtabstop=0 textwidth=72
   autocmd FileType tmux setlocal tabstop=4 shiftwidth=0 softtabstop=0 textwidth=72
 augroup END
-
