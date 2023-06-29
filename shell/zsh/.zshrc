@@ -1046,6 +1046,9 @@ zstyle ':fzf-tab:*' switch-group ',' '.'
 # Prevent fzf-tab from modifying user's input query.
 zstyle ':fzf-tab:*' query-string input first
 
+# Somehow this is required when showing small complemention menu.
+zstyle ':fzf-tab:*' fzf-pad 3
+
 ### ghq
 
 # Lists repositories cloned by ghq in order so that the most
