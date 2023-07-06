@@ -664,6 +664,13 @@ fi
 alias help=run-help
 
 ### Utilities
+#### Clipboard utilities
+
+if (( $+commands[xsel] )) && [[ "$OSTYPE" != darwin* ]]; then
+  alias pbcopy="tr -d '\n' | xsel --clipboard --input"
+  alias pbpaste='xsel --clipboard --output'
+fi
+
 #### Docker
 
 if (( $+commands[docker] )); then
@@ -914,6 +921,20 @@ if (( $+commands[git] )); then
   alias gpt='git push --tags'
 fi
 
+#### gpg-agent
+
+if (( $+commands[gpg-connect-agent] )); then
+
+  function gpg_restart() {
+    gpg-connect-agent reloadagent /bye
+  }
+
+  function gpg_forget() {
+    gpg-connect-agent reloadagent /bye
+  }
+
+fi
+
 #### Hub
 
 if (( $+commands[hub] )); then
@@ -925,6 +946,40 @@ if (( $+commands[hub] )); then
   alias hb='hub browse'
   alias hh='hub help'
   alias hi='hub issue'
+fi
+
+## ssh-agent
+
+if (( $+commands[ssh-agent] )); then
+
+  function ssh_connect() {
+    if [ -n "$HOME" ] && [ -f "$HOME/.ssh/agent-info" ]; then
+      eval "$(cat "$HOME/.ssh/agent-info")" >/dev/null
+    fi
+  }
+
+  function ssh_connected() {
+    ps -p "$SSH_AGENT_PID" 2>&1 | grep -qF ssh-agent
+  }
+
+  function ssh_forget() {
+    ssh-add -D
+  }
+
+  function ssh_restart() {
+    if [ -n "$HOME" ]; then
+      pkill -U "$USER" ssh-agent
+      mkdir -p "$HOME/.ssh"
+      ssh-agent "${SSH_AGENT_ARGS:--t 86400}" > "$HOME/.ssh/agent-info"
+      ssh_connect
+    fi
+  }
+
+  ssh_connect
+  if ! ssh_connected; then
+    ssh_restart
+  fi
+
 fi
 
 #### Tmux
