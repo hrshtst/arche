@@ -1245,6 +1245,11 @@ prefix acts normally like as `split-window-right'."
 
 (bind-key "C-x 3" #'arche-split-window-vertically-even)
 
+;; Automatically balance windows when splitting or deleting one.
+;; The idea taken from: https://zck.org/balance-emacs-windows
+(dolist (fun '(split-window delete-window))
+  (advice-add fun :after #'(lambda (&rest _) (balance-windows))))
+
 ;; Feature `windmove' provides keybindings S-left, S-right, S-up, and
 ;; S-down to move between windows. This is much more convenient and
 ;; efficient than using the default binding, C-x o, to cycle through
