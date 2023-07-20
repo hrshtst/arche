@@ -57,6 +57,13 @@ if [ -n "$HOME" ]; then
     addpath "$GOPATH/bin"
   fi
 
+  # Configure paths for Rust Programming Language.
+  # https://www.rust-lang.org/
+  if [ -f "$HOME/.cargo/env" ]; then
+    # shellcheck source=/dev/null
+    . "$HOME/.cargo/env"
+  fi
+
   # Configure paths for packages installed by yarn.
   # https://classic.yarnpkg.com/en/docs/cli/global
   if [ -d "$HOME/.yarn" ] && has yarn; then
