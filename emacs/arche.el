@@ -3614,7 +3614,7 @@ backends will still be included.")
 
   ;; Make completions display when you have only typed one character,
   ;; instead of three.
-  (setq company-minimum-prefix-length 1)
+  (setq company-minimum-prefix-length 2)
 
   ;; Always display the entire suggestion list onscreen, placing it
   ;; above the cursor if necessary.
