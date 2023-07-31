@@ -2211,6 +2211,15 @@ color is not changed even when `mozc-mode' is on."
                                   arche--mozc-cursor-color
                                 arche--mozc-cursor-color-default))))))))
 
+;; Package `mozc-popup' provides an interface for candidate selection
+;; style for `mozc' with `popup'.
+(use-package mozc-popup
+  :demand t
+  :after mozc
+  :config
+
+  (setq mozc-candidate-style 'popup))
+
 ;; Package `migemo' provides a generator that produces a regex pattern
 ;; to match Japanese kanji or hiragana/katakana characters from
 ;; romanized Japanese. It should be combined with completion styles or

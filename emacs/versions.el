@@ -81,6 +81,7 @@
  ("migemo" . "f756cba3d5268968da361463c2e29b3a659a3de7")
  ("modus-themes" . "ae602dda25a37716c02c255bf4bb41e87362b30b")
  ("mozc" . "33d0d50261c01f9906f2e5eb106542e19c38e219")
+ ("mozc-popup" . "f0684b875a7427ec08f8df13939a486e5d5cf420")
  ("mw-thesaurus.el" . "c44d793595c2d0f6789621da457da065920968ac")
  ("no-littering" . "cc56893faaf769226ceae8836a426da583fab992")
  ("nongnu-elpa" . "4456edc151f4147d763d0067a8da5922e6f60d25")
