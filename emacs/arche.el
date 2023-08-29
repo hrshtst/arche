@@ -2283,18 +2283,8 @@ that matches Japanese characters.\n\n%s"
       (add-to-list 'prescient-filter-alist
                    '(migemo . prescient-migemo-regexp) t))
 
-    ;; Use this function to toggle migemo on or off until the
-    ;; following pull request is merged:
-    ;; https://github.com/radian-software/prescient.el/pull/131
-    (defun arche-toggle-prescient-migemo ()
-      "Toggle the `migemo' filter on or off globally."
-      (interactive)
-      (setq prescient-filter-method
-            (if (memq 'migemo prescient-filter-method)
-                (remq 'migemo prescient-filter-method)
-              (cons 'migemo prescient-filter-method)))
-      (message "Prescient.el filter is now %s"
-               prescient-filter-method)))
+    ;; Register the migemo filtering method to `prescient'.
+    (prescient-create-and-bind-toggle-command migemo "m"))
 
   ;; Integration with `ctrlf'.
   (use-feature ctrlf
