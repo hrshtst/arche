@@ -95,6 +95,7 @@
  ("parseclj" . "4d0e780e00f1828b00c43099e6eebc6582998f72")
  ("parseedn" . "a09686fbb9113b8b1b4f20c9e1dc0d6fea01a64f")
  ("pc-bufsw" . "a7295e4813d636d5a20605d134acd42e4e4fe8fa")
+ ("pdf-tools" . "c69e7656a4678fe25afbd29f3503dd19ee7f9896")
  ("perspective-el" . "cb4083dfa91c336dbed0c330d629e256d86384f9")
  ("pip-requirements.el" . "216cd1690f80cc965d4ae47b8753fc185f778ff6")
  ("pkg-info" . "76ba7415480687d05a4353b27fea2ae02b8d9d61")
