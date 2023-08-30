@@ -2325,7 +2325,11 @@ then insert the previous search string."
       "Toggle CTRLF style to `migemo' or back to `literal'."
       (interactive)
       (setq ctrlf--style
-            (if (eq ctrlf--style 'migemo) 'literal 'migemo)))))
+            (if (eq ctrlf--style 'migemo) 'literal 'migemo))))
+
+  :bind (:map isearch-mode-map
+              ("M-m" . #'migemo-isearch-toggle-migemo)
+              ("M-s m" . #'migemo-isearch-toggle-migemo)))
 
 ;;;; Text formatting
 
