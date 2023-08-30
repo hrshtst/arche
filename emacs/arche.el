@@ -6675,6 +6675,19 @@ Instead, display simply a flat colored region in the fringe."
     ;; Set a manual preview key for `affe-grep'.
     (consult-customize affe-grep :preview-key (kbd "M-."))))
 
+;; Package `pdf-tools' replaces the DocView for PDF files with a fast
+;; and stable renderer leveraging the library `poppler'.
+(use-package pdf-tools
+  :config
+
+  (pdf-tools-install)
+
+  (arche-defhook arche--disable-ctrlf-locally ()
+    pdf-isearch-minor-mode-hook
+    "Disable `ctrlf-mode' on `pdf-tools' buffer."
+    (when (featurep 'ctrlf)
+      (ctrlf-local-mode -1))))
+
 ;;;; Internet applications
 
 ;; Feature `browse-url' provides commands for opening URLs in
