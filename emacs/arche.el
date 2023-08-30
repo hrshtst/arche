@@ -4752,6 +4752,27 @@ environment with point at the end of a non-empty line of text."
 
   (put 'LaTeX-using-Biber 'safe-local-variable #'booleanp)
 
+  ;; Integration with Latexmk
+  (add-to-list 'TeX-expand-list
+               '("%(PDFmode)"
+                 (lambda nil
+                   (if TeX-PDF-mode
+                       (if TeX-PDF-from-DVI
+                           " -pdfdvi"
+                         " -pdf")
+                     ""))))
+
+  (add-to-list 'TeX-command-list
+               '("Latexmk"
+                 "latexmk %(file-line-error) %(extraopts) %S%(PDFmode) %t"
+                 TeX-run-TeX nil
+                 (latex-mode)
+                 :help "Run Latexmk"))
+
+  (setq LaTeX-clean-intermediate-suffixes
+        (append LaTeX-clean-intermediate-suffixes
+                '("\\.fdb_latexmk" "\\.aux.bak" "\\.fls")))
+
   (use-feature apheleia
     :config
 
