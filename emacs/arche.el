@@ -4682,6 +4682,14 @@ Return either a string or nil."
                    '("TeXShop" "/usr/bin/open -a TeXShop.app %s.pdf"))
       (setf (map-elt TeX-view-program-selection 'output-pdf) '("TeXShop"))))
 
+  (arche-with-operating-system linux
+    (when (featurep 'pdf-tools)
+      ;; Use PDF Tools for previewing LaTeX, rather than Evince.
+      (setf (map-elt TeX-view-program-selection 'output-pdf) '("PDF Tools"))
+      ;; Update PDF buffers after successful LaTeX runs.
+      (add-hook 'TeX-after-compilation-finished-functions
+                #'TeX-revert-document-buffer)))
+
   (arche-defadvice arche--advice-inhibit-tex-style-loading-message
       (TeX-load-style-file file)
     :around #'TeX-load-style-file
