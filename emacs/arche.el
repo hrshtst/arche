@@ -4773,7 +4773,11 @@ environment with point at the end of a non-empty line of text."
 (use-feature reftex
   :init
 
-  (add-hook 'LaTeX-mode-hook 'turn-on-reftex))
+  (arche-defhook arche--turn-on-reftex ()
+    TeX-mode-hook
+    "Turn on `reftex-mode' in `TeX-mode'."
+    (turn-on-reftex)
+    (setq reftex-plug-into-AUCTeX t)))
 
 ;; Package `latex-math-preview' provides preview of particular
 ;; region in LaTeX file and displays it.
