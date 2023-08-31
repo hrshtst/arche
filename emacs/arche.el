@@ -4809,6 +4809,12 @@ environment with point at the end of a non-empty line of text."
     (turn-on-reftex)
     (setq reftex-plug-into-AUCTeX t)))
 
+;; Feature `tex-jp' is a specific feature for Japanese.
+(use-feature tex-jp
+  :init
+
+  (setq japanese-TeX-engine-default 'uptex))
+
 ;; Package `latex-math-preview' provides preview of particular
 ;; region in LaTeX file and displays it.
 (use-package latex-math-preview
