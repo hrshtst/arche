@@ -4724,6 +4724,7 @@ This prevents them from getting in the way of buffer selection."
 ;; Feature `latex' from package `auctex' provides the major mode for
 ;; LaTeX.
 (use-feature latex
+  :hook (LaTeX-mode . LaTeX-math-mode)
   :config
 
   ;; Don't be afraid to break inline math between lines.
