@@ -4683,7 +4683,7 @@ Return either a string or nil."
       (setf (map-elt TeX-view-program-selection 'output-pdf) '("TeXShop"))))
 
   (arche-with-operating-system linux
-    (when (featurep 'pdf-tools)
+    (when (fboundp 'pdf-tools-install)
       ;; Use PDF Tools for previewing LaTeX, rather than Evince.
       (setf (map-elt TeX-view-program-selection 'output-pdf) '("PDF Tools"))
       ;; Update PDF buffers after successful LaTeX runs.
