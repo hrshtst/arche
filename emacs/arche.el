@@ -5689,7 +5689,9 @@ be invoked before `org-mode-hook' is run."
 ;; Feature `org-cite' provides functions to handle citations in Org.
 (use-feature oc
   :after org
-  :init
+  :bind (:map org-mode-map
+              ("C-c [" . #'org-cite-insert))
+  :config
 
   (use-feature citar
     :config
@@ -5697,10 +5699,7 @@ be invoked before `org-mode-hook' is run."
     (setq org-cite-insert-processor 'citar)
     (setq org-cite-follow-processor 'citar)
     (setq org-cite-activate-processor 'citar)
-    (setq org-cite-global-bibliography citar-bibliography))
-
-  :bind (:map org-mode-map
-         ("C-c [" . #'org-cite-insert)))
+    (setq org-cite-global-bibliography citar-bibliography)))
 
 ;;;; Note taking
 
