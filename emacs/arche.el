@@ -6711,7 +6711,8 @@ Instead, display simply a flat colored region in the fringe."
 (use-package pdf-tools
   :config
 
-  (pdf-tools-install)
+  ;; Install `epdfinfo' without being asked.
+  (pdf-tools-install t)
 
   (arche-defhook arche--disable-ctrlf-locally ()
     pdf-isearch-minor-mode-hook
