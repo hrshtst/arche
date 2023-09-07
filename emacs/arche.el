@@ -6710,12 +6710,15 @@ Instead, display simply a flat colored region in the fringe."
     (consult-customize affe-grep :preview-key (kbd "M-."))))
 
 ;; Package `pdf-tools' replaces the DocView for PDF files with a fast
-;; and stable renderer leveraging the library `poppler'.
+;; and stable renderer leveraging the library `poppler'. Note that it
+;; is not loaded at compile-time.
 (use-package pdf-tools
+  :no-require t
+  :mode ("\\.[pP][dD][fF]\\'" . pdf-view-mode)
   :config
 
   ;; Install `epdfinfo' without being asked.
-  (pdf-tools-install t)
+  (pdf-tools-install :no-query)
 
   (arche-defhook arche--disable-ctrlf-locally ()
     pdf-isearch-minor-mode-hook
