@@ -104,12 +104,14 @@ zinit ice wait lucid from"gh-r" sbin"delta-*/delta"
 zinit light dandavison/delta
 
 # A replacement for ls with more color support.
-zinit ice wait lucid from"gh-r" cp"man/exa.1 -> $ZPFX/man/man1" sbin"bin/exa"
-zinit light ogham/exa
+zinit ice wait lucid from"gh-r" mv"*eza -> eza" sbin"eza"
+zinit light eza-community/eza
 
-# Load completion for exa.
-zinit ice wait lucid id-as"exa-completion" depth"1" as"completion"
-zinit light ogham/exa
+# Load completion and man for eza.
+zinit ice wait lucid id-as"eza-completion" depth"1" as"completion" mv"completions/zsh/_eza -> $ZINIT[COMPLETIONS_DIR]/_eza"
+zinit light eza-community/eza
+zinit ice wait lucid id-as"eza-man" depth"1" mv"man/eza.1.md -> $ZPFX/man/man1"
+zinit light eza-community/eza
 
 # A simple, fast and user-friendly alternative to find.
 zinit ice wait lucid from"gh-r" cp"fd-*/fd.1 -> $ZPFX/man/man1" sbin"fd-*/fd"
@@ -400,15 +402,15 @@ alias -- -9='cd -9'
 # jump to those directories.
 alias ds='dirs -v | head -10'
 
-#### ls, exa
+#### ls, eza
 
-if (( $+commands[exa] )); then
+if (( $+commands[eza] )); then
 
-  alias ls='exa'
+  alias ls='eza'
 
   function l() {
     emulate -LR zsh
-    exa --all --header --long --classify --binary --color-scale $@
+    eza --all --header --long --classify --binary --color-scale $@
   }
 
   function lg() {
@@ -1088,8 +1090,8 @@ export FZF_ALT_C_OPTS="--preview '(tree -NC {}) 2> /dev/null | head -200'"
 #   zstyle ':fzf-tab:<context>' tag value
 
 # Preview directory's content when completing cd, ls, etc.
-zstyle ':fzf-tab:complete:(cd|ls|exa|bat|cat|emacs|nano|vi|vim):*' fzf-preview \
-       '(exa -1 --color=always $realpath || ls -1AF --color=always $realpath) 2> /dev/null'
+zstyle ':fzf-tab:complete:(cd|ls|exa|eza|bat|cat|emacs|nano|vi|vim):*' fzf-preview \
+       '(eza -1 --color=always $realpath || ls -1AF --color=always $realpath) 2> /dev/null'
 # Give a preview of commandline arguments when completing kill.
 zstyle ':fzf-tab:complete:(kill|ps):argument-rest' fzf-preview \
        '[[ $group == "[process ID]" ]] && ps --pid=$word -o cmd --no-headers -w -w'
