@@ -71,3 +71,8 @@ safe_link "$dotfiles/git/.gitexclude" "$HOME/.gitexclude"
 mkdir -p "$HOME/.local/share/pandoc"
 safe_link "$dotfiles/pandoc/github-markdown.css" \
           "$HOME/.local/share/pandoc/github-markdown.css"
+
+# python
+mkdir -p "$HOME/.ipython/profile_default"
+safe_link "$dotfiles/python/ipython_config.py" \
+          "$HOME/.ipython/profile_default/ipython_config.py"
