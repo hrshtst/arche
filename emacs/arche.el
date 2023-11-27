@@ -1340,8 +1340,8 @@ prefix acts normally like as `split-window-right'."
     ("l" windmove-right "switch to →")
     ("o" ace-window "ace" :exit t)
     ;; Undo/Redo
-    ("M-h" winner-undo "undo window conf" :column "Undo/Redo")
-    ("M-l" winner-redo "redo window conf")
+    ("p" winner-undo "previous window layout" :column "Undo/Redo")
+    ("n" winner-redo "next window layout")
     ;; Transpose
     ("t" transpose-frame "transpose" :column "Transpose")
     ("f" flip-frame "flip ↕")
