@@ -1483,6 +1483,24 @@ prefix acts normally like as `split-window-right'."
                                "*Completions*")
                            eos))))))
 
+(defun arche-buffer-sort-visibility (buffers)
+  "Group the given BUFFERS by visibility and sort them accordingly.
+Return a sequence that first lists hidden, then visible, and then
+the current buffer.
+
+This code is stolen from the following:
+https://git.sr.ht/~protesilaos/beframe/tree/main/item/beframe.el#L718"
+  (let ((bufs (seq-group-by
+               (lambda (buf)
+                 (cond
+                  ((eq buf (current-buffer)) :current)
+                  ((get-buffer-window buf 'visible) :visible)
+                  (t :hidden)))
+               buffers)))
+    (nconc (alist-get :hidden  bufs)
+           (alist-get :visible bufs)
+           (alist-get :current bufs))))
+
 ;; Package `perspective' provides multiple named workspaces or
 ;; perspectives. Each perspective has its own buffer list and its own
 ;; window layout. Switching to a perspective restores its window
@@ -1580,7 +1598,8 @@ perspective: %s(arche--perspective-names)
         :history  buffer-name-history
         :state    ,#'consult--buffer-state
         :default  t
-        :items    ,#'persp-get-buffer-names)
+        :items
+        ,(lambda () (arche-buffer-sort-visibility (persp-get-buffer-names))))
       "Buffer candidate source in the current perspective.")
 
     (consult-customize consult--source-buffer
