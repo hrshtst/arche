@@ -1620,6 +1620,9 @@ perspective: %s(arche--perspective-names)
   ;; Enable `pc-bufsw' minor mode.
   (pc-bufsw t)
 
+  ;; Prefer buffers previously displayed in the current window.
+  (setq pc-bufsw-prefer-current-window t)
+
   (defvar arche--pc-bufsw-ignore nil
     "Regexp pattern for buffer names excluded from list of `pc-bufsw'.
 When a buffer name matches this regexp it is excluded in the list
@@ -1640,9 +1643,8 @@ for buffer switching by calling `pc-bufsw'.")
     "Distill buffers so that those in current perspective are only visible.
 Besides, buffers whose name matches the regexp expressed in
 `ido-ignore-buffers' and `arche--pc-bufsw-ignore' are hidden.
-BUFFER-VECTOR is supposed to be a vector containing buffers which
-is returned by the original function. This advice makes the
-function return the vector of distilled buffers as well."
+BUFFER-VECTOR is supposed to be a vector containing buffers
+returned from `pc-bufsw--get-walk-vector'."
     (let ((ignore-rx (arche--persp-make-ignore-buffer-rx))
           (filtered-list ()))
       (mapc
