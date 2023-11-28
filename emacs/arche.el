@@ -1755,8 +1755,8 @@ minutes in case Emacs is shut down accidentally.")
   (setq projectile-switch-project-action 'projectile-commander)
 
   (def-projectile-commander-method ?\C-m
-    "Find file in project."
-    (call-interactively #'find-file))
+                                   "Find file in project."
+                                   (call-interactively #'find-file))
 
   ;; Enable the mode again now that we have all the supporting hooks
   ;; and stuff defined.
@@ -3336,18 +3336,18 @@ into what `lookup-key' and `define-key' want."
              ;; decide which command we want to run when a key is
              ;; pressed.
              (define-key keymap event
-               `(menu-item
-                 nil ,company-cmd :filter
-                 (lambda (cmd)
-                   ;; There doesn't seem to be any obvious
-                   ;; function from Company to tell whether or not
-                   ;; a completion is in progress (à la
-                   ;; `company-explicit-action-p'), so I just
-                   ;; check whether or not `company-my-keymap' is
-                   ;; defined, which seems to be good enough.
-                   (if company-my-keymap
-                       ',company-cmd
-                     ',yas-cmd))))))
+                         `(menu-item
+                           nil ,company-cmd :filter
+                           (lambda (cmd)
+                             ;; There doesn't seem to be any obvious
+                             ;; function from Company to tell whether or not
+                             ;; a completion is in progress (à la
+                             ;; `company-explicit-action-p'), so I just
+                             ;; check whether or not `company-my-keymap' is
+                             ;; defined, which seems to be good enough.
+                             (if company-my-keymap
+                                 ',company-cmd
+                               ',yas-cmd))))))
          company-active-map)
         keymap)
       "Keymap which delegates to both `company-active-map' and `yas-keymap'.
@@ -4577,15 +4577,15 @@ Return either a string or nil."
     (let ((map (make-sparse-keymap)))
       (define-key map " " 'ruby-electric-space/return)
       (define-key
-        map [remap delete-backward-char] 'ruby-electric-delete-backward-char)
+       map [remap delete-backward-char] 'ruby-electric-delete-backward-char)
       (define-key map [remap newline] 'ruby-electric-space/return)
       (define-key map [remap newline-and-indent] 'ruby-electric-space/return)
       (define-key
-        map [remap electric-newline-and-maybe-indent]
-        'ruby-electric-space/return)
+       map [remap electric-newline-and-maybe-indent]
+       'ruby-electric-space/return)
       (define-key
-        map [remap reindent-then-newline-and-indent]
-        'ruby-electric-space/return)
+       map [remap reindent-then-newline-and-indent]
+       'ruby-electric-space/return)
       (el-patch-remove
         (dolist (x ruby-electric-delimiters-alist)
           (let* ((delim   (car x))
@@ -4596,7 +4596,7 @@ Return either a string or nil."
             (define-key map (char-to-string delim) func)
             (if closing
                 (define-key
-                  map (char-to-string closing) 'ruby-electric-closing-char)))))
+                 map (char-to-string closing) 'ruby-electric-closing-char)))))
       map)
     (el-patch-concat
       "Keymap used in ruby-electric-mode"
