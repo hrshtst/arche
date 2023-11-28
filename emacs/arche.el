@@ -6214,6 +6214,10 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 ;; Package `transient' is the interface used by Magit to display
 ;; popups.
 (use-package transient
+  :custom-face
+  (shadow
+   ((t (:foreground "grey50"))))
+
   :config
 
   ;; Allow using `q' to quit out of popups, in addition to `C-g'. See
