@@ -3380,10 +3380,12 @@ currently active.")
 
   :blackout yas-minor-mode)
 
-;; Package `yasnippet-snippets' contains the standard collection of
-;; snippets for `yasnippet'.
-(use-package yasnippet-snippets
-  :after yasnippet)
+;; Package `doom-snippets' contains the `yasnippet' snippets library
+;; which is richer than the standard one.
+(use-package doom-snippets
+  :after yasnippet
+  :straight (doom-snippets :type git :host github
+                           :repo "doomemacs/snippets" :files ("*.el" "*")))
 
 ;;; IDE features
 ;;;; Language servers
