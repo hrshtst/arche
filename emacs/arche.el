@@ -1587,6 +1587,12 @@ perspective: %s(arche--perspective-names)
   ;; Sort perspectives by order created when calling `persp-switch'.
   (setq persp-sort 'created)
 
+  (arche-defhook arche--cd-to-home-when-created ()
+    persp-switch-hook
+    "Make the default directory for newly created scratch buffer be HOME."
+    (when (string= (persp-scratch-buffer) (buffer-name (current-buffer)))
+      (cd (expand-file-name "~/"))))
+
   (use-feature consult
     :config
 
