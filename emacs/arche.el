@@ -7455,4 +7455,5 @@ nil."
 ;; no-native-compile: t
 ;; outline-regexp: ";;;+ "
 ;; sentence-end-double-space: nil
+;; eval: (apheleia-mode -1)
 ;; End:
