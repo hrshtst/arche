@@ -2809,6 +2809,10 @@ loaded since the file was changed outside of Emacs."
   ;; you to lose your undo history if you use it by accident.
   (setq undo-tree-enable-undo-in-region nil)
 
+  ;; Disable the auto-seve history feature. This feature was enabled
+  ;; by default since ver.0.8.
+  (setq undo-tree-auto-save-history nil)
+
   :blackout t)
 
 ;;;; Navigation
