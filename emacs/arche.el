@@ -4677,6 +4677,7 @@ Return either a string or nil."
   (arche-defhook arche--yasnippet-tex-setup ()
     TeX-mode-hook
     "Enable `yasnippet-minor-mode' in `TeX-mode'."
+    (yas-reload-all)
     (yas-minor-mode +1))
 
   (arche-defhook arche--replace-str-setup ()
