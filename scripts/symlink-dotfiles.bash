@@ -25,6 +25,25 @@ force_link() {
   ln -sf "$1" "$2"
 }
 
+safe_link_directory() {
+  if [[ ! -d "$1" ]]; then
+    echo "source is not a directory, use safe_link: $1" >&2
+    exit 1
+  fi
+
+  if [[ -f "$2" ]]; then
+    echo "already exists and not a directory: $2" >&2
+    exit 1
+  elif [[ -L "$2" ]]; then
+    return
+  elif ! rmdir "$2"; then
+    echo "already exists, and not empty: $2" >&2
+    exit 1
+  fi
+
+  ln -sf "$1" "$2"
+}
+
 # Shell
 force_link "$dotfiles/shell/shared/.profile" "$HOME/.profile"
 
@@ -59,6 +78,7 @@ safe_link "$dotfiles/emacs/early-init.el" "$HOME/.emacs.d/early-init.el"
 safe_link "$dotfiles/emacs/init.el" "$HOME/.emacs.d/init.el"
 safe_link "$dotfiles/emacs/versions.el" \
           "$HOME/.emacs.d/straight/versions/arche.el"
+safe_link_directory "$dotfiles/emacs/snippets" "$HOME/.emacs.d/snippets"
 
 # Vim
 safe_link "$dotfiles/vim/.vimrc" "$HOME/.vimrc"
