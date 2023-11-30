@@ -2177,7 +2177,8 @@ permission."
   :bind (;; We have to rebind frequently-used keybindings since they
          ;; are somehow disabled in `mozc-mode'.
          :map mozc-mode-map
-              ("C-x C-s" . #'save-buffer))
+              ("C-x C-s" . #'save-buffer)
+              ("C-d" . #'delete-char))
   :bind* (("S-SPC" . #'toggle-input-method))
   :config
 
