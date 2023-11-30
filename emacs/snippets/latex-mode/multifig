@@ -1,0 +1,21 @@
+# -*- mode: snippet -*-
+# name: multiple figures
+# key: fig
+# --
+\begin{figure}[t]
+  \centering
+  \begin{subfigure}[t]{.49\linewidth}
+    \centering
+    \includegraphics[${1:width=\linewidth}]{fig/${2:dummy}.pdf}
+    \caption{${3:caption}}
+    \label{fig:$2}
+  \end{subfigure}
+  \begin{subfigure}[t]{.49\linewidth}
+    \centering
+    \includegraphics[$1]{fig/${4:dummy}.pdf}
+    \caption{${5:caption}}
+    \label{fig:$4}
+  \end{subfigure}
+  \caption{${6:caption}}
+  \label{fig:${7:label}}
+\end{figure}

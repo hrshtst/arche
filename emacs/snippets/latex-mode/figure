@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: figure
+# key: fig
+# uuid: fig
+# --
+\begin{figure}[t]
+  \centering
+  \includegraphics[${1:$$(yas/choose-value '("width=\\\linewidth" "width=\\\columnwidth" "width=\\\textwidth" "height=40mm"))}]{fig/${2:dummy}.pdf}
+  \caption{${3:caption}}
+  \label{fig:$2}
+\end{figure}
