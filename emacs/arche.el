@@ -4765,10 +4765,6 @@ This prevents them from getting in the way of buffer selection."
   ;; Don't be afraid to break inline math between lines.
   (setq LaTeX-fill-break-at-separators nil)
 
-  ;; When inserting a left brace, delete the current selection first,
-  ;; as per `delete-selection-mode'.
-  (put 'LaTeX-insert-left-brace 'delete-selection t)
-
   (arche-defadvice arche--latex-environment-kill-extra-newline
       (func &rest args)
     :around #'LaTeX-insert-environment
