@@ -4873,6 +4873,22 @@ environment with point at the end of a non-empty line of text."
   (setq japanese-TeX-engine-default 'uptex)
   (setq japanese-LaTeX-default-style "jlreq"))
 
+;; Package `cdlatex' supports insertion of environment templates and
+;; math stuff in LaTeX in a very fast way.
+(use-package cdlatex
+  :hook (LaTeX-mode . turn-on-cdlatex)
+  :init
+
+  ;; Disable some `cdlatex' features.
+  (setq cdlatex-takeover-parenthesis nil)
+  (setq cdlatex-takeover-dollar nil)
+  ;; (setq cdlatex-takeover-subsuperscript nil)
+
+  :bind(:map cdlatex-mode-map
+             ;; Disable TAB from navigating the TeX document.
+             ("TAB" . nil)
+             ("<tab>" . nil)))
+
 ;; Package `latex-math-preview' provides preview of particular
 ;; region in LaTeX file and displays it.
 (use-package latex-math-preview

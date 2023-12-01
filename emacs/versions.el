@@ -8,6 +8,7 @@
  ("avy" . "be612110cb116a38b8603df367942e2bb3d9bdbe")
  ("blackout" . "7707211370f03f03a2f74df15f42ac24a1e99300")
  ("buffer-move" . "e7800b3ab1bd76ee475ef35507ec51ecd5a3f065")
+ ("cdlatex" . "33770dec73138909714711b05a63e79da5a19ccd")
  ("cider" . "0134a0bc09c8cd332b100cb1c37d375204253ab6")
  ("citar" . "572b7b6e569e9423dd948539fa48d3f53ceffe57")
  ("citeproc-el" . "b704e7d72e9c4d7d221e2ac92ce8e203698e3d2d")
@@ -113,6 +114,7 @@
  ("sesman" . "e0f555f963c9f02f8e4a50e06fc353eb4c15ee77")
  ("sly" . "9c43bf65b967e12cef1996f1af5f0671d8aecbf4")
  ("smartparens" . "0778a8a84064cf2bc3a9857bd0e7a4619cc1e5c3")
+ ("snippets" . "f022984ee1318a4015d5d081b3c3dab5a60dc6ff")
  ("spinner" . "67681b8f1580a7cd7a1aa49d78eaa30d11f7c178")
  ("ssh-config-mode-el" . "d560a0876a93ad4130baf33dae1b9405ad37a405")
  ("straight.el" . "b3760f5829dba37e855add7323304561eb57a3d4")
@@ -137,6 +139,5 @@
  ("xref" . "adeb5cfcc69feebd5a71a24b381ca61e0e6f3396")
  ("yaml-mode" . "5b58248ab255dff6cfa4c4057a191bc4446ee5b6")
  ("yaml.el" . "fe08b8f5307af1e7b876ece64b7303213f04b63c")
- ("yasnippet" . "52a1c5031912243c791c55e0fe345d04f219b507")
- ("yasnippet-snippets" . "063f54cea33f59defe9123549bf55ca342457a1c"))
+ ("yasnippet" . "52a1c5031912243c791c55e0fe345d04f219b507"))
 :gamma
