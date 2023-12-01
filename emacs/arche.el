@@ -3294,7 +3294,8 @@ via return key."
 ;; here is because it gets pulled in by LSP, and we need to unbreak
 ;; some stuff.
 (use-package yasnippet
-  :hook ((prog-mode text-mode) . yas-minor-mode)
+  :hook (((prog-mode text-mode) . yas-minor-mode)
+         (post-self-insert . arche-yas-try-expanding-auto-snippets))
 
   :bind (;; Additional keybindings for yasnippet.
          ("C-c y n" . #'yas-new-snippet)
@@ -3311,6 +3312,25 @@ via return key."
   ;; eliminates a message about successful snippet lazy-loading setup
   ;; on every(!) Emacs init. Errors should still be shown.
   (setq yas-verbosity 2)
+
+  ;; Allow to expand snippets inside snippets.
+  (setq yas-triggers-in-field t)
+
+  ;; Define a function that tries to autoexpand YaSnippets, based on:
+  ;; https://karthinks.com/software/latex-input-for-impatient-scholars/
+  (defun arche-yas-try-expanding-auto-snippets ()
+    (when (bound-and-true-p yas-minor-mode)
+      (let ((yas-buffer-local-condition ''(require-snippet-condition . auto)))
+        (yas-expand))))
+
+  ;; Suppress warnings from yasnippet when snippets do edit the buffer
+  ;; directly.
+  (use-feature warnings
+    :config
+
+    (cl-pushnew '(yasnippet backquote-change)
+                warning-suppress-types
+                :test 'equal))
 
   ;; Make it so that Company's keymap overrides Yasnippet's keymap
   ;; when a snippet is active. This way, you can TAB to complete a
