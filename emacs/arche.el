@@ -2659,6 +2659,9 @@ _C-o_: other       ^   ^             ^   ^                 _C-M-v_: subtree down
          ("@" . #'hydra-outline/body))
   :config
 
+  ;; Make TAB cycle the visibility of body likewise org mode.
+  (setq outline-minor-mode-cycle t)
+
   (define-globalized-minor-mode global-outline-minor-mode
     outline-minor-mode outline-minor-mode)
 
