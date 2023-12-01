@@ -4893,8 +4893,8 @@ environment with point at the end of a non-empty line of text."
     :bind (:map preview-map
                 ("RET" . #'latex-math-preview-expression)
                 ("m" . #'latex-math-preview-save-image-file)
-                ("C-'" . #'latex-math-preview-insert-symbol)
-                ("'" . #'latex-math-preview-last-symbol-again))))
+                ("C-`" . #'latex-math-preview-insert-symbol)
+                ("`" . #'latex-math-preview-last-symbol-again))))
 
 
 ;; Package `citar' provides a completing-read front-end to browse and
