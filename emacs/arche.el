@@ -4765,6 +4765,9 @@ This prevents them from getting in the way of buffer selection."
   ;; Don't be afraid to break inline math between lines.
   (setq LaTeX-fill-break-at-separators nil)
 
+  ;; Insert braces after ^ and _ in math mode.
+  (setq TeX-electric-sub-and-superscript t)
+
   (arche-defadvice arche--latex-environment-kill-extra-newline
       (func &rest args)
     :around #'LaTeX-insert-environment
@@ -4844,7 +4847,8 @@ environment with point at the end of a non-empty line of text."
 (use-feature tex-jp
   :init
 
-  (setq japanese-TeX-engine-default 'uptex))
+  (setq japanese-TeX-engine-default 'uptex)
+  (setq japanese-LaTeX-default-style "jlreq"))
 
 ;; Package `latex-math-preview' provides preview of particular
 ;; region in LaTeX file and displays it.
@@ -6773,7 +6777,8 @@ Instead, display simply a flat colored region in the fringe."
     ;; All of these major modes provide more featureful bindings for
     ;; C-c C-o than `browse-url-at-point'.
     (not (derived-mode-p
-          #'markdown-mode #'org-mode #'org-agenda-mode #'magit-mode)))
+          #'markdown-mode #'org-mode #'org-agenda-mode
+          #'magit-mode #'latex-mode)))
 
   :bind* (:filter (arche--browse-url-predicate)
                   ("C-c C-o" . #'browse-url-at-point)))
