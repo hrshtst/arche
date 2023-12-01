@@ -4853,9 +4853,28 @@ environment with point at the end of a non-empty line of text."
 ;; Package `latex-math-preview' provides preview of particular
 ;; region in LaTeX file and displays it.
 (use-package latex-math-preview
-  :config
+  :after preview
+  :init
 
-  (setq preview-scale-function 1.2))
+  (arche-defhook arche--latex-math-preview-set-tex-engine ()
+    LaTeX-math-mode-hook
+    "Set suitable values depending on the current TeX engine."
+    (when japanese-TeX-mode
+      (setq-local latex-math-preview-tex-to-png-for-preview '(platex dvipng))
+      (setq-local latex-math-preview-tex-to-png-for-save '(platex dvipng))
+      (setq-local latex-math-preview-tex-to-eps-for-save '(platex dvips-to-eps))
+      (setq-local latex-math-preview-tex-to-ps-for-save '(platex dvips-to-ps))
+      (setq-local latex-math-preview-beamer-to-png '(platex dvipdfmx gs-to-png))))
+
+  (use-feature preview
+    :bind (:map preview-map
+                ("RET" . #'latex-math-preview-expression)
+                ("m" . #'latex-math-preview-save-image-file)
+                ("C-j" . #'latex-math-preview-insert-symbol)
+                ("j" . #'latex-math-preview-last-symbol-again))
+    :config
+
+    (setq preview-scale-function 1.2)))
 
 
 ;; Package `citar' provides a completing-read front-end to browse and
