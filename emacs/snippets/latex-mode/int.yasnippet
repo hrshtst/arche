@@ -1,7 +1,8 @@
 # -*- mode: snippet -*-
 # contributor: Song Qiang <tsiangsung@gmail.com>
-# key: int
+# key: integ
 # group: math
-# name: \int_{n}^{}
+# condition: (and (texmathp) 'auto)
+# name: Indefinite integral (all)
 # --
-\\${1:$$(yas/choose-value '("int" "oint" "iint" "iiint" "iiiint" "idotsint"))}{$2}^{$3}$0
+\\${1:$$(yas/choose-value '("int" "oint" "iint" "iiint" "iiiint" "idotsint"))}$0
