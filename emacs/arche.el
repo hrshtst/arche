@@ -4871,10 +4871,7 @@ environment with point at the end of a non-empty line of text."
                 ("RET" . #'latex-math-preview-expression)
                 ("m" . #'latex-math-preview-save-image-file)
                 ("C-j" . #'latex-math-preview-insert-symbol)
-                ("j" . #'latex-math-preview-last-symbol-again))
-    :config
-
-    (setq preview-scale-function 1.2)))
+                ("j" . #'latex-math-preview-last-symbol-again))))
 
 
 ;; Package `citar' provides a completing-read front-end to browse and
