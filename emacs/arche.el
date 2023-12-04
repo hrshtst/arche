@@ -2918,8 +2918,7 @@ the reverse direction from \\[pop-global-mark]."
 ;; given ones. Pressing the highlighted charcters makes the point jump
 ;; to it.
 (use-package avy
-  :bind (("C-:" . #'avy-goto-char)
-         ("C-'" . #'avy-goto-char-timer)))
+  :bind ("C-'" . #'avy-goto-char-timer))
 
 ;; Define `hydra' for navigation commands alternative to the default
 ;; `goto-map'.
