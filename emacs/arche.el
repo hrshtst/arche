@@ -4886,7 +4886,9 @@ environment with point at the end of a non-empty line of text."
   :bind(:map cdlatex-mode-map
              ;; Disable TAB from navigating the TeX document.
              ("TAB" . nil)
-             ("<tab>" . nil)))
+             ("<tab>" . nil))
+
+  :blackout t)
 
 ;; Package `latex-math-preview' provides preview of particular
 ;; region in LaTeX file and displays it.
