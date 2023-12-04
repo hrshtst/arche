@@ -5851,6 +5851,12 @@ be invoked before `org-mode-hook' is run."
   (when (file-directory-p org-roam-directory)
     (org-roam-db-autosync-mode +1)))
 
+;; Package `denote' is a simple note-taking tool based on the idea
+;; that notes should follow a predictable and descriptive file-naming
+;; shceme.
+(use-package denote)
+
+
 ;;;; Filesystem management
 
 ;; When deleting a file interactively, move it to the trash instead.
