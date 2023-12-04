@@ -3885,6 +3885,22 @@ was printed, and only have ElDoc display if one wasn't."
 
   :blackout t)
 
+;;;; Syntax hilighting
+
+;; Package `treesit-auto' installs and applies `tree-sitter' major
+;; modes automatically. If the `tree-sitter' version can't be used,
+;; fall back to the original mojor mode.
+(use-package treesit-auto
+  :demand t
+  :init
+
+  (setq treesit-auto-install 'prompt)
+
+  :config
+
+  (treesit-auto-add-to-auto-mode-alist 'all)
+  (global-treesit-auto-mode))
+
 ;;;; Syntax checking and code linting
 
 ;; Package `flycheck' provides a framework for in-buffer error and
