@@ -1,0 +1,71 @@
+# -*- mode: snippet -*-
+# name: template
+# key: template
+# --
+#!/usr/bin/env bash
+
+set -e
+set -o pipefail
+
+usage() {
+  cat <<EOF
+NAME:
+  \$NAME
+
+SYNOPSIS:
+  \$0 [-h] [<arg>]
+
+DESCRIPTION:
+  ${1:DESCRIPTION}
+
+OPTIONS:
+  -h, --help
+    Show this message.
+
+  <arg>
+    Argument to use.
+
+EXAMPLES:
+  1. Showing a useful example.
+        \\\$ \$0
+EOF
+}
+
+SCRIPT="\$(realpath "\$0")"
+NAME="\$(basename "\$SCRIPT")"
+
+ARGS=()
+parse() {
+  while (( "\$#" )); do
+    case "\$1" in
+      -h|--help)
+        usage
+        exit 0
+        ;;
+      -*)
+        echo "error: unknown options \$1" >&2
+        exit 1
+        ;;
+      *)
+        ARGS+=("\$1")
+        shift
+        ;;
+    esac
+  done
+}
+
+# Main processes.
+main() {
+  # Parse optional arguments.
+  parse "\$@"
+
+  # Handle exceptions.
+  if [[ \${#ARGS[@]} -eq 0 ]]; then
+    echo "error: no arguments provided" >&2
+    exit 1
+  fi
+}
+
+if [[ "\${BASH_SOURCE[0]}" -ef "\$0" ]]; then
+  main "\$@"
+fi
