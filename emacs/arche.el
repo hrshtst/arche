@@ -4495,7 +4495,7 @@ https://github.com/jrblevin/markdown-mode/issues/328."
   (setq python-fill-docstring-style 'pep-257)
 
   (arche-defhook arche--python-fix-outline-mode-config ()
-    python-mode-hook
+    (python-mode-hook python-ts-mode-hook)
     "Prevent `python-mode' from overriding `outline-minor-mode' config.
 If this hook is not used, then `python-mode' will override even a
 file-local setting of e.g. `outline-regexp' with its own setting."
@@ -4504,7 +4504,7 @@ file-local setting of e.g. `outline-regexp' with its own setting."
     (kill-local-variable 'outline-heading-end-regexp))
 
   (arche-defhook arche--python-no-reindent-on-colon ()
-    python-mode-hook
+    (python-mode-hook python-ts-mode-hook)
     "Don't reindent on typing a colon.
 See https://emacs.stackexchange.com/a/3338/12534."
     (setq electric-indent-chars (delq ?: electric-indent-chars)))
@@ -4520,7 +4520,7 @@ See https://emacs.stackexchange.com/a/3338/12534."
     (setq python-shell-interpreter "python")))
 
   (arche-defhook arche--python-use-correct-executable ()
-    python-mode-hook
+    (python-mode-hook python-ts-mode-hook)
     "Use correct executables for Python tooling."
     (save-excursion
       (save-match-data
@@ -4573,6 +4573,8 @@ Return either a string or nil."
       ;;       '("isort" "--stdout" "-"))
       (push '(isort . ("isort" "--stdout" "-")) apheleia-formatters)
       (setf (alist-get 'python-mode apheleia-mode-alist)
+            '(isort black))
+      (setf (alist-get 'python-ts-mode apheleia-mode-alist)
             '(isort black)))))
 
 ;; Package `lsp-pyright' is a lsp-mode client leveraging Microsoft's
