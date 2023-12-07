@@ -2079,6 +2079,9 @@ unquote it using a comma."
 (arche-register-dotfile ".config/fish/config.fish" "f c")
 (arche-register-dotfile ".config/fish/config.local.fish" "f l")
 
+;; Org
+(arche-register-dotfile ,org-default-notes-file "o i" "org-inbox")
+
 ;; Zsh
 (arche-register-dotfile ".zshrc" "z r")
 (arche-register-dotfile ".zshrc.local" "z l")
@@ -5744,7 +5747,41 @@ This makes the behavior of `find-file' more reasonable."
   ;; Don't set bookmarks when using `org-capture', since
   ;; `bookmark-face' may be set to a distracting color by the color
   ;; theme, which makes everything look really ugly.
-  (setq org-capture-bookmark nil))
+  (setq org-capture-bookmark nil)
+
+  ;; Customized `org-capture-templates'.
+  (setq org-capture-templates
+        `(("t" "Task without annotation" entry
+           (file ,org-default-notes-file)
+           "* TODO %^{Task}\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n"
+           :prepend t)
+          ("T" "Task with annotation" entry
+           (file ,org-default-notes-file)
+           "* TODO %^{Task}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%a\n"
+           :prepend t)
+          ("i" "Interrupting task" entry
+           (file ,org-default-notes-file)
+           "* STARTED %^{Task}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%a\n"
+           :clock-in :clock-resume
+           :prepend t)
+          ("." "Today" entry
+           (file ,org-default-notes-file)
+           "* TODO %^{Task}\nSCHEDULED: %t\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
+           :immediate-finish t)
+          ("v" "Video" entry
+           (file ,org-default-notes-file)
+           "* TODO %^{Task}  :video:\nSCHEDULED: %t\n"
+           :immediate-finish t)
+          ("e" "Errand" entry
+           (file ,org-default-notes-file)
+           "* TODO %^{Task}  :errands:\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
+           :immediate-finish t)
+          ("j" "Journal entry" plain
+           (file+olp+datetree ,org-default-notes-file)
+           "%K - %a\n%i\n%?\n"
+           :unnarrowed t)
+          ("q" "Quick note" item
+           (file+headline ,org-default-notes-file "Quick notes")))))
 
 ;; Feature `org-clock' from package `org' provides the task clocking
 ;; functionality.
