@@ -5913,6 +5913,25 @@ be invoked before `org-mode-hook' is run."
          ("C-c n o" . #'denote-open-or-create)
          ("C-c n j" . #'denote-journal-extras-new-or-existing-entry)))
 
+;; Package `citar-denote' provids a minor-mode integrating the `citar'
+;; and `denote' packages to enable managing bibliographic notes and
+;; citations.
+(use-package citar-denote
+  :init
+
+  (citar-denote-mode +1)
+
+  :bind (("C-c n l c" . #'citar-create-note)
+         ("C-c n l o" . #'citar-denote-open-note)
+         ("C-c n l ." . #'citar-denote-dwim)
+         ("C-c n l e" . #'citar-denote-open-reference-entry)
+         ("C-c n l a" . #'citar-denote-add-citekey)
+         ("C-c n l k" . #'citar-denote-remove-citekey)
+         ("C-c n l )" . #'citar-denote-find-reference)
+         ("C-c n l [" . #'citar-denote-find-citation)
+         ("C-c n l i" . #'citar-denote-link-reference))
+
+  :blackout t)
 
 ;;;; Filesystem management
 
