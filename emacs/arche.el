@@ -2177,8 +2177,8 @@ permission."
   :bind (;; We have to rebind frequently-used keybindings since they
          ;; are somehow disabled in `mozc-mode'.
          :map mozc-mode-map
-              ("C-x C-s" . #'save-buffer)
-              ("C-d" . #'delete-char))
+         ("C-x C-s" . #'save-buffer)
+         ("C-d" . #'delete-char))
   :bind* (("S-SPC" . #'toggle-input-method))
   :config
 
@@ -2656,7 +2656,7 @@ _C-o_: other       ^   ^             ^   ^                 _C-M-v_: subtree down
     (bind-key "@" #'hydra-outline/body arche-keymap))
 
   :bind (:map arche-keymap
-         ("@" . #'hydra-outline/body))
+              ("@" . #'hydra-outline/body))
   :config
 
   ;; Make TAB cycle the visibility of body likewise org mode.
@@ -3301,10 +3301,10 @@ via return key."
          ("C-c y v" . #'yas-visit-snippet-file)
          ("C-c y i" . #'yas-insert-snippet)
          :map yas-minor-mode-map
-              ;; Disable TAB from expanding snippets, as I don't use it and
-              ;; it's annoying.
-              ("TAB" . nil)
-              ("<tab>" . nil))
+         ;; Disable TAB from expanding snippets, as I don't use it and
+         ;; it's annoying.
+         ("TAB" . nil)
+         ("<tab>" . nil))
   :config
 
   ;; Reduce verbosity. The default value is 3. Bumping it down to 2
@@ -4593,7 +4593,7 @@ Return either a string or nil."
 ;; Python function definitions.
 (use-package numpydoc
   :bind (:map python-mode-map
-         ("C-c C-n" . #'numpydoc-generate))
+              ("C-c C-n" . #'numpydoc-generate))
 
   :config
 
@@ -6258,7 +6258,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
       ("q" nil "cancel")))
 
   :bind (:map arche-keymap
-         ("s" . #'hydra-smerge/body))
+              ("s" . #'hydra-smerge/body))
 
   :blackout t)
 
@@ -6816,8 +6816,8 @@ Instead, display simply a flat colored region in the fringe."
 ;; minibuffer using `consult'.
 (use-package affe
   :bind (:map search-map
-         ("g" . #'affe-grep)
-         ("f" . #'affe-find))
+              ("g" . #'affe-grep)
+              ("f" . #'affe-find))
 
   :config
 
@@ -7422,7 +7422,7 @@ nil."
       ("q" nil "quit")))
 
   :bind (:map arche-keymap
-         ("h" . #'hydra-highlight/body))
+              ("h" . #'hydra-highlight/body))
 
   :config
 
