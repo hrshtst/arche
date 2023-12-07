@@ -5855,61 +5855,66 @@ be invoked before `org-mode-hook' is run."
 
 ;;;; Note taking
 
-;; Package `org-roam' is a note-taking tool or a knowledge management
-;; system which leverages the Org-mode ecosystem. Its usage is
-;; designed based on the Zettelkasten method.
-;; `org-roam-directory' should be set in init.local.el.
-(use-package org-roam
-  :init
-
-  ;; Integration with `affe'.
-  (defun arche-org-roam-grep (&optional initial)
-    "Do fuzzy grep in Org-roam directory."
-    (interactive "P")
-    (cond
-     ((fboundp 'affe-grep)
-      (affe-grep org-roam-directory initial))
-     ((fboundp 'consult-grep)
-      (consult-grep org-roam-directory initial))
-     (t
-      (user-error "No available commands for fuzzy grep"))))
-
-  (defun arche-org-roam-find (&optional initial)
-    "Do fuzzy find in Org-roam directory."
-    (interactive "P")
-    (cond
-     ((fboundp 'affe-find)
-      (affe-find org-roam-directory initial))
-     ((fboundp 'consult-find)
-      (consult-find org-roam-directory initial))
-     (t
-      (user-error "No available commands for fuzzy find"))))
-
-  :bind (("C-c n l" . #'org-roam-buffer-toggle)
-         ("C-c n f" . #'org-roam-node-find)
-         ("C-c n g" . #'org-roam-graph)
-         ("C-c n i" . #'org-roam-node-insert)
-         ("C-c n c" . #'org-roam-capture)
-         ;; Dailies
-         ("C-c n j" . #'org-roam-dailies-capture-today)
-         ;; Grep / Find
-         ("C-c n G" . #'arche-org-roam-grep)
-         ("C-c n F" . #'arche-org-roam-find))
-
-  :config
-
-  ;; Make `org-roam-db-sync' silent.
-  (advice-add #'org-roam-db-sync :around #'arche--advice-silence-messages)
-
-  ;; Keep org-roam session automatically synchronized when
-  ;; `org-roam-directory' exists in the system.
-  (when (file-directory-p org-roam-directory)
-    (org-roam-db-autosync-mode +1)))
-
 ;; Package `denote' is a simple note-taking tool based on the idea
 ;; that notes should follow a predictable and descriptive file-naming
 ;; shceme.
-(use-package denote)
+(use-package denote
+  :init
+
+  ;; Pick dates, where relevant, with Org's advanced interface.
+  (setq denote-date-prompt-use-org-read-date t)
+
+  ;; Show the context of links in the current file's backlinks buffer.
+  (setq denote-backlinks-show-context t)
+
+  ;; Automatically rename `denote' buffers.
+  (denote-rename-buffer-mode +1)
+
+  ;; Activate `denote-dired-mode' in `dired' buffers.
+  (add-hook 'dired-mode-hook #'denote-dired-mode-in-directories)
+
+  ;; Fix the date format to make the journal title.
+  (setq denote-journal-extras-title-format 'day-date-month-year)
+
+  ;; Add `org-capture' entries for `denote'.
+  (use-feature org-capture
+    :config
+
+    (setq org-capture-templates
+          (append org-capture-templates
+                  `(("n" "New note (with denote.el)" plain
+                     (file denote-last-path)
+                     #'denote-org-capture
+                     :no-save t
+                     :immediate-finish nil
+                     :kill-buffer t
+                     :jump-to-captured t)
+                    ("N" "New note with prompts (with denote.el)" plain
+                     (file denote-last-path)
+                     (function
+                      (lambda ()
+                        (denote-org-capture-with-prompts :title :keywords :subdirectory)))
+                     :no-save t
+                     :immediate-finish nil
+                     :kill-buffer t
+                     :jump-to-captured t)))))
+
+  :bind (("C-c n n" . #'denote)
+         ("C-c n c" . #'denote-region) ; "contents" mnemonic
+         ("C-c n N" . #'denote-type)
+         ("C-c n d" . #'denote-date)
+         ("C-c n z" . #'denote-signature) ; "zettelkasten" mnemonic
+         ("C-c n s" . #'denote-subdirectory)
+         ("C-c n t" . #'denote-template)
+         ("C-c n i" . #'denote-link) ; "insert" mnemonic
+         ("C-c n I" . #'denote-add-links)
+         ("C-c n b" . #'denote-backlinks)
+         ("C-c n f f" . #'denote-find-link)
+         ("C-c n f b" . #'denote-find-backlink)
+         ("C-c n r" . #'denote-rename-file)
+         ("C-c n R" . #'denote-rename-file-using-front-matter)
+         ("C-c n o" . #'denote-open-or-create)
+         ("C-c n j" . #'denote-journal-extras-new-or-existing-entry)))
 
 
 ;;;; Filesystem management
