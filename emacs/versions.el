@@ -11,6 +11,7 @@
  ("cdlatex" . "33770dec73138909714711b05a63e79da5a19ccd")
  ("cider" . "0134a0bc09c8cd332b100cb1c37d375204253ab6")
  ("citar" . "572b7b6e569e9423dd948539fa48d3f53ceffe57")
+ ("citar-denote" . "f093c37d28320a04b5e7ee87d5c442fefa749c35")
  ("citeproc-el" . "b704e7d72e9c4d7d221e2ac92ce8e203698e3d2d")
  ("clojure-mode" . "222fdafa2add56a171ded245339a383e5e3078ec")
  ("closql" . "909752e2aa946bd91b27a1813982e2b20ae27dde")
