@@ -2079,9 +2079,6 @@ unquote it using a comma."
 (arche-register-dotfile ".config/fish/config.fish" "f c")
 (arche-register-dotfile ".config/fish/config.local.fish" "f l")
 
-;; Org
-(arche-register-dotfile ,org-default-notes-file "o i" "org-inbox")
-
 ;; Zsh
 (arche-register-dotfile ".zshrc" "z r")
 (arche-register-dotfile ".zshrc.local" "z l")
