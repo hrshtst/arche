@@ -5750,28 +5750,28 @@ This makes the behavior of `find-file' more reasonable."
   (setq org-capture-templates
         `(("t" "Task without annotation" entry
            (file ,org-default-notes-file)
-           "* TODO %^{Task}\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n"
+           "* TODO %^{Task} %^G\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n"
            :prepend t)
           ("T" "Task with annotation" entry
            (file ,org-default-notes-file)
-           "* TODO %^{Task}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%a\n"
+           "* TODO %^{Task} %^G\n:PROPERTIES:\n:CREATED: %U\n:END:\n%a\n"
            :prepend t)
           ("i" "Interrupting task" entry
            (file ,org-default-notes-file)
-           "* STARTED %^{Task}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%a\n"
+           "* STARTED %^{Task} %^G\n:PROPERTIES:\n:CREATED: %U\n:END:\n%a\n"
            :clock-in :clock-resume
            :prepend t)
           ("." "Today" entry
            (file ,org-default-notes-file)
-           "* TODO %^{Task}\nSCHEDULED: %t\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
+           "* TODO %^{Task} %^G\nSCHEDULED: %t\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
            :immediate-finish t)
           ("v" "Video" entry
            (file ,org-default-notes-file)
-           "* TODO %^{Task}  :video:\nSCHEDULED: %t\n"
+           "* TODO %^{Task} %^G  :video:\nSCHEDULED: %t\n"
            :immediate-finish t)
           ("e" "Errand" entry
            (file ,org-default-notes-file)
-           "* TODO %^{Task}  :errands:\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
+           "* TODO %^{Task} %^G  :errands:\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
            :immediate-finish t)
           ("j" "Journal entry" plain
            (file+olp+datetree ,org-default-notes-file)
