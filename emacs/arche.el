@@ -5677,6 +5677,9 @@ This runs `org-insert-heading' with
   ;; sparse tree.
   (setq org-highlight-sparse-tree-matches nil)
 
+  ;; Make font size in LaTeX fragments in org larger.
+  (plist-put org-format-latex-options :scale 1.5)
+
   ;; Add package we always need for LaTeX fragment.
   (add-to-list 'org-latex-packages-alist '("" "bm" nil)))
 
