@@ -3483,7 +3483,7 @@ functions."
     (advice-add fun :before-until #'arche--advice-lsp-mode-silence))
 
   (arche-defadvice arche--lsp-run-from-node-modules (command)
-    :filter-return #'lsp-resolve-final-function
+    :filter-return #'lsp-resolve-final-command
     "Find LSP executables inside node_modules/.bin if present."
     (cl-block nil
       (prog1 command
