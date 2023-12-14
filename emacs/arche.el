@@ -5681,7 +5681,13 @@ This runs `org-insert-heading' with
   (plist-put org-format-latex-options :scale 1.5)
 
   ;; Add package we always need for LaTeX fragment.
-  (add-to-list 'org-latex-packages-alist '("" "bm" nil)))
+  (add-to-list 'org-latex-packages-alist '("" "bm" nil))
+
+  (arche-defhook arche--org-cdlatex-setup-yasnippet ()
+    org-cdlatex-mode-hook
+    "Turn on `yasnippet-minor-mode' in `org-cdlatex-mode'."
+    (yas-reload-all)
+    (yas-minor-mode +1)))
 
 ;; Feature `org-indent' provides an alternative view for Org files in
 ;; which sub-headings are indented.
