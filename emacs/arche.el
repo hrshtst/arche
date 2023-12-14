@@ -5680,7 +5680,9 @@ This runs `org-insert-heading' with
 (use-feature org-indent
   :init
 
-  (add-hook 'org-mode-hook #'org-indent-mode))
+  (add-hook 'org-mode-hook #'org-indent-mode)
+
+  :blackout t)
 
 ;; Feature `org-agenda' from package `org' provides the agenda view
 ;; functionality, which allows for collating TODO items from your Org
