@@ -5934,6 +5934,18 @@ be invoked before `org-mode-hook' is run."
 
   (citar-denote-mode +1)
 
+  (arche-defadvice arche--add-file-local-variables-to-citar-denote-notes
+      (&rest _)
+    :after #'citar-denote--create-note
+    "Add a file-local variable which turns on CDLaTeX mode by default."
+    (org-insert-heading nil nil t)
+    (insert "Local Variables")
+    (org-set-tags ":noexport:")
+    (add-file-local-variable 'eval
+                             (car (read-from-string
+                                   "(org-cdlatex-mode +1)")))
+    (org-cdlatex-mode +1))
+
   :bind (("C-c n l c" . #'citar-create-note)
          ("C-c n l o" . #'citar-denote-open-note)
          ("C-c n l ." . #'citar-denote-dwim)
