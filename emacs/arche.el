@@ -2440,6 +2440,9 @@ marks specified in `arche-replace-punc-pairs'"
    (set-char-table-range auto-fill-chars c t))
  "!-=+]};:'\",.?")
 
+;; Fix the maximum line width for filling (default: 70).
+(setq-default fill-column 80)
+
 ;; We could maybe use the variable `comment-auto-fill-only-comments'
 ;; for this, but I wrote this code before I knew about it. Also, I'm
 ;; not sure how well it handles the edge cases for docstrings and
