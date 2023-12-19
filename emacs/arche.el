@@ -4904,7 +4904,8 @@ environment with point at the end of a non-empty line of text."
   ;; Use \bm{} more frequently.
   (setq cdlatex-math-modify-alist
         '((?b "\\bm" nil t nil nil)
-          (?B "\\mathbf" nil t nil nil)))
+          (?B "\\mathbf" nil t nil nil)
+          (?d)"\\mathbb" nil t nil nil))
 
   :bind(:map cdlatex-mode-map
              ;; Disable TAB from navigating the TeX document.
