@@ -5600,6 +5600,15 @@ block identifiers and property names to lower cases."
     "Enable `arche-org-lower-case-keywords-mode' in `org-mode'."
     (arche-org-lower-case-keywords-mode +1))
 
+  (arche-defhook arche--org-turn-on-electric-pair-local-mode ()
+    org-mode-hook
+    "Turn on `electric-pair-local-mode' in `org-mode'."
+    (setq-local electric-pair-inhibit-predicate
+                `(lambda (c)
+                   (if (char-equal c ?<) t
+                     (,electric-pair-inhibit-predicate c))))
+    (electric-pair-local-mode +1))
+
   :bind (:map org-mode-map
 
               ;; Prevent Org from overriding the bindings for
