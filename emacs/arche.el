@@ -5604,11 +5604,11 @@ block identifiers and property names to lower cases."
   (arche-defhook arche--org-turn-on-electric-pair-local-mode ()
     org-mode-hook
     "Turn on `electric-pair-local-mode' in `org-mode'."
+    (electric-pair-local-mode +1)
     (setq-local electric-pair-inhibit-predicate
                 `(lambda (c)
                    (if (char-equal c ?<) t
-                     (,electric-pair-inhibit-predicate c))))
-    (electric-pair-local-mode +1))
+                     (,electric-pair-inhibit-predicate c)))))
 
   :bind (:map org-mode-map
 
