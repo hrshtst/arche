@@ -5644,7 +5644,12 @@ block identifiers and property names to lower cases."
 
               ;; See discussion of this function below.
               ("C-M-RET" . #'arche-org-insert-heading-at-point)
-              ("C-M-<return>" . #'arche-org-insert-heading-at-point))
+              ("C-M-<return>" . #'arche-org-insert-heading-at-point)
+
+              ;; Enable `reftex' commands when `org-cdlatex-mode' is ON.
+              :filter org-cdlatex-mode
+              ("C-c (" . #'reftex-label)
+              ("C-c )" . #'reftex-reference))
   :bind* (;; Add the global keybindings for accessing Org Agenda and
           ;; Org Capture that are recommended in the Org manual.
           ("C-c a" . #'org-agenda)
