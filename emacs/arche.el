@@ -2534,6 +2534,18 @@ Apparently, such modes are derived from `text-mode', even though
 they are definitely programming-oriented."
   (setq-local adaptive-fill-mode nil))
 
+;; Define a function that unfills a paragraph and joints all the lines into a
+;; single line.
+(defun arche-unfill-paragraph (&optional region)
+  "Takes a multi-line paragraph and makes it into a single line of text.
+
+This is taken from: https://www.emacswiki.org/emacs/UnfillParagraph"
+  (interactive (progn (barf-if-buffer-read-only) '(t)))
+  (let ((fill-column (point-max))
+        ;; This would override `fill-column' if it's an integer.
+        (emacs-lisp-docstring-fill-column t))
+    (fill-paragraph nil region)))
+
 (defun arche-fix-whitespace-maybe ()
   "Fix whitespace in buffer if appropriate for the current buffer.
 Don't do anything for binary coded buffers."
