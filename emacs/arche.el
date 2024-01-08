@@ -4923,7 +4923,8 @@ environment with point at the end of a non-empty line of text."
   (arche-defhook arche--latex-math-preview-set-tex-engine ()
     LaTeX-math-mode-hook
     "Set suitable values depending on the current TeX engine."
-    (when japanese-TeX-mode
+    (when (and (boundp 'japanese-TeX-mode)
+               japanese-TeX-mode)
       (setq-local latex-math-preview-tex-to-png-for-preview '(platex dvipng))
       (setq-local latex-math-preview-tex-to-png-for-save '(platex dvipng))
       (setq-local latex-math-preview-tex-to-eps-for-save '(platex dvips-to-eps))
