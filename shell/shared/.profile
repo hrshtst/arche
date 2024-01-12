@@ -111,7 +111,8 @@ fi
 # Set DISPLAY When running on WSL.
 # https://github.com/canonical/ubuntu-wsl-integration/blob/master/wsl-integration.sh
 if grep -qEi "(microsoft|wsl)" /proc/version >/dev/null 2>&1; then
-  WSL_HOST="$(awk '/nameserver / {print $2; exit}' /etc/resolv.conf 2>/dev/null)"
+  # WSL_HOST="$(awk '/nameserver / {print $2; exit}' /etc/resolv.conf 2>/dev/null)"
+  WSL_HOST="$(ip route | grep default | awk '{print $3; exit}' 2>/dev/null)"
   setenv DISPLAY "${WSL_HOST}:0"
   setenv PULSE_SERVER "tcp:${WSL_HOST}"
   setenv LIBGL_ALWAYS_INDIRECT 1
