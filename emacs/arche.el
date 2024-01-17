@@ -4605,12 +4605,14 @@ Return either a string or nil."
 ;; Python function definitions.
 (use-package numpydoc
   :bind (:map python-mode-map
+              ("C-c C-n" . #'numpydoc-generate)
+         :map python-ts-mode-map
               ("C-c C-n" . #'numpydoc-generate))
 
   :config
 
   ;; Instead of interactive insertion, insert template text
-  (setq numpydoc-insertion-style nil))
+  (setq numpydoc-insertion-style 'yas))
 
 ;;;; Ruby
 ;; https://www.ruby-lang.org/
