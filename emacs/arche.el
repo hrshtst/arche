@@ -3245,6 +3245,7 @@ via return key."
       (arche--smartparens-pair-setup mode delim)))
 
   (arche--smartparens-pair-setup #'python-mode "\"\"\"")
+  (arche--smartparens-pair-setup #'python-ts-mode "\"\"\"")
   (arche--smartparens-pair-setup #'markdown-mode "```")
 
   ;; Work around https://github.com/Fuco1/smartparens/issues/1036.
@@ -4578,16 +4579,25 @@ Return either a string or nil."
   (use-feature apheleia
     :config
 
-    ;; Let apheleia run isort on the current buffer and then black on
-    ;; the result of isort.
-    (when (executable-find "isort")
-      ;; (setf (alist-get 'isort apheleia-formatters)
-      ;;       '("isort" "--stdout" "-"))
-      (push '(isort . ("isort" "--stdout" "-")) apheleia-formatters)
+    ;; Define formatters not included by default.
+    ;; (setf (alist-get 'isort apheleia-formatters)
+    ;;       '("isort" "--stdout" "-"))
+    (push '(isort . ("isort" "--stdout" "-")) apheleia-formatters)
+    (push '(docformatter . ("docformatter" "--black" "-"))
+          apheleia-formatters)
+    ;; Let apheleia run isort and docformatter on the current buffer and then
+    ;; black on the result of isort.
+    (let ((formatters '()))
+      (when (executable-find "black")
+        (push 'black formatters))
+      (when (executable-find "isort")
+        (push 'isort formatters))
+      (when (executable-find "docformatter")
+        (push 'docformatter formatters))
       (setf (alist-get 'python-mode apheleia-mode-alist)
-            '(isort black))
+            formatters)
       (setf (alist-get 'python-ts-mode apheleia-mode-alist)
-            '(isort black)))))
+            formatters))))
 
 ;; Package `lsp-pyright' is a lsp-mode client leveraging Microsoft's
 ;; newer version of LSP server for Python.
