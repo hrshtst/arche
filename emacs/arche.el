@@ -4614,6 +4614,7 @@ Return either a string or nil."
 ;; Package `numpydoc' inserts NumPy style docstrings automatically in
 ;; Python function definitions.
 (use-package numpydoc
+  :commands (numpydoc-generate)
   :bind (:map python-mode-map
               ("C-c C-n" . #'numpydoc-generate)
          :map python-ts-mode-map
