@@ -3332,6 +3332,12 @@ via return key."
       (let ((yas-buffer-local-condition ''(require-snippet-condition . auto)))
         (yas-expand))))
 
+  (arche-defadvice arche--advice-yas-load-quietly (func &rest args)
+    :around #'yas-define-snippets
+    "Disable messages emitted when loading snippets."
+    (arche--with-silent-message "Multiple snippets with same identity"
+      (apply func args)))
+
   ;; Suppress warnings from yasnippet when snippets do edit the buffer
   ;; directly.
   (use-feature warnings
