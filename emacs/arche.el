@@ -5804,7 +5804,7 @@ This makes the behavior of `find-file' more reasonable."
   ;; Don't set bookmarks when using `org-capture', since
   ;; `bookmark-face' may be set to a distracting color by the color
   ;; theme, which makes everything look really ugly.
-  (setq org-capture-bookmark nil)
+  ;; (setq org-capture-bookmark nil)
 
   ;; Customized `org-capture-templates'.
   (setq org-capture-templates
