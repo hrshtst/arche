@@ -36,7 +36,7 @@ safe_link_directory() {
     exit 1
   elif [[ -L "$2" ]]; then
     return
-  elif ! rmdir "$2"; then
+  elif [[ -d "$2" ]]; then
     echo "already exists, and not empty: $2" >&2
     exit 1
   fi
