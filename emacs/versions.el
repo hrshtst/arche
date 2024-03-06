@@ -126,7 +126,7 @@
  ("transient" . "85ecbc66b68207275f81de4f9bd321474a6c8c61")
  ("transpose-frame" . "94c87794d53883a2358d13da264ad8dab9a52daa")
  ("treepy.el" . "75fe3ec37e6f9b2bdfd6d0584efd984d0c00a43e")
- ("treesit-auto" . "e5a71408d29d3e5796369e3091ecd3f78751c80e")
+ ("treesit-auto" . "299dd88c9e5f1ff91a8f1989ad1e97e86c220020")
  ("undo-tree" . "f9e7eac16f674aa7ed8fa065401d26c0258a84f8")
  ("use-package" . "a6e856418d2ebd053b34e0ab2fda328abeba731c")
  ("vertico" . "c7ed4310a25114344a2efc90cfb031fc35f26a29")
