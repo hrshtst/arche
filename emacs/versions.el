@@ -20,7 +20,7 @@
  ("company-lsp" . "f921ffa0cdc542c21dc3dd85f2c93df4288e83bd")
  ("company-mode" . "0c0186cca8e7e9a12a44ffe42ad7037ffa6bfac7")
  ("compat" . "30579d440be2512e8deda077d0499186c29ffffa")
- ("consult" . "de0ed457dca05565c85ff16769aa9d51038c05ab")
+ ("consult" . "9fb51110661965bd58183eeb9884aebf354a51a5")
  ("crontab-mode" . "7412f3df0958812bfcacd5875a409fa795fa8ecc")
  ("ctrlf" . "9b4cf6c79a961f2bfbb949805aa300fcf1eb40a6")
  ("dash.el" . "5df7605da5a080df769d4f260034fb0e5e86a7a4")
