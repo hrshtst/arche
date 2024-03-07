@@ -1,0 +1,133 @@
+# `sheldon` configuration file
+# ----------------------------
+#
+# You can modify this file directly or you can use one of the following
+# `sheldon` commands which are provided to assist in editing the config file:
+#
+# - `sheldon add` to add a new plugin to the config file
+# - `sheldon edit` to open up the config file in the default editor
+# - `sheldon remove` to remove a plugin from the config file
+#
+# See the documentation for more https://github.com/rossmacarthur/sheldon#readme
+
+shell = "zsh"
+
+# Templates
+# ---------
+
+[templates]
+defer = """{{ hooks?.pre | nl }}{% for file in files %}zsh-defer source "{{ file }}"\n{% endfor %}{{ hooks?.post | nl }}"""
+defer-more = """{{ hooks?.pre | nl }}{% for file in files %}zsh-defer -t 0.5 source "{{ file }}"\n{% endfor %}{{ hooks?.post | nl }}"""
+
+# Completions
+# -----------
+
+[plugins.docker-zsh-completion]
+github = "greymd/docker-zsh-completion"
+
+[plugins.rust-zsh-completions]
+github = "ryutok/rust-zsh-completions"
+
+[plugins.zsh-completions]
+github = "zsh-users/zsh-completions"
+
+# Sourced
+# -------
+
+# The history plugin doesn't like being deferred, not sure why.
+[plugins.history]
+github = "ohmyzsh/ohmyzsh"
+dir = "lib"
+hooks.pre = """
+export HIST_STAMPS="yyyy-mm-dd"
+export HISTSIZE=1000000
+export SAVESIZE=1000000
+"""
+hooks.post = """
+setopt hist_fcntl_lock     # may improve performance
+setopt hist_reduce_blanks  # remove superfluous whitespaces
+"""
+
+[plugins.zsh-256color]
+github = "chrissicool/zsh-256color"
+
+[plugins.powerlevel10k]
+github = "romkatv/powerlevel10k"
+
+[plugins.zsh-defer]
+github = "romkatv/zsh-defer"
+
+# Deferred plugins
+# ----------------
+
+[plugins.aliases]
+local = "~/.zsh/plugins"
+apply = ["defer"]
+
+[plugins.copy]
+local = "~/.zsh/plugins"
+apply = ["defer"]
+
+[plugins.eza]
+local = "~/.zsh/plugins"
+apply = ["defer"]
+
+[plugins.gpg-agent]
+local = "~/.zsh/plugins"
+apply = ["defer"]
+
+[plugins.ohmyzsh-lib]
+github = "ohmyzsh/ohmyzsh"
+dir = "lib"
+use = ["{clipboard,completion,functions,git,key-bindings,termsupport,theme-and-appearance}.zsh"]
+apply = ["defer"]
+
+[plugins.ohmyzsh-plugins]
+github = "ohmyzsh/ohmyzsh"
+dir = "plugins"
+use = ["{copybuffer,git,tmux,zoxide}/*.plugin.zsh"]
+apply = ["defer"]
+
+# [plugins.tmux]
+# local = "~/.zsh/plugins"
+# apply = ["defer"]
+# hooks.pre = "export ARCHE_ZSH_TMUX_AUTOSTART=true"
+
+[plugins.open]
+# Note: open_command is defined in ohmyzsh/lib/functions.zsh.
+inline = "alias open=open_command"
+
+[plugins.pylab]
+local = "~/.zsh/plugins"
+apply = ["defer"]
+
+[plugins.ssh-agent]
+local = "~/.zsh/plugins"
+apply = ["defer"]
+
+[plugins.zsh-autosuggestions]
+github = "zsh-users/zsh-autosuggestions"
+use = ["{{ name }}.zsh"]
+apply = ["defer"]
+
+[plugins.zsh-syntax-highlighting]
+github = "zsh-users/zsh-syntax-highlighting"
+apply = ["defer"]
+
+# This should be loaded AFTER zsh-syntax-highlighting.
+[plugins.zsh-history-substring-search]
+github = "zsh-users/zsh-history-substring-search"
+apply = ["defer"]
+
+[plugins.zsh-you-should-use]
+github = "MichaelAquilina/zsh-you-should-use"
+apply = ["defer"]
+hooks.pre = "export YSU_MODE=ALL"
+
+# This works best if it is placed last.
+[plugins.compinit]
+local = "~/.zsh/plugins"
+apply = ["defer"]
+
+# Plugins that are even more deferred
+# -----------------------------------

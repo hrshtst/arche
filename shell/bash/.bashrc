@@ -198,7 +198,7 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 # and the deafult shell will be set to bash as well. If some
 # arguments or options are provided, pass them to tmux command.
 tmux() {
-  TMUX_DEFAULT_SHELL=${TMUX_DEFAULT_SHELL:-$(which bash)}
+  TMUX_DEFAULT_SHELL="$(which bash)"
   if test $# = 0; then
     command tmux new-session "$TMUX_DEFAULT_SHELL" \; set-option default-shell "$TMUX_DEFAULT_SHELL"
   else
@@ -209,7 +209,7 @@ tmux() {
 # Invoke tmux so that the default shell is set to zsh.
 tmux-zsh() {
   local default_shell
-  default_shell=$(which zsh)
+  default_shell="$(which zsh)"
   command tmux new-session "$default_shell" \; set-option default-shell "$default_shell"
 }
 alias zsh-tmux='tmux-zsh'
