@@ -18,6 +18,7 @@ shell = "zsh"
 [templates]
 defer = """{{ hooks?.pre | nl }}{% for file in files %}zsh-defer source "{{ file }}"\n{% endfor %}{{ hooks?.post | nl }}"""
 defer-more = """{{ hooks?.pre | nl }}{% for file in files %}zsh-defer -t 0.5 source "{{ file }}"\n{% endfor %}{{ hooks?.post | nl }}"""
+fzf-install = """{{ dir }}/install --bin > /dev/null \n[[ ! $PATH =~ {{ dir }} ]] && export PATH="$PATH:{{ dir }}/bin"\n"""
 
 # Completions
 # -----------
@@ -50,9 +51,11 @@ setopt hist_reduce_blanks  # remove superfluous whitespaces
 
 [plugins.zsh-256color]
 github = "chrissicool/zsh-256color"
+hooks.post = "[[ $COLORTERM == *(24bit|truecolor)* ]] || zmodload zsh/nearcolor 2>/dev/null"
 
 [plugins.powerlevel10k]
 github = "romkatv/powerlevel10k"
+hooks.post = "[[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh"
 
 [plugins.zsh-defer]
 github = "romkatv/zsh-defer"
@@ -64,6 +67,10 @@ github = "romkatv/zsh-defer"
 local = "~/.zsh/plugins"
 apply = ["defer"]
 
+[plugins.cheat-completion]
+remote = "https://github.com/cheat/cheat/raw/master/scripts/cheat.zsh"
+apply = ["fpath"]
+
 [plugins.copy]
 local = "~/.zsh/plugins"
 apply = ["defer"]
@@ -71,6 +78,10 @@ apply = ["defer"]
 [plugins.eza]
 local = "~/.zsh/plugins"
 apply = ["defer"]
+
+[plugins.eza-completion]
+remote = "https://github.com/eza-community/eza/raw/main/completions/zsh/_eza"
+apply = ["fpath"]
 
 [plugins.gpg-agent]
 local = "~/.zsh/plugins"
@@ -85,13 +96,9 @@ apply = ["defer"]
 [plugins.ohmyzsh-plugins]
 github = "ohmyzsh/ohmyzsh"
 dir = "plugins"
-use = ["{copybuffer,git,tmux,zoxide}/*.plugin.zsh"]
+use = ["{colored-man-pages,copybuffer,git,tmux,zoxide}/*.plugin.zsh"]
 apply = ["defer"]
-
-# [plugins.tmux]
-# local = "~/.zsh/plugins"
-# apply = ["defer"]
-# hooks.pre = "export ARCHE_ZSH_TMUX_AUTOSTART=true"
+hooks.post = "zsh-defer unalias gup"
 
 [plugins.open]
 # Note: open_command is defined in ohmyzsh/lib/functions.zsh.
@@ -101,14 +108,17 @@ inline = "alias open=open_command"
 local = "~/.zsh/plugins"
 apply = ["defer"]
 
+[plugins.python]
+local = "~/.zsh/plugins"
+apply = ["defer"]
+
 [plugins.ssh-agent]
 local = "~/.zsh/plugins"
 apply = ["defer"]
 
-[plugins.zsh-autosuggestions]
-github = "zsh-users/zsh-autosuggestions"
-use = ["{{ name }}.zsh"]
-apply = ["defer"]
+[plugins.tealdeer-completion]
+remote = "https://github.com/dbrgn/tealdeer/raw/main/completion/zsh_tealdeer"
+apply = ["fpath"]
 
 [plugins.zsh-syntax-highlighting]
 github = "zsh-users/zsh-syntax-highlighting"
@@ -118,16 +128,53 @@ apply = ["defer"]
 [plugins.zsh-history-substring-search]
 github = "zsh-users/zsh-history-substring-search"
 apply = ["defer"]
+hooks.post = "bindkey -e '^P' history-substring-search-up; bindkey -e '^N' history-substring-search-down"
 
 [plugins.zsh-you-should-use]
 github = "MichaelAquilina/zsh-you-should-use"
 apply = ["defer"]
 hooks.pre = "export YSU_MODE=ALL"
 
+[plugins.functions]
+local = "~/.zsh/functions"
+apply = ["fpath"]
+
 # This works best if it is placed last.
 [plugins.compinit]
 local = "~/.zsh/plugins"
 apply = ["defer"]
 
+[plugins.fzf]
+github = "junegunn/fzf"
+apply = ["fzf-install", "defer"]
+
+[plugins.fzf-config]
+local = "~/.zsh/plugins"
+apply = ["defer"]
+
+[plugins.fzf-tab]
+# Note: this plugin should be loaded after compinit
+github = "Aloxaf/fzf-tab"
+apply = ["defer"]
+
+[plugins.fzf-tab-config]
+local = "~/.zsh/plugins"
+apply = ["defer"]
+
+[plugins.zsh-autosuggestions]
+# Note: this plugin should be loaded after fzf-tab
+# Note: defer does not work somehow
+github = "zsh-users/zsh-autosuggestions"
+use = ["{{ name }}.zsh"]
+hooks.post = """ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=244""""
+
+
 # Plugins that are even more deferred
 # -----------------------------------
+[plugins.ghq]
+local = "~/.zsh/plugins"
+apply = ["defer-more"]
+
+[plugins.zoxide]
+local = "~/.zsh/plugins"
+apply = ["defer-more"]
