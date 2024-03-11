@@ -68,10 +68,10 @@ safe_link "$dotfiles/shell/zsh/.zshenv" "$HOME/.zshenv"
 safe_link "$dotfiles/shell/zsh/.zprofile" "$HOME/.zprofile"
 safe_link "$dotfiles/shell/zsh/.p10k.zsh" "$HOME/.p10k.zsh"
 mkdir -p "$HOME/.config/sheldon"
-safe_link "$dotfiles/shell/zsh/sheldon/plugins.toml" "$HOME/.config/sheldon"
+safe_link "$dotfiles/shell/zsh/sheldon/plugins.toml" "$HOME/.config/sheldon/plugins.toml"
 mkdir -p "$HOME/.zsh"
-safe_link_directory "$dotfiles/shell/zsh/plugins" "$HOME/.zsh"
-safe_link_directory "$dotfiles/shell/zsh/functions" "$HOME/.zsh"
+safe_link_directory "$dotfiles/shell/zsh/plugins" "$HOME/.zsh/plugins"
+safe_link_directory "$dotfiles/shell/zsh/functions" "$HOME/.zsh/functions"
 
 # tmux
 mkdir -p "$HOME/.config/tmux"
