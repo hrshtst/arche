@@ -2,6 +2,10 @@
 
 ### fzf
 
+if (( ! $+commands[fzf] )); then
+  return
+fi
+
 # Configure the popping-up window and assign additional keybindings.
 export FZF_DEFAULT_OPTS="--height 40% --reverse --border --inline-info --bind='ctrl-j:preview-down,ctrl-k:preview-up,?:toggle-preview,ctrl-space:toggle+down'"
 

@@ -2,6 +2,10 @@
 
 ### zoxide
 
+if (( ! $+commands[zoxide] )); then
+  return
+fi
+
 function zoxide-cd-widget() {
   setopt localoptions pipefail no_aliases 2> /dev/null
   local dir=$(zoxide query -l | fzf --query="$LBUFFER")

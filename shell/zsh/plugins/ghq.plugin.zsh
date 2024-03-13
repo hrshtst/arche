@@ -2,6 +2,10 @@
 
 ### ghq
 
+if (( ! $+commands[ghq] )); then
+  return
+fi
+
 # Lists repositories cloned by ghq in order so that the most
 # recently accessed is first.
 function __ghq_list_recent_first() {
