@@ -69,6 +69,7 @@ apply = ["defer"]
 
 [plugins.cheat-completion]
 remote = "https://github.com/cheat/cheat/raw/master/scripts/cheat.zsh"
+use = ["{{ name }}.plugin.zsh"]
 apply = ["fpath"]
 
 [plugins.copy]
@@ -96,21 +97,13 @@ apply = ["defer"]
 [plugins.ohmyzsh-plugins]
 github = "ohmyzsh/ohmyzsh"
 dir = "plugins"
-use = ["{colored-man-pages,copybuffer,git,tmux,zoxide}/*.plugin.zsh"]
+use = ["{colored-man-pages,copybuffer,tmux,zoxide}/*.plugin.zsh"]
 apply = ["defer"]
 hooks.post = "zsh-defer unalias gup"
 
 [plugins.open]
 # Note: open_command is defined in ohmyzsh/lib/functions.zsh.
-inline = "alias open=open_command"
-
-[plugins.pylab]
-local = "~/.zsh/plugins"
-apply = ["defer"]
-
-[plugins.python]
-local = "~/.zsh/plugins"
-apply = ["defer"]
+inline = "zsh-defer alias open=open_command"
 
 [plugins.ssh-agent]
 local = "~/.zsh/plugins"
@@ -150,6 +143,7 @@ apply = ["fzf-install", "defer"]
 
 [plugins.fzf-config]
 local = "~/.zsh/plugins"
+use = ["fzf.plugin.zsh"]
 apply = ["defer"]
 
 [plugins.fzf-tab]
@@ -159,6 +153,7 @@ apply = ["defer"]
 
 [plugins.fzf-tab-config]
 local = "~/.zsh/plugins"
+use = ["fzf-tab.plugin.zsh"]
 apply = ["defer"]
 
 [plugins.zsh-autosuggestions]
@@ -172,6 +167,10 @@ hooks.post = """ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=244""""
 # Plugins that are even more deferred
 # -----------------------------------
 [plugins.ghq]
+local = "~/.zsh/plugins"
+apply = ["defer-more"]
+
+[plugins.python]
 local = "~/.zsh/plugins"
 apply = ["defer-more"]
 
