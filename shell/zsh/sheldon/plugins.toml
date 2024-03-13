@@ -103,7 +103,6 @@ github = "ohmyzsh/ohmyzsh"
 dir = "plugins"
 use = ["{colored-man-pages,copybuffer,zoxide}/*.plugin.zsh"]
 apply = ["defer"]
-hooks.post = "zsh-defer unalias gup"
 
 [plugins.open]
 # Note: open_command is defined in ohmyzsh/lib/functions.zsh.
