@@ -84,6 +84,10 @@ apply = ["defer"]
 remote = "https://github.com/eza-community/eza/raw/main/completions/zsh/_eza"
 apply = ["fpath"]
 
+[plugins.git]
+local = "~/.zsh/plugins"
+apply = ["defer"]
+
 [plugins.gpg-agent]
 local = "~/.zsh/plugins"
 apply = ["defer"]
