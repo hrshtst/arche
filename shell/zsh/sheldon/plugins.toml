@@ -101,7 +101,7 @@ apply = ["defer"]
 [plugins.ohmyzsh-plugins]
 github = "ohmyzsh/ohmyzsh"
 dir = "plugins"
-use = ["{colored-man-pages,copybuffer,tmux,zoxide}/*.plugin.zsh"]
+use = ["{colored-man-pages,copybuffer,zoxide}/*.plugin.zsh"]
 apply = ["defer"]
 hooks.post = "zsh-defer unalias gup"
 
