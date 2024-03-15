@@ -5713,6 +5713,13 @@ This runs `org-insert-heading' with
   (put 'org-tags-exclude-from-inheritance 'safe-local-variable
        #'arche--list-of-strings-p)
 
+  ;; Set up fundamenta tags list defined globally.
+  (setq org-tag-persistent-alist
+        '(("devel"      . ?d)
+          ("home"       . ?h)
+          ("phd"        . ?p)
+          ("work"       . ?w)))
+
   ;; When you create a sparse tree and `org-indent-mode' is enabled,
   ;; the highlighting destroys the invisibility added by
   ;; `org-indent-mode'. Therefore, don't highlight when creating a
