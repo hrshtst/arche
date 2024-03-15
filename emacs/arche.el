@@ -5625,11 +5625,6 @@ block identifiers and property names to lower cases."
 
   (put 'arche-org-lower-case-keywords-mode 'safe-local-variable #'booleanp)
 
-  (arche-defhook arche--org-lower-case-keywords-setup ()
-    org-mode-hook
-    "Enable `arche-org-lower-case-keywords-mode' in `org-mode'."
-    (arche-org-lower-case-keywords-mode +1))
-
   (arche-defhook arche--org-turn-on-electric-pair-local-mode ()
     org-mode-hook
     "Turn on `electric-pair-local-mode' in `org-mode'."
