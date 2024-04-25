@@ -97,6 +97,10 @@ github = "ohmyzsh/ohmyzsh"
 dir = "lib"
 use = ["{clipboard,completion,functions,git,key-bindings,termsupport,theme-and-appearance}.zsh"]
 apply = ["defer"]
+hooks.post="""
+# Do not complete '.' and '..' special directories.
+zsh-defer zstyle ':completion:*' special-dirs false
+"""
 
 [plugins.ohmyzsh-plugins]
 github = "ohmyzsh/ohmyzsh"
