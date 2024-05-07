@@ -4610,7 +4610,7 @@ Return either a string or nil."
   :config
 
   (arche-defadvice arche--lsp-pyright-discover-virtualenvs (&rest _)
-    :before-until #'lsp-pyright-locate-venv
+    :before-until #'lsp-pyright--locate-venv
     "Automatically discover Pipenv and Poetry virtualenvs."
     (arche--python-find-virtualenv)))
 
