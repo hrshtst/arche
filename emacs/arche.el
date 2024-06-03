@@ -5986,6 +5986,9 @@ be invoked before `org-mode-hook' is run."
 (use-package citar-denote
   :init
 
+  ;; Save new bibliographic notes in a specific subdirectory.
+  (setq citar-denote-subdir "bib")
+
   (citar-denote-mode +1)
 
   (arche-defadvice arche--add-file-local-variables-to-citar-denote-notes
