@@ -5922,8 +5922,7 @@ be invoked before `org-mode-hook' is run."
   :init
 
   ;; Do not confirm when modifying file name.
-  (setq denote-rename-confirmations
-        (remove 'modify-file-name denote-rename-confirmations))
+  (setq denote-rename-confirmations '(rewrite-front-matter))
 
   ;; Pick dates, where relevant, with Org's advanced interface.
   (setq denote-date-prompt-use-org-read-date t)
