@@ -3959,7 +3959,13 @@ mode when getting it."
       "Set `arche-flycheck-local-cache' for specific modes."
       (when (derived-mode-p 'sh-mode)
         (setq arche-flycheck-local-cache
-              '((lsp . ((next-checkers . (sh-shellcheck)))))))))
+              '((lsp . ((next-checkers . (sh-shellcheck)))))))
+      (when (derived-mode-p 'python-mode)
+        (setq arche-flycheck-local-cache
+              '((lsp . ((next-checkers . (python-ruff)))))))
+      (when (derived-mode-p 'python-ts-mode)
+        (setq arche-flycheck-local-cache
+              '((lsp . ((next-checkers . (python-ruff)))))))))
 
   :blackout t)
 
