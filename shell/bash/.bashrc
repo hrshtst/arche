@@ -242,6 +242,12 @@ if command -v rye 1>/dev/null 2>&1; then
   pdm completion bash > "$HOME/.local/share/bash-completion/completions/pdm.bash"
 fi
 
+# Autocompletion function for rye.
+if command -v rye 1>/dev/null 2>&1; then
+  mkdir -p "$HOME/.local/share/bash-completion/completions"
+  rye self completion > "$HOME/.local/share/bash-completion/completions/rye.bash"
+fi
+
 # Autocompletion function for alacritty.
 if command -v alacritty 1>/dev/null 2>&1; then
   if [ -f  "$HOME/.bash_completion/alacritty" ]; then

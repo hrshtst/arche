@@ -78,6 +78,13 @@ if [ -n "$HOME" ]; then
     eval "$(pyenv init -)"
   fi
 
+  # rye is a one-stop-shop tool for a python developer.
+  # https://rye.astral.sh/
+  if [ -d "$HOME/.rye/env" ]; then
+    # shellcheck source=/dev/null
+    . "$HOME/.rye/env"
+  fi
+
   # LaTeX is a markup language to write a document.
   if [ -d "/usr/local/texlive" ]; then
     year=$(find "/usr/local/texlive" -mindepth 1 -maxdepth 1 -type d -printf "%f\n" | \
