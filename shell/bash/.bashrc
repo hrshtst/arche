@@ -236,6 +236,12 @@ if command -v pipx 1>/dev/null 2>&1; then
   eval "$(register-python-argcomplete pipx)"
 fi
 
+# Autocompletion function for pdm.
+if command -v rye 1>/dev/null 2>&1; then
+  mkdir -p "$HOME/.local/share/bash-completion/completions"
+  pdm completion bash > "$HOME/.local/share/bash-completion/completions/pdm.bash"
+fi
+
 # Autocompletion function for alacritty.
 if command -v alacritty 1>/dev/null 2>&1; then
   if [ -f  "$HOME/.bash_completion/alacritty" ]; then

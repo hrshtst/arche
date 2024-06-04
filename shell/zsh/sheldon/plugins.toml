@@ -112,6 +112,9 @@ apply = ["defer"]
 # Note: open_command is defined in ohmyzsh/lib/functions.zsh.
 inline = "zsh-defer alias open=open_command"
 
+[plugins.pdm-completion]
+inline = "command -v pdm 1>/dev/null 2>&1 && pdm completion zsh > ~/.zsh/functions/_pdm"
+
 [plugins.ssh-agent]
 local = "~/.zsh/plugins"
 apply = ["defer"]
