@@ -80,7 +80,7 @@ if [ -n "$HOME" ]; then
 
   # rye is a one-stop-shop tool for a python developer.
   # https://rye.astral.sh/
-  if [ -d "$HOME/.rye/env" ]; then
+  if [ -f "$HOME/.rye/env" ]; then
     # shellcheck source=/dev/null
     . "$HOME/.rye/env"
   fi
