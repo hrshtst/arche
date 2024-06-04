@@ -1,0 +1,5 @@
+# Ignore specific files in this directory
+_pdm
+_rye
+# Except this file
+!.gitignore
