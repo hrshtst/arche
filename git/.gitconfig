@@ -1,67 +1,67 @@
 [advice]
-  detachedHead = false
-  statusHints = false
+	detachedHead = false
+	statusHints = false
 [alias]
-  contributors = shortlog -s -n
+	contributors = shortlog -s -n
 # Run a command as in the repository root. See
 # https://stackoverflow.com/questions/957928#comment9747528_957978.
-  exec = "!exec "
-  nevermind = !git reset --hard HEAD && git clean -d -f
-  last = log -1 HEAD --format=format:"%Cred%H"
-  root = rev-list --max-parents=0 HEAD
-  precommit = diff --cached -w --word-diff=color --word-diff-regex='[^[:space:]<>]+'
-  prestage = diff -w --word-diff=color
-  tree = log --graph --date=short --pretty='format:%C(yellow)%h%Creset %s %Cgreen(%an)%Creset %Cred%d%Creset'
-  unstage = reset -q HEAD --
+	exec = "!exec "
+	nevermind = !git reset --hard HEAD && git clean -d -f
+	last = log -1 HEAD --format=format:"%Cred%H"
+	root = rev-list --max-parents=0 HEAD
+	precommit = diff --cached -w --word-diff=color --word-diff-regex='[^[:space:]<>]+'
+	prestage = diff -w --word-diff=color
+	tree = log --graph --date=short --pretty='format:%C(yellow)%h%Creset %s %Cgreen(%an)%Creset %Cred%d%Creset'
+	unstage = reset -q HEAD --
 [branch]
 # When creates a new branch that exists on a remote always makes it
 # track its remote counterpart. Also, 'git pull' always performs a
 # rebase, not a merge. See https://stackoverflow.com/a/22147540.
-  autoSetupMerge = always
-  autoSetupRebase = always
+	autoSetupMerge = always
+	autoSetupRebase = always
 [color]
-  ui = auto
+	ui = auto
 [core]
-  autocrlf = input
-  editor = vim
-  excludesfile = ~/.gitexclude
-  fscache = true
-  ignoreCase = false
-  pager = less -FRSX
-  preloadIndex = true
-  whitespace = cr-at-eol
+	autocrlf = input
+	editor = vim
+	excludesfile = ~/.gitexclude
+	fscache = true
+	ignoreCase = false
+	pager = less -FRSX
+	preloadIndex = true
+	whitespace = cr-at-eol
 [credential]
-  helper =
-  helper = cache --timeout 86400
+	helper =
+	helper = cache --timeout 86400
 [diff]
-  mnemonicPrefix = true
-  renames = copies
-  submodule = log
+	mnemonicPrefix = true
+	renames = copies
+	submodule = log
 [fetch]
-  # Automatically prune stale branches from the remote on every
-  # fetch.
-  prune = true
+	# Automatically prune stale branches from the remote on every
+	# fetch.
+	prune = true
 [ghq]
-  root = ~/usr/go/src
-  root = ~/usr/ghq
+	root = ~/usr/go/src
+	root = ~/usr/ghq
 [init]
-  defaultBranch = main
+	defaultBranch = main
 [merge]
-  conflictStyle = diff3
-  stat = true
+	conflictStyle = diff3
+	stat = true
 [protocol "hg"]
-  allow = always
+	allow = always
 [pull]
-  ff = only
+	ff = only
 [push]
-  autoSetupRemote = true
-  default = current
+	autoSetupRemote = true
+	default = current
 [rebase]
-  autosquash = true
+	autosquash = true
 [rerere]
-  enabled = true
+	enabled = true
 [status]
-  submoduleSummary = true
+	submoduleSummary = true
 # .gitconfig.local should be included last.
 [include]
-  path = ~/.gitconfig.local
+	path = ~/.gitconfig.local
