@@ -1486,6 +1486,7 @@ prefix acts normally like as `split-window-right'."
                            (or " "
                                "*Occur"
                                "*eldoc"
+                               "*helpful"
                                "*tramp"
                                "magit"))
                       (and bos
