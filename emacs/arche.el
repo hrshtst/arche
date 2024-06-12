@@ -3943,6 +3943,10 @@ was printed, and only have ElDoc display if one wasn't."
 ;; appropriate. However, interestingly, Flycheck is not marked as a
 ;; dependency of `lsp-ui', hence this declaration.
 (use-package flycheck
+  :bind (:repeat-map flycheck-repeat-map
+                     ("n" . #'flycheck-next-error)
+                     ("p" . #'flycheck-previous-error))
+
   :config
 
   ;; For use with `lsp-ui'.
