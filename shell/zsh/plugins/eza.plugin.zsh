@@ -8,7 +8,7 @@ if (( $+commands[eza] )); then
 
   function l() {
     emulate -LR zsh
-    eza --all --header --long --classify --binary --color-scale $@
+    eza --all --header --long --classify --binary --color-scale=all $@
   }
 
   function lg() {
