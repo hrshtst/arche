@@ -30,6 +30,9 @@
 	pager = less -FRSX
 	preloadIndex = true
 	whitespace = cr-at-eol
+	# https://github.blog/2022-06-29-improve-git-monorepo-performance-with-a-file-system-monitor/
+	fsmonitor = true
+	untrackedcache = true
 [credential]
 	helper =
 	helper = cache --timeout 86400
