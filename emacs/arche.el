@@ -708,6 +708,21 @@ nice.)"
 
 ;;; Keybindings
 
+;; Feature `repeat' provides an easy way to repeat specific commands
+;; with C-x z. Additionally, when `repeat-mode' enabled typing C-x o o
+;; o ... allows to switch between windows.
+(use-feature repeat
+  :demand t
+  :config
+
+  (arche-defadvice arche--repeat-mode-silence (func &rest args)
+    :around #'repeat-mode
+    "Silence when enabling repeat mode."
+    (arche--with-silent-message "Repeat mode is enabled"
+      (apply func args)))
+
+  (repeat-mode +1))
+
 ;; Package `bind-key' provides a macro by the same name (along with
 ;; `bind-key*' and `unbind-key') which provides a much prettier API
 ;; for manipulating keymaps than `define-key' and `global-set-key' do.
