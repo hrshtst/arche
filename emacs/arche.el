@@ -4033,6 +4033,24 @@ mode when getting it."
                             regexp rep string args))))
       (apply func args))))
 
+
+;;;; Spell checking
+
+;; Package `jinx' provides a fast just-in-time spell checking via
+;; libenchant, highlighting misspelled words in the text of the
+;; buffer.
+(use-package jinx
+  :hook (((text-mode prog-mode conf-mode) . jinx-mode))
+  :bind (("M-$" . #'jinx-correct)
+         ("C-M-$". #'jinx-languages))
+
+  :config
+
+  (add-to-list 'jinx-exclude-regexps
+               '(text-mode "[^\000-\377]+"))
+
+  :blackout t)
+
 ;;; Language support
 ;;;; Lisp languages
 
