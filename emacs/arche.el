@@ -1020,7 +1020,7 @@ ourselves."
 ;; remaining candidates. This offers a significant improvement over
 (use-package vertico
   :straight (:host github :repo "minad/vertico"
-             :files (:defaults "extensions/*"))
+                   :files (:defaults "extensions/*"))
   :demand t
   :bind (("C-x C-z" . #'vertico-repeat)
          :map vertico-map
@@ -1114,7 +1114,7 @@ ourselves."
   (marginalia-mode +1)
 
   :bind (:map minibuffer-local-map
-         ("M-A" . #'marginalia-cycle)))
+              ("M-A" . #'marginalia-cycle)))
 
 ;; Package `embark' provides a sort of right-click contextual menu for
 ;; Emacs.
@@ -1614,14 +1614,14 @@ perspective: %s(arche--perspective-names)
 
     (defvar arche--source-perspective-buffer
       `(:name     "Perspective Buffer"
-        :narrow   (?b . "Buffer")
-        :category buffer
-        :face     consult-buffer
-        :history  buffer-name-history
-        :state    ,#'consult--buffer-state
-        :default  t
-        :items
-        ,(lambda () (arche-buffer-sort-visibility (persp-get-buffer-names))))
+                  :narrow   (?b . "Buffer")
+                  :category buffer
+                  :face     consult-buffer
+                  :history  buffer-name-history
+                  :state    ,#'consult--buffer-state
+                  :default  t
+                  :items
+                  ,(lambda () (arche-buffer-sort-visibility (persp-get-buffer-names))))
       "Buffer candidate source in the current perspective.")
 
     (consult-customize consult--source-buffer
@@ -3626,77 +3626,77 @@ backends will still be included.")
 
   :bind (:filter company-mode
 
-         ;; Remap the standard Emacs keybindings for invoking
-         ;; completion to instead use Company. You might think this
-         ;; could be put in the `:bind*' declaration below, but it
-         ;; seems that `bind-key*' does not work with remappings.
-         ([remap completion-at-point] . #'company-manual-begin)
-         ([remap complete-symbol] . #'company-manual-begin)
+                 ;; Remap the standard Emacs keybindings for invoking
+                 ;; completion to instead use Company. You might think this
+                 ;; could be put in the `:bind*' declaration below, but it
+                 ;; seems that `bind-key*' does not work with remappings.
+                 ([remap completion-at-point] . #'company-manual-begin)
+                 ([remap complete-symbol] . #'company-manual-begin)
 
-         ;; The following are keybindings that take effect whenever
-         ;; the completions menu is visible, even if the user has not
-         ;; explicitly interacted with Company.
+                 ;; The following are keybindings that take effect whenever
+                 ;; the completions menu is visible, even if the user has not
+                 ;; explicitly interacted with Company.
 
-         :map company-active-map
+                 :map company-active-map
 
-         ;; Make TAB always complete the current selection, instead of
-         ;; only completing a common prefix.
-         ("<tab>" . #'company-complete-selection)
-         ("TAB" . #'company-complete-selection)
+                 ;; Make TAB always complete the current selection, instead of
+                 ;; only completing a common prefix.
+                 ("<tab>" . #'company-complete-selection)
+                 ("TAB" . #'company-complete-selection)
 
-         ;; When was the last time you used the C-s binding for
-         ;; searching candidates? It conflicts with buffer search,
-         ;; anyway. Same for the scroll commands.
-         ("C-s" . nil)
-         ([remap scroll-down-command] . nil)
-         ([remap scroll-up-command] . nil)
+                 ;; When was the last time you used the C-s binding for
+                 ;; searching candidates? It conflicts with buffer search,
+                 ;; anyway. Same for the scroll commands.
+                 ("C-s" . nil)
+                 ([remap scroll-down-command] . nil)
+                 ([remap scroll-up-command] . nil)
 
-         ;; Now the default keybindings to select next/previous have
-         ;; been changed. Revert it to old style.
-         ("C-n" . nil)
-         ("C-p" . nil)
-         ("M-n" . #'company-select-next)
-         ("M-p" . #'company-select-previous)
+                 ;; Now the default keybindings to select next/previous have
+                 ;; been changed. Revert it to old style.
+                 ("C-n" . nil)
+                 ("C-p" . nil)
+                 ("M-n" . #'company-select-next)
+                 ("M-p" . #'company-select-previous)
 
-         ;; The following are keybindings that only take effect if the
-         ;; user has explicitly interacted with Company. Note that
-         ;; `:map' from above is "sticky", and applies also below: see
-         ;; https://github.com/jwiegley/use-package/issues/334#issuecomment-349473819.
+                 ;; The following are keybindings that only take effect if the
+                 ;; user has explicitly interacted with Company. Note that
+                 ;; `:map' from above is "sticky", and applies also below: see
+                 ;; https://github.com/jwiegley/use-package/issues/334#issuecomment-349473819.
 
-         :filter (company-explicit-action-p)
+                 :filter (company-explicit-action-p)
 
-         ;; Make RET trigger a completion if and only if the user has
-         ;; explicitly interacted with Company, instead of always
-         ;; doing so.
-         ("<return>" . #'company-complete-selection)
-         ("RET" . #'company-complete-selection)
+                 ;; Make RET trigger a completion if and only if the user has
+                 ;; explicitly interacted with Company, instead of always
+                 ;; doing so.
+                 ("<return>" . #'company-complete-selection)
+                 ("RET" . #'company-complete-selection)
 
-         ;; We then make <up> and <down> abort the completions menu
-         ;; unless the user has interacted explicitly. Note that we
-         ;; use `company-select-previous' instead of
-         ;; `company-select-previous-or-abort'. I think the former
-         ;; makes more sense since the general idea of this `company'
-         ;; configuration is to decide whether or not to steal
-         ;; keypresses based on whether the user has explicitly
-         ;; interacted with `company', not based on the number of
-         ;; candidates.
-         ;;
-         ;; Note that M-p and M-n work regardless of whether explicit
-         ;; interaction has happened yet, and note also that M-TAB
-         ;; when the completions menu is open counts as an
-         ;; interaction.
-         ("<up>" . #'company-select-previous)
-         ("<down>" . #'company-select-next))
+                 ;; We then make <up> and <down> abort the completions menu
+                 ;; unless the user has interacted explicitly. Note that we
+                 ;; use `company-select-previous' instead of
+                 ;; `company-select-previous-or-abort'. I think the former
+                 ;; makes more sense since the general idea of this `company'
+                 ;; configuration is to decide whether or not to steal
+                 ;; keypresses based on whether the user has explicitly
+                 ;; interacted with `company', not based on the number of
+                 ;; candidates.
+                 ;;
+                 ;; Note that M-p and M-n work regardless of whether explicit
+                 ;; interaction has happened yet, and note also that M-TAB
+                 ;; when the completions menu is open counts as an
+                 ;; interaction.
+                 ("<up>" . #'company-select-previous)
+                 ("<down>" . #'company-select-next))
 
   :bind* (:filter company-mode
 
-          ;; The default keybinding for `completion-at-point' and
-          ;; `complete-symbol' is M-TAB or equivalently C-M-i. We
-          ;; already remapped those bindings to `company-manual-begin'
-          ;; above. Here we make sure that they definitely invoke
-          ;; `company-manual-begin' even if a minor mode binds M-TAB
-          ;; directly.
-          ("M-TAB" . #'company-manual-begin))
+                  ;; The default keybinding for `completion-at-point' and
+                  ;; `complete-symbol' is M-TAB or equivalently C-M-i. We
+                  ;; already remapped those bindings to `company-manual-begin'
+                  ;; above. Here we make sure that they definitely invoke
+                  ;; `company-manual-begin' even if a minor mode binds M-TAB
+                  ;; directly.
+                  ("M-TAB" . #'company-manual-begin))
 
   :config
 
@@ -3818,14 +3818,14 @@ order."
       (setq-local company-prescient-sort-length-enable
                   (cl-dolist (w lsp--buffer-workspaces)
                     (when (thread-first w
-                            (lsp--workspace-client)
-                            (lsp--client-server-id)
-                            (memq '(jsts-ls
-                                    bash-ls
-                                    texlab
-                                    ts-ls
-                                    svelte-ls))
-                            (not))
+                                        (lsp--workspace-client)
+                                        (lsp--client-server-id)
+                                        (memq '(jsts-ls
+                                                bash-ls
+                                                texlab
+                                                ts-ls
+                                                svelte-ls))
+                                        (not))
                       (cl-return t)))))))
 
 ;;;; Definition location
@@ -4666,7 +4666,7 @@ Return either a string or nil."
   :commands (numpydoc-generate)
   :bind (:map python-mode-map
               ("C-c C-n" . #'numpydoc-generate)
-         :map python-ts-mode-map
+              :map python-ts-mode-map
               ("C-c C-n" . #'numpydoc-generate))
 
   :config
@@ -5942,8 +5942,8 @@ be invoked before `org-mode-hook' is run."
 ;; (folding and unfolding) of text in org buffers.
 (use-feature org-fold
   :commands (org-fold-show-entry org-fold-show-children
-             org-fold-hide-subtree org-back-to-heading org-fold-hide-sublevels
-             org-fold-folded-p org-fold-region))
+                                 org-fold-hide-subtree org-back-to-heading org-fold-hide-sublevels
+                                 org-fold-folded-p org-fold-region))
 
 ;; Feature `org-cite' provides functions to handle citations in Org.
 (use-feature oc
@@ -6301,9 +6301,9 @@ wdired          | ^C-x C-q^: edit     ^C-c C-c^: commit   ^C-c ESC^: abort
       ("q" hydra-dired/body "back" :color blue))
 
     (defhydra hydra-dired-regexp (:color teal :columns 4
-                                  :after-exit
-                                  (if (eq major-mode 'dired-mode)
-                                      (hydra-dired/body)))
+                                         :after-exit
+                                         (if (eq major-mode 'dired-mode)
+                                             (hydra-dired/body)))
       "Regular Expression Commands"
       ("d" dired-flag-files-regexp "mark for deletion")
       ("g" dired-mark-files-containing-regexp "mark files grep")
@@ -6318,9 +6318,9 @@ wdired          | ^C-x C-q^: edit     ^C-c C-c^: commit   ^C-c ESC^: abort
       ("q" hydra-dired/body "back" :color blue))
 
     (defhydra hydra-dired-image (:color teal :columns 4
-                                 :after-exit
-                                 (if (eq major-mode 'dired-mode)
-                                     (hydra-dired/body)))
+                                        :after-exit
+                                        (if (eq major-mode 'dired-mode)
+                                            (hydra-dired/body)))
       "Image Dired"
       ("i" image-dired-dired-display-image "display image")
       ("x" image-dired-dired-display-external "display external")
@@ -6406,11 +6406,11 @@ are probably not going to be installed."
     :config
 
     (defhydra hydra-smerge (:color pink
-                            :hint nil
-                            :pre (smerge-mode +1)
-                            ;; Disable `smerge-mode' when quitting hydra if
-                            ;; no merge conflicts remain.
-                            :post (smerge-auto-leave))
+                                   :hint nil
+                                   :pre (smerge-mode +1)
+                                   ;; Disable `smerge-mode' when quitting hydra if
+                                   ;; no merge conflicts remain.
+                                   :post (smerge-auto-leave))
       "
 ^Move^       ^Keep^               ^Diff^                 ^Other^
 ^^-----------^^-------------------^^---------------------^^-------
