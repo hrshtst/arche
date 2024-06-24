@@ -6093,6 +6093,8 @@ be invoked before `org-mode-hook' is run."
     :after #'citar-denote--create-note
     "Add a file-local variable which turns on CDLaTeX mode by default."
     (org-insert-heading nil nil t)
+    (insert "Summary")
+    (org-insert-heading nil nil t)
     (insert "Local Variables")
     (org-set-tags ":noexport:")
     (add-file-local-variable 'eval
