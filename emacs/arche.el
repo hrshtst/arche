@@ -5069,6 +5069,7 @@ environment with point at the end of a non-empty line of text."
 ;; act on BibTeX bibliographic data and editing-support for
 ;; `org-cite' and documentation major modes.
 (use-package citar
+  :demand t
   :bind (("C-c [" . #'citar-insert-citation)))
 
 ;;;; VimScript
