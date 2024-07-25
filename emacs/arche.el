@@ -4076,7 +4076,7 @@ mode when getting it."
   :config
 
   (add-to-list 'jinx-exclude-regexps
-               '(text-mode "[^\000-\377]+"))
+               '(t "\\w*?[^\000-\377]\\w*\\>"))
 
   :blackout t)
 
