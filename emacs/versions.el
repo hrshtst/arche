@@ -47,7 +47,7 @@
  ("esup" . "4b49c8d599d4cc0fbf994e9e54a9c78e5ab62a5f")
  ("expand-region.el" . "e8f4e0fe9c9a80a6a26e2b438502aba9a799d580")
  ("f.el" . "1e7020dc0d4c52d3da9bd610d431cab13aa02d8c")
- ("flycheck" . "bec59eeb58f86b10f8235bf94c873f3b0352ac41")
+ ("flycheck" . "7a6398ea3538a898eba0276f0f89b2f878325a89")
  ("forge" . "359e424b968ad6763854bb9b11157caff1e775ca")
  ("fringe-helper.el" . "ef4a9c023bae18ec1ddd7265f1f2d6d2e775efdd")
  ("geiser" . "4e64934bd2ae7c6f0e4acb9f2ed017844c187223")
