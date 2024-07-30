@@ -65,6 +65,7 @@
  ("hydra" . "317e1de33086637579a7aeb60f77ed0405bf359b")
  ("imenu-list" . "76f2335ee6f2f066d87fe4e4729219d70c9bc70d")
  ("jeison" . "19a51770f24eaa7b538c7be6a8a5c25d154b641f")
+ ("jinx" . "81d0a092b3ca4c5036af45c9411ebbe66eb123ea")
  ("json-mode" . "77125b01c0ddce537085201098bea9b4b8ba6be3")
  ("json-snatcher" . "b28d1c0670636da6db508d03872d96ffddbc10f2")
  ("latex-math-preview" . "1c082179493eed3ce8bc255f87791eb4acb1fbdb")
