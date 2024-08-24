@@ -4598,6 +4598,11 @@ file-local setting of e.g. `outline-regexp' with its own setting."
 See https://emacs.stackexchange.com/a/3338/12534."
     (setq electric-indent-chars (delq ?: electric-indent-chars)))
 
+  (arche-defhook arche--python-set-fill-column ()
+    (python-mode-hook python-ts-mode-hook)
+    "Set `fill-column' to the default value of Black."
+    (set-fill-column 120))
+
   ;; Default to Python 3. Prefer the versioned Python binaries since
   ;; some systems stupidly make the unversioned one point at Python 2.
   (cond
@@ -4853,6 +4858,11 @@ Return either a string or nil."
     TeX-mode-hook
     "Enable `arche-replace-punc-mode' in `TeX-mode'."
     (arche-replace-punc-mode +1))
+
+  (arche-defhook arche--disable-auto-fill-mode ()
+    TeX-mode-hook
+    "Disable `auto-fill-mode' in `TeX-mode'."
+    (auto-fill-mode -1))
 
   :config
 
