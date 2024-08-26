@@ -4679,7 +4679,7 @@ Return either a string or nil."
     ;; black on the result of isort.
     (let ((formatters '()))
       (if (executable-find "ruff")
-          (push 'ruff formatters)
+          (setq formatters '(ruff ruff-isort))
         (when (executable-find "black")
           (push 'black formatters))
         (when (executable-find "isort")
