@@ -5435,18 +5435,28 @@ bizarre reason."
 ;; buffer, which is very similar but slightly different. Not as
 ;; important.
 (use-feature elisp-mode
+  :functions (helpful-function helpful-variable)
   :config
 
   ;; Note that this function is actually defined in `elisp-mode'
   ;; because screw modularity.
-  (arche-defadvice arche--advice-company-elisp-use-helpful
-      (func &rest args)
-    :around #'elisp--company-doc-buffer
-    "Cause `company' to use Helpful to show Elisp documentation."
-    (cl-letf (((symbol-function #'describe-function) #'helpful-function)
-              ((symbol-function #'describe-variable) #'helpful-variable)
-              ((symbol-function #'help-buffer) #'current-buffer))
-      (apply func args)))
+
+  (with-eval-after-load 'helpful
+    (arche-defadvice arche--advice-company-elisp-use-helpful
+        (func &rest args)
+      :around #'elisp--company-doc-buffer
+      "Cause `company' to use Helpful to show Elisp documentation."
+      (cl-letf* ((helpful-buffer nil)
+                 ((symbol-function #'describe-function)
+                  (lambda (&rest args)
+                    (apply 'helpful-function args)
+                    (setq helpful-buffer (current-buffer))))
+                 ((symbol-function #'describe-variable)
+                  (lambda (&rest args)
+                    (apply 'helpful-variable args)
+                    (setq helpful-buffer (current-buffer))))
+                 (buf (apply func args)))
+        (or helpful-buffer buf))))
 
   (arche-defadvice arche--advice-fill-elisp-docstrings-correctly (&rest _)
     :before-until #'fill-context-prefix
