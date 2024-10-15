@@ -25,7 +25,10 @@ addpath() {
   fi
 
   if [ -d "$1" ]; then
-    setenv PATH "$1:$PATH"
+    case ":${PATH}:" in
+      *:"$1":*) ;;
+      *) setenv PATH "$1:$PATH" ;;
+    esac
   fi
 }
 
