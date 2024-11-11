@@ -4601,7 +4601,7 @@ See https://emacs.stackexchange.com/a/3338/12534."
   (arche-defhook arche--python-set-fill-column ()
     (python-mode-hook python-ts-mode-hook)
     "Set `fill-column' to the default value of Black."
-    (set-fill-column 120))
+    (set-fill-column 100))
 
   ;; Default to Python 3. Prefer the versioned Python binaries since
   ;; some systems stupidly make the unversioned one point at Python 2.
