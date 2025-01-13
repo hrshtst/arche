@@ -6736,32 +6736,6 @@ anything significant at package load time) since it breaks CI."
 ;; within Magit.
 (use-package forge)
 
-;; Feature `forge-core' from package `forge' implements the core
-;; functionality.
-(use-feature forge-core
-  :config
-
-  (arche-defadvice arche--forge-get-repository-lazily (&rest _)
-    :before-while #'forge-get-repository
-    "Make `forge-get-repository' return nil if the binary isn't built yet.
-This prevents having EmacSQL try to build its binary (which may
-be annoying, inconvenient, or impossible depending on the
-situation) just because you tried to do literally anything with
-Magit."
-    (and (featurep 'emacsql-sqlite)
-         (file-executable-p emacsql-sqlite-executable)))
-
-  (arche-defadvice arche--forge-build-binary-lazily (&rest _)
-    :before #'forge-dispatch
-    "Make `forge-dispatch' build the binary if necessary.
-Normally, the binary gets built as soon as Forge is loaded, which
-is terrible UX. We disable that above, so we now have to manually
-make sure it does get built when we actually issue a Forge
-command."
-    (require 'emacsql-sqlite)
-    (unless (file-executable-p emacsql-sqlite-executable)
-      (emacsql-sqlite-compile 2))))
-
 ;; Package `git-gutter' adds a column to the left-hand side of each
 ;; window, showing which lines have been added, removed, or modified
 ;; since the last Git commit.
