@@ -3605,6 +3605,10 @@ killed (which happens during Emacs shutdown)."
 
   :blackout " LSP")
 
+(use-feature lsp-inline-completion
+  :bind (:map lsp-inline-completion-active-map
+              ("C-M-<return>" . #'lsp-inline-completion-accept)))
+
 ;;;; Indentation
 
 ;; Don't use tabs for indentation. Use only spaces. Otherwise,
