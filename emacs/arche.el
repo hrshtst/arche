@@ -3509,6 +3509,7 @@ set LSP configuration (see `lsp-python-ms')."
                    'fish-mode
                    'ruby-mode
                    'perl-mode
+                   'makefile-gmake-mode
                    'markdown-mode
                    'cmake-mode))
         (lsp))))
