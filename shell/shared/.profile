@@ -137,3 +137,7 @@ if [ -n "$BASH_VERSION" ]; then
     . "$HOME/.bashrc"
   fi
 fi
+
+export NPM_CONFIG_UPDATE_NOTIFIER=false
+export PIP_DISABLE_PIP_VERSION_CHECK=1
+export PDM_CHECK_UPDATE=false

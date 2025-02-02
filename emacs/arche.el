@@ -4030,6 +4030,9 @@ mode when getting it."
   :bind (("C-c f" . #'lsp-ui-sideline-apply-code-actions))
   :config
 
+  ;; https://github.com/emacs-lsp/lsp-ui/issues/150#issuecomment-821761972
+  (setq lsp-ui-sideline-diagnostic-max-lines 20)
+
   (arche-defadvice arche--advice-lsp-ui-apply-single-fix
       (orig-fun &rest args)
     :around #'lsp-ui-sideline-apply-code-actions
