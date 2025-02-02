@@ -6264,7 +6264,10 @@ the problematic case.)"
   (setq dired-isearch-filenames t)
 
   ;; Showing free space is a sigificant performance hit.
-  (setq dired-free-space nil))
+  (setq dired-free-space nil)
+
+  ;; Do not display . and ..; show sizes human-readable.
+  (setq dired-listing-switches "-Alh"))
 
 (use-feature dired-x
   :after dired
