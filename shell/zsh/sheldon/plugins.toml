@@ -145,8 +145,27 @@ hooks.pre = "export YSU_MODE=ALL"
 local = "~/.zsh/functions"
 apply = ["fpath"]
 
+
+# Plugins that are even more deferred
+# -----------------------------------
+[plugins.ghq]
+local = "~/.zsh/plugins"
+apply = ["defer-more"]
+
+[plugins.python]
+local = "~/.zsh/plugins"
+apply = ["defer-more"]
+
+
+# Plugins that should be loaded last
+# ----------------------------------
 # This works best if it is placed last.
 [plugins.compinit]
+local = "~/.zsh/plugins"
+apply = ["defer"]
+
+[plugins.zoxide]
+# Note: this plugin should be loaded after compinit
 local = "~/.zsh/plugins"
 apply = ["defer"]
 
@@ -175,18 +194,3 @@ apply = ["defer"]
 github = "zsh-users/zsh-autosuggestions"
 use = ["{{ name }}.zsh"]
 hooks.post = """ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=244""""
-
-
-# Plugins that are even more deferred
-# -----------------------------------
-[plugins.ghq]
-local = "~/.zsh/plugins"
-apply = ["defer-more"]
-
-[plugins.python]
-local = "~/.zsh/plugins"
-apply = ["defer-more"]
-
-[plugins.zoxide]
-local = "~/.zsh/plugins"
-apply = ["defer-more"]
