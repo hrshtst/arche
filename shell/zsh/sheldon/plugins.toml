@@ -67,6 +67,11 @@ github = "romkatv/zsh-defer"
 local = "~/.zsh/plugins"
 apply = ["defer"]
 
+[plugins.bd]
+github = "Tarrasch/zsh-bd"
+use = ["bd.zsh"]
+apply = ["defer"]
+
 [plugins.cheat-completion]
 remote = "https://github.com/cheat/cheat/raw/master/scripts/cheat.zsh"
 use = ["{{ name }}.plugin.zsh"]
@@ -90,6 +95,11 @@ apply = ["defer"]
 
 [plugins.gpg-agent]
 local = "~/.zsh/plugins"
+apply = ["defer"]
+
+[plugins.k]
+github = "supercrabtree/k"
+use = ["k.sh"]
 apply = ["defer"]
 
 [plugins.ohmyzsh-lib]
@@ -122,13 +132,13 @@ inline = "command -v rye 1>/dev/null 2>&1 && rye self completion -s zsh > ~/.zsh
 local = "~/.zsh/plugins"
 apply = ["defer"]
 
+[plugins.syntax-highlight]
+github = "z-shell/F-Sy-H"
+apply = ["defer"]
+
 [plugins.tealdeer-completion]
 remote = "https://github.com/dbrgn/tealdeer/raw/main/completion/zsh_tealdeer"
 apply = ["fpath"]
-
-[plugins.zsh-syntax-highlighting]
-github = "zsh-users/zsh-syntax-highlighting"
-apply = ["defer"]
 
 # This should be loaded AFTER zsh-syntax-highlighting.
 [plugins.zsh-history-substring-search]
