@@ -115,7 +115,7 @@ zsh-defer zstyle ':completion:*' special-dirs false
 [plugins.ohmyzsh-plugins]
 github = "ohmyzsh/ohmyzsh"
 dir = "plugins"
-use = ["{colored-man-pages,copybuffer,zoxide}/*.plugin.zsh"]
+use = ["{aliases,colored-man-pages,copybuffer,copypath,zoxide}/*.plugin.zsh"]
 apply = ["defer"]
 
 [plugins.open]
