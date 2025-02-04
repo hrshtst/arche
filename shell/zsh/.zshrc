@@ -13,6 +13,21 @@ if (( $+commands[tmux] )) && [[ -o interactive ]] && (( ! $+TMUX )); then
   exec tmux new-session $default_shell \; set-option default-shell $default_shell
 fi
 
+## Compile all sourced files. Credit:
+## https://zenn.dev/fuzmare/articles/zsh-source-zcompile-all
+function source {
+  ensure_zcompiled "$1"
+  builtin source "$1"
+}
+function ensure_zcompiled {
+  local compiled="$1.zwc"
+  if [[ ! -r "$compiled" || "$1" -nt "$compiled" ]]; then
+    echo 1>&2 "\033[1;36mCompiling\033[m $1"
+    zcompile "$1"
+  fi
+}
+ensure_zcompiled "${HOME}/.zshrc"
+
 ## External configuration
 ### ~/.zshrc.local
 
@@ -23,8 +38,19 @@ fi
 ## Sheldon
 # Sheldon is a fast, configurable, command-line tool to manage your shell plugins.
 
-# Load plugins managed by sheldon
-eval "$(sheldon source)"
+# Load plugins managed by sheldon.
+# Sheldon is executed only when the configuration is updated or it has
+# not been executed before. The credit of this idea is taken from:
+# https://zenn.dev/fuzmare/articles/zsh-plugin-manager-cache
+cache_dir=${XDG_CACHE_HOME:-$HOME/.cache}
+sheldon_cache="$cache_dir/sheldon.zsh"
+sheldon_config="$HOME/.config/sheldon/plugins.toml"
+if [[ ! -r "$sheldon_cache" || "$sheldon_config" -nt "$sheldon_cache" ]]; then
+  mkdir -p $cache_dir
+  sheldon source > $sheldon_cache
+fi
+source "$sheldon_cache"
+unset cache_dir sheldon_cache sheldon_config
 
 ## Shell configuration
 ### Command line
@@ -175,6 +201,12 @@ if typeset -f arche_after_init_hook > /dev/null; then
 fi
 
 ## Closing remarks
+
+if (( $+commands[zsh-defer] )); then
+  zsh-defer -t 1.0 unfunction source
+else
+  unfunction source
+fi
 
 # Local Variables:
 # outline-regexp: "##+"
