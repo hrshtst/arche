@@ -85,7 +85,7 @@
  ("melpa" . "2527dc2b23239afe460cbad78664729117506eab")
  ("migemo" . "7d78901773da3b503e5c0d5fa14a53ad6060c97f")
  ("modus-themes" . "4b10426687d2b417a93ccffbe8d05b2039aa7d7c")
- ("mozc" . "879ad43ed51be554efcd1b66a48a5d3116003ffb")
+ ("mozc" . "c66515902e1f2ec35c6a1f1adf756e1dfd52f5a6")
  ("mozc-popup" . "f0684b875a7427ec08f8df13939a486e5d5cf420")
  ("mw-thesaurus.el" . "c44d793595c2d0f6789621da457da065920968ac")
  ("no-littering" . "0c119d46cce5c018e162fae4b36fd95ef26a76ac")
