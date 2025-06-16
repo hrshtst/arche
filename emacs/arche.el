@@ -44,12 +44,6 @@
 
 ;;; Fix indentation issues
 
-;; The indentation of `define-key' has for some reason changed in
-;; Emacs 29 when it was deprecated in favor of `keymap-set'. Maybe
-;; that is a bug and they will change it, but for now, force the
-;; indentation to the backwards-compatible version.
-(put #'define-key 'lisp-indent-function 'defun)
-
 ;; The indentation of `thread-first' changed from (indent 1) to
 ;; (indent 0) in Emacs 28. Use the later version.
 (put #'thread-first 'lisp-indent-function 0)
@@ -576,6 +570,13 @@ binding the variable dynamically over the entire init-file."
 
 ;; Clear out recipe overrides (in case of re-init).
 (setq straight-recipe-overrides nil)
+
+;; Test out being able to answer authentication prompts during Git
+;; clones.
+(setq straight-display-subprocess-prompts t)
+
+;; Test out being able to contribute directly to GNU ELPA upstream.
+(setq straight-recipes-gnu-elpa-use-mirror nil)
 
 (arche--run-hook before-straight)
 
