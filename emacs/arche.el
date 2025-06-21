@@ -7598,12 +7598,12 @@ nil."
 ;; Actually reset the mode line format to show all the things we just
 ;; defined.
 (setq-default mode-line-format
-              '(:eval (replace-regexp-in-string
-                       "%" "%%"
-                       (arche--mode-line-align
-                        (format-mode-line arche-mode-line-left)
-                        (format-mode-line arche-mode-line-right))
-                       'fixedcase 'literal)))
+              '((:eval (replace-regexp-in-string
+                        "%" "%%"
+                        (arche--mode-line-align
+                         (format-mode-line arche-mode-line-left)
+                         (format-mode-line arche-mode-line-right))
+                        'fixedcase 'literal))))
 
 ;;;; Highlighting
 
