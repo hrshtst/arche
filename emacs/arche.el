@@ -6730,6 +6730,7 @@ disable itself. Sad."
 ;; functionality.
 (use-feature forge-core
   :defines emacsql-sqlite-executable
+  :functions emacsql-sqlite-compile
   :config
 
   (arche-defadvice arche--forge-get-repository-lazily (&rest _)
