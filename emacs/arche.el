@@ -6056,9 +6056,6 @@ be invoked before `org-mode-hook' is run."
   ;; Pick dates, where relevant, with Org's advanced interface.
   (setq denote-date-prompt-use-org-read-date t)
 
-  ;; Show the context of links in the current file's backlinks buffer.
-  (setq denote-backlinks-show-context t)
-
   ;; Automatically rename `denote' buffers.
   (denote-rename-buffer-mode +1)
 
