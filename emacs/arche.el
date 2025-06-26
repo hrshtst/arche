@@ -6729,6 +6729,7 @@ disable itself. Sad."
 ;; Feature `forge-core' from package `forge' implements the core
 ;; functionality.
 (use-feature forge-core
+  :defines emacsql-sqlite-executable
   :config
 
   (arche-defadvice arche--forge-get-repository-lazily (&rest _)
