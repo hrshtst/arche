@@ -5717,6 +5717,7 @@ messages."
 ;; interacting with this data, including an agenda view, a time
 ;; clocker, etc. There are *many* extensions.
 (use-package org
+  :defines electric-pair-inhibit-predicate
   :init
 
   ;; Stolen from: <https://scripter.co/org-keywords-lower-case/>,
