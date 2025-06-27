@@ -6063,9 +6063,6 @@ be invoked before `org-mode-hook' is run."
   ;; Activate `denote-dired-mode' in `dired' buffers.
   (add-hook 'dired-mode-hook #'denote-dired-mode-in-directories)
 
-  ;; Fix the date format to make the journal title.
-  (setq denote-journal-extras-title-format 'day-date-month-year)
-
   ;; Add `org-capture' entries for `denote'.
   (use-feature org-capture
     :config
@@ -6103,8 +6100,31 @@ be invoked before `org-mode-hook' is run."
          ("C-c n f b" . #'denote-find-backlink)
          ("C-c n r" . #'denote-rename-file)
          ("C-c n R" . #'denote-rename-file-using-front-matter)
-         ("C-c n o" . #'denote-open-or-create)
-         ("C-c n j" . #'denote-journal-extras-new-or-existing-entry)))
+         ("C-c n o" . #'denote-open-or-create)))
+
+;; Package `denote-journal' makes it easier to use `denote' for
+;; making journal.
+(use-package denote-journal
+  :commands (denote-journal-new-entry
+              denote-journal-new-or-existing-entry
+              denote-journal-link-or-create-entry)
+
+  :hook (calendar-mode . denote-journal-calendar-mode)
+  :config
+
+  ;; Use the "journal" subdirectory of the `denote-directory'.  Set this
+  ;; to nil to use the `denote-directory' instead.
+  (setq denote-journal-directory
+        (expand-file-name "journal" denote-directory))
+
+  ;; Default keyword for new journal entries. It can also be a list of
+  ;; strings.
+  (setq denote-journal-keyword "journal")
+
+  ;; Read the doc string of `denote-journal-title-format'.
+  (setq denote-journal-title-format 'day-date-month-year)
+
+  :bind (("C-c n j" . #'denote-journal-new-or-existing-entry)))
 
 ;; Package `citar-denote' provids a minor-mode integrating the `citar'
 ;; and `denote' packages to enable managing bibliographic notes and
