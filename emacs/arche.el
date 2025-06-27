@@ -2823,7 +2823,10 @@ _h_ ^ ^ _l_   _x_ kill     _t_ype     _e_xchange-point
 
   ;; Ignore the warning we get when a huge buffer is reverted and the
   ;; undo information is too large to be recorded.
-  (add-to-list 'warning-suppress-log-types '(undo discard-info)))
+  (add-to-list 'warning-suppress-log-types '(undo discard-info))
+  ;; Ignore the warning we get when a loaded buffer has no
+  ;; `lexical-binding' cookie.
+  (add-to-list 'warning-inhibit-types '(files missing-lexbind-cookie)))
 
 ;; Package `undo-tree' replaces the default Emacs undo system, which
 ;; is poorly designed and hard to use, with a much more powerful
