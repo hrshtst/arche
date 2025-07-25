@@ -7651,7 +7651,8 @@ turn it off again after creating the first frame."
 
   ;; Set the default font size.
   (when arche-font-size
-    (set-face-attribute 'default nil :height arche-font-size))
+    (custom-theme-set-faces
+     'user '(default ((t (:height arche-font-size))) t)))
 
   ;; Set the default font. No, I have no idea why we have to do it
   ;; this way. Using `set-face-attribute' does not have an effect,
@@ -7661,7 +7662,8 @@ turn it off again after creating the first frame."
 
   ;; Use the same font for fixed-pitch text as the rest of Emacs (you
   ;; *are* using a monospace font, right?).
-  (set-face-attribute 'fixed-pitch nil :family 'unspecified)
+  (custom-theme-set-faces
+   'user '(fixed-pitch ((t (:family unspecified))) t))
 
   ;; On macOS, set the title bar to match the frame background.
   (arche-with-operating-system macOS
