@@ -6874,6 +6874,50 @@ disable itself. Sad."
   ;; https://chris.beams.io/posts/git-commit/.
   (setq git-commit-summary-max-length 50))
 
+;; Feature `emacsql-sqlite-common' from package `emacsql' is a
+;; dependency of Forge that provides logic for choosing amongst the
+;; different Emacs backends.
+(use-feature emacsql-sqlite-common
+  :config
+
+  (arche-defadvice arche--advice-emacsql-no-error-swallow ()
+    :before #'emacsql-sqlite-default-connection
+    "Make sure compilation errors are actually reported."
+    (when (not (sqlite-available-p))
+      ;; Prevent the compilation output from being eaten entirely into
+      ;; a truncated error message, by at least installing it into the
+      ;; *Warnings* buffer as well.
+      (cl-letf* ((error (symbol-function #'error))
+                 ((symbol-function #'error)
+                  (lambda (msg &rest args)
+                    (apply #'warn msg args)
+                    (apply error msg args))))
+        (require 'sqlite3)))))
+
+;; Feature `emacsql-sqlite' from package `emacsql' is a dependency of
+;; Forge providing the legacy backend that is used when C module
+;; support is not available.
+(use-feature emacsql-sqlite
+  :init
+
+  ;; Put the EmacSQL binary in the repository, not the build dir. That
+  ;; way we don't have to recompile it every time packages get rebuilt
+  ;; by straight.el. See
+  ;; <https://github.com/raxod502/straight.el/issues/274> for not
+  ;; having to use the internal function `straight--dir'.
+  (setq emacsql-sqlite-data-root (straight--repos-dir "emacsql"))
+
+  :config
+
+  (arche-defadvice arche--advice-emacsql-no-compile-during-compile
+      (&rest _)
+    :before-until #'emacsql-sqlite-ensure-binary
+    "Prevent EmacSQL from trying to compile stuff during byte-compilation.
+This is a problem because Forge tries to get EmacSQL to compile
+its binary at load time, which is bad (you should never do
+anything significant at package load time) since it breaks CI."
+    byte-compile-current-file))
+
 ;; Package `forge' provides a GitHub/GitLab/etc. interface directly
 ;; within Magit.
 (use-package forge)
@@ -6882,35 +6926,8 @@ disable itself. Sad."
 ;; integration that Forge can use. If you want to use it, install
 ;; libsqlite3 from the system package manager.
 (use-package sqlite3
-  :no-require t)
-
-;; Feature `forge-core' from package `forge' implements the core
-;; functionality.
-(use-feature forge-core
-  :defines emacsql-sqlite-executable
-  :functions emacsql-sqlite-compile
-  :config
-
-  (arche-defadvice arche--forge-get-repository-lazily (&rest _)
-    :before-while #'forge-get-repository
-    "Make `forge-get-repository' return nil if the binary isn't built yet.
-This prevents having EmacSQL try to build its binary (which may
-be annoying, inconvenient, or impossible depending on the
-situation) just because you tried to do literally anything with
-Magit."
-    (and (featurep 'emacsql-sqlite)
-         (file-executable-p emacsql-sqlite-executable)))
-
-  (arche-defadvice arche--forge-build-binary-lazily (&rest _)
-    :before #'forge-dispatch
-    "Make `forge-dispatch' build the binary if necessary.
-Normally, the binary gets built as soon as Forge is loaded, which
-is terrible UX. We disable that above, so we now have to manually
-make sure it does get built when we actually issue a Forge
-command."
-    (require 'emacsql-sqlite)
-    (unless (file-executable-p emacsql-sqlite-executable)
-      (emacsql-sqlite-compile 2))))
+  :no-require t
+  :config)
 
 ;; Package `git-gutter' adds a column to the left-hand side of each
 ;; window, showing which lines have been added, removed, or modified
