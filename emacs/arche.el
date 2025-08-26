@@ -3968,7 +3968,7 @@ was printed, and only have ElDoc display if one wasn't."
 
   :config
 
-  (treesit-auto-add-to-auto-mode-alist 'all)
+  (setq treesit-auto-langs '(bash python rust go toml))
   (global-treesit-auto-mode))
 
 ;;;; Syntax checking and code linting
