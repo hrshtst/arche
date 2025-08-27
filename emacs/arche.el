@@ -4090,6 +4090,27 @@ mode when getting it."
   (add-to-list 'jinx-exclude-regexps
                '(t "\\w*?[^\000-\377]\\w*\\>"))
 
+  ;; Advice around `add-file-local-variable` to handle Python line-too-long.
+  (arche-defadvice arche--advice-add-noqa-if-long-line (func var val &rest args)
+    :around #'add-file-local-variable
+    "Advice around `add-file-local-variable` to append `# noqa: E501` when in
+`python-mode` and the inserted line for VAR is too long."
+    (let ((res (apply func var val args)))
+      (when (derived-mode-p 'python-mode)
+        (let ((var-str (format "%s:" var)))
+          (save-excursion
+            ;; Jump to Local Variables section
+            (goto-char (point-max))
+            (when (re-search-backward "^# Local Variables:" nil t)
+              (when (re-search-forward
+                     (concat "^#\\s-*" (regexp-quote var-str)) nil t)
+                (let ((bol (line-beginning-position))
+                      (eol (line-end-position)))
+                  (when (> (- eol bol) fill-column)
+                    (goto-char eol)
+                    (insert " # noqa: E501"))))))))
+      res))
+
   :blackout t)
 
 ;;; Language support
@@ -4610,11 +4631,6 @@ file-local setting of e.g. `outline-regexp' with its own setting."
 See https://emacs.stackexchange.com/a/3338/12534."
     (setq electric-indent-chars (delq ?: electric-indent-chars)))
 
-  (arche-defhook arche--python-set-fill-column ()
-    (python-mode-hook python-ts-mode-hook)
-    "Set `fill-column' to the default value of Black."
-    (set-fill-column 100))
-
   ;; Default to Python 3. Prefer the versioned Python binaries since
   ;; some systems stupidly make the unversioned one point at Python 2.
   (cond
@@ -4639,6 +4655,25 @@ See https://emacs.stackexchange.com/a/3338/12534."
       (setq-local
        lsp-pyright-python-executable-cmd
        python-shell-interpreter)))
+
+  (arche-defhook arche--python-set-fill-column-from-ruff ()
+    (python-mode-hook python-ts-mode-hook)
+    "Set `fill-column` based on Ruff's line-length in pyproject.toml, or
+default to 120. If LSP is active, use `lsp-workspace-root` to locate the
+config."
+    (when (derived-mode-p 'python-mode)
+      (let* ((root (when (fboundp 'lsp-workspace-root)
+                     (lsp-workspace-root)))
+             (config-file (and root (expand-file-name "pyproject.toml" root)))
+             (line-len 120)) ;; Black default
+        (when (and config-file (file-exists-p config-file))
+          (with-temp-buffer
+            (insert-file-contents config-file)
+            (goto-char (point-min))
+            ;; Look for `line-length = N`
+            (when (re-search-forward "line-length\\s-*=\\s-*\\([0-9]+\\)" nil t)
+              (setq line-len (string-to-number (match-string 1))))))
+        (set-fill-column line-len))))
 
   ;; I honestly don't understand why people like their packages to
   ;; spew so many messages.
