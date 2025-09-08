@@ -2764,6 +2764,16 @@ invocation will kill the newline."
 
   (delete-selection-mode +1))
 
+;; Package `whole-line-or-region' allows functions to operate on the
+;; current line if they would normally operate on a region and region
+;; is currently undefined.
+(use-package whole-line-or-region
+  :demand t
+  :config
+
+  ;; Enable the mode for all buffers.
+  (whole-line-or-region-global-mode +1))
+
 ;;;; Region selection
 
 ;; Feature `rect' provides operations on rectangular area of the text

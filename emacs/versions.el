@@ -135,6 +135,7 @@
  ("visual-regexp.el" . "48457d42a5e0fe10fa3a9c15854f1f127ade09b5")
  ("vterm-toggle" . "06cb4f3c565e46470a3c4505c11e26066d869715")
  ("web-mode" . "994cb350bceeebb031406112cf6da119e066ef8e")
+ ("whole-line-or-region" . "052676394c675303d6b953209e5d2ef090fbc45d")
  ("with-editor" . "f32cd7b09d518b629bfaa3eeb92b539891c6b9bc")
  ("yaml-mode" . "d91f878729312a6beed77e6637c60497c5786efa")
  ("yaml.el" . "f99ef76c80e6fc3fcf650c4fe34e10726594a4c4")
