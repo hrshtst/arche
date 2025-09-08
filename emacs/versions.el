@@ -26,6 +26,7 @@
  ("dash.el" . "fcb5d831fc08a43f984242c7509870f30983c27c")
  ("deadgrep" . "edb1957d0d6033698c6784686b27508034003fa0")
  ("denote" . "8694b092b70ccf028a6ade510c5c586fa90804fc")
+ ("denote-journal" . "395ad0aa2dc13001023e570fcdd594b25856f054")
  ("docker.el" . "464105ed8b193d8133a7d9e2b400876514cc4c95")
  ("dockerfile-mode" . "8135740bfc6ad96ab82d39d9fe68dbce56180f4c")
  ("dumb-jump" . "42f97dea503367bf45c53a69de959177b06b0f59")
