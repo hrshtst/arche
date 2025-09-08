@@ -6146,8 +6146,8 @@ be invoked before `org-mode-hook' is run."
 ;; making journal.
 (use-package denote-journal
   :commands (denote-journal-new-entry
-              denote-journal-new-or-existing-entry
-              denote-journal-link-or-create-entry)
+             denote-journal-new-or-existing-entry
+             denote-journal-link-or-create-entry)
 
   :hook (calendar-mode . denote-journal-calendar-mode)
   :config
