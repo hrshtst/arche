@@ -2772,7 +2772,9 @@ invocation will kill the newline."
   :config
 
   ;; Enable the mode for all buffers.
-  (whole-line-or-region-global-mode +1))
+  (whole-line-or-region-global-mode +1)
+
+  :blackout whole-line-or-region-local-mode)
 
 ;;;; Region selection
 
