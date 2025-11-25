@@ -5717,7 +5717,10 @@ messages."
       (when (process-live-p arche-byte-compile--process)
         (kill-process arche-byte-compile--process))
       (ignore-errors
-        (kill-buffer " *arche-byte-compile*"))
+        (with-current-buffer (get-buffer " *arche-byte-compile*")
+          (kill-all-local-variables)
+          (delete-all-overlays)
+          (erase-buffer)))
       (let ((default-directory arche-directory))
         (arche-env-setup)
         (setq
