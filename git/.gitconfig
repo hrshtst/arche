@@ -40,6 +40,9 @@
 	mnemonicPrefix = true
 	renames = copies
 	submodule = log
+[diff "gpg"]
+	binary = true
+	textconv = gpg -d --quiet --yes --compress-algo=none --no-encrypt-to --batch --use-agent
 [fetch]
 	# Automatically prune stale branches from the remote on every
 	# fetch.
