@@ -2771,6 +2771,22 @@ invocation will kill the newline."
   :demand t
   :config
 
+  (arche-defadvice arche--whole-line-or-region-comment-dwim-advice (func prefix)
+    :around #'whole-line-or-region-comment-dwim-2
+    "Bypass the `whole-line-or-region` wrapper (which prevents point
+movement) in two specific cases where standard `comment-dwim` behavior
+is preferred: 1. `C-0 M-;` (prefix 0): Append comment at end of line and
+move point there. 2. `M-;` (prefix 1) on an empty line: Insert comment
+characters and move point."
+    (if (and (not (use-region-p)) ;; Only apply if no region is active
+             (or (= prefix 0)     ;; Case: C-0 M-; (Append comment)
+                 (and (= prefix 1) ;; Case: M-; (Empty line)
+                      (save-excursion (beginning-of-line) (looking-at-p "^\\s-*$")))))
+        ;; Call standard comment-dwim (passing nil mimics no-prefix behavior for appending)
+        (comment-dwim nil)
+      ;; Otherwise, let whole-line-or-region handle it (e.g. comment whole line)
+      (funcall func prefix)))
+
   ;; Enable the mode for all buffers.
   (whole-line-or-region-global-mode +1)
 
