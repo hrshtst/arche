@@ -4773,6 +4773,10 @@ Return either a string or nil."
   :after (:all lsp-mode python)
   :config
 
+  ;; Use `basedpyright' if available instead of `pyright'.
+  (when (executable-find "basedpyright")
+    (setq lsp-pyright-langserver-command "basedpyright"))
+
   (defun arche--lsp-pyright-discover-virtualenvs ()
     "Automatically discover Pipenv and Poetry virtualenvs."
     (let ((venv (arche--python-find-virtualenv)))
