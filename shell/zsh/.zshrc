@@ -202,7 +202,7 @@ fi
 
 ## Closing remarks
 
-if (( $+commands[zsh-defer] )); then
+if (( $+functions[zsh-defer] )); then
   zsh-defer -t 1.0 unfunction source
 else
   unfunction source
