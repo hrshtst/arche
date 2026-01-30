@@ -60,6 +60,30 @@ hooks.post = "[[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh"
 [plugins.zsh-defer]
 github = "romkatv/zsh-defer"
 
+# fzf plugins
+# ----------------
+
+[plugins.zoxide]
+# Note: this plugin should be loaded after compinit
+local = "~/.zsh/plugins"
+hooks.post = "zsh-defer source \"${HOME}/.zsh/plugins/zoxide.plugin.zsh\""
+
+[plugins.fzf]
+github = "junegunn/fzf"
+apply = ["fzf-install"]
+
+[plugins.fzf-config]
+local = "~/.zsh/plugins"
+use = ["fzf.plugin.zsh"]
+
+[plugins.fzf-tab]
+# Note: this plugin should be loaded after compinit
+github = "Aloxaf/fzf-tab"
+
+[plugins.fzf-tab-config]
+local = "~/.zsh/plugins"
+use = ["fzf-tab.plugin.zsh"]
+
 # Deferred plugins
 # ----------------
 
@@ -110,6 +134,8 @@ apply = ["defer"]
 hooks.post="""
 # Do not complete '.' and '..' special directories.
 zsh-defer zstyle ':completion:*' special-dirs false
+# Revert key-bindings for history search
+zsh-defer bindkey -M emacs '^R' fzf-history-widget
 """
 
 [plugins.ohmyzsh-plugins]
@@ -172,30 +198,6 @@ apply = ["defer-more"]
 # This works best if it is placed last.
 [plugins.compinit]
 local = "~/.zsh/plugins"
-apply = ["defer"]
-
-[plugins.zoxide]
-# Note: this plugin should be loaded after compinit
-local = "~/.zsh/plugins"
-apply = ["defer"]
-
-[plugins.fzf]
-github = "junegunn/fzf"
-apply = ["fzf-install", "defer"]
-
-[plugins.fzf-config]
-local = "~/.zsh/plugins"
-use = ["fzf.plugin.zsh"]
-apply = ["defer"]
-
-[plugins.fzf-tab]
-# Note: this plugin should be loaded after compinit
-github = "Aloxaf/fzf-tab"
-apply = ["defer"]
-
-[plugins.fzf-tab-config]
-local = "~/.zsh/plugins"
-use = ["fzf-tab.plugin.zsh"]
 apply = ["defer"]
 
 [plugins.zsh-autosuggestions]
