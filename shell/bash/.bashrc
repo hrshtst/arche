@@ -320,6 +320,13 @@ if has ssh-agent; then
 
 fi
 
+## fzf
+
+if [ -f "${HOME}/.fzf.bash" ]; then
+  # shellcheck disable=SC1091
+  source "${HOME}/.fzf.bash"
+fi
+
 ## External configuration hook
 
 if type -t arche_after_init_hook > /dev/null; then
