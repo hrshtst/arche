@@ -6,6 +6,17 @@ if (( ! $+commands[fzf] )); then
   return
 fi
 
+# Load cached integration script for zsh
+cache_dir=${XDG_CACHE_HOME:-$HOME/.cache}
+fzf_cache="$cache_dir/fzf-zsh-integration.zsh"
+fzf_bin="$HOME/.fzf/bin"
+if [[ ! -r "$fzf_cache" || "$fzf_bin" -nt "$fzf_cache" ]]; then
+  mkdir -p $cache_dir
+  fzf --zsh > $fzf_cache
+fi
+source "$fzf_cache"
+unset cache_dir fzf_cache fzf_bin
+
 # Configure the popping-up window and assign additional keybindings.
 export FZF_DEFAULT_OPTS="--height 40% --reverse --border --inline-info --bind='ctrl-j:preview-down,ctrl-k:preview-up,?:toggle-preview,ctrl-space:toggle+down'"
 
