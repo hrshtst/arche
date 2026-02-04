@@ -117,6 +117,10 @@ apply = ["fpath"]
 local = "~/.zsh/plugins"
 apply = ["defer"]
 
+[plugins.git-wt]
+local = "~/.zsh/plugins"
+apply = ["defer"]
+
 [plugins.gpg-agent]
 local = "~/.zsh/plugins"
 apply = ["defer"]

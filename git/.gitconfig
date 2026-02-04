@@ -65,6 +65,9 @@
 	enabled = true
 [status]
 	submoduleSummary = true
-# .gitconfig.local should be included last.
 [include]
 	path = ~/.gitconfig.local
+[wt]
+	nocd = create
+	hook = tmux new-window -c \"$PWD\" -n \"$(basename -s .git `git remote get-url origin`):$(git branch --show-current)\"
+# .gitconfig.local should be included last.
