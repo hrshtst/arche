@@ -129,10 +129,17 @@ In either case, eagerly load FEATURE during byte-compilation."
 
 (defmacro arche-flet (bindings &rest body)
   "Temporarily override function definitions using `cl-letf*'.
-BINDINGS are composed of `defun'-ish forms. NAME is the function
-to override. It has access to the original function as a
-lexically bound variable by the same name, for use with
+BINDINGS are composed of `defun'-ish forms. NAME is the function to
+override. It has access to the original function as a lexically bound
+variable by the original name prefixed with `orig-', for use with
 `funcall'. ARGLIST and BODY are as in `defun'.
+
+In the case that NAME is already defined as a dynamically bound
+variable, it cannot be bound lexically again, and attempting the binding
+will cause strange things to happen in case of re-entrant calls. Since
+it is not uncommon for a symbol to have both a function and variable
+binding (this will happen for any mode function, for example), the
+`orig-' prefixing helps to avoid conflicts.
 
 \(fn ((defun NAME ARGLIST &rest BODY) ...) BODY...)"
   (declare (indent defun))
@@ -142,7 +149,8 @@ lexically bound variable by the same name, for use with
                      (setq binding (cdr binding)))
                    (cl-destructuring-bind (name arglist &rest body) binding
                      (list
-                      `(,name (symbol-function #',name))
+                      `(,(intern (format "orig-%S" name))
+                        (symbol-function #',name))
                       `((symbol-function #',name)
                         (lambda ,arglist
                           ,@body)))))
@@ -273,24 +281,24 @@ This means that FILENAME is a symlink whose target is inside
   "Execute BODY, with the function `load' made silent."
   (declare (indent 0))
   `(arche-flet ((defun load (file &optional noerror _nomessage &rest args)
-                  (apply load file noerror 'nomessage args)))
+                   (apply orig-load file noerror 'nomessage args)))
      ,@body))
 
 (defmacro arche--with-silent-write (&rest body)
   "Execute BODY, with the function `write-region' made silent."
   (declare (indent 0))
   `(arche-flet ((defun write-region
-                    (start end filename &optional append visit lockname
-                           mustbenew)
-                  (funcall write-region start end filename append 0
-                           lockname mustbenew)
-                  (when (or (stringp visit) (eq visit t))
-                    (setq buffer-file-name
-                          (if (stringp visit)
-                              visit
-                            filename))
-                    (set-visited-file-modtime)
-                    (set-buffer-modified-p nil))))
+                     (start end filename &optional append visit lockname
+                            mustbenew)
+                   (funcall orig-write-region start end filename append 0
+                            lockname mustbenew)
+                   (when (or (stringp visit) (eq visit t))
+                     (setq buffer-file-name
+                           (if (stringp visit)
+                               visit
+                             filename))
+                     (set-visited-file-modtime)
+                     (set-buffer-modified-p nil))))
      (cl-letf (((symbol-function #'message) #'ignore))
        ,@body)))
 
@@ -307,19 +315,19 @@ also be a single string."
        (when (stringp ,regexps-sym)
          (setq ,regexps-sym (list ,regexps-sym)))
        (arche-flet ((defun message (format &rest args)
-                      (let ((str (apply #'format format args)))
-                        ;; Can't use an unnamed block because during
-                        ;; byte-compilation, some idiot loads `cl', which
-                        ;; sticks an advice onto `dolist' that makes it
-                        ;; behave like `cl-dolist' (i.e., wrap it in
-                        ;; another unnamed block) and therefore breaks
-                        ;; this code.
-                        (cl-block done
-                          (dolist (regexp ,regexps-sym)
-                            (when (or (null regexp)
-                                      (string-match-p regexp str))
-                              (cl-return-from done)))
-                          (funcall message "%s" str)))))
+                       (let ((str (apply #'format format args)))
+                         ;; Can't use an unnamed block because during
+                         ;; byte-compilation, some idiot loads `cl', which
+                         ;; sticks an advice onto `dolist' that makes it
+                         ;; behave like `cl-dolist' (i.e., wrap it in
+                         ;; another unnamed block) and therefore breaks
+                         ;; this code.
+                         (cl-block done
+                           (dolist (regexp ,regexps-sym)
+                             (when (or (null regexp)
+                                       (string-match-p regexp str))
+                               (cl-return-from done)))
+                           (funcall orig-message "%s" str)))))
          ,@body))))
 
 (defun arche--advice-silence-messages (func &rest args)
@@ -772,10 +780,10 @@ This keymap is bound under \\[arche-keymap].")
   :around #'quoted-insert
   "Allow quitting out of \\[quoted-insert] with \\[keyboard-quit]."
   (arche-flet ((defun insert-and-inherit (&rest args)
-                 (dolist (arg args)
-                   (when (equal arg ?\C-g)
-                     (signal 'quit nil)))
-                 (apply insert-and-inherit args)))
+                  (dolist (arg args)
+                    (when (equal arg ?\C-g)
+                      (signal 'quit nil)))
+                  (apply orig-insert-and-inherit args)))
     (apply quoted-insert args)))
 
 ;; Package `which-key' displays the key bindings and associated
@@ -2153,18 +2161,19 @@ password that the user has decided not to save.")
       (if (member key blacklist)
           ?n
         (arche-flet ((defun auth-source-read-char-choice (prompt choices)
-                       (let ((choice (funcall auth-source-read-char-choice
-                                              prompt choices)))
-                         (when (= choice ?N)
-                           (push key blacklist)
-                           (make-directory
-                            (file-name-directory
-                             arche--auth-source-blacklist-file)
-                            'parents)
-                           (with-temp-file arche--auth-source-blacklist-file
-                             (print blacklist (current-buffer)))
-                           (setq choice ?n))
-                         choice)))
+                        (let ((choice (funcall
+                                       orig-auth-source-read-char-choice
+                                       prompt choices)))
+                          (when (= choice ?N)
+                            (push key blacklist)
+                            (make-directory
+                             (file-name-directory
+                              arche--auth-source-blacklist-file)
+                             'parents)
+                            (with-temp-file arche--auth-source-blacklist-file
+                              (print blacklist (current-buffer)))
+                            (setq choice ?n))
+                          choice)))
           (funcall func file add))))))
 
 ;;; Saving files
@@ -2195,6 +2204,28 @@ permission."
              (if allowed "enabled" "disabled"))))
 
 (bind-key* "s-x" #'arche-set-executable-permission)
+
+;;; Remote files
+
+;; Feature `tramp' provides the facility for editing remote files from
+;; within Emacs.
+(use-feature tramp
+  :config
+
+  (defalias 'arche--advice-tramp-locking-inhibit #'ignore
+    "Inhibit file locking for TRAMP.
+We already disable `create-lockfiles' globally, but `lock-file' and
+`unlock-file' (invoked directly by the edit loop) also check for file
+modifications, to warn the user if the file was changed since it was
+loaded. We want to inhibit that for remote files, because otherwise it
+causes an arbitrarily long synchronous hang before your keystrokes show
+up.")
+
+  (advice-add #'tramp-handle-lock-file :override
+              #'arche--advice-tramp-locking-inhibit)
+
+  (advice-add #'tramp-handle-unlock-file :override
+              #'arche--advice-tramp-locking-inhibit))
 
 ;;; Editing
 ;;;; Japanese environment
@@ -3072,8 +3103,8 @@ multiple files will miss any match that occurs earlier in a
 visited file than point happens to be currently in that
 buffer."
       (arche-flet ((defun perform-replace (&rest args)
-                     (apply perform-replace
-                            (append args (list (point-min) (point-max))))))
+                      (apply orig-perform-replace
+                             (append args (list (point-min) (point-max))))))
         (apply func args)))))
 
 ;; Package `visual-regexp' provides an alternate version of
@@ -3298,13 +3329,15 @@ via return key."
   ;; inserting a pair, add an extra newline and indent. See
   ;; <https://github.com/Fuco1/smartparens/issues/80#issuecomment-18910312>.
 
-  (defun arche--smartparens-pair-setup (mode delim)
-    "In major mode MODE, set up DELIM with newline-and-indent."
-    (sp-local-pair mode delim nil :post-handlers
+  (defun arche--smartparens-pair-setup (mode open &optional close)
+    "In major mode MODE, set up delimiter with newline-and-indent.
+OPEN is the opening delimiter, CLOSE is the closing delimiter which
+defaults to OPEN."
+    (sp-local-pair mode open close :post-handlers
                    '((arche--smartparens-indent-new-pair "RET")
                      (arche--smartparens-indent-new-pair "<return>"))))
 
-  (dolist (delim '("(" "[" "{"))
+  (dolist (pair '(("(" ")") ("[" "]") ("{" "}")))
     (dolist (mode '(
                     fundamental-mode
                     javascript-mode
@@ -3312,7 +3345,7 @@ via return key."
                     prog-mode
                     text-mode
                     ))
-      (arche--smartparens-pair-setup mode delim)))
+      (apply #'arche--smartparens-pair-setup mode pair)))
 
   (arche--smartparens-pair-setup #'python-mode "\"\"\"")
   (arche--smartparens-pair-setup #'python-ts-mode "\"\"\"")
@@ -3857,6 +3890,17 @@ menu to disappear and then come back after `company-idle-delay'."
 
   :blackout t)
 
+;; Feature `company-etags' is a built-in completion backend that reads
+;; TAGS files. We don't use it.
+(use-feature company-etags
+  :config
+
+  (arche-defadvice arche--advice-company-etags-tramp-disable (&rest _)
+    :before-until #'company-etags
+    "Disable Company etags in remote buffers.
+It hangs the editor because it wants to make remote process calls."
+    (and buffer-file-name (file-remote-p buffer-file-name))))
+
 ;; Package `company-prescient' provides intelligent sorting and
 ;; filtering for candidates in Company completions.
 (use-package company-prescient
@@ -3950,7 +3994,7 @@ order."
     "Prevent `eldoc' from trampling on existing messages."
     (arche-flet ((defun eldoc--message (&optional string)
                     (if string
-                        (funcall eldoc--message string)
+                        (funcall orig-eldoc--message string)
                       (setq eldoc-last-message nil))))
       (apply func args)))
 
@@ -4074,9 +4118,9 @@ mode when getting it."
     :around #'lsp-ui-sideline-apply-code-actions
     "Apply code fix immediately if only one is possible."
     (arche-flet ((defun completing-read (prompt collection &rest args)
-                   (if (= (safe-length collection) 1)
-                       (car collection)
-                     (apply completing-read prompt collection args))))
+                    (if (= (safe-length collection) 1)
+                        (car collection)
+                      (apply orig-completing-read prompt collection args))))
       (apply orig-fun args)))
 
   (use-feature lsp-mode
@@ -4099,11 +4143,11 @@ mode when getting it."
     :around #'lsp-ui-doc--render-buffer
     "Prevent `lsp-ui-doc' from removing newlines from documentation."
     (arche-flet ((defun replace-regexp-in-string
-                     (regexp rep string &rest args)
-                   (if (equal regexp "`\\([\n]+\\)")
-                       string
-                     (apply replace-regexp-in-string
-                            regexp rep string args))))
+                      (regexp rep string &rest args)
+                    (if (equal regexp "`\\([\n]+\\)")
+                        string
+                      (apply orig-replace-regexp-in-string
+                             regexp rep string args))))
       (apply func args))))
 
 
@@ -4745,6 +4789,18 @@ Return either a string or nil."
                  (when (file-directory-p venv)
                    (cl-return venv))))))))))
 
+  (arche-defadvice arche--advice-python-eldoc-tramp-disable (&rest _)
+    :before-until #'python-eldoc-function
+    "Disable Python ElDoc in remote buffers.
+It hangs the editor because it wants to make remote process calls."
+    (and buffer-file-name (file-remote-p buffer-file-name)))
+
+  (arche-defadvice arche--advice-python-capf-tramp-disable ()
+    :before-until #'python-completion-at-point
+    "Disable Python completion-at-point in remote buffers.
+It hangs the editor because it wants to make remote process calls."
+    (and buffer-file-name (file-remote-p buffer-file-name))))
+
   (use-feature apheleia
     :config
 
@@ -4992,10 +5048,10 @@ Return either a string or nil."
     :around #'TeX-load-style-file
     "Inhibit the \"Loading **/auto/*.el (source)...\" messages."
     (arche-flet ((defun load (file &optional
-                                   noerror _nomessage
-                                   nosuffix must-suffix)
-                   (funcall
-                    load file noerror 'nomessage nosuffix must-suffix)))
+                                    noerror _nomessage
+                                    nosuffix must-suffix)
+                    (funcall
+                     orig-load file noerror 'nomessage nosuffix must-suffix)))
       (funcall TeX-load-style-file file)))
 
   (arche-defadvice arche--advice-inhibit-tex-removing-duplicates-message
@@ -6993,6 +7049,14 @@ anything significant at package load time) since it breaks CI."
   ;; Don't prompt when reverting hunk.
   (setq git-gutter:ask-p nil)
 
+  (arche-defadvice arche--advice-git-gutter-no-remote (func &rest args)
+    :around #'git-gutter--turn-on
+    "Inhibit `git-gutter' in TRAMP buffers to improve performance."
+    (arche-flet ((defun git-gutter-mode (&rest args)
+                    (unless (file-remote-p buffer-file-name)
+                      (apply orig-git-gutter-mode args))))
+      (apply func args)))
+
   (global-git-gutter-mode +1)
 
   (defun arche-git-gutter:beginning-of-hunk ()
@@ -7106,9 +7170,9 @@ changes, which means that `git-gutter' needs to be re-run.")
       "Disable the cutesy bitmap pluses and minuses from `git-gutter-fringe'.
 Instead, display simply a flat colored region in the fringe."
       (arche-flet ((defun fringe-helper-insert-region
-                       (beg end _bitmap &rest args)
-                     (apply fringe-helper-insert-region
-                            beg end 'arche--git-gutter-blank args)))
+                        (beg end _bitmap &rest args)
+                      (apply orig-fringe-helper-insert-region
+                             beg end 'arche--git-gutter-blank args)))
         (apply func args)))))
 
 ;;;; OS-level virtualization tools, a.k.a. Docker
