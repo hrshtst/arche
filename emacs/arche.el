@@ -829,6 +829,21 @@ This keymap is bound under \\[arche-keymap].")
 ;;; Environment
 ;;;; Environment variables
 
+(defvar arche-env-setup-hook nil)
+
+(defmacro arche-after-env-setup (&rest forms)
+  "Execute FORMS after environment setup.
+
+If the environment is already setup or is not expected to be setup, just
+executes the forms now."
+  `(let ((fn (lambda () ,@forms)))
+     (if arche-env-setup
+         (progn
+           (add-hook 'arche-env-setup-hook fn)
+           (when arche--env-setup-p
+             (funcall fn)))
+       (funcall fn))))
+
 (defcustom arche-env-setup t
   "Non-nil means ~/.profile is sourced after startup.
 Environment variables will be copied into the current Emacs
@@ -885,7 +900,8 @@ Only do this once, unless AGAIN is non-nil."
                                    (setq exec-path (append
                                                     (parse-colon-path value)
                                                     (list exec-directory)))))
-                        (setq arche--env-setup-p t))
+                        (setq arche--env-setup-p t)
+                        (run-hooks 'arche-env-setup-hook))
                     (message
                      "Loading %s produced malformed result; see buffer %S"
                      profile-file
