@@ -7759,7 +7759,7 @@ turn it off again after creating the first frame."
   ;; Set the default font size.
   (when arche-font-size
     (custom-theme-set-faces
-     'user '(default ((t (:height arche-font-size))) t)))
+     'user `(default ((t (:height ,arche-font-size))) t)))
 
   ;; Set the default font. No, I have no idea why we have to do it
   ;; this way. Using `set-face-attribute' does not have an effect,
