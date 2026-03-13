@@ -96,10 +96,9 @@ github = "Tarrasch/zsh-bd"
 use = ["bd.zsh"]
 apply = ["defer"]
 
-[plugins.cheat-completion]
-remote = "https://github.com/cheat/cheat/raw/master/scripts/cheat.zsh"
-use = ["{{ name }}.plugin.zsh"]
-apply = ["fpath"]
+[plugins.cheat]
+local = "~/.zsh/plugins"
+apply = ["defer"]
 
 [plugins.copy]
 local = "~/.zsh/plugins"
