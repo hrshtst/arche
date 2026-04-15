@@ -44,9 +44,8 @@ loading the init-file twice if it were not for this variable.")
    (t
     (setq arche--init-file-loaded-p t)
 
-    (defvar arche-minimum-emacs-version "27.1"
-      "Minimum version of Emacs to support.
-Our Emacs configuration does not support any versions below this.")
+    (defvar arche-minimum-emacs-version "29.1"
+      "Arche Emacs does not support any Emacs version below this.")
 
     (defvar arche-local-init-file
       (expand-file-name "init.local.el" user-emacs-directory)
@@ -90,9 +89,9 @@ This file is loaded by init.el")
 Unlike `after-init-hook', this hook is run every time the
 init-file is loaded, not just once.")
 
-        (defvar radian-original-file-name-handler-alist nil
+        (defvar arche-original-file-name-handler-alist nil
           "The value of `file-name-handler-alist' during load time.
-`file-name-handler-alist' is set to nil while Radian is loading.")
+`file-name-handler-alist' is set to nil while Arche is loading.")
 
         (unwind-protect
             ;; Load the main configuration code. Disable
@@ -101,7 +100,7 @@ init-file is loaded, not just once.")
             ;; Make sure not to load an out-of-date .elc file. Since
             ;; we byte-compile asynchronously in the background after
             ;; init succeeds, this case will happen often.
-            (let* ((radian-original-file-name-handler-alist
+            (let* ((arche-original-file-name-handler-alist
                     file-name-handler-alist)
                    (file-name-handler-alist nil)
                    (load-prefer-newer t)

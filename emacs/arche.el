@@ -4117,6 +4117,7 @@ mode when getting it."
 ;; messages from LSP in the buffer using overlays. It's configured
 ;; automatically by `lsp-mode'.
 (use-package lsp-ui
+  :straight (:fork "radian-software" :branch "fork/1")
   :bind (("C-c f" . #'lsp-ui-sideline-apply-code-actions))
   :config
 
@@ -5758,6 +5759,7 @@ SYMBOL is as in `xref-find-definitions'."
 ;; Package `macrostep' provides a facility for interactively expanding
 ;; Elisp macros.
 (use-package macrostep
+  :straight (:fork "radian-software" :branch "fork/1")
   :bind (("C-c e" . #'macrostep-expand)))
 
 ;;;;; Emacs Lisp byte-compilation
@@ -6956,7 +6958,10 @@ disable itself. Sad."
 
   ;; Max length for commit message summary is 50 characters as per
   ;; https://chris.beams.io/posts/git-commit/.
-  (setq git-commit-summary-max-length 50))
+  (setq git-commit-summary-max-length 50)
+
+  ;; https://github.com/magit/magit/issues/5559
+  (remove-hook 'git-commit-setup-hook #'git-commit-setup-capf))
 
 ;; Feature `emacsql-sqlite-common' from package `emacsql' is a
 ;; dependency of Forge that provides logic for choosing amongst the
