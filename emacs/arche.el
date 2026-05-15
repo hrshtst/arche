@@ -6771,6 +6771,10 @@ as argument."
   ;; to see them.
   (setq magit-save-repository-buffers nil)
 
+  ;; Suppress warning displaying when `long-line-threshold'
+  ;; is violated, which often occur a large file is added or modified.
+  (setq magit-show-long-lines-warning nil)
+
   (transient-append-suffix
     'magit-merge "-n"
     '("-u" "Allow unrelated" "--allow-unrelated-histories"))
