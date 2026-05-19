@@ -6198,7 +6198,7 @@ be invoked before `org-mode-hook' is run."
 
   :bind (("C-c n j" . #'denote-journal-new-or-existing-entry)))
 
-;; Package `citar-denote' provids a minor-mode integrating the `citar'
+;; Package `citar-denote' provides a minor-mode integrating the `citar'
 ;; and `denote' packages to enable managing bibliographic notes and
 ;; citations.
 (use-package citar-denote
@@ -6234,6 +6234,66 @@ be invoked before `org-mode-hook' is run."
          ("C-c n l i" . #'citar-denote-link-reference))
 
   :blackout t)
+
+;; Package `arche-diary' is a small package for keeping a private
+;; daily diary in Org mode, organized one file per month, with a
+;; simple HTML export.
+(use-package arche-diary
+    :straight (:host github :repo "hrshtst/arche-diary")
+    :init
+
+    (use-feature hydra
+      :config
+
+      (defun arche-diary--hydra-status ()
+        "Short status line for `hydra-arche-diary'."
+        (let ((bm (and (derived-mode-p 'org-mode)
+                       (arche-diary--current-buffer-month))))
+          (if bm
+              (format "buffer %04d-%02d | today %s"
+                      (car bm) (cdr bm) (format-time-string "%Y-%m-%d"))
+            (format "today %s" (format-time-string "%Y-%m-%d")))))
+
+      (defhydra hydra-arche-diary (:hint nil :exit t :idle 1)
+        "
+  arche-diary: %s(arche-diary--hydra-status)
+  ^^^^^^^^-----------------------------------------------------------------------
+  ^<files>^         | ^<dates>^         | ^<images>^          | ^<export>^
+   _o_: open month  | _d_: add date     | _i_: insert image   | _e_: export month
+   _O_: open (ask)  | _D_: add (ask)    | _I_: img → gallery | _E_: export all
+   ^^               | _v_: visit date   | ^^                  | _x_: export (ask)
+   ^^               | _f_: fill dates   | ^^                  | _q_: quit
+  "
+        ;; files
+        ("o" arche-diary-open-month)
+        ("O" (let ((current-prefix-arg '(4)))
+               (call-interactively #'arche-diary-open-month)))
+        ;; dates
+        ("d" arche-diary-add-date)
+        ("D" (let ((current-prefix-arg '(4)))
+               (call-interactively #'arche-diary-add-date)))
+        ("v" arche-diary-visit-date)
+        ("f" arche-diary-fill-dates)
+        ;; images
+        ("i" arche-diary-insert-image)
+        ("I" (let ((current-prefix-arg '(16)))
+               (call-interactively #'arche-diary-insert-image)))
+        ;; export
+        ("e" arche-diary-export-html)
+        ("E" (let ((current-prefix-arg '(16)))
+               (call-interactively #'arche-diary-export-html)))
+        ("x" (let ((current-prefix-arg '(4)))
+               (call-interactively #'arche-diary-export-html)))
+        ;; exit
+        ("q" nil)))
+
+    :bind (:map arche-keymap
+                ("d" . #'hydra-arche-diary/body))
+
+    :config
+    (setq arche-diary-directory       "~/notes/diary")
+    (setq arche-diary-html-page-title "ひとりごと")
+    (setq arche-diary-html-lang       "ja"))
 
 ;;;; Filesystem management
 
