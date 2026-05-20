@@ -6292,6 +6292,7 @@ be invoked before `org-mode-hook' is run."
 
     :config
     (setq arche-diary-directory       "~/notes/diary")
+    (setq arche-diary-html-directory  "~/www/diary")
     (setq arche-diary-html-page-title "ひとりごと")
     (setq arche-diary-html-lang       "ja"))
 
