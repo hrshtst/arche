@@ -1176,8 +1176,8 @@ ourselves."
    ;; Set preview command for files to key `M-.'.
    consult-ripgrep consult-git-grep consult-grep
    consult-bookmark consult-recent-file consult-xref
-   consult--source-recent-file consult--source-project-recent-file
-   consult--source-bookmark
+   consult-source-recent-file consult-source-project-recent-file
+   consult-source-bookmark
    :preview-key "M-.")
 
   ;; Configure the narrowing key. Both < and C-+ work reasonably well.
@@ -1637,7 +1637,7 @@ perspective: %s(arche--perspective-names)
                   ,(lambda () (arche-buffer-sort-visibility (persp-get-buffer-names))))
       "Buffer candidate source in the current perspective.")
 
-    (consult-customize consult--source-buffer
+    (consult-customize consult-source-buffer
                        :name    "All Buffer"
                        :narrow   `(?b . "Buffer")
                        :hidden  t
@@ -7883,7 +7883,7 @@ nil."
   (arche-defhook arche--modus-themes-set-mozc-cursor-color ()
     modus-themes-after-load-theme-hook
     "Update `arche--mozc-cursor-color' according to `modus-themes'."
-    (pcase (modus-themes--current-theme)
+    (pcase (modus-themes-get-current-theme)
       ('modus-operandi (setq arche--mozc-cursor-color "#904200"))
       ('modus-vivendi (setq arche--mozc-cursor-color "#fba849"))
       (_ (setq arche--mozc-cursor-color "#da8548"))))
