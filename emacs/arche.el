@@ -4810,7 +4810,7 @@ It hangs the editor because it wants to make remote process calls."
     :before-until #'python-completion-at-point
     "Disable Python completion-at-point in remote buffers.
 It hangs the editor because it wants to make remote process calls."
-    (and buffer-file-name (file-remote-p buffer-file-name))))
+    (and buffer-file-name (file-remote-p buffer-file-name)))
 
   (use-feature apheleia
     :config
