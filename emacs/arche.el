@@ -6199,6 +6199,9 @@ be invoked before `org-mode-hook' is run."
     (when (fboundp 'citar-bibliography)
       (setq org-cite-global-bibliography citar-bibliography))))
 
+;; Package `htmlize' is required to export Org files into HTML.
+(use-package htmlize)
+
 ;;;; Note taking
 
 ;; Package `denote' is a simple note-taking tool based on the idea

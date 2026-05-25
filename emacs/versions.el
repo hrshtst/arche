@@ -65,6 +65,7 @@
  ("hcl-mode" . "1da895ed75d28d9f87cbf9b74f075d90ba31c0ed")
  ("helpful" . "03756fa6ad4dcca5e0920622b1ee3f70abfc4e39")
  ("ht.el" . "1c49aad1c820c86f7ee35bf9fff8429502f60fef")
+ ("htmlize" . "fa644880699adea3770504f913e6dddbec90c076")
  ("hydra" . "59a2a45a35027948476d1d7751b0f0215b1e61aa")
  ("imenu-list" . "76f2335ee6f2f066d87fe4e4729219d70c9bc70d")
  ("jeison" . "19a51770f24eaa7b538c7be6a8a5c25d154b641f")
