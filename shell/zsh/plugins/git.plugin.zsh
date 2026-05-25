@@ -201,6 +201,7 @@ alias gsmf='git submodule foreach'
 alias gsmy='git submodule sync'
 
 alias gcl='git clone --recursive'
+alias gcln='git clone'
 alias gcls='git clone --depth=1 --single-branch --no-tags'
 
 alias gre='git remote'
