@@ -73,21 +73,6 @@ if [ -n "$HOME" ]; then
     addpath "$(yarn global bin)"
   fi
 
-  # pyenv is a simple python version management.
-  # https://github.com/pyenv/pyenv
-  if [ -d "$HOME/.pyenv" ]; then
-    setenv PYENV_ROOT "$HOME/.pyenv"
-    has pyenv || addpath "$PYENV_ROOT/bin"
-    eval "$(pyenv init -)"
-  fi
-
-  # rye is a one-stop-shop tool for a python developer.
-  # https://rye.astral.sh/
-  if [ -f "$HOME/.rye/env" ]; then
-    # shellcheck source=/dev/null
-    . "$HOME/.rye/env"
-  fi
-
   # LaTeX is a markup language to write a document.
   if [ -d "/usr/local/texlive" ]; then
     year=$(find "/usr/local/texlive" -mindepth 1 -maxdepth 1 -type d -printf "%f\n" | \
@@ -137,7 +122,3 @@ if [ -n "$BASH_VERSION" ]; then
     . "$HOME/.bashrc"
   fi
 fi
-
-export NPM_CONFIG_UPDATE_NOTIFIER=false
-export PIP_DISABLE_PIP_VERSION_CHECK=1
-export PDM_CHECK_UPDATE=false

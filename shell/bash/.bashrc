@@ -236,38 +236,12 @@ if command -v pipx 1>/dev/null 2>&1; then
   eval "$(register-python-argcomplete pipx)"
 fi
 
-# Autocompletion function for pdm.
-if command -v rye 1>/dev/null 2>&1; then
-  mkdir -p "$HOME/.local/share/bash-completion/completions"
-  pdm completion bash > "$HOME/.local/share/bash-completion/completions/pdm.bash"
-fi
-
-# Autocompletion function for rye.
-if command -v rye 1>/dev/null 2>&1; then
-  mkdir -p "$HOME/.local/share/bash-completion/completions"
-  rye self completion > "$HOME/.local/share/bash-completion/completions/rye.bash"
-fi
-
 # Autocompletion function for alacritty.
 if command -v alacritty 1>/dev/null 2>&1; then
   if [ -f  "$HOME/.bash_completion/alacritty" ]; then
     # shellcheck source=/dev/null
     source "$HOME/.bash_completion/alacritty"
   fi
-fi
-
-## Applications
-
-# pyenv is a simple python version management.
-# https://github.com/pyenv/pyenv
-if command -v pyenv 1>/dev/null 2>&1; then
-  eval "$(pyenv init -)"
-fi
-
-# PDM is a project management tool.
-# https://github.com/pdm-project/pdm
-if command -v pdm 1>/dev/null 2>&1; then
-  eval "$(pdm --pep582 bash)"
 fi
 
 ## gpg-agent
