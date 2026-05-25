@@ -13,7 +13,7 @@ function ssh_connect() {
 }
 
 function ssh_connected() {
-  ps -p "$SSH_AGENT_PID" 2>&1 | grep -qF ssh-agent
+  [[ -S "$SSH_AUTH_SOCK" ]]
 }
 
 function ssh_forget() {
@@ -29,7 +29,9 @@ function ssh_restart() {
   fi
 }
 
-ssh_connect
 if ! ssh_connected; then
-  ssh_restart
+  ssh_connect
+  if ! ssh_connected; then
+    ssh_restart
+  fi
 fi

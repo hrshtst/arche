@@ -270,7 +270,7 @@ if has ssh-agent; then
 
   ssh_connected() {
     # shellcheck disable=SC2009
-    ps -p "$SSH_AGENT_PID" 2>&1 | grep -qF ssh-agent
+    [[ -S "$SSH_AUTH_SOCK" ]]
   }
 
   ssh_forget() {
@@ -287,9 +287,11 @@ if has ssh-agent; then
     fi
   }
 
-  ssh_connect
   if ! ssh_connected; then
-    ssh_restart
+    ssh_connect
+    if ! ssh_connected; then
+      ssh_restart
+    fi
   fi
 
 fi
