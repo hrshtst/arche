@@ -7298,11 +7298,13 @@ Instead, display simply a flat colored region in the fringe."
 
   :bind (("<f2>" . #'vterm-toggle)
          ("C-<f2>" . #'vterm-toggle-cd)
-         ("S-<f2>" . #'arche-vterm-in-current-window)
-         :map vterm-mode-map
-         ("M-." . #'vterm-toggle-forward)
-         ("M-," . #'vterm-toggle-backward))
+         ("S-<f2>" . #'arche-vterm-in-current-window))
   :config
+
+  (use-feature vterm
+    :bind (:map vterm-mode-map
+                ("M-." . #'vterm-toggle-forward)
+                ("M-," . #'vterm-toggle-backward)))
 
   (defun arche-vterm-in-current-window ()
     "Open vterm buffer in the current window."
