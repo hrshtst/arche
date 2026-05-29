@@ -6942,6 +6942,7 @@ disable itself. Sad."
 ;; Forge providing the legacy backend that is used when C module
 ;; support is not available.
 (use-feature emacsql-sqlite
+  :functions emacsql-sqlite-ensure-binary
   :init
 
   ;; Put the EmacSQL binary in the repository, not the build dir. That
