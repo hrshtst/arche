@@ -91,6 +91,11 @@ if [ -n "$HOME" ]; then
     ZPFX=$HOME/.config/zinit/polaris
     addpath "$ZPFX/bin"
   fi
+
+  # Configure text editor to open a new Emacs frame.
+  export EDITOR="emacsclient -c -a ''"
+  export VISUAL="emacsclient -c -a ''"
+  export ALTERNATE_EDITOR=""
 fi
 
 ## External configuration
