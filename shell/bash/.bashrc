@@ -303,6 +303,14 @@ if [ -f "${HOME}/.fzf.bash" ]; then
   source "${HOME}/.fzf.bash"
 fi
 
+## direnv
+
+# Per-directory environments (.envrc). Guarded so shells on machines
+# without direnv start silently.
+if has direnv; then
+  eval "$(direnv hook bash)"
+fi
+
 ## External configuration hook
 
 if type -t arche_after_init_hook > /dev/null; then
