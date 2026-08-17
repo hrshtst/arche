@@ -104,6 +104,10 @@ apply = ["defer"]
 local = "~/.zsh/plugins"
 apply = ["defer"]
 
+[plugins.direnv]
+local = "~/.zsh/plugins"
+apply = ["defer"]
+
 [plugins.eza]
 local = "~/.zsh/plugins"
 apply = ["defer"]
