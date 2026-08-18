@@ -115,7 +115,6 @@ if grep -qEi "(microsoft|wsl)" /proc/version >/dev/null 2>&1; then
   WSL_HOST="$(ip route | grep default | awk '{print $3; exit}' 2>/dev/null)"
   setenv DISPLAY "${WSL_HOST}:0"
   setenv PULSE_SERVER "tcp:${WSL_HOST}"
-  setenv LIBGL_ALWAYS_INDIRECT 1
   unset WSL_HOST
 fi
 
