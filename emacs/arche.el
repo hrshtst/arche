@@ -6315,8 +6315,7 @@ be invoked before `org-mode-hook' is run."
         ("f" arche-diary-fill-dates)
         ;; insert
         ("i" arche-diary-insert-image)
-        ("I" (let ((current-prefix-arg '(16)))
-               (call-interactively #'arche-diary-insert-image)))
+        ("I" arche-diary-insert-gallery)
         ("l" arche-diary-insert-entry-link)
         ;; export
         ("e" arche-diary-export-html)
