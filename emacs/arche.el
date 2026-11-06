@@ -6337,7 +6337,14 @@ be invoked before `org-mode-hook' is run."
     (setq arche-diary-directory       "~/notes/diary")
     (setq arche-diary-html-directory  "~/www/diary")
     (setq arche-diary-html-page-title "ひとりごと")
-    (setq arche-diary-html-lang       "ja"))
+    (setq arche-diary-html-lang       "ja")
+    (setq arche-diary-diaries
+          '(("diary"  (arche-diary-directory . "~/notes/diary")
+                      (arche-diary-html-directory . "~/www/diary")
+                      (arche-diary-html-page-title . "ひとりごと"))
+            ("invest" (arche-diary-directory . "~/notes/invest")
+                      (arche-diary-html-directory . "~/www/invest")
+                      (arche-diary-html-page-title . "投資の勉強")))))
 
 ;;;; Filesystem management
 
