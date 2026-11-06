@@ -6297,10 +6297,10 @@ be invoked before `org-mode-hook' is run."
         "
   arche-diary: %s(arche-diary--hydra-status)
   ^^^^^^^^-----------------------------------------------------------------------
-  ^<files>^         | ^<dates>^         | ^<images>^          | ^<export>^
+  ^<files>^         | ^<dates>^         | ^<insert>^          | ^<export>^
    _o_: open month  | _d_: add date     | _i_: insert image   | _e_: export month
    _O_: open (ask)  | _D_: add (ask)    | _I_: img → gallery | _E_: export all
-   ^^               | _v_: visit date   | ^^                  | _x_: export (ask)
+   ^^               | _v_: visit date   | _l_: insert link    | _x_: export (ask)
    ^^               | _f_: fill dates   | ^^                  | _q_: quit
   "
         ;; files
@@ -6313,10 +6313,11 @@ be invoked before `org-mode-hook' is run."
                (call-interactively #'arche-diary-add-date)))
         ("v" arche-diary-visit-date)
         ("f" arche-diary-fill-dates)
-        ;; images
+        ;; insert
         ("i" arche-diary-insert-image)
         ("I" (let ((current-prefix-arg '(16)))
                (call-interactively #'arche-diary-insert-image)))
+        ("l" arche-diary-insert-entry-link)
         ;; export
         ("e" arche-diary-export-html)
         ("E" (let ((current-prefix-arg '(16)))
