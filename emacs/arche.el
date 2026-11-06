@@ -6287,11 +6287,14 @@ be invoked before `org-mode-hook' is run."
       (defun arche-diary--hydra-status ()
         "Short status line for `hydra-arche-diary'."
         (let ((bm (and (derived-mode-p 'org-mode)
-                       (arche-diary--current-buffer-month))))
-          (if bm
-              (format "buffer %04d-%02d | today %s"
-                      (car bm) (cdr bm) (format-time-string "%Y-%m-%d"))
-            (format "today %s" (format-time-string "%Y-%m-%d")))))
+                       (arche-diary--current-buffer-month)))
+              (diary (arche-diary-current-diary)))
+          (concat
+           (if diary (format "%s | " diary) "")
+           (if bm
+               (format "buffer %04d-%02d | today %s"
+                       (car bm) (cdr bm) (format-time-string "%Y-%m-%d"))
+             (format "today %s" (format-time-string "%Y-%m-%d"))))))
 
       (defhydra hydra-arche-diary (:hint nil :exit t :idle 1)
         "
@@ -6300,13 +6303,14 @@ be invoked before `org-mode-hook' is run."
   ^<files>^         | ^<dates>^         | ^<insert>^          | ^<export>^
    _o_: open month  | _d_: add date     | _i_: insert image   | _e_: export month
    _O_: open (ask)  | _D_: add (ask)    | _I_: img → gallery | _E_: export all
-   ^^               | _v_: visit date   | _l_: insert link    | _x_: export (ask)
+   _s_: switch      | _v_: visit date   | _l_: insert link    | _x_: export (ask)
    ^^               | _f_: fill dates   | ^^                  | _q_: quit
   "
         ;; files
         ("o" arche-diary-open-month)
         ("O" (let ((current-prefix-arg '(4)))
                (call-interactively #'arche-diary-open-month)))
+        ("s" arche-diary-select-diary)
         ;; dates
         ("d" arche-diary-add-date)
         ("D" (let ((current-prefix-arg '(4)))
