@@ -4,15 +4,6 @@
 # zsh(1).
 #
 
-## Autostart tmux
-
-# Start tmux session automatically when the current shell is
-# interactive.
-if (( $+commands[tmux] )) && [[ -o interactive ]] && (( ! $+TMUX )); then
-  default_shell="$(which zsh)"
-  exec tmux new-session $default_shell \; set-option default-shell $default_shell
-fi
-
 ## Compile all sourced files. Credit:
 ## https://zenn.dev/fuzmare/articles/zsh-source-zcompile-all
 function source {
