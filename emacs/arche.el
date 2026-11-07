@@ -5956,6 +5956,7 @@ This runs `org-insert-heading' with
   (setq org-tag-persistent-alist
         '(("devel"      . ?d)
           ("home"       . ?h)
+          ("noexport"   . ?n)
           ("phd"        . ?p)
           ("work"       . ?w)))
 
