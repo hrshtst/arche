@@ -3,7 +3,7 @@
  ("affe" . "ccc6e4dc3dc7c87bdd4733d174274f4710f9e99e")
  ("apache-mode" . "a3db91fc6c4d46ca0625e79df5d6689a607b1927")
  ("apheleia" . "b5bf00151a3f49f679020fb0e35a1d264956668a")
- ("arche-diary" . "ba273bc0f67a3fb6b311ff81c47097162deab5e3")
+ ("arche-diary" . "6c7aafdbd4519176081f232863745ab867edf680")
  ("atomic-chrome" . "072a137a19d7e6a300ca3e87c0e142a7f4ccb5fb")
  ("auctex" . "b5c4f3d4f8b3d1164376d86d79e7ceedb167c2e4")
  ("avy" . "933d1f36cca0f71e4acb5fac707e9ae26c536264")
